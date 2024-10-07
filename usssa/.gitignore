@@ -1,7 +1,16 @@
+# Django settings
 settings.py
-**/migrations/*
-!/migrations/__init__.py
+
+# Django migrations
+migrations/*
+!migrations/__init__.py
+
+# Media and uploaded files (one level up)
 ../athlete_photos/
 ../certificates/
 ../badge/
 ../qr_codes/
+../photo/
+
+# Environment variables
+../.env
