@@ -1,0 +1,135 @@
+{% extends "dashboard/dashboard.html" %}
+<!--static-->
+{% block title %}{{teacher.first_name}} {{teacher.last_name}}{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="enrollment content-wrapper">
+  <div class="top flex">
+    <h1>{{ school_enrollment.championship.name }} - {{ school_enrollment.sport}}</h1>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Enroll athletes</a>
+  </div>
+
+
+  <div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Enroll Athletes</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="school-long">
+            <form method="post">
+              {% csrf_token %}
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Select</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Athlete ID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for athlete in all_athletes %}
+                  <tr>
+                    <td>
+                      <input
+                        type="checkbox"
+                        id="athlete_{{ athlete.id }}"
+                        name="athletes"
+                        value="{{ athlete.id }}"
+                      />
+                    </td>
+                    <td>{{ athlete.fname }}</td>
+                    <td>{{ athlete.lname }}</td>
+                    <td>{{ athlete.athlete_id }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <button type="submit" class="btn btn-success">Add Selected Athletes</button>
+            </form>
+          </div>
+        </div>
+    
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+
+
+
+  <div class="enrolled-athletes">
+    <h2>Enrolled Athletes</h2>
+    <hr>
+    <div class="conter">
+     {% if athlete_enrollments %}
+      
+        <div class="athletes">
+            {% for enrollment in athlete_enrollments %}
+                {% for athlete in enrollment.athletes.all %}
+                <!-- Row -->
+          <div class="athlete">
+            <div class="pro-pic">
+              <img src="{{athlete.photo.url}}" alt="">  
+              <form method="POST" action="{% url 'remove_athlete' enrollment.id athlete.id %}">
+                {% if athlete.qr_code %}
+                <img src="{{ athlete.qr_code.url }}" alt="Athlete QR Code">{% endif %}
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">Remove</button>
+                </form>
+            </div>
+            <div class="deto">
+              
+                <h6 class="det grid_2"><span>Name:</span>{{athlete.fname}} {{athlete.lname}}</h6>
+                <hr>
+                <p class='det grid_2'><span>Gender:</span>{{athlete.gender}}</p>
+                <hr>
+                <p class='det grid_2'><span>Date of birth:</span>{{athlete.date_of_birth}}</p>
+                <hr>
+                <p class='det grid_2'><span>LIN:</span>{{athlete.lin}}</p>
+                <hr>
+                <p class='det grid_2'><span>Class:</span>{{athlete.classroom}}</p>
+
+
+                <!-- Remove button -->
+              
+              
+            </div>
+          </div>
+          <!-- Row -->
+               {% endfor %}
+            {% endfor %}
+           
+        </div>
+      {% else %}
+      <p>No athletes enrolled yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+        

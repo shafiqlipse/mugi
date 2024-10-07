@@ -1,0 +1,74 @@
+.enrollment {
+  padding: 10px;
+  .enrolled-athletes {
+    margin: 10px 0;
+  }
+  .conter {
+    .athletes {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      .athlete {
+        border: solid 1px #ccc;
+        height: 200px;
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 20px;
+
+        .pro-pic {
+          position: relative;
+          img {
+            width: 200px;
+            height: 200px;
+          }
+          form {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            // box-shadow: 5px 5px 2px 1px #303030;
+            button {
+              color: white;
+              font-size: 12px;
+              &:hover {
+                font-size: 15px;
+                color: red;
+                background-color: #fff;
+              }
+            }
+            img {
+              width: 40px;
+              height: 40px;
+            }
+          }
+        }
+        .deto {
+          padding: 20px;
+          h6,
+          p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #000;
+            margin: 5px 0;
+            span {
+              font-size: 13px;
+              color: #8b8b8b;
+              font-weight: bold;
+            }
+          }
+          hr {
+            margin: 0;
+            padding: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+.grid_2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}

@@ -1,0 +1,17 @@
+#navigations {
+  background-color: red;
+  position: relative;
+  .navbar {
+    position: sticky;
+    top: 0;
+    .navbar-brand {
+      width: 100px;
+      position: relative;
+      img {
+        width: 100%;
+        position: absolute;
+        top: -20px;
+      }
+    }
+  }
+}

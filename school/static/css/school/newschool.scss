@@ -1,0 +1,46 @@
+.school {
+  .top {
+    background-color: rgb(218, 218, 218);
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4em;
+    color: rgb(0, 0, 0);
+    text-transform: capitalize;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+  }
+  .form-cotrol {
+    padding: 20px;
+    .schoolt {
+      margin: 20px 0;
+      h2 {
+        background-color: #eee;
+        padding: 10px;
+        border-bottom: solid 1px #ccc;
+      }
+      .fields {
+        .left {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          .imgbox {
+            .field {
+              .preview-container {
+                background-image: url("https://static.vecteezy.com/system/resources/thumbnails/036/594/092/small_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg");
+                background-position: center center;
+                background-size: cover;
+              }
+              .aa {
+                background-image: url("https://png.pngtree.com/png-clipart/20230301/original/pngtree-education-logo-and-school-badge-design-template-png-image_8968149.png");
+                background-position: center center;
+                background-size: cover;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

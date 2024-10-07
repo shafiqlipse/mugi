@@ -1,0 +1,175 @@
+{% extends "base/base.html" %} {% load static %} {% block content %}
+<style>
+  .preview-container {
+    width: 300px;
+    height: 300px;
+  }
+</style>
+<div class="school">
+  <div class="top">Register school</div>
+  <form
+    action=""
+    method="POST"
+    class="form-cotrol"
+    enctype="multipart/form-data"
+  >
+    {% csrf_token %}
+    <div class="schoolt">
+      <h2>School Info</h2>
+
+      <div class="fields">
+        <div class="left">
+          <div class="imgbox">
+            <div class="field">
+              <label>{{form.badge.label}} </label>
+              <div id="badge_preview" class="preview-container aa"></div>
+              
+            </div>
+            <div class="field">
+              <input type="file" name="badge" accept="image/*" id="id_badge" />
+            </div>
+          </div>
+          <div class="fiil">
+            <div class="field flex">
+              <label>{{ form.name.label}}</label>
+              {{form.name}}
+            </div>
+            <div class="field flex">
+              <label>{{ form.center_number.label}}</label>
+              {{form.center_number}}
+            </div>
+
+            <div class="field flex">
+              <label>{{ form.emis_number.label}} </label>{{form.emis_number}}
+            </div>
+
+            <div class="field">
+              <label>Region:</label>
+              {{form.region}}
+            </div>
+            <div class="field">
+              <label>Zone </label>
+              {{form.zone}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="schoolt">
+      <h2>Head Teacher</h2>
+
+      <div class="fields">
+        <div class="left">
+          <div class="imgbox">
+            <div class="field">
+              <label>{{form.photo.label}} </label>
+              <div id="photo_preview" class="preview-container"></div>
+            </div>
+            <div class="field">
+              <input
+                type="file"
+                name="photo"
+                accept="image/*"
+                onchange="displayImage2(this);"
+                id="id_photo"
+              />
+            </div>
+          </div>
+          <div class="fiil">
+            <div class="field flex">
+              <label>First Name</label>
+              {{form.fname}}
+            </div>
+            <div class="field flex">
+              <label>Last Name</label>
+              {{form.lname}}
+            </div>
+            <div class="field flex">
+              <label>{{ form.nin.label}}</label>
+              {{form.nin}}
+            </div>
+
+            <div class="field flex">
+              <label>{{ form.email.label}} </label>{{form.email}}
+            </div>
+
+            <div class="field">
+              <label>Phone:</label>
+              {{form.phone_number}}
+            </div>
+            <div class="field">
+              <label>gender</label>
+              {{form.gender}}
+            </div>
+            <div class="field">
+              <label>Date of Birth</label>
+              {{form.date_of_birth}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="schoolt">
+      <h2>Games Teacher</h2>
+
+      <div class="fields">
+        <div class="left">
+          <div class="imgbox">
+            <div class="field">
+              <label>Photo </label>
+
+              <div id="gphoto_preview" class="preview-container"></div>
+            </div>
+            <div class="field">
+              <input
+                type="file"
+                name="gphoto"
+                accept="image/*"
+                onchange="displayImage1(this);"
+                id="id_gphoto"
+              />
+            </div>
+          </div>
+          <div class="fiil">
+            <div class="field flex">
+              <label>First name</label>
+              {{form.gfname}}
+            </div>
+            <div class="field flex">
+              <label>Last name</label>
+              {{form.glname}}
+            </div>
+
+            <div class="field">
+              <label>NIN:</label>
+              {{form.gnin}}
+            </div>
+            <div class="field flex"><label>Email </label>{{form.gemail}}</div>
+
+            <div class="field">
+              <label>Phone</label>
+              {{form.gphone}}
+            </div>
+            <div class="field">
+              <label>Gender</label>
+              {{form.ggender}}
+            </div>
+            <div class="field">
+              <label>Date of birth</label>
+              {{form.gdate_of_birth}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <button type="submit" class="btn-submit">Save profile</button>
+  </form>
+</div>
+{% endblock %}

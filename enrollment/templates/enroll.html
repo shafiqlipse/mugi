@@ -1,0 +1,122 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Enrollment{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="schools-enr content-wrapper">
+  <div class="top flex">
+    <h1>ENROLLMENTS</h1>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Enroll school</a>
+  </div>
+  <hr />
+  {% if user.is_staff %}
+  <div class="filter card">
+    <h2>Filter Teachers</h2>
+    <form method="get" class="form-contol">
+      {{ filter.form.as_p }}
+      <button type="submit">Apply Filter</button>
+    </form>
+    <form method="post" class="form-contol">
+      {% csrf_token %}
+      <input type="submit" name="Accreditation" value="Accreditation" />
+    </form>
+
+    <form method="post" class="form-contol">
+      {% csrf_token %}
+      <input type="submit" name="Certificate" value="Certificate" />
+    </form>
+    <a href="{% url 'export_csv' %}">Export CSV</a>
+  </div>
+  {% endif %}
+  <div class="filterlist  card">
+    <div class="official-list">
+      <table id="myTable" class="display">
+        <thead>
+          <tr>
+            <th>Names</th>
+            <th>School</th>
+            <th>Championship</th>
+            <th>Sport</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for school_enrollment in filter.qs %}
+          <tr>
+            <td>
+              <a href="{% url 'school_enrollment' school_enrollment.id%}"
+                >{{school_enrollment.first_name}}
+                {{school_enrollment.school}}</a
+              >
+            </td>
+            <td>{{school_enrollment.school}}</td>
+            <td>{{school_enrollment.championship}}</td>
+            <td>{{school_enrollment.sport}}</td>
+
+            <td>
+              <a href="{%url 'update_school_enrollment' school_enrollment.id %}"
+                >Edit</a
+              >
+            </td>
+            <td>
+              <a href="{%url 'delete_school_enrollment' school_enrollment.id %}"
+                >delete</a
+              >
+            </td>
+          </tr>
+
+          {%endfor%}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div
+class="modal fade"
+id="exampleModal"
+tabindex="-1"
+role="dialog"
+aria-labelledby="exampleModalLabel"
+aria-hidden="true"
+>
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+      <button
+        type="button"
+        class="close"
+        data-dismiss="modal"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="school-long">
+        <form
+          action=""
+          method="POST"
+          class="form-ctrl"
+          enctype="multipart/form-data"
+        >
+          {% csrf_token %} {{form.as_p}}
+          <button type="submit" class="btn-submit">Save athlete</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" data-dismiss="modal">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+
