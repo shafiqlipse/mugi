@@ -1,0 +1,9 @@
+settings.py
+**/migrations/*
+!/migrations/__init__.py
+/athlete_photos
+/certificates
+/badge
+/qr_codes
+/photo
+.env
