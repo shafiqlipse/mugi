@@ -256,9 +256,9 @@
             <a
               class="nav-link"
               data-toggle="collapse"
-              href="#ui-basic"
+              href="#ui-basic-2"
               aria-expanded="false"
-              aria-controls="ui-basic"
+              aria-controls="ui-basic-2"
             >
               <span class="menu-icon">
                 <i class="mdi mdi-laptop"></i>
@@ -266,21 +266,21 @@
               <span class="menu-title">Transfers</span>
               <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="ui-beasic">
+            <div class="collapse" id="ui-basic-2">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item">
-                  <a class="nav-link" href="{%url 'athletes' %}"
-                    >All Athletes</a
+                  <a class="nav-link" href="{% url 'transfers'%}"
+                    >Initiate transfer</a
                   >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{%url 'add_athlete' %}"
-                    >Add Athlete</a
+                  <a class="nav-link" href="{%url 'myrequests' %}"
+                    >My requests</a
                   >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="pages/ui-features/typography.html"
-                    >Achieves</a
+                  <a class="nav-link" href="{% url 'mytransfers'%}"
+                    >My transfers</a
                   >
                 </li>
               </ul>
@@ -304,6 +304,14 @@
             </a>
           </li>
           {% if user.is_staff %}
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{% url 'alltransfers'%}">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+              <span class="menu-title">Transfers</span>
+            </a>
+          </li>
           <li class="nav-item menu-items">
             <a class="nav-link" href="{%url 'all_enrollments'%}">
               <span class="menu-icon">

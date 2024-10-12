@@ -6,13 +6,13 @@
   }
 </style>
 <div class="school">
-  <div class="top">Register school</div>
   <form
     action=""
     method="POST"
-    class="form-cotrol"
+    class="form-control"
     enctype="multipart/form-data"
   >
+    <div class="top">Register school</div>
     {% csrf_token %}
     <div class="schoolt">
       <h2>School Info</h2>
@@ -23,24 +23,25 @@
             <div class="field">
               <label>{{form.badge.label}} </label>
               <div id="badge_preview" class="preview-container aa"></div>
-              
             </div>
             <div class="field">
               <input type="file" name="badge" accept="image/*" id="id_badge" />
             </div>
           </div>
           <div class="fiil">
-            <div class="field flex">
+            <div class="field">
               <label>{{ form.name.label}}</label>
               {{form.name}}
             </div>
-            <div class="field flex">
-              <label>{{ form.center_number.label}}</label>
-              {{form.center_number}}
-            </div>
+            <div class="field-group grid2">
+              <div class="field">
+                <label>{{ form.center_number.label}}</label>
+                {{form.center_number}}
+              </div>
 
-            <div class="field flex">
-              <label>{{ form.emis_number.label}} </label>{{form.emis_number}}
+              <div class="field">
+                <label>{{ form.emis_number.label}} </label>{{form.emis_number}}
+              </div>
             </div>
 
             <div class="field">
@@ -76,21 +77,25 @@
             </div>
           </div>
           <div class="fiil">
-            <div class="field flex">
-              <label>First Name</label>
-              {{form.fname}}
+            <div class="field-group grid2">
+              <div class="field">
+                <label>First Name</label>
+                {{form.fname}}
+              </div>
+              <div class="field">
+                <label>Last Name</label>
+                {{form.lname}}
+              </div>
             </div>
-            <div class="field flex">
-              <label>Last Name</label>
-              {{form.lname}}
-            </div>
-            <div class="field flex">
-              <label>{{ form.nin.label}}</label>
-              {{form.nin}}
-            </div>
+            <div class="field-group grid2">
+              <div class="field">
+                <label>{{ form.nin.label}}</label>
+                {{form.nin}}
+              </div>
 
-            <div class="field flex">
-              <label>{{ form.email.label}} </label>{{form.email}}
+              <div class="field">
+                <label>{{ form.email.label}} </label>{{form.email}}
+              </div>
             </div>
 
             <div class="field">
@@ -131,20 +136,23 @@
             </div>
           </div>
           <div class="fiil">
-            <div class="field flex">
-              <label>First name</label>
-              {{form.gfname}}
+            <div class="field-group grid2">
+              <div class="field">
+                <label>First name</label>
+                {{form.gfname}}
+              </div>
+              <div class="field">
+                <label>Last name</label>
+                {{form.glname}}
+              </div>
             </div>
-            <div class="field flex">
-              <label>Last name</label>
-              {{form.glname}}
+            <div class="field-group grid2">
+              <div class="field">
+                <label>NIN:</label>
+                {{form.gnin}}
+              </div>
+              <div class="field"><label>Email </label>{{form.gemail}}</div>
             </div>
-
-            <div class="field">
-              <label>NIN:</label>
-              {{form.gnin}}
-            </div>
-            <div class="field flex"><label>Email </label>{{form.gemail}}</div>
 
             <div class="field">
               <label>Phone</label>
@@ -169,7 +177,7 @@
       {% endfor %}
     </div>
     {% endif %}
-    <button type="submit" class="btn-submit">Save profile</button>
+    <button type="submit" class="btn btn-success">Save school</button>
   </form>
 </div>
 {% endblock %}

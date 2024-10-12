@@ -1,10 +1,8 @@
 #navigations {
   background-color: red;
-  position: relative;
-}
-#navigations .navbar {
   position: sticky;
   top: 0;
+  z-index: 1009;
 }
 #navigations .navbar .navbar-brand {
   width: 100px;

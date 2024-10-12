@@ -10,7 +10,3 @@ migrations/*
 ../certificates/
 ../badge/
 ../qr_codes/
-../photo/
-
-# Environment variables
-../.env

@@ -3,7 +3,7 @@
   {% load static %}
 
   <head>
-    <title>USSSA </title>
+    <title>USSSA</title>
 
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -31,6 +31,7 @@
       type="text/css"
       href="{% static 'css/school/newschool.css'%}"
     />
+    <link rel="stylesheet" href="{% static 'main/main.css'%}" />
 
     <!-- Google Fonts ================================================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,7 +52,10 @@
       type="text/css"
       href="{% static 'css/header.css'%}"
     />
-
+    <link
+      rel="shortcut icon"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}" />
   </head>
 
@@ -82,12 +86,7 @@
             data-bs-target="#offcanvasNavbar"
             aria-controls="offcanvasNavbar"
           >
-            <span>
-              <iconify-icon
-                icon="quill:hamburger"
-                class="navbar-icon"
-              ></iconify-icon>
-            </span>
+            <span> </span>
           </button>
 
           <div
@@ -107,6 +106,7 @@
             </div>
 
             <div class="offcanvas-body">
+              <i class="fa fa-bars"></i>
               <ul class="navbar-nav container align-items-center px-5">
                 <li class="nav-item">
                   <a class="nav-link text-uppercase px-4 text-light" href="/"

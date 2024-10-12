@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from school.models import *
 from accounts.models import *
+from transfers.models import *
 from django.contrib import messages
 from .forms import *
 
@@ -14,14 +15,14 @@ from django.db.models import Q
 today = timezone.now().date()
 from django.db.models import Count
 
+
 # Filter schools created today
 @login_required
 def dashboard(request):
     users_count = User.objects.filter(is_staff=True).count
     schools_count = School.objects.all().count
     regions = Region.objects.annotate(
-        school_count=Count('school'),
-        athlete_count=Count('school__athletes')
+        school_count=Count("school"), athlete_count=Count("school__athletes")
     )
     officials_count = school_official.objects.all().count
     schools_today = School.objects.filter(created=today).count
@@ -155,6 +156,12 @@ def sport_delete(request, id):
         return redirect("sports")
 
     return render(request, "sport/delete_sport.html", {"obj": stud})
+
+
+def AllTransfers(request):
+    transfers = TransferRequest.objects.all()
+    context = {"transfers": transfers}
+    return render(request, "all/transfers.html", context)
 
 
 # # championships

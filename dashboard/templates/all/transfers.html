@@ -1,0 +1,52 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Transfers{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="schools-dew content-wrapper">
+  <div class="head flex">
+    <h1>Transfers</h1>
+  </div>
+
+  <div class="filterlist card">
+    <div class="lo">
+      <div class="official-list">
+        <table id="myTable" class="display">
+          <thead>
+            <tr>
+              <th>Names</th>
+              <th>Current School</th>
+              <th>Request Date</th>
+              <th>Acceptance Date</th>
+              <th>Status</th>
+
+       
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for mytransfer in transfers %}
+            <tr>
+              <td>
+                <a href="{% url 'transfer_details' mytransfer.id %}"
+                  >{{ mytransfer.athlete.fname }}
+                  {{mytransfer.athlete.lname}}</a
+                >
+              </td>
+              <td>{{ mytransfer.owner }}</td>
+
+              <td>{{ mytransfer.requested_at }}</td>
+              <td>{{ mytransfer.accepted_at }}</td>
+              <td>{{ mytransfer.status }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
