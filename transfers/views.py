@@ -191,7 +191,7 @@ def approve_transfer(request, id):
             return redirect("alltransfers")
 
         # Approve the transfer
-        transfer_request.approve_transfer()
+        transfer_request.approve_transfer(approver=request.user)
         messages.success(
             request,
             f"Transfer approved successfully. {transfer_request.athlete} has been transferred to {transfer_request.requester}",

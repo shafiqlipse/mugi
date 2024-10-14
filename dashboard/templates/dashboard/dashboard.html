@@ -548,43 +548,33 @@
                 >
                   <h6 class="p-3 mb-0">Notifications</h6>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
+                  {% for notification in notifications %}
+
+                  <a
+                    class="dropdown-item preview-item notification {% if not notification.is_read %}unread{% endif %}"
+                  >
                     <div class="preview-thumbnail">
                       <div class="preview-icon bg-dark rounded-circle">
                         <i class="mdi mdi-calendar text-success"></i>
                       </div>
                     </div>
                     <div class="preview-item-content">
-                      <p class="preview-subject mb-1">Event today</p>
+                      <p class="preview-subject mb-1">
+                        {{ notification.message }}
+                      </p>
                       <p class="text-muted ellipsis mb-0">
                         Just a reminder that you have an event today
                       </p>
                     </div>
+                    {% if not notification.is_read %}
+                    <a href="{% url 'mark_as_read' notification.id %}"
+                      >Mark as read</a
+                    >
+                    {% endif %}
                   </a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                      <div class="preview-icon bg-dark rounded-circle">
-                        <i class="mdi mdi-settings text-danger"></i>
-                      </div>
-                    </div>
-                    <div class="preview-item-content">
-                      <p class="preview-subject mb-1">Settings</p>
-                      <p class="text-muted ellipsis mb-0">Update dashboard</p>
-                    </div>
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                      <div class="preview-icon bg-dark rounded-circle">
-                        <i class="mdi mdi-link-variant text-warning"></i>
-                      </div>
-                    </div>
-                    <div class="preview-item-content">
-                      <p class="preview-subject mb-1">Launch Admin</p>
-                      <p class="text-muted ellipsis mb-0">New admin wow!</p>
-                    </div>
-                  </a>
+                  {% empty %}
+                  <p>No new notifications.</p>
+                  {% endfor %}
                   <div class="dropdown-divider"></div>
                   <p class="p-3 mb-0 text-center">See all notifications</p>
                 </div>

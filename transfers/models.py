@@ -78,6 +78,7 @@ class TransferRequest(models.Model):
         # Update status and timestamp
         self.status = "approved"
         self.approved_at = timezone.now()
+        self.approver = approver
 
         # Update athlete's school
         athlete = self.athlete

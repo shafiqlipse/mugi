@@ -12,25 +12,14 @@
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Enroll school</a>
   </div>
   <hr />
-  {% if user.is_staff %}
+
   <div class="filter card">
     <h2>Filter Teachers</h2>
     <form method="get" class="form-contol">
       {{ filter.form.as_p }}
       <button type="submit">Apply Filter</button>
     </form>
-    <form method="post" class="form-contol">
-      {% csrf_token %}
-      <input type="submit" name="Accreditation" value="Accreditation" />
-    </form>
 
-    <form method="post" class="form-contol">
-      {% csrf_token %}
-      <input type="submit" name="Certificate" value="Certificate" />
-    </form>
-    <a href="{% url 'export_csv' %}">Export CSV</a>
-  </div>
-  {% endif %}
   <div class="filterlist  card">
     <div class="official-list">
       <table id="myTable" class="display">
@@ -40,12 +29,12 @@
             <th>School</th>
             <th>Championship</th>
             <th>Sport</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th>Reports</th>
+      
           </tr>
         </thead>
         <tbody>
-          {% for school_enrollment in filter.qs %}
+          {% for school_enrollment in school_enrolls %}
           <tr>
             <td>
               <a href="{% url 'school_enrollment' school_enrollment.id%}"
@@ -58,14 +47,9 @@
             <td>{{school_enrollment.sport}}</td>
 
             <td>
-              <a href="{%url 'update_school_enrollment' school_enrollment.id %}"
-                >Edit</a
-              >
-            </td>
-            <td>
-              <a href="{%url 'delete_school_enrollment' school_enrollment.id %}"
-                >delete</a
-              >
+              <a href="{% url 'team_album' school_enrollment.id%}" class="btn btn-primary">Album</a>
+              <a href="{% url 'team_accred' school_enrollment.id%}" class="btn btn-info">Accreditation</a>
+              <a href="{% url 'team_cert' school_enrollment.id%}" class="btn btn-success">Certificate</a>
             </td>
           </tr>
 

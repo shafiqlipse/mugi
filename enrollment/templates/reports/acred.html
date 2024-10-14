@@ -61,7 +61,7 @@
                     <td class="td">
                       <div class="inner">
                         <span
-                          >{{ athlete.contact|upper}}
+                          >{{ athlete.athlete_id|upper}}
                           ({{athlete.gender|upper}})</span
                         >
                         <br />
@@ -81,8 +81,8 @@
                           >{{ athlete.fname|upper }} {{athlete.lname|upper}}</span
                         >
                         <br />
-                        <span>{{ athlete.lin|upper }}</span><br />
-                        <span>{{ athlete.gender|upper }}</span><br />
+                        <span>{{ athlete.index_number|upper }}</span><br />
+                        <span>{{ athlete.school|upper }}</span><br />
                         <span>{{ athlete.date_of_birth|upper }}</span><br />
                       </div>
                     </td>
