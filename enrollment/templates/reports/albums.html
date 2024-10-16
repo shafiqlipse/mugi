@@ -28,6 +28,7 @@
       .header .headtexher {
         display: flex;
         align-items: center;
+        margin: 10px 0;
       }
       .header .headexher h1 {
         text-transform: uppercase;
@@ -35,7 +36,13 @@
       table tbody tr td {
         width: 50%;
         text-align: left;
-        padding: 10px;
+        padding: 5px;
+      }
+      .header .headexher .athletes table tbody tr td table tr {
+        border: solid black 1px;
+      }
+      .header .headexher .athletes table > tbody > tr > td {
+        border: none;
       }
       .header .headexher .athletes table tbody tr td .det {
         text-align: left;
@@ -48,6 +55,7 @@
       .header .headexher .athletes table tbody tr td img {
         width: 140px;
         height: 140px;
+        padding: 0;
       }
       .header .headexher .athletes table tbody tr td ul {
         margin-left: -30px;
@@ -68,6 +76,59 @@
       <hr />
       <div class="headexher">
         <div class="athletes">
+          <table>
+            <tbody>
+              {% for official in officials %}
+              <!---->
+              {% if forloop.counter0|divisibleby:2 %}
+              <!-- Start a new row for every even-numbered athlete -->
+              <tr>
+                {% endif %}
+                <td>
+                  <table>
+                    <tr>
+                      <td>
+                        {% if official.photo %}
+                        <img
+                          src="{{ official.photo.path }}"
+                          alt="{{ official.fname }}"
+                        />
+                        {% else %}
+                        <img
+                          src="{% static 'images/profile.png' %}"
+                          alt="{{ official.fname }}"
+                        />
+                        {% endif %}
+                      </td>
+                      <td>
+                        <ul>
+                          <span>
+                            Names: {{ official.fname|upper }}
+                            {{official.lname|upper }} </span
+                          ><br />
+                          <span>LIN: {{ official.nin|upper }}</span
+                          ><br />
+                          <span>School: {{ official.role|upper }}</span
+                          ><br />
+                          <span
+                            >Date of birth:
+                            {{official.date_of_birth|upper}}</span
+                          ><br />
+                          <span>Age: {{ official.age|upper }}</span
+                          ><br />
+                          <span>Sport: {{ official.sport|upper }}</span
+                          ><br />
+                        </ul>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                {% if forloop.last or forloop.counter0|add:1|divisibleby:2 %}
+                <!-- End the row for the last or odd-numbered athlete -->
+              </tr>
+              {% endif %} {% endfor %}
+            </tbody>
+          </table>
           <table>
             <tbody>
               {% for athlete in athletes %}

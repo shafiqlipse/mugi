@@ -13,4 +13,12 @@ h5 {
   font-family: "Syne", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
+}
+* .p_input,
+* select {
+  background-color: #fff;
+}
+* .p_input:focus,
+* select:focus {
+  background-color: #fff;
 }/*# sourceMappingURL=dash.css.map */

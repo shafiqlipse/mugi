@@ -82,7 +82,9 @@
 
 
   <div class="enrolled-athletes">
+  <div class="enrolled-athletes flex">
     <h2>Enrolled Athletes</h2>
+    <a href="{% url 'team_album' school_enrollment.id%}" class="btn btn-primary">Album</a> </div>
     <hr>
     <div class="conter">
      {% if athlete_enrollments %}
@@ -129,6 +131,7 @@
       {% endif %}
     </div>
   </div>
+ 
 </div>
 
 {% endblock %}

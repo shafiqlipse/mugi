@@ -192,7 +192,8 @@ def Albums(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)
     athletes = Athlete.objects.filter(athleteenrollment__in=athlete_enrollments)
-
+    school = team.school
+    officials = school_official.objects.filter(school=school)
     # Get template
     template = get_template("reports/albums.html")
 
@@ -201,6 +202,7 @@ def Albums(request, id):
     # Prepare context
     context = {
         "athletes": athletes,
+        "officials": officials,
         "MEDIA_URL": settings.MEDIA_URL,
     }
 

@@ -67,7 +67,7 @@ class TransferRequest(models.Model):
         self.status = "rejected"
         self.save()
 
-    def approve_transfer(self):
+    def approve_transfer(self,approver):
         """Final approval by the chief, transfer the athlete to the requesting school."""
         if self.status != "accepted":
             raise ValueError("Only accepted transfers can be approved")

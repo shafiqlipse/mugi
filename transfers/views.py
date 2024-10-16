@@ -203,4 +203,4 @@ def approve_transfer(request, id):
         messages.error(
             request, f"An error occurred while approving the transfer: {str(e)}"
         )
-        return redirect("transfer_list")
+        return redirect("alltransfers")

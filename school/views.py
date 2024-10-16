@@ -13,17 +13,12 @@ from django.core.files.base import ContentFile
 import base64
 
 
-# Create your views here.
-@staff_required
-def Overview(request):
-    # today = timezone.now().date()
-    # schools = School.objects.all().order_by("-created")[:5]  # Example ordering by 'name'
-    active_schools = School.objects.filter(status="Active").count
-    inactive_schools = School.objects.filter(status="Inactive").count
-    schools_count = School.objects.all().count
-    # schools_today = School.objects.filter(created_at__date=today).count
-    athletes = Athlete.objects.all()
-    athletes_count = Athlete.objects.all().count
+@school_required
+def Dash(request):
+    school = request.user.profile
+
+    athletes = Athlete.objects.filter(school=school)
+    athletes_count = Athlete.objects.filter(school=school).count
     officials_count = school_official.objects.all().count
     athletes_bcount = Athlete.objects.filter(gender="male").count
     athletes_gcount = Athlete.objects.filter(gender="female").count
@@ -32,17 +27,13 @@ def Overview(request):
     context = {
         "athletes": athletes,
         "athletes_count": athletes_count,
-        # "schools_today": schools_today,
-        "schools_count": schools_count,
         "athletes_bcount": athletes_bcount,
         "athletes_gcount": athletes_gcount,
         "officials_count": officials_count,
         "officials_bcount": officials_bcount,
         "officials_gcount": officials_gcount,
-        "active_schools": active_schools,
-        "inactive_schools": inactive_schools,
     }
-    return render(request, "dashboard/overview.html", context)
+    return render(request, "dashboard/schoolview.html", context)
 
 
 # schools
@@ -264,39 +255,6 @@ def Official(request):
         form = OfficialForm()
     context = {"form": form}
     return render(request, "officials/NOfficial.html", context)
-
-
-@school_required
-def Dash(request):
-    user = request.user
-    school = School.objects.get(user_id=user.id)
-    officials_count = school_official.objects.filter(school_id=school.id).count()
-    athletes_count = Athlete.objects.filter(school_id=school.id).count()
-    officials_bcount = school_official.objects.filter(
-        school_id=school.id, gender="M"
-    ).count()
-    officials_gcount = school_official.objects.filter(
-        school_id=school.id, gender="F"
-    ).count()
-    athletes_gcount = Athlete.objects.filter(
-        school_id=school.id, gender="Female"
-    ).count()
-    athletes_bcount = Athlete.objects.filter(school_id=school.id, gender="Male").count()
-    officials = school_official.objects.filter(school_id=school.id)
-
-    # from django.contrib.auth.hashers import make_password
-
-    context = {
-        "officials_count": officials_count,
-        "officials_bcount": officials_bcount,
-        "officials_gcount": officials_gcount,
-        "athletes_count": athletes_count,
-        "athletes_bcount": athletes_bcount,
-        "athletes_gcount": athletes_gcount,
-        "officials": officials,
-        "school": school,
-    }
-    return render(request, "dashboard/schoolview.html", context)
 
 
 @login_required
