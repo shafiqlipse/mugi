@@ -6,8 +6,8 @@ migrations/*
 !migrations/__init__.py
 
 # Media and uploaded files (one level up)
-../athlete_photos/
-../transfer_documents/
-../certificates/
-../badge/
-../qr_codes/
+./athlete_photos/
+./transfer_documents/
+./certificates/
+./badge/
+./qr_codes/
