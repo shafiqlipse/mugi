@@ -67,5 +67,10 @@ def user_logout(request):
     return redirect("login")
 
 
+def Confirm(request):
+
+    return render(request, "accounts/confirm.html")
+
+
 def custom_404(request, exception):
     return render(request, "account/custom404.html", {}, status=404)

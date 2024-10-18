@@ -145,7 +145,7 @@ def school_new(request):
 
                 school.save()
                 messages.success(request, "School profile created successfully!")
-                return redirect("confirmation")
+                return redirect("confirm")
             except IntegrityError as e:
                 if "EMIS" in str(e):
                     messages.error(
