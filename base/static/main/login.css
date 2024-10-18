@@ -1,1 +1,5 @@
-/*# sourceMappingURL=login.css.map */
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}/*# sourceMappingURL=login.css.map */

@@ -67,10 +67,45 @@ def user_logout(request):
     return redirect("login")
 
 
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Update the session to maintain the user's login status
+            update_session_auth_hash(request, user)
+            messages.success(request, "Your password was successfully updated!")
+            return redirect("login")
+        else:
+            messages.error(request, "Please correct the error below.")
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, "auth/change_password.html", {"form": form})
+
+
 def Confirm(request):
 
-    return render(request, "accounts/confirm.html")
+    return render(request, "auth/confirm.html")
 
 
 def custom_404(request, exception):
-    return render(request, "account/custom404.html", {}, status=404)
+    return render(request, "auth/custom404.html", {}, status=404)
+
+
+from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.messages.views import SuccessMessageMixin
+
+
+class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+    template_name = "auth/password_reset.html"
+    email_template_name = "auth/password_reset_email.html"
+    subject_template_name = "auth/password_reset_subject.txt"
+    success_message = (
+        "We've emailed you instructions for setting your password, "
+        "if an account exists with the email you entered. You should receive them shortly."
+        " If you don't receive an email, "
+        "please make sure you've entered the address you registered with, and check your spam folder."
+    )
+    success_url = reverse_lazy("home")
