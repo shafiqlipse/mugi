@@ -66,14 +66,13 @@
       }
     </style>
     <div class="header">
-      <img src="https://upssaonline.com/static/images/upsa.png" alt="" />
+      <img src="https://upssaonline.com/head.png" alt="" />
 
-      <h3 style="font-size: 25px; color: #00338b">
-        {{team.championship|upper}}
+      <h3 style="font-size: 20px; color: #00338b">
+        {{team.school|upper}} ~ {{team.sport}} ~
+        E{{team.id}}A00{{athlete_count}}O00{{official_count}}
       </h3>
-      <p>SCHOOL: {{team.school|upper}}: {{team.school.EMIS|upper}}</p>
-      <p>{{team.sport}}, {{team.age}}</p>
-      <hr />
+
       <div class="headexher">
         <div class="athletes">
           <table>
@@ -129,6 +128,7 @@
               {% endif %} {% endfor %}
             </tbody>
           </table>
+          <hr />
           <table>
             <tbody>
               {% for athlete in athletes %}

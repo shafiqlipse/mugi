@@ -194,13 +194,22 @@ def Albums(request, id):
     athletes = Athlete.objects.filter(athleteenrollment__in=athlete_enrollments)
     school = team.school
     officials = school_official.objects.filter(school=school)
+
+    # Get athlete and official counts
+    athlete_count = athletes.count()
+    official_count = officials.count()
+
+    # Create a unique filename
+    filename = f"{team.school} | {team.sport} .pdf"
+
     # Get template
     template = get_template("reports/albums.html")
 
-    # Compress and fix rotation for athletes' photos
-
     # Prepare context
     context = {
+        "team": team,
+        "official_count": official_count,
+        "athlete_count": athlete_count,
         "athletes": athletes,
         "officials": officials,
         "MEDIA_URL": settings.MEDIA_URL,
@@ -211,7 +220,7 @@ def Albums(request, id):
 
     # Create a PDF
     response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = 'attachment; filename="Accreditation.pdf"'
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
 
     # Generate PDF from HTML
     pisa_status = pisa.CreatePDF(html, dest=response)
