@@ -86,7 +86,7 @@ def change_password(request):
 
 def Confirm(request):
 
-    return render(request, "auth/confirm.html")
+    return render(request, "accounts/confirm.html")
 
 
 def custom_404(request, exception):

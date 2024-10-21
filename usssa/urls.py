@@ -11,7 +11,7 @@ from base.views import *
 urlpatterns = [
     path("admin/", admin.site.urls),
     # venues
-    path("", home, name="home"),
+    path("", user_login, name="login"),
     # venues
     path("dashboard/", include("dashboard.urls")),
     path("auth/", include("accounts.urls")),
