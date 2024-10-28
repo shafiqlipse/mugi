@@ -128,10 +128,11 @@
                 <div class="preview-item border-bottom">
                   <div class="preview-thumbnail">
                     <div class="preview-icon bg-primary">
+                      {% if school.badge %}
                       <img
                         src="{{school.badge.url}}"
                         class="mdi mdi-file-document"
-                      />
+                      />{% endif %}
                     </div>
                   </div>
                   <div class="preview-item-content d-sm-flex flex-grow">
