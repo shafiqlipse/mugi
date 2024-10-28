@@ -25213,8 +25213,9 @@ code {
   height: 100%;
 }
 .card.corona-gradient-card {
-  background-image: linear-gradient(to left, #d41459, #911a6c);
+  background-image: linear-gradient(to left, red, #480101);
   border-radius: 6px;
+  color: white;
 }
 .card.corona-gradient-card .gradient-corona-img {
   height: 85px;
@@ -25224,8 +25225,10 @@ code {
     height: auto;
     min-height: 50px;
     max-height: 85px;
+   
   }
 }
+
 @media (max-width: 576px) {
   .card.corona-gradient-card h4 {
     font-size: 0.75rem;

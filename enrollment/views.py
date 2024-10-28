@@ -10,7 +10,7 @@ from .models import *
 from .forms import *
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
+from accounts.decorators import admin_required
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -156,7 +156,7 @@ from xhtml2pdf import pisa
 
 # Make sure to import your models
 
-
+admin_required
 def Accreditation(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)
@@ -229,7 +229,7 @@ def Albums(request, id):
 
     return response
 
-
+admin_required
 def Certificate(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)

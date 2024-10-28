@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
+from accounts.decorators import admin_required
 from school.models import *
 from accounts.models import *
 from transfers.models import *
@@ -45,6 +46,7 @@ def dashboard(request):
 
 
 # championships
+@admin_required
 def championships(request):
     championships = Championship.objects.all()
     new_championship = None
@@ -62,14 +64,14 @@ def championships(request):
     context = {"championships": championships, "sform": sform}
     return render(request, "all/championships.html", context)
 
-
+@admin_required
 def championship_details(request, id):
     championship = Championship.objects.get(id=id)
 
     context = {"championship": championship}
     return render(request, "all/championship.html", context)
 
-
+@admin_required
 def championship_update(request, id):
     championship = get_object_or_404(Championship, id=id)
 
@@ -90,7 +92,7 @@ def championship_update(request, id):
     }
     return render(request, "all/update_championship.html", context)
 
-
+@admin_required
 def championship_delete(request, id):
     stud = Championship.objects.get(id=id)
     if request.method == "POST":
@@ -120,14 +122,14 @@ def sports(request):
     context = {"sports": sports, "sform": sform}
     return render(request, "sport/sports.html", context)
 
-
+@admin_required
 def sport_details(request, id):
     sport = Sport.objects.get(id=id)
 
     context = {"sport": sport}
     return render(request, "sport/sport.html", context)
 
-
+@admin_required
 def sport_update(request, id):
     sport = get_object_or_404(Sport, id=id)
 
@@ -148,7 +150,7 @@ def sport_update(request, id):
     }
     return render(request, "sport/update_sport.html", context)
 
-
+@admin_required
 def sport_delete(request, id):
     stud = Sport.objects.get(id=id)
     if request.method == "POST":
@@ -157,7 +159,7 @@ def sport_delete(request, id):
 
     return render(request, "sport/delete_sport.html", {"obj": stud})
 
-
+# @transfer_required
 def AllTransfers(request):
     transfers = TransferRequest.objects.all()
     context = {"transfers": transfers}

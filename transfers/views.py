@@ -7,8 +7,10 @@ from django.utils import timezone
 
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+# from accounts.decorators import transfer_required
 
 
+# @transfer_required
 def approve_transfer(request, transfer_id):
     transfer_request = get_object_or_404(TransferRequest, id=transfer_id)
 
@@ -91,7 +93,7 @@ def myTransfers(request):
     return render(request, "transfers/my_transfers.html", context)
 
 
-@login_required
+# @transfer_required
 def transfer_details(request, id):
     transfer = get_object_or_404(TransferRequest, id=id)
 

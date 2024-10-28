@@ -31,6 +31,20 @@ def admin_required(login_url="login"):
 
     return decorator
 
+# def transfer_required(login_url="login"):
+#     def decorator(view_func):
+#         @wraps(view_func)
+#         @login_required(login_url=login_url)
+#         def _wrapped_view(request, *args, **kwargs):
+#             if request.user.is_tech:
+#                 return view_func(request, *args, **kwargs)
+#             else:
+#                 return render(request, "login.html")  # You can customize this template
+
+#         return _wrapped_view
+
+#     return decorator
+
 
 def staff_required(view_func):
     @login_required(login_url="login")
