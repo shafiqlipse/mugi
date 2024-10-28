@@ -6,6 +6,8 @@ import qrcode
 from io import BytesIO
 from django.core.files import File
 from PIL import Image, ImageDraw
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 
 class School(models.Model):
@@ -17,8 +19,8 @@ class School(models.Model):
         null=True,
     )
     name = models.CharField(max_length=100)
-    emis_number = models.CharField(max_length=100)
-    center_number = models.CharField(max_length=100)
+    emis_number = models.CharField(max_length=100, unique=True)
+    center_number = models.CharField(max_length=100, unique=True)
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
     status = models.CharField(
@@ -34,9 +36,9 @@ class School(models.Model):
     # Headteacher
     lname = models.CharField(max_length=100)
     fname = models.CharField(max_length=100)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15)
-    nin = models.CharField(max_length=20)
+    nin = models.CharField(max_length=20, unique=True)
     date_of_birth = models.DateField()
     created = models.DateField(auto_now_add=True)
     gender = models.CharField(
@@ -52,7 +54,7 @@ class School(models.Model):
     # games teacher
     gfname = models.CharField(max_length=100, null=True, blank=True, default="")
     glname = models.CharField(max_length=100, null=True, blank=True, default="")
-    gemail = models.EmailField(null=True, blank=True, default="")
+    gemail = models.EmailField(null=True, blank=True, default="", unique=True)
     gphone = models.CharField(max_length=15, null=True, blank=True, default="")
     gnin = models.CharField(max_length=20, default="")
     gdate_of_birth = models.DateField()
@@ -72,6 +74,12 @@ class School(models.Model):
         return self.name
 
 
+@receiver(post_delete, sender=School)
+def delete_user_with_school(sender, instance, **kwargs):
+    if instance.user:
+        instance.user.delete()
+
+
 class school_official(models.Model):
     school = models.ForeignKey(
         School, related_name="officials", on_delete=models.CASCADE
@@ -80,7 +88,7 @@ class school_official(models.Model):
     lname = models.CharField(max_length=100, null=True, blank=True, default="")
     email = models.EmailField(null=True, blank=True, default="")
     phone_number = models.CharField(max_length=15, null=True, blank=True, default="")
-    nin = models.CharField(max_length=20, default="")
+    nin = models.CharField(max_length=20, default="", unique=True)
     date_of_birth = models.DateField()
     gender = models.CharField(
         max_length=1,
