@@ -9,7 +9,7 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="{% static 'css/school/newschool.css'%}"
+      href="{% static 'css/newdel.css'%}"
     />
     <link rel="stylesheet" href="{% static 'main/main.css'%}" />
 
@@ -20,12 +20,19 @@
       crossorigin="anonymous"
     />
     <!-- Google Fonts ================================================== -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Catamaran:wght@400;500&family=Raleway:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts ================================================== -->
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.min.css"
@@ -54,14 +61,7 @@
     </script>
   </head>
   <body>
-    <style>
-      .preview-container {
-        width: 300px;
-        height: 300px;
-      }
-    </style>
-
-    <div class="school">
+    <div class="schooler">
       <div class="top">
         <img src="{% static 'images/logo.png' %}" id="dw" alt="No Photo" />
         <div class="hedtxt">
@@ -76,22 +76,22 @@
       >
         {% csrf_token %}
 
-        <div class="schoolt">
+        <div class="schooled">
           <div class="fields">
-            <div class="left">
-              {{ cform.non_field_errors }} {{ cform.errors }}
-              <!---->
-              {% if messages %}
-              <ul class="messages">
-                {% for message in messages %}
-                <li
-                  class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %}"
-                >
-                  {{ message }}
-                </li>
-                {% endfor %}
-              </ul>
-              {% endif %}
+            {{ cform.non_field_errors }} {{ cform.errors }}
+            <!---->
+            {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+              <li
+                class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %}"
+              >
+                {{ message }}
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="left flex">
               <div class="imgbox">
                 <div class="field">
                   <label>{{form.photo.label}} </label>
@@ -103,12 +103,11 @@
                     name="photo"
                     accept="image/*"
                     id="id_photo"
+                    class="form-control"
                   />
                 </div>
               </div>
-            </div>
-            <div class="fiil">
-              <div class="filflex">
+              <div class="fiil grid2">
                 <div class="field">
                   <label>First Name</label>
                   {{form.first_name}}
@@ -117,12 +116,12 @@
                   <label>Last Name</label>
                   {{form.last_name}}
                 </div>
-              </div>
-              <div class="field">
-                <label>School</label>
-                {{form.school}}
-              </div>
-              <div class="filflex">
+
+                <div class="field">
+                  <label>School</label>
+                  {{form.school}}
+                </div>
+
                 <div class="field">
                   <label>Phone:</label>
                   {{form.contact}}
@@ -131,8 +130,7 @@
                   <label>Email:</label>
                   {{form.email}}
                 </div>
-              </div>
-              <div class="filflex">
+
                 <div class="field">
                   <label>gender</label>
                   {{form.gender}}
@@ -145,14 +143,14 @@
                   <label>Zone</label>
                   {{form.zone}}
                 </div>
-              </div>
-              <div class="field">
-                <label>District/ City/ Municipality</label>
-                {{form.district}}
-              </div>
 
-              <button type="submit" class="btn btn-success">Submit</button>
+                <div class="field">
+                  <label>District/ City/ Municipality</label>
+                  {{form.district}}
+                </div>
+              </div>
             </div>
+            <button type="submit" class="btn btn-success">Submit</button>
           </div>
         </div>
       </form>
