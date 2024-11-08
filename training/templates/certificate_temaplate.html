@@ -1,0 +1,83 @@
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Album</title>
+  </head>
+
+  <body>
+    <style>
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .delegate-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .header .delegates table tbody tr td {
+        padding-top: 290px;
+        padding-left: 70px;
+        padding-right: 30px;
+        margin: 0;
+      }
+      .header .delegates table tbody tr .delegate-cell .delegate-info {
+        font-size: 1.4em; /* Adjust font size */
+        text-align: center; /* Align text to the left */
+        width: 800px; /* Set a fixed width to ensure text fits on one line */
+      }
+      .header .delegates table tbody tr .delegate-cell .delegate-image img {
+        width: 120px;
+        height: 120px;
+        image-orientation: from-image;
+        transform: rotate(0deg);
+      }
+    </style>
+    <div class="header">
+      <div class="delegates">
+        <table class="delegate-table">
+          <tbody>
+            {% for delegate in delegates %}
+            <tr>
+              <td class="delegate-cell">
+                <div class="delegate-info">
+                  <span
+                    ><strong
+                      >{{ delegate.first_name|upper }}
+                      {{delegate.last_name|upper}}
+                    </strong></span
+                  ><br />
+
+                  <span>{{ delegate.designation|upper }}</span><br />
+                  <span>{{ delegate.school|upper }}</span><br />
+                  <span>{{ delegate.district|upper }} </span><br />
+                </div>
+              </td>
+              <td class="delegate-cell">
+                <div class="delegate-image">
+                  {% if delegate.photo %}
+                  <img
+                    src="{{ delegate.photo.path }}"
+                    alt="{{ delegate.first_name }}"
+                  />
+                  {% else %}
+                  <img
+                    src="{% static 'images/profile.png' %}"
+                    alt="{{ delegate.last_name }}"
+                  />
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
