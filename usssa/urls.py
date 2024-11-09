@@ -19,5 +19,5 @@ urlpatterns = [
     path("enrollment/", include("enrollment.urls")),
     path("transfers/", include("transfers.urls")),
     path("agm/", include("agm.urls")),
-    path("training/", include("training.urls")),
+    # path("training/", include("training.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
