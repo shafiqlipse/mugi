@@ -34,7 +34,7 @@ def delegate_add(request):
                         return render(request, "delegate_new.html", {"form": form})
 
                 new_delegate.save()
-                messages.success(request, "Athlete added successfully!")
+                messages.success(request, "Delegate added successfully!")
                 return redirect("adddelegate")
 
             except IntegrityError:
