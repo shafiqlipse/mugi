@@ -13,6 +13,7 @@ class DelegatesForm(forms.ModelForm):
             "photo",
             "contact",
             "region",
+            "position",
             "email",
             "district",
             "gender",
@@ -26,6 +27,7 @@ class DelegatesForm(forms.ModelForm):
             "email": forms.TextInput(attrs={"class": "form-control"}),
             "zone": forms.Select(attrs={"class": "form-control"}),
             "region": forms.Select(attrs={"class": "form-control"}),
+            "position": forms.Select(attrs={"class": "form-control"}),
             "district": forms.Select(attrs={"class": "form-control"}),
             "gender": forms.Select(attrs={"class": "form-control"}),
         }

@@ -42,5 +42,26 @@ class Delegates(models.Model):
         choices=[("Male", "Male"), ("Female", "Female")],
     )
 
+    position = models.CharField(
+        max_length=44,
+        choices=[
+            ("Chairperson", "Chairperson"),
+            ("Vice Chairperson", "Vice Chairperson"),
+            ("General Secretary", "General Secretary"),
+            ("ASSHU Representative", "ASSHU Representative"),
+            ("Assistant General Secretary", "Assistant General Secretary"),
+            ("Treasurer", "Treasurer"),
+            ("Secretary for Women", "Secretary for Women"),
+            ("Western Representative", "Western Representative"),
+            ("Eastern Representative", "Eastern Representative"),
+            ("Northern Representative", "Northern Representative"),
+            ("Central Representative", "Central Representative"),
+            ("Kampala Representative", "Kampala Representative"),
+            ("Committee Member", "Committee Member"),
+        ],
+        null=True,
+        blank=True,
+    )
+
     def __str__(self):
         return self.first_name
