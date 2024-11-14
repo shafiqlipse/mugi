@@ -11,13 +11,14 @@ from django.dispatch import receiver
 
 
 class School(models.Model):
-    user = models.OneToOneField(
+    users = models.ForeignKey(
         User,
-        related_name="profile",  # Keep 'profile' if you want a one-to-one relation
+        related_name="schools",  # Change 'profile' to a plural name like 'schools'
         on_delete=models.CASCADE,
         blank=True,
         null=True,
     )
+
     name = models.CharField(max_length=100)
     emis_number = models.CharField(max_length=100, unique=True)
     center_number = models.CharField(max_length=100, unique=True)

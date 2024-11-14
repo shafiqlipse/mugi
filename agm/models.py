@@ -45,6 +45,11 @@ class Delegates(models.Model):
     position = models.CharField(
         max_length=44,
         choices=[
+            ("President ", "President "),
+            ("Vice President 1", "Vice President 1"),
+            ("Vice President 2", "Vice President 2"),
+            ("Vice President 3", "Vice President 3"),
+            ("CEO", "CEO"),
             ("Chairperson", "Chairperson"),
             ("Vice Chairperson", "Vice Chairperson"),
             ("General Secretary", "General Secretary"),
