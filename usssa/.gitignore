@@ -1,3 +1,4 @@
+settings.py
 # Ignore the Django migrations (inside usssa/accounts)
 ../accounts/migrations/
 ../dashboard/migrations/
