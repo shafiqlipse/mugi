@@ -1,0 +1,94 @@
+.school {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url(https://freedesignfile.com/upload/2017/02/White-abstract-background-with-wave-vector-illustration-03.jpg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.school .form-control {
+  padding: 20px;
+  width: 60%;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.497);
+  -webkit-backdrop-filter: blur(2em);
+          backdrop-filter: blur(2em);
+}
+.school .form-control .top {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4em;
+  text-transform: capitalize;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+}
+@media (max-width: 1028px) {
+  .school .form-control {
+    width: 100%;
+  }
+}
+.school .form-control .schoolt {
+  margin: 20px 0;
+}
+.school .form-control .schoolt h2 {
+  background-color: rgba(245, 245, 245, 0.1568627451);
+  padding: 10px;
+  border-bottom: solid 1px #ccc;
+}
+.school .form-control .schoolt .fields .left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+@media (max-width: 600px) {
+  .school .form-control .schoolt .fields .left {
+    flex-direction: column;
+  }
+}
+.school .form-control .schoolt .fields .left .imgbox .field {
+  width: 100%;
+  flex-direction: column;
+}
+.school .form-control .schoolt .fields .left .imgbox .field .preview-container {
+  background-image: url("https://static.vecteezy.com/system/resources/thumbnails/036/594/092/small_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg");
+  background-position: center center;
+  background-size: cover;
+}
+.school .form-control .schoolt .fields .left .imgbox .field .aa {
+  background-image: url("https://media.istockphoto.com/id/1475470719/vector/university-logo-design-vector.jpg?s=612x612&w=0&k=20&c=qx6baDJQUUYf_U1tRu-dP3KSHS1EmGUspuo_zRfHnkQ=");
+  background-position: center center;
+  background-size: cover;
+}
+.school .form-control .schoolt .fields .left .imgbox .field label {
+  text-transform: capitalize;
+  font-weight: 500;
+  color: #464646;
+  font-size: 15px;
+}
+.school .form-control .schoolt .fields .left .imgbox .field input {
+  width: 100%;
+  padding: 8px;
+}
+.school .form-control .schoolt .fields .left .fiil {
+  padding: 10px;
+}
+.school .form-control .schoolt .fields .left .fiil .field {
+  width: 100%;
+  flex-direction: column;
+}
+.school .form-control .schoolt .fields .left .fiil .field label {
+  text-transform: capitalize;
+  font-weight: 500;
+  color: #464646;
+  font-size: 15px;
+  margin-top: 10px;
+}
+.school .form-control .schoolt .fields .left .fiil .field input,
+.school .form-control .schoolt .fields .left .fiil .field select {
+  width: 100%;
+  padding: 8px;
+}/*# sourceMappingURL=newschool.css.map */

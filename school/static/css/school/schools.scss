@@ -1,0 +1,15 @@
+.filterlist {
+  padding: 20px;
+  a {
+    color: rgb(0, 7, 3);
+    .fa-trash {
+      color: red;
+    }
+    .fa-pencil-square {
+      color: rgb(1, 107, 200);
+    }
+    &:hover {
+      color: rgb(1, 107, 200);
+    }
+  }
+}

@@ -1,0 +1,82 @@
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Album</title>
+  </head>
+
+  <body>
+    <style>
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .athlete-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .header .athletes table tbody tr td {
+        padding-top: 250px;
+        padding-left: 60px;
+        padding-right: 30px;
+        margin: 0;
+      }
+      .header .athletes table tbody tr .athlete-cell .athlete-info {
+        font-size: 1.4em; /* Adjust font size */
+        text-align: center; /* Align text to the left */
+        width: 500px; /* Set a fixed width to ensure text fits on one line */
+      }
+      .header .athletes table tbody tr .athlete-cell .athlete-image img {
+        width: 120px;
+        height: 120px;
+        image-orientation: from-image;
+        transform: rotate(0deg);
+      }
+    </style>
+    <div class="header">
+      <div class="athletes">
+        <table class="athlete-table">
+          <tbody>
+            {% for athlete in athletes %}
+            <tr>
+              <td class="athlete-cell">
+                <div class="athlete-info">
+                  <span
+                    >{{ athlete.fname|upper }} {{athlete.lname|upper}}
+                    ({{athlete.classroom|upper}})</span
+                  ><br />
+
+                  <span>{{ athlete.school|upper }}</span><br />
+                  <span
+                    >{{ athlete.sport|upper }} ({{athlete.gender|upper}})</span
+                  ><br />
+                </div>
+              </td>
+              <td class="athlete-cell">
+                <div class="athlete-image">
+                  {% if athlete.photo %}
+                  <img
+                    src="{{ athlete.photo.path }}"
+                    alt="{{ athlete.first_name }}"
+                  />
+                  {% else %}
+                  <img
+                    src="{% static 'images/profile.png' %}"
+                    alt="{{ athlete.last_name }}"
+                  />
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

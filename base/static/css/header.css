@@ -1,0 +1,15 @@
+#navigations {
+  background-color: red;
+  position: sticky;
+  top: 0;
+  z-index: 1009;
+}
+#navigations .navbar .navbar-brand {
+  width: 100px;
+  position: relative;
+}
+#navigations .navbar .navbar-brand img {
+  width: 100%;
+  position: absolute;
+  top: -20px;
+}/*# sourceMappingURL=header.css.map */

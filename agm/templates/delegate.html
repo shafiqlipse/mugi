@@ -1,0 +1,44 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}{{delegate.fname}} {{delegate.lname}}{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="athlete-dew content-wrapper">
+  <div class="athlete flex">
+    <div class="img-ath">
+      <img src="{{delegate.photo.url}}" alt="" />
+    </div>
+    <div class="line-ath">
+      <h1>{{delegate.first_name}} {{delegate.last_name}}</h1>
+      <p>{{delegate.email}}</p>
+      <hr />
+      <div class="small-details grid2">
+        <span
+          >School:
+          <h3>{{delegate.school}}</h3></span
+        >
+
+        <span
+          >Contact:
+          <h3>{{delegate.contact}}</h3></span
+        >
+        <span
+          >Region
+          <h3>{{delegate.region}}</h3></span
+        >
+        <span
+          >Zone
+          <h3>{{delegate.zone}}</h3></span
+        >
+        <span
+          >District
+          <h3>{{delegate.district}}</h3></span
+        >
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
