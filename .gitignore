@@ -1,0 +1,13 @@
+# Django settings
+usssa/settings.py
+
+# Django migrations
+/migrations/*
+!/migrations/__init__.py
+
+# Media and uploaded files (one level up)
+athlete_photos/
+transfer_documents/
+certificates/
+badge/
+qr_codes/
