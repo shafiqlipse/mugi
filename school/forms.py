@@ -11,8 +11,7 @@ class SchoolProfileForm(forms.ModelForm):
             "emis_number",
             "center_number",
             "badge",
-            "region",
-            "zone",
+            "district",
             "fname",
             "lname",
             "nin",
@@ -38,8 +37,8 @@ class SchoolProfileForm(forms.ModelForm):
             "name": forms.TextInput(attrs={"class": "form-control"}),
             "emis_number": forms.TextInput(attrs={"class": "form-control"}),
             "center_number": forms.TextInput(attrs={"class": "form-control"}),
-            "region": forms.Select(attrs={"class": "form-control"}),
-            "zone": forms.Select(attrs={"class": "form-control"}),
+            "district": forms.Select(attrs={"class": "form-control"}),
+           
             #    --------------------------------------
             "fname": forms.TextInput(attrs={"class": "form-control"}),
             "lname": forms.TextInput(attrs={"class": "form-control"}),

@@ -15,7 +15,7 @@ import base64
 
 @school_required
 def Dash(request):
-    school = request.user.profile
+    school = request.user.school
 
     athletes = Athlete.objects.filter(school=school)
     athletes_count = Athlete.objects.filter(school=school).count
@@ -213,7 +213,7 @@ def Official(request):
                 official = form.save(commit=False)
 
                 # Assign the school from the user profile
-                official.school = request.user.profile
+                official.school = request.user.school
 
                 # Handle cropped image data for the "photo" field
                 cropped_data = request.POST.get("photo_cropped")
@@ -266,7 +266,7 @@ def newAthlete(request):
                 new_athlete = form.save(commit=False)
 
                 # Assign the school from the user profile
-                new_athlete.school = request.user.profile  # Ensure profile has a school
+                new_athlete.school = request.user.school  # Ensure profile has a school
 
                 # Handle cropped image data for the "photo" field
                 cropped_data = request.POST.get("photo_cropped")
@@ -364,7 +364,7 @@ def AthleteDetail(request, id):
 @login_required(login_url="login")
 def athletes(request):
     user = request.user
-    school_profile = user.profile  # Retrieve the first related School object
+    school_profile = user.school  # Retrieve the first related School object
     if school_profile:
         school_id = school_profile.id
         athletes = Athlete.objects.filter(school_id=school_id)
@@ -381,7 +381,7 @@ def athletes(request):
 @login_required(login_url="login")
 def school_offs(request):
     user = request.user
-    school_profile = user.profile  # Retrieve the first related School object
+    school_profile = user.school  # Retrieve the first related School object
     if school_profile:
         school_id = school_profile.id
         school_offs = school_official.objects.filter(school_id=school_id)
@@ -471,7 +471,6 @@ def OfficialDetail(request, id):
 
 def athlete_list(request):
     athletes = Athlete.objects.all()
-
     context = {"athletes": athletes}
     return render(request, "school/athlete_list.html", context)
 

@@ -10,7 +10,7 @@
   <div class="athlete flex">
     <div class="img-ath">
       {% if athlete.photo %}
-      <img src="{{athlete.photo.url}}" alt="" />
+      <img src="{{athlete.photo}}" alt="" />
       {% else %}
       <img src="{% static 'images/profile.png'%}" alt="" />{% endif %}
     </div>

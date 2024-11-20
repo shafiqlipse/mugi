@@ -14,7 +14,7 @@ User = get_user_model()
 @receiver(post_save, sender=School)
 def create_school_officials_and_admin(sender, instance, created, **kwargs):
     if created:
-        # Create headteacher
+        # Create headteacher official
         school_official.objects.create(
             school=instance,
             fname=instance.fname,
@@ -28,7 +28,7 @@ def create_school_officials_and_admin(sender, instance, created, **kwargs):
             photo=instance.photo,
         )
 
-        # Create games teacher
+        # Create games teacher official
         school_official.objects.create(
             school=instance,
             fname=instance.gfname,
@@ -42,53 +42,45 @@ def create_school_officials_and_admin(sender, instance, created, **kwargs):
             photo=instance.gphoto,
         )
 
-        # Create school admin credentials
-        school_admin_email = instance.email
-        school_games_email = instance.gemail
-        school_admin_username = instance.email
-        school_admin_password = "123Pass"  # Replace with secure password generation
-
-        # Create a school admin user and associate it with the school
-        hashed_password = make_password(school_admin_password)
-        school_admin_user = User.objects.create(
-            username=school_admin_username,
-            email=school_admin_email,
-            password=hashed_password,
+        # Create the admin user for the headteacher
+        admin_password = "Pass12345"  # Replace with secure password generation
+        admin_user = User.objects.create(
+            username=instance.email,
+            email=instance.email,
+            password=make_password(admin_password),
             is_school=True,
         )
-        instance.user = school_admin_user
 
-        instance.save()
+        # Create the user for the games teacher
+        games_teacher_password = "Pass12345"  # Replace with secure password generation
+        games_teacher_user = User.objects.create(
+            username=instance.gemail,
+            email=instance.gemail,
+            password=make_password(games_teacher_password),
+            is_school=True,
+        )
 
-        # Send email to the admin
-
-        # Existing context
+        # Set up email context and message details
         context = {
-            "school_admin_username": school_admin_username,
-            "school_admin_password": school_admin_password,
+            "admin_username": instance.email,
+            "admin_password": admin_password,
+            "games_teacher_username": instance.gemail,
+            "games_teacher_password": games_teacher_password,
         }
 
-        # Load the HTML content from a template
+        # Render HTML email content
         html_message = render_to_string("accounts/email.html", context)
-
-        # Plain text alternative for email clients that don't support HTML
         plain_message = strip_tags(html_message)
-
-        # Email subject and sender details
-        subject = "Your School Admin Account Details"
+        subject = "Your School Admin and Games Teacher Account Details"
         from_email = "noreply@usssaonline.com"
-        recipient_list = [school_admin_user.email, school_games_email]
+        recipient_list = [instance.email, instance.gemail]
 
-        # Set up the EmailMultiAlternatives object
+        # Create and send the email
         email = EmailMultiAlternatives(
             subject=subject,
-            body=plain_message,  # Plain text version
+            body=plain_message,
             from_email=from_email,
             to=recipient_list,
         )
-
-        # Attach the HTML content
         email.attach_alternative(html_message, "text/html")
-
-        # Send the email
         email.send()

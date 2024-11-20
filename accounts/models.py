@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from django.apps import apps
 # Create your models here.
 
 
@@ -11,7 +11,13 @@ class User(AbstractUser):
     is_tech = models.BooleanField(default=False)
     is_accounts = models.BooleanField(default=False)
     thumbnail = models.ImageField(upload_to="profile/", blank=True, null=True)
-
+    school = models.ForeignKey(
+        "school.School",
+        related_name="users",
+        on_delete=models.CASCADE,
+        blank=True,  # Allows non-school users to leave this field empty
+        null=True,
+    )
 
 class Sport(models.Model):
     name = models.CharField(max_length=245)

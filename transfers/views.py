@@ -38,7 +38,7 @@ def approve_transfer(request, transfer_id):
 
 def transfers(request):
     user = request.user
-    school = user.profile
+    school = user.school
     athletes = Athlete.objects.all().exclude(school=school)
     context = {"athletes": athletes}
     return render(request, "transfers/initiate_transfer.html", context)
@@ -47,7 +47,7 @@ def transfers(request):
 def initiate_transfer(request, id):
     try:
         user = request.user
-        school = user.profile  # The requesting school
+        school = user.school  # The requesting school
         athlete = get_object_or_404(Athlete, id=id)
 
         # Prevent transfer request if athlete is already in requested school
@@ -87,7 +87,7 @@ def initiate_transfer(request, id):
 
 def myTransfers(request):
     user = request.user
-    school = user.profile
+    school = user.school
     mytransfers = TransferRequest.objects.filter(requester=school)
     context = {"mytransfers": mytransfers}
     return render(request, "transfers/my_transfers.html", context)
@@ -111,7 +111,7 @@ def transfer_details(request, id):
 
 def myRequests(request):
     user = request.user
-    school = user.profile
+    school = user.school
     mytransfers = TransferRequest.objects.filter(owner=school, status="pending")
     context = {"mytransfers": mytransfers}
     return render(request, "transfers/my_requests.html", context)
@@ -126,7 +126,7 @@ def accept_transfer(request, id):
         transfer_request = get_object_or_404(TransferRequest, id=id)
 
         # Ensure only the owning school can accept the transfer
-        if transfer_request.owner != request.user.profile:
+        if transfer_request.owner != request.user.school:
             return JsonResponse(
                 {
                     "status": "error",

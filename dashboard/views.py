@@ -23,7 +23,8 @@ def dashboard(request):
     users_count = User.objects.filter(is_staff=True).count
     schools_count = School.objects.all().count
     regions = Region.objects.annotate(
-        school_count=Count("school"), athlete_count=Count("school__athletes")
+        school_count=Count("zone__district__school"),
+        athlete_count=Count("zone__district__school__athletes"),
     )
     officials_count = school_official.objects.all().count
     schools_today = School.objects.filter(created=today).count
@@ -64,12 +65,14 @@ def championships(request):
     context = {"championships": championships, "sform": sform}
     return render(request, "all/championships.html", context)
 
+
 @admin_required
 def championship_details(request, id):
     championship = Championship.objects.get(id=id)
 
     context = {"championship": championship}
     return render(request, "all/championship.html", context)
+
 
 @admin_required
 def championship_update(request, id):
@@ -91,6 +94,7 @@ def championship_update(request, id):
         "championship": championship,
     }
     return render(request, "all/update_championship.html", context)
+
 
 @admin_required
 def championship_delete(request, id):
@@ -122,12 +126,14 @@ def sports(request):
     context = {"sports": sports, "sform": sform}
     return render(request, "sport/sports.html", context)
 
+
 @admin_required
 def sport_details(request, id):
     sport = Sport.objects.get(id=id)
 
     context = {"sport": sport}
     return render(request, "sport/sport.html", context)
+
 
 @admin_required
 def sport_update(request, id):
@@ -150,6 +156,7 @@ def sport_update(request, id):
     }
     return render(request, "sport/update_sport.html", context)
 
+
 @admin_required
 def sport_delete(request, id):
     stud = Sport.objects.get(id=id)
@@ -158,6 +165,7 @@ def sport_delete(request, id):
         return redirect("sports")
 
     return render(request, "sport/delete_sport.html", {"obj": stud})
+
 
 # @transfer_required
 def AllTransfers(request):

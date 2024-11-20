@@ -11,19 +11,12 @@ from django.dispatch import receiver
 
 
 class School(models.Model):
-    users = models.ForeignKey(
-        User,
-        related_name="schools",  # Change 'profile' to a plural name like 'schools'
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-    )
 
     name = models.CharField(max_length=100)
     emis_number = models.CharField(max_length=100, unique=True)
-    center_number = models.CharField(max_length=100, unique=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
-    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+    center_number = models.CharField(max_length=100)
+    district = models.ForeignKey(District, on_delete=models.CASCADE)
+
     status = models.CharField(
         max_length=10,
         choices=[("Active", "Active"), ("Inactive", "Inactive")],
@@ -35,16 +28,46 @@ class School(models.Model):
         null=True,
     )
     # Headteacher
-    lname = models.CharField(max_length=100)
-    fname = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=15)
-    nin = models.CharField(max_length=20, unique=True)
-    date_of_birth = models.DateField()
-    created = models.DateField(auto_now_add=True)
+    lname = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    fname = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    email = models.EmailField(
+        unique=True,
+        blank=True,
+        null=True,
+    )
+    phone_number = models.CharField(
+        max_length=15,
+        blank=True,
+        null=True,
+    )
+    nin = models.CharField(
+        max_length=20,
+        unique=True,
+        blank=True,
+        null=True,
+    )
+    date_of_birth = models.DateField(
+        blank=True,
+        null=True,
+    )
+    created = models.DateField(
+        auto_now_add=True,
+        blank=True,
+        null=True,
+    )
     gender = models.CharField(
         max_length=1,
         choices=[("M", "Male"), ("F", "Female")],
+        blank=True,
+        null=True,
     )
     photo = models.ImageField(
         upload_to="badge/",
@@ -57,8 +80,16 @@ class School(models.Model):
     glname = models.CharField(max_length=100, null=True, blank=True, default="")
     gemail = models.EmailField(null=True, blank=True, default="", unique=True)
     gphone = models.CharField(max_length=15, null=True, blank=True, default="")
-    gnin = models.CharField(max_length=20, default="")
-    gdate_of_birth = models.DateField()
+    gnin = models.CharField(
+        max_length=20,
+        default="",
+        blank=True,
+        null=True,
+    )
+    gdate_of_birth = models.DateField(
+        blank=True,
+        null=True,
+    )
     ggender = models.CharField(
         max_length=1,
         choices=[("M", "Male"), ("F", "Female")],
@@ -75,13 +106,14 @@ class School(models.Model):
         return self.name
 
 
-@receiver(post_delete, sender=School)
-def delete_user_with_school(sender, instance, **kwargs):
-    if instance.user:
-        instance.user.delete()
-
-
 class school_official(models.Model):
+    added_by = models.ForeignKey(
+        User,
+        related_name="uploader",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     school = models.ForeignKey(
         School, related_name="officials", on_delete=models.CASCADE
     )
@@ -90,6 +122,7 @@ class school_official(models.Model):
     email = models.EmailField(null=True, blank=True, default="")
     phone_number = models.CharField(max_length=15, null=True, blank=True, default="")
     nin = models.CharField(max_length=20, default="", unique=True)
+    residence = models.CharField(max_length=20, default="", null=True)
     date_of_birth = models.DateField()
     gender = models.CharField(
         max_length=1,
@@ -173,7 +206,19 @@ class Athlete(models.Model):
         null=True,
         blank=True,
     )
-    sport = models.ForeignKey(Sport, related_name="sport", on_delete=models.CASCADE)
+    uce_index_number = models.CharField(
+        max_length=255,
+        unique=True,
+        null=True,
+        blank=True,
+    )
+    sport = models.ForeignKey(
+        Sport,
+        related_name="sport",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
 
     date_of_birth = models.DateField()
     created = models.DateField(auto_now_add=True, null=True)
@@ -247,13 +292,11 @@ class Athlete(models.Model):
     )
     student_pass_code = models.CharField(
         max_length=255,
-        unique=True,
         null=True,
         blank=True,
     )
     uneb_code = models.CharField(
         max_length=255,
-        unique=True,
         null=True,
         blank=True,
     )
@@ -280,6 +323,14 @@ class Athlete(models.Model):
         choices=[("Father", "Father"), ("Mother", "Mother"), ("Other", "Other")],
     )
     # New field to track payment status
+    added_by = models.ForeignKey(
+        User,
+        related_name="suploader",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    # New field to track payment status
 
     status = models.CharField(
         max_length=10,
@@ -290,7 +341,7 @@ class Athlete(models.Model):
     )
 
     qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)
-    qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)
+
 
     def generate_qr_code(self):
         # Information you want encoded in the QR code
