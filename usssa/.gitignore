@@ -1,0 +1,18 @@
+# Ignore the Django migrations (inside usssa/accounts)
+../accounts/migrations/
+../dashboard/migrations/
+../school/migrations/
+../transfers/migrations/
+../training/migrations/
+../enrollment/migrations/
+../agm/migrations/
+../base/migrations/
+
+# Media and uploaded files (one level up)
+../athlete_photos/
+../agm_photo/
+../badge/
+../certificates/
+../qr_codes/
+../transfer_documents/
+../trainee_photo/

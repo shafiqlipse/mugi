@@ -1,0 +1,40 @@
+<form id="emailForm">
+    <input type="text" name="first_name" id="first_name" placeholder="First Name" required><br>
+    <input type="email" name="email" id="email" placeholder="Recipient Email" required><br>
+    <input type="hidden" name="action_url" id="action_url" value="https://example.com/action"><br>
+    <button type="button" id="sendEmailBtn">Send Email</button>
+</form>
+
+<!-- Feedback area -->
+<div id="feedback"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#sendEmailBtn').click(function() {
+            const firstName = $('#first_name').val();
+            const email = $('#email').val();
+            const actionUrl = $('#action_url').val();
+
+            // Make AJAX POST request to send email
+            $.ajax({
+                url: "{% url 'send_email' %}",  // URL of the Django view
+                type: "POST",
+                data: {
+                    'first_name': firstName,
+                    'email': email,
+                    'action_url': actionUrl,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'  // Ensure CSRF token is sent
+                },
+                success: function(response) {
+                    // Display success message
+                    $('#feedback').html('<p>' + response.status + '</p>');
+                },
+                error: function(response) {
+                    // Display error message
+                    $('#feedback').html('<p>Error sending email.</p>');
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,215 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Transfers{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<!-- Add custom styles -->
+<style>
+  .transfer-details {
+    max-width: 800px;
+    margin: 20px auto;
+  }
+
+  .img-box {
+    max-width: 300px;
+    margin: 20px auto;
+  }
+
+  .img-box img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .no-photo {
+    background: #f5f5f5;
+    padding: 40px;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  .document-list {
+    margin: 15px 0;
+  }
+
+  .card {
+    margin-bottom: 20px;
+  }
+</style>
+<div class="schools-dew content-wrapper">
+  <div class="head flex">
+    <h1>
+      {{transfer.athlete.fname}} {{transfer.athlete.lname}} to
+      {{transfer.requester}}
+    </h1>
+    {% if transfer.status == 'accepted' %}
+    <button
+      type="button"
+      class="btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#approveModal"
+    >
+      <i class="fa fa-check-circle"></i> Approve Transfer
+    </button>
+    {% endif %}
+  </div>
+
+  <div class="transfer-details">
+    <div class="img-box">
+      {% if transfer.athlete.photo %}
+      <img
+        src="{{transfer.athlete.photo}}"
+        alt="Athlete photo"
+        class="img-fluid"
+      />
+      {% else %}
+      <div class="no-photo">No photo available</div>
+      {% endif %}
+    </div>
+
+    <div class="athlete-details">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Transfer Details</h5>
+          <ul class="list-unstyled">
+            <li><strong>Current School:</strong> {{transfer.owner}}</li>
+            <li><strong>Requesting School:</strong> {{transfer.requester}}</li>
+            <li>
+              <strong>Status:</strong>
+              <span
+                class="badge {% if transfer.status == 'pending' %}bg-warning {% elif transfer.status == 'accepted' %}bg-info {% elif transfer.status == 'approved' %}bg-success {% else %}bg-danger{% endif %}"
+              >
+                {{ transfer.status|title }}
+              </span>
+            </li>
+            <li>
+              <strong>Requested Date:</strong>
+              {{transfer.requested_at|date:"Md, Y"}}
+            </li>
+            {% if transfer.accepted_at %}
+            <li>
+              <strong>Accepted Date:</strong>
+              {{transfer.accepted_at|date:"M d,Y"}}
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="athletea">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Documents</h3>
+          {% if transfer.documents %}
+          <div class="document-list">
+            <a
+              href="{{ transfer.documents.url }}"
+              target="_blank"
+              class="btn btn-outline-primary"
+            >
+              <i class="fa fa-file-pdf"></i> View Transfer Documents
+            </a>
+          </div>
+          {% else %}
+          <div class="alert alert-warning">
+            <i class="fa fa-exclamation-triangle"></i> No documents attached
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Approve Transfer Modal -->
+  <div
+    class="modal fade"
+    id="approveModal"
+    tabindex="-1"
+    aria-labelledby="approveModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="approveModalLabel">
+            Confirm Transfer Approval
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+
+        <div class="modal-body">
+          <p>
+            Are you sure you want to approve this transfer? This action will:
+          </p>
+          <ul>
+            <li>
+              Transfer {{transfer.athlete.fname}} {{transfer.athlete.lname}} to
+              {{transfer.requester}}
+            </li>
+            <li>Change the transfer status to 'Approved'</li>
+            <li>This action cannot be undone</li>
+          </ul>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <a
+            href="{% url 'approve_transfer' transfer.id %}"
+            class="btn btn-primary"
+          >
+            Confirm Approval
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Initialize any Bootstrap tooltips
+      var tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltips.forEach((tooltip) => new bootstrap.Tooltip(tooltip));
+
+      // Optional: Add confirmation for the approval action
+      const approveButton = document.querySelector(
+        "#approveModal .btn-primary"
+      );
+      if (approveButton) {
+        approveButton.addEventListener("click", function (e) {
+          if (!confirm("Please confirm you want to approve this transfer.")) {
+            e.preventDefault();
+          }
+        });
+      }
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+      var myModal = new bootstrap.Modal(
+        document.getElementById("approveModal")
+      );
+      document
+        .querySelector(".btn-primary")
+        .addEventListener("click", function () {
+          myModal.show();
+        });
+    });
+  </script>
+</div>
+
+{% endblock %}

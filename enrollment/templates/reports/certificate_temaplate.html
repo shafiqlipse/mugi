@@ -1,0 +1,83 @@
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Album</title>
+  </head>
+
+  <body>
+    <style>
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .teacher-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .header .teachers table tbody tr td {
+        padding-top: 290px;
+        padding-left: 70px;
+        padding-right: 30px;
+        margin: 0;
+      }
+      .header .teachers table tbody tr .teacher-cell .teacher-info {
+        font-size: 1.4em; /* Adjust font size */
+        text-align: center; /* Align text to the left */
+        width: 800px; /* Set a fixed width to ensure text fits on one line */
+      }
+      .header .teachers table tbody tr .teacher-cell .teacher-image img {
+        width: 120px;
+        height: 120px;
+        image-orientation: from-image;
+        transform: rotate(0deg);
+      }
+    </style>
+    <div class="header">
+      <div class="teachers">
+        <table class="teacher-table">
+          <tbody>
+            {% for teacher in teachers %}
+            <tr>
+              <td class="teacher-cell">
+                <div class="teacher-info">
+                  <span
+                    ><strong
+                      >{{ teacher.first_name|upper }}
+                      {{teacher.last_name|upper}}
+                    </strong></span
+                  ><br />
+
+                  <span>{{ teacher.designation|upper }}</span><br />
+                  <span>{{ teacher.school|upper }}</span><br />
+                  <span>{{ teacher.district|upper }} </span><br />
+                </div>
+              </td>
+              <td class="teacher-cell">
+                <div class="teacher-image">
+                  {% if teacher.photo %}
+                  <img
+                    src="{{ teacher.photo.path }}"
+                    alt="{{ teacher.first_name }}"
+                  />
+                  {% else %}
+                  <img
+                    src="{% static 'images/profile.png' %}"
+                    alt="{{ teacher.last_name }}"
+                  />
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
