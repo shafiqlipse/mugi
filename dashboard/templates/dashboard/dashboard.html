@@ -402,7 +402,11 @@
             </button>
             <ul class="navbar-nav w-100">
               <li class="nav-item w-100">
+                {% if user.is_school %}
                 <h2>{{user.school}}</h2>
+                {% else %}
+                <h2>{{user.first_name}} {{user.last_name}}</h2>
+                {% endif %}
               </li>
             </ul>
             <ul class="navbar-nav navbar-nav-right">
