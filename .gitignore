@@ -1,0 +1,22 @@
+# Django settings
+usssa/settings.py
+
+# Django migrations
+accounts/migrations/*
+agm/migrations/*
+base/migrations/*
+dashboard/migrations/*
+school/migrations/*
+training/migrations/*
+enrollment/migrations/*
+transfers/migrations/*
+
+
+# Media and uploaded files (one level up)
+athlete_photos/
+agm_photo/
+trainee_photo/
+transfer_documents/
+certificates/
+badge/
+qr_codes/

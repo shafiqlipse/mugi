@@ -1,0 +1,15 @@
+.filterlist {
+  padding: 20px;
+}
+.filterlist a {
+  color: rgb(0, 7, 3);
+}
+.filterlist a .fa-trash {
+  color: red;
+}
+.filterlist a .fa-pencil-square {
+  color: rgb(1, 107, 200);
+}
+.filterlist a:hover {
+  color: rgb(1, 107, 200);
+}/*# sourceMappingURL=schools.css.map */

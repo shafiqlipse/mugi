@@ -1,0 +1,151 @@
+{% extends "dashboard/dashboard.html" %}
+<!---->
+{% load static %}
+<!---->
+{%block title%}{{school}}{% endblock %}
+<!---->
+{% block content %}
+<div class="soverview content-wrapper">
+  <div class="school-box  grid3">
+    <div class="school card">
+      <h1>School info</h1>
+      <div class="img">
+      {% if school.badge %}
+      <img src="{{school.badge.url}}" alt="">
+      {% else %}
+      <img src="{%static 'images/derty.jpg'%}" alt="">
+      {% endif %}</div>
+      <div class="attr"><span>Name : </span><article>{{school.name}}</article></div>
+      <div class="attr"><span>EMIS : </span><article>{{school.emis_number}}</article></div>
+      <div class="attr">
+        <span>C-Number : </span><article>{{school.center_number}}
+      </article></div>
+      <div class="attr"><span>Region : </span><article>{{school.region}}</article></div>
+      <div class="attr"><span>District : </span><article>{{school.zone}}</article></div>
+      
+    </div>
+
+    <div class="school card">
+      <h1>Head Teacher</h1>  {% if school.photo %}
+        <img src="{{school.photo.url}}" alt="">
+        {% else %}
+        <img src="{%static 'images/profile.png'%}" alt="">
+        {% endif %}
+      <div class="attr">
+      
+        <span>Name : </span><article>{{school.fname}} {{school.lname}}</article>
+      </div>
+      <div class="attr"><span>NIN : </span><article>{{school.nin}}</article></div>
+      <div class="attr"><span>Email : </span><article>{{school.email}}</article></div>
+      <div class="attr"><span>Phone : </span><article>{{school.phone_number}}</article></div>
+      <div class="attr"><span>Gender : </span><article>{{school.gender}}</article></div>
+      <div class="attr">
+        <span>Date of Birth : </span><article>{{school.date_of_birth}}</article>
+      </div>
+    </div>
+    <div class="school card">
+      <h1>Games Teacher</h1>{% if school.gphoto %}
+        <img src="{{school.gphoto.url}}" alt="">
+        {% else %}
+        <img src="{%static 'images/profile.png'%}" alt="">
+        {% endif %}
+      <div class="attr">
+        
+        <span>Name : </span><article>{{school.gfname}} {{school.glname}}</article>
+      </div>
+      <div class="attr"><span>NIN : </span><article>{{school.gnin}}</article></div>
+      <div class="attr"><span>Email : </span><article>{{school.gemail}}</article></div>
+      <div class="attr"><span>Phone : </span><article>{{school.gphone}}</article></div>
+      <div class="attr"><span>Gender : </span><article>{{school.ggender}}</article></div>
+      <div class="attr">
+        <span>Date of Birth : </span><article>{{school.gdate_of_birth}}</article>
+      </div>
+    </div>
+  </div>
+  <div class="dextails">
+    <div class="tabs-section">
+      <div class="tabs-container">
+        <div class="tabs">
+          <button class="tab" aria-selected="true" id="js">Athletes</button>
+          <button class="tab" aria-selected="false" id="ruby">Officials</button>
+        </div>
+        <div class="content">
+          <div class="tabpanel card" aria-labelledby="js">
+            <div class="official-list">
+              <table id="myTable" class="display">
+                <thead>
+                  <tr>
+                    <th>Names</th>
+                    <th>Lin</th>
+                    <th>School</th>
+                    <th>Gender</th>
+                    <th>Sport</th>
+                    <th>Age</th>
+                    <th>Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for athlete in athletes %}
+                  <tr>
+                    <td>
+                      <a href="{% url 'athlete' athlete.id%}"
+                        >{{athlete.fname}} {{athlete.lname}}</a
+                      >
+                    </td>
+                    <td>{{athlete.lin}}</td>
+                    <td>{{athlete.school}}</td>
+                    <td>{{athlete.gender}}</td>
+                    <td>{{athlete.sport}}</td>
+                    <td>{{athlete.age}}</td>
+                    
+                    <td>
+                      <a href="{% url 'updateathlete' athlete.id%}" class="del"
+                        ><i class="fa fa-pencil"></i
+                      ></a>
+                    </td>
+                  </tr>
+
+                  {%endfor%}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tabpanel card" aria-labelledby="ruby" hidden>
+            <div class="official-list">
+              <table id="myaTable" class="displlay">
+                <thead>
+                  <tr>
+                    <th>Names</th>
+                    <th>Role</th>
+                    <th>Nin</th>
+                    <th>contact</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for official in officials%}
+                  <tr>
+                    <td>
+                      <a href="{% url 'official' official.id%}"
+                        >{{official.fname}} {{official.lname}}</a
+                      >
+                    </td>
+                    <td>{{official.role}}</td>
+                    <td>{{official.nin}}</td>
+                    <td>{{official.phone_number}}</td>
+                    <td>{{official.email}}</td>
+                    <td>{{official.gender}}</td>
+                  </tr>
+
+                  {%endfor%}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+</div>
