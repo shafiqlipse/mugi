@@ -2,11 +2,19 @@
 usssa/settings.py
 
 # Django migrations
-/migrations/*
-!/migrations/__init__.py
+accounts/migrations/*
+agm/migrations/*
+base/migrations/*
+dashboard/migrations/*
+school/migrations/*
+training/migrations/*
+transfers/migrations/*
+
 
 # Media and uploaded files (one level up)
 athlete_photos/
+agm_photo/
+trainee_photo/
 transfer_documents/
 certificates/
 badge/
