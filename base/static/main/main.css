@@ -1,0 +1,138 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Molengo", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+@media (max-width: 500px) {
+  * {
+    font-size: 100%;
+  }
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: rgb(0, 10, 117);
+  text-transform: capitalize;
+  font-weight: 300;
+  font-size: 17px;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .grid2 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+@media (max-width: 508px) {
+  .grid2 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .grid3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 508px) {
+  .grid3 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .grid4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 508px) {
+  .grid4 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.grid7 {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .grid7 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 508px) {
+  .grid7 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.grid5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .grid5 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 508px) {
+  .grid5 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.grid6 {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .grid6 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 508px) {
+  .grid6 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.ad {
+  padding: 10px;
+  margin: 20px 0;
+}
+.ad img {
+  width: 50%;
+  border-radius: 20px;
+}
+@media (max-width: 768px) {
+  .ad img {
+    width: 100%;
+  }
+}/*# sourceMappingURL=main.css.map */

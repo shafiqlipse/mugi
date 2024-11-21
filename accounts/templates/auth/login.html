@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>USSSA | lOGIN</title>
+    <!-- plugins:css -->
+    <link
+      rel="stylesheet"
+      href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css'%}"
+    />
+    <link rel="stylesheet" href="{% static 'main/login.css'%}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'assets/vendors/css/vendor.bundle.base.css'%}"
+    />
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css'%}" />
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="{% static 'assets/images/logo.png'%}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="{% static 'main/main.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/dash.css'%}" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="row w-100 m-0">
+          <div
+            class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg"
+          >
+            <div class="carod col-lg-4 mx-auto">
+              <div class="image-box flex">
+                <img src="{% static 'assets/images/logo.png'%}" alt="" />
+                <div class="usssa-text">
+                  <h1>
+                    <span> Uganda</span><br />
+                    <span>Secondary schools</span><br />
+                    <span> sports association</span>
+                  </h1>
+                </div>
+              </div>
+              <div class="card-body px-5 py-5">
+                <h3 class="card-title text-center mb-3">Login</h3>
+                <form method="post">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label>Username or email *</label>
+                    <div class="shurt p_input flex form-control">
+                      <input
+                        type="text"
+                        class="form-control p_input"
+                        name="username"
+                        id="username"
+                      />
+                      <i class="fa-solid fa-user"></i>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Password *</label>
+                    <div class="shurt p_input flex form-control">
+                      <input
+                        type="password"
+                        class="form-control p_input"
+                        name="password"
+                        id="passwordId"
+                      />
+
+                      <i
+                        class="fa fa-eye"
+                        id="eyeId"
+                        onclick="togglePassword('passwordId', 'eyeId')"
+                      ></i>
+                    </div>
+                  </div>
+                  <div
+                    class="form-group d-flex align-items-center justify-content-between"
+                  >
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" />
+                        Remember me
+                      </label>
+                    </div>
+                    <a href="{% url 'password_reset' %}" class="forgot-pass"
+                      >Forgot password</a
+                    >
+                  </div>
+                  <div class="text-center">
+                    <button
+                      type="submit"
+                      class="btn btn-primary btn-block enter-btn"
+                    >
+                      Login
+                    </button>
+                  </div>
+
+                  <p class="sign-up">
+                    Not what you Intended?<a href="/"> Home</a>
+                  </p>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+        </div>
+        <!-- row ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{% static 'assets/vendors/js/vendor.bundle.base.js'%}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script>
+      function togglePassword(passwordId, eyeId) {
+        const password = document.getElementById(passwordId);
+        const eye = document.getElementById(eyeId);
+
+        if (password.type === "password") {
+          password.type = "text";
+          eye.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+          password.type = "password";
+          eye.classList.replace("fa-eye-slash", "fa-eye");
+        }
+      }
+    </script>
+  </body>
+</html>

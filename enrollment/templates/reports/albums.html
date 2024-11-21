@@ -1,0 +1,189 @@
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Album</title>
+  </head>
+
+  <body>
+    <style>
+      .header {
+        text-align: center;
+      }
+      .header h1 {
+        text-transform: uppercase;
+      }
+      .geda {
+        width: 100%;
+        display: table;
+      }
+      .headtexher {
+        display: table-row;
+      }
+      .headtexher > div {
+        display: table-cell;
+        width: 50%;
+      }
+      .header .headtexher {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+      }
+      .header .headexher h1 {
+        text-transform: uppercase;
+      }
+      table tbody tr td {
+        width: 50%;
+        text-align: left;
+        padding: 5px;
+      }
+      .header .headexher .athletes table tbody tr td table tr {
+        border: solid black 1px;
+      }
+      .header .headexher .athletes table > tbody > tr > td {
+        border: none;
+      }
+      .header .headexher .athletes table tbody tr td .det {
+        text-align: left;
+      }
+      .header .headexher .athletes table tbody tr td .det h3,
+      table tbody tr td h5 {
+        text-transform: capitalize;
+      }
+
+      .header .headexher .athletes table tbody tr td img {
+        width: 140px;
+        height: 140px;
+        padding: 0;
+      }
+      .header .headexher .athletes table tbody tr td ul {
+        margin-left: -30px;
+      }
+      .header .headexher .athletes table tbody tr td ul span {
+        font-weight: bold;
+        margin-top: 10px;
+      }
+    </style>
+    <div class="header">
+      <img src="https://upssaonline.com/head.png" alt="" />
+
+      <h3 style="font-size: 20px; color: #00338b">
+        {{team.school|upper}} ~ {{team.sport}} ~
+        E{{team.id}}A00{{athlete_count}}O00{{official_count}}
+      </h3>
+
+      <div class="headexher">
+        <div class="athletes">
+          <table>
+            <tbody>
+              {% for official in officials %}
+              <!---->
+              {% if forloop.counter0|divisibleby:2 %}
+              <!-- Start a new row for every even-numbered athlete -->
+              <tr>
+                {% endif %}
+                <td>
+                  <table>
+                    <tr>
+                      <td>
+                        {% if official.photo %}
+                        <img
+                          src="{{ official.photo.path }}"
+                          alt="{{ official.fname }}"
+                        />
+                        {% else %}
+                        <img
+                          src="{% static 'images/profile.png' %}"
+                          alt="{{ official.fname }}"
+                        />
+                        {% endif %}
+                      </td>
+                      <td>
+                        <ul>
+                          <span>
+                            Names: {{ official.fname|upper }}
+                            {{official.lname|upper }} </span
+                          ><br />
+                          <span>LIN: {{ official.nin|upper }}</span
+                          ><br />
+                          <span>School: {{ official.role|upper }}</span
+                          ><br />
+                          <span
+                            >Date of birth:
+                            {{official.date_of_birth|upper}}</span
+                          ><br />
+                          <span>Age: {{ official.age|upper }}</span
+                          ><br />
+                          <span>Sport: {{ official.sport|upper }}</span
+                          ><br />
+                        </ul>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                {% if forloop.last or forloop.counter0|add:1|divisibleby:2 %}
+                <!-- End the row for the last or odd-numbered athlete -->
+              </tr>
+              {% endif %} {% endfor %}
+            </tbody>
+          </table>
+          <hr />
+          <table>
+            <tbody>
+              {% for athlete in athletes %}
+              <!---->
+              {% if forloop.counter0|divisibleby:2 %}
+              <!-- Start a new row for every even-numbered athlete -->
+              <tr>
+                {% endif %}
+                <td>
+                  <table>
+                    <tr>
+                      <td>
+                        {% if athlete.photo %}
+                        <img
+                          src="{{ athlete.photo.path }}"
+                          alt="{{ athlete.fname }}"
+                        />
+                        {% else %}
+                        <img
+                          src="{% static 'images/profile.png' %}"
+                          alt="{{ athlete.fname }}"
+                        />
+                        {% endif %}
+                      </td>
+                      <td>
+                        <ul>
+                          <span>
+                            Names: {{ athlete.fname|upper }}
+                            {{athlete.lname|upper }} </span
+                          ><br />
+                          <span>LIN: {{ athlete.lin|upper }}</span
+                          ><br />
+                          <span>School: {{ athlete.school|upper }}</span
+                          ><br />
+                          <span
+                            >Date of birth:
+                            {{athlete.date_of_birth|upper}}</span
+                          ><br />
+                          <span>Age: {{ athlete.age|upper }}</span
+                          ><br />
+                          <span>Sport: {{ athlete.sport|upper }}</span
+                          ><br />
+                        </ul>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                {% if forloop.last or forloop.counter0|add:1|divisibleby:2 %}
+                <!-- End the row for the last or odd-numbered athlete -->
+              </tr>
+              {% endif %} {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

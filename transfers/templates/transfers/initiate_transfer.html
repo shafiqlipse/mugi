@@ -1,0 +1,89 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Transfers{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="schools-dew content-wrapper">
+  <div class="head flex">
+    <h1>Transfers</h1>
+  </div>
+
+  <div class="filterlist card">
+    <div class="lo">
+      <div class="official-list">
+        <table id="myTable" class="display">
+          <thead>
+            <tr>
+              <th>Names</th>
+              <th>Lin</th>
+              <th>Index</th>
+              <th>Gender</th>
+              <th>Sport</th>
+              <th>School</th>
+              <th>Transfer</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for athlete in athletes %}
+            <tr>
+              <td>
+                <a href="{% url 'athlete' athlete.id %}"
+                  >{{ athlete.fname }} {{ athlete.lname }}</a
+                >
+              </td>
+              <td>{{ athlete.lin }}</td>
+              <td>{{ athlete.index_number }}</td>
+              <td>{{ athlete.school }}</td>
+              <td>{{ athlete.gender }}</td>
+              <td>{{ athlete.sport }}</td>
+              <td>
+                <a
+                  href="{% url 'initiate_transfer' athlete.id %}"
+                  class="btn btn-outline-primary request-transfer"
+                  data-athlete="{{ athlete.fname }} {{ athlete.lname }}"
+                >
+                  <i class="fa fa-plus"></i> Request transfer
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Wait until the DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", function () {
+      // Get all the transfer request buttons
+      var transferButtons = document.querySelectorAll(".request-transfer");
+
+      // Add a click event listener to each transfer button
+      transferButtons.forEach(function (button) {
+        button.addEventListener("click", function (event) {
+          // Prevent the default link click
+          event.preventDefault();
+
+          // Get the athlete's name for the confirmation message
+          var athleteName = this.getAttribute("data-athlete");
+
+          // Show a confirmation popup
+          var confirmTransfer = confirm(
+            "Are you sure you want to request a transfer for " +
+              athleteName +
+              "?"
+          );
+
+          // If confirmed, proceed with the request
+          if (confirmTransfer) {
+            window.location.href = this.href; // Redirect to the transfer initiation URL
+          }
+        });
+      });
+    });
+  </script>
+</div>
+{% endblock %}

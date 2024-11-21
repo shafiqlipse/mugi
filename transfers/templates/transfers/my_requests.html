@@ -1,0 +1,188 @@
+{% extends "dashboard/dashboard.html" %}
+<!--static-->
+{% load static %}
+<!--static-->
+{% block title %}Requests{% endblock %}
+
+<!--khfufufu-->
+{% block content %}
+
+<div class="schools-dew content-wrapper">
+  <div class="head flex">
+    <h1>Requests</h1>
+  </div>
+
+  <div class="filterlist card">
+    <div class="lo">
+      <div class="official-list">
+        <table id="myTable" class="display">
+          <thead>
+            <tr>
+              <th>Athlete</th>
+              <th>Requesting School</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for mytransfer in mytransfers %}
+            <tr>
+              <td>
+                <a href=""
+                  >{{ mytransfer.athlete.fname }}
+                  {{mytransfer.athlete.lname}}</a
+                >
+              </td>
+              <td>{{ mytransfer.requester }}</td>
+              <td>{{ mytransfer.requested_at }}</td>
+              <td>{{ mytransfer.status }}</td>
+              <td>
+                {% if mytransfer.status == 'pending' %}
+                <button
+                  type="button"
+                  class="btn btn-outline-success"
+                  onclick="openAcceptModal('{{ mytransfer.id }}')"
+                >
+                  <i class="fa fa-check"></i> Accept Request
+                </button>
+
+                {% endif %}
+                <a href="" class="btn btn-outline-danger">
+                  <i class="fa fa-trash"></i> Reject Request
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal fade"
+    id="acceptModal"
+    tabindex="-1"
+    aria-labelledby="acceptModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="acceptModalLabel">
+            Accept Transfer Request
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <form
+          id="acceptTransferForm"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          {% csrf_token %}
+          <div class="modal-body">
+            <p>Please upload the required transfer documents:</p>
+            <div class="mb-3">
+              <label for="documents" class="form-label"
+                >Transfer Documents (PDF)</label
+              >
+              <input
+                type="file"
+                class="form-control"
+                id="documents"
+                name="documents"
+                accept=".pdf"
+                required
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-success">
+              Accept Transfer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  let acceptModal;
+
+  document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOM Content Loaded");
+    acceptModal = new bootstrap.Modal(document.getElementById("acceptModal"));
+
+    // Initialize the form submission handler
+    const acceptForm = document.getElementById("acceptTransferForm");
+    acceptForm.addEventListener("submit", handleFormSubmit);
+  });
+
+  function openAcceptModal(transferId) {
+    console.log("Opening modal for transfer:", transferId);
+    const form = document.getElementById("acceptTransferForm");
+    // Update this line to use the correct URL
+    form.action = "{% url 'accept_transfer' 0 %}".replace("0", transferId);
+    acceptModal.show();
+  }
+
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    console.log("Form submitted");
+
+    const form = e.target;
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    try {
+      submitButton.disabled = true;
+      submitButton.innerHTML = "Processing...";
+
+      const formData = new FormData(form);
+      const csrftoken = document.querySelector(
+        "[name=csrfmiddlewaretoken]"
+      ).value;
+
+      console.log("Submitting to:", form.action); // Debug log
+
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": csrftoken,
+        },
+        credentials: "same-origin",
+      });
+
+      const data = await response.json();
+
+      if (data.status === "success") {
+        alert(data.message);
+        acceptModal.hide();
+        window.location.reload();
+      } else {
+        alert(data.message || "An error occurred");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert(
+        "An error occurred while processing your request. Please try again."
+      );
+    } finally {
+      submitButton.disabled = false;
+      submitButton.innerHTML = "Accept Transfer";
+    }
+  }
+</script>
+{% endblock %}
