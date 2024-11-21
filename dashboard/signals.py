@@ -7,12 +7,12 @@ from django.utils.html import strip_tags
 from school.models import *
 
 
-@receiver(post_save, sender=Athlete)
+@receiver(post_save, sender=School)
 def notify_admin_new_athlete(sender, instance, created, **kwargs):
     if created:
-        subject = "New Athlete Added"
+        subject = "New School Added"
         html_message = render_to_string(
-            "emails/email_notification.html", {"athlete": instance}
+            "emails/email_notification.html", {"school": instance}
         )
         plain_message = strip_tags(html_message)
         from_email = settings.EMAIL_HOST_USER
