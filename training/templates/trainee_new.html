@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AGM | REGISTRATION{% block title %}{% endblock title %}</title>
+    <title>
+      CAPACITY BUILDING | REGISTRATION{% block title %}{% endblock title %}
+    </title>
 
     <link rel="stylesheet" type="text/css" href="{% static 'style.css'%}" />
     <link
@@ -32,7 +34,7 @@
       rel="stylesheet"
     />
     <!-- Google Fonts ================================================== -->
-
+    <link rel="shortcut icon" href="{% static 'assets/images/logo.png'%}" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.min.css"
@@ -65,7 +67,7 @@
       <div class="top">
         <img src="{% static 'images/logo.png' %}" id="dw" alt="No Photo" />
         <div class="hedtxt">
-          <h2>TRAINING COURSE</h2>
+          <h2>USSSA CAPACITY BUILDING 2024</h2>
         </div>
       </div>
       <form
@@ -116,10 +118,23 @@
                   <label>Last Name</label>
                   {{form.last_name}}
                 </div>
+                <div class="field">
+                  <label>gender</label>
+                  {{form.gender}}
+                </div>
+                <div class="field">
+                  <label>Date of Birth</label>
+                  {{form.date_of_birth}}
+                </div>
 
                 <div class="field">
-                  <label>School</label>
-                  {{form.school}}
+                  <label>School /Workplace</label>
+                  {{form.place}}
+                </div>
+
+                <div class="field">
+                  <label>designation</label>
+                  {{form.designation}}
                 </div>
 
                 <div class="field">
@@ -132,21 +147,29 @@
                 </div>
 
                 <div class="field">
-                  <label>gender</label>
-                  {{form.gender}}
-                </div>
-                <div class="field">
-                  <label>Region</label>
-                  {{form.region}}
-                </div>
-                <div class="field">
-                  <label>Zone</label>
-                  {{form.zone}}
+                  <label>District/ City/ Municipality</label>
+                  {{form.district}}
                 </div>
 
                 <div class="field">
-                  <label>District/ City/ Municipality</label>
-                  {{form.district}}
+                  <label>Venue</label>
+                  {{form.venue}}
+                </div>
+
+                <div class="field">
+                  <label>Discipline</label>
+                  <select
+                    id="id_discipline"
+                    name="discipline"
+                    class="form-control"
+                  >
+                    <option value="">---------</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label>Course</label>
+                  {{form.course}}
                 </div>
               </div>
             </div>
@@ -155,8 +178,39 @@
         </div>
       </form>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#id_venue").change(function () {
+          var venueId = $(this).val();
+          if (venueId) {
+            $.ajax({
+              url: "{% url 'get_disciplines' %}", // Use the URL for the updated view
+              data: {
+                venue_id: venueId,
+              },
+              success: function (data) {
+                var disciplineDropdown = $("#id_discipline");
+                disciplineDropdown.empty();
+                disciplineDropdown.append(
+                  '<option value="">Select a discipline</option>'
+                );
+                data.forEach(function (discipline) {
+                  disciplineDropdown.append(
+                    `<option value="${discipline.id}">${discipline.name}</option>`
+                  );
+                });
+              },
+            });
+          } else {
+            $("#id_discipline").empty();
+            $("#id_discipline").append(
+              '<option value="">Select a discipline</option>'
+            );
+          }
+        });
+      });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="{% static 'js/opper.js' %}"></script>
     <script

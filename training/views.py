@@ -11,6 +11,22 @@ from django.db import IntegrityError
 from django.core.files.base import ContentFile
 import base64
 
+from django.http import JsonResponse
+
+
+def get_disciplines(request):
+    venue_id = request.GET.get("venue_id")  # Get the selected venue ID from the request
+    if venue_id:
+        try:
+            venue = Venue.objects.get(id=venue_id)  # Retrieve the venue instance
+            disciplines = venue.discipline_set.values(
+                "id", "name"
+            )  # Get related disciplines
+            return JsonResponse(list(disciplines), safe=False)
+        except Venue.DoesNotExist:
+            return JsonResponse({"error": "Venue not found"}, status=404)
+    return JsonResponse([], safe=False)
+
 
 def trainee_add(request):
     if request.method == "POST":
@@ -63,23 +79,23 @@ def trainees(request):
 
     # Apply the filter
     trainee_filter = TraineeFilter(request.GET, queryset=trainees)
-    filtered_trainees = trainee_filter.qs
+    alltrainees = trainee_filter.qs
 
     if request.method == "POST":
         # Check which form was submitted
         if "Accreditation" in request.POST:
             template = get_template("acred.html")
-            filename = "Asshu_Accreditation.pdf"
+            filename = "Trainee_Accreditation.pdf"
         elif "Certificate" in request.POST:
             template = get_template(
                 "certificate_temaplate.html"
             )  # Your certificate template
-            filename = "Filtered_Certificate.pdf"
+            filename = "Trainee_Certificate.pdf"
         else:
             return HttpResponse("Invalid form submission")
 
         # Generate PDF
-        context = {"trainees": filtered_trainees}
+        context = {"trainees": alltrainees}
         html = template.render(context)
 
         # Create a PDF
@@ -98,7 +114,11 @@ def trainees(request):
         return response
     else:
         # Render the filter form
-        return render(request, "trainees.html", {"filter": trainee_filter})
+        return render(
+            request,
+            "trainees.html",
+            {"trainee_filter": trainee_filter, "filter": trainee_filter},
+        )
 
 
 def trainee_details(request, id):

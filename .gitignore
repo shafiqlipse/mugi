@@ -16,6 +16,7 @@ transfers/migrations/*
 athlete_photos/
 agm_photo/
 trainee_photo/
+trainee_photos/
 transfer_documents/
 certificates/
 badge/

@@ -9,14 +9,18 @@ class TraineesForm(forms.ModelForm):
         fields = [
             "first_name",
             "last_name",
-            "zone",
+            "venue",
             "photo",
             "contact",
-            "region",
+            "discipline",
             "email",
             "district",
             "gender",
-            "school",
+            "date_of_birth",
+            "place",
+            "designation",
+            "course",
+            # "residence_type",
         ]
         widgets = {
             "first_name": forms.TextInput(attrs={"class": "form-control"}),
@@ -24,10 +28,15 @@ class TraineesForm(forms.ModelForm):
             "school": forms.TextInput(attrs={"class": "form-control"}),
             "contact": forms.TextInput(attrs={"class": "form-control"}),
             "email": forms.TextInput(attrs={"class": "form-control"}),
-            "zone": forms.Select(attrs={"class": "form-control"}),
-            "region": forms.Select(attrs={"class": "form-control"}),
+            "place": forms.TextInput(attrs={"class": "form-control"}),
+            "venue": forms.Select(attrs={"class": "form-control"}),
+            "designation": forms.Select(attrs={"class": "form-control"}),
+            "discipline": forms.Select(attrs={"class": "form-control"}),
             "district": forms.Select(attrs={"class": "form-control"}),
+            "course": forms.Select(attrs={"class": "form-control"}),
             "gender": forms.Select(attrs={"class": "form-control"}),
+            # "residence_type": forms.Select(attrs={"class": "form-control"}),
+            "date_of_birth": forms.DateInput(
+                attrs={"type": "date", "class": "form-control"}
+            ),
         }
-
-

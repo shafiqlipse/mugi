@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Album</title>
+    <title>TRAINEES</title>
   </head>
 
   <body>
     <style>
       @media print {
         @page {
-          size: A4 portrait; /* Set the size of the page to A4 in portrait orientation */
-          margin: 0; /* Remove default margin */
+          size: A4 portrait;
+          margin: 1cm; /* Add some margin to prevent content clipping */
         }
 
         body {
@@ -51,10 +51,10 @@
       <div class="athletes">
         <table>
           <tbody>
-            {% for athlete in delegates %}
+            {% for trainee in trainees %}
             <!---->
             {% if forloop.counter0|divisibleby:2 %}
-            <!-- Start a new row for every even-numbered athlete -->
+            <!-- Start a new row for every even-numbered trainee -->
             <tr>
               {% endif %}
               <td>
@@ -63,37 +63,37 @@
                     <td class="td">
                       <div class="inner">
                         <span
-                          >{{ athlete.contact|upper}}
-                          ({{athlete.gender|upper}})</span
+                          >{{ trainee.contact|upper}}
+                          ({{trainee.gender|upper}})</span
                         >
                         <br />
-                        {% if athlete.photo %}
+                        {% if trainee.photo %}
                         <img
-                          src="{{ athlete.photo.path }}"
-                          alt="{{ athlete.first_name }}"
+                          src="{{ trainee.photo.path }}"
+                          alt="{{ trainee.first_name }}"
                         />
                         {% else %}
                         <img
                           src="{% static 'images/profile.png' %}"
-                          alt="{{ athlete.last_name }}"
+                          alt="{{ trainee.last_name }}"
                         />
                         {% endif %}
                         <br />
                         <span
-                          >{{ athlete.first_name|upper }}
-                          {{athlete.last_name|upper }}
+                          >{{ trainee.first_name|upper }}
+                          {{trainee.last_name|upper }}
                         </span>
                         <br />
-                        <span>{{ athlete.designation|upper }}</span><br />
-                        <span>{{ athlete.school|upper }}</span><br />
-                        <span>{{ athlete.district|upper }}</span><br />
+                        <span>{{ trainee.place|upper }}</span><br />
+                        <span>{{ trainee.discipline|upper }}</span><br />
+                        <span>{{ trainee.course|upper }}</span><br />
                       </div>
                     </td>
                   </tr>
                 </table>
               </td>
               {% if forloop.last or forloop.counter0|add:1|divisibleby:2 %}
-              <!-- End the row for the last or odd-numbered athlete -->
+              <!-- End the row for the last or odd-numbered trainee -->
             </tr>
             {% endif %} {% endfor %}
           </tbody>

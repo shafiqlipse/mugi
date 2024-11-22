@@ -1,22 +1,23 @@
 {% extends "dashboard/dashboard.html" %}
 
 <!--static-->
-{% block title %}Officials{% endblock %}
+{% block title %}Trainees{% endblock %}
 <!--static-->
 {% load static %}
 <!--khfufufu-->
 {% block content %}
 <div class="schools-dew content-wrapper">
   <div class="head flex">
-    <h1>Annual General Meeting</h1>
+    <h1>capacity building 2024</h1>
     <hr />
   </div>
-  <div class="filter">
+  <div class="filter flex">
     <h2>Filter trainees</h2>
-    <form method="get" class="form-contol">
-      {{ filter.form.as_p }}
+    <form method="get">
+      {{ trainee_filter.form.as_p }}
       <button type="submit">Apply Filter</button>
     </form>
+
     <form method="post" class="form-contol">
       {% csrf_token %}
       <input type="submit" name="Accreditation" value="Accreditation" />
@@ -28,17 +29,18 @@
     </form>
     <a href="{% url 'export_csv' %}">Export CSV</a>
   </div>
-  <div class="filterlist glue">
+  <div class="filterlist card">
     <div class="official-list">
       <table id="myTable" class="display">
         <thead>
           <tr>
             <th>Names</th>
-            <th>School</th>
+            <th>Gender</th>
+            <th>Contact</th>
+            <th>Venue</th>
+            <th>Discipline</th>
+            <th>Course</th>
 
-            <th>Region</th>
-            <th>Zone</th>
-            <th>District</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
@@ -51,11 +53,11 @@
                 >{{trainees.first_name}} {{trainees.last_name}}</a
               >
             </td>
-            <td>{{trainees.school}}</td>
-
-            <td>{{trainees.region}}</td>
-            <td>{{trainees.zone}}</td>
-            <td>{{trainees.district}}</td>
+            <td>{{trainees.gender}}</td>
+            <td>{{trainees.contact}}</td>
+            <td>{{trainees.venue}}</td>
+            <td>{{trainees.discipline}}</td>
+            <td>{{trainees.course}}</td>
             <td><a href="{%url 'update_trainee' trainees.id %}">Edit</a></td>
             <td>
               <a href="{%url 'delete_trainee' trainees.id %}">delete</a>
