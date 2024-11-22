@@ -70,6 +70,14 @@
       .img img {
         width: 100%;
       }
+      .toast-body {
+        padding: 20px;
+        font-size: 2em;
+        text-transform: uppercase;
+        .toast-body .img img {
+          width: 100%;
+        }
+      }
     </style>
     <div class="schooler">
       <div class="top">
@@ -93,17 +101,26 @@
           <div class="fields">
             {{ cform.non_field_errors }} {{ cform.errors }}
             <!---->
-            {% if messages %}
-            <ul class="messages">
-              {% for message in messages %}
-              <li
-                class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %}"
-              >
-                {{ message }}
-              </li>
-              {% endfor %}
-            </ul>
-            {% endif %}
+            {% comment %} {% if messages %}
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                {% for message in messages %}
+                alert("{{ message|escapejs }}");
+                {% endfor %}
+              });
+            </script>
+            {% endif %} {% endcomment %}
+            <div
+              aria-live="polite"
+              aria-atomic="true"
+              style="position: relative"
+            >
+              <div
+                id="toast-container"
+                style="position: absolute; top: 20px; right: 20px"
+              ></div>
+            </div>
+
             <div class="left flex">
               <div class="imgbox">
                 <div class="field">
@@ -222,6 +239,27 @@
         });
       });
     </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        {% for message in messages %}
+        const toast = document.createElement("div");
+        toast.className = "toast show align-items-center text-white bg-{{ message.tags }} border-0";
+        toast.setAttribute("role", "alert");
+        toast.setAttribute("aria-live", "assertive");
+        toast.setAttribute("aria-atomic", "true");
+        toast.innerHTML = `
+          <div class="d-flex">
+            <div class="toast-body">
+
+              {{ message|escapejs }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>`;
+        document.getElementById("toast-container").appendChild(toast);
+      {% endfor %}
+      });
+    </script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="{% static 'js/opper.js' %}"></script>
     <script

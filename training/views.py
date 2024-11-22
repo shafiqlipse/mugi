@@ -50,7 +50,10 @@ def trainee_add(request):
                         return render(request, "trainee_new.html", {"form": form})
 
                 new_trainee.save()
-                messages.success(request, "Trainee added successfully!")
+                messages.success(
+                    request,
+                    "Registered successfully! PAY TO SECURE YOUR PLACE",
+                )
                 return redirect("addtrainee")
 
             except IntegrityError:
