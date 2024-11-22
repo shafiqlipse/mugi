@@ -11,7 +11,7 @@ urlpatterns = [
     # venues
     path("adddelegate/", delegate_add, name="adddelegate"),
     # path("teccred/", teccreditation, name="teccred"),
-    path('export-csv/', export_csv, name='export_csv'),
+    path('export-dcsv/', export_csv, name='export_dcsv'),
     path("delegates/", delegates, name="delegates"),
     path("delegate/<int:id>", delegate_details, name="delegate"),
     path("delete_delegate/<int:id>", delegate_delete, name="delete_delegate"),
