@@ -75,7 +75,7 @@
         font-size: 1.5em;
         text-transform: uppercase;
         z-index: 9990;
-        margin: 2px auto;
+        margin-left: 40px;
       }
     </style>
     <div class="schooler">
@@ -97,6 +97,12 @@
         {% csrf_token %}
 
         <div class="schooled">
+          <div aria-live="polite" aria-atomic="true" style="position: relative">
+            <div
+              id="toast-container"
+              style="position: absolute; top: 20px; right: 20px"
+            ></div>
+          </div>
           <div class="fields">
             {{ cform.non_field_errors }} {{ cform.errors }}
             <!---->
@@ -111,16 +117,6 @@
             {% endif %} {% endcomment %}
 
             <div class="left flex">
-              <div
-                aria-live="polite"
-                aria-atomic="true"
-                style="position: relative"
-              >
-                <div
-                  id="toast-container"
-                  style="position: absolute; top: 20px; right: 20px"
-                ></div>
-              </div>
               <div class="imgbox">
                 <div class="field">
                   <label>{{form.photo.label}} </label>
