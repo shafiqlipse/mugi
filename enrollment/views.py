@@ -23,7 +23,7 @@ from .filters import SchoolEnrollmentFilter  # Assume you have created this filt
 
 def SchoolEnrollments(request):
     # Get school from user profile
-    school = request.user.profile  # Assuming profile has school attribute
+    school = request.user.school  # Assuming profile has school attribute
 
     # Get all enrollments for the school
     enrollments = SchoolEnrollment.objects.filter(school=school)
