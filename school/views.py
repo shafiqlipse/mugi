@@ -17,7 +17,7 @@ import base64
 def Dash(request):
     school = request.user.school
 
-    athletes = Athlete.objects.filter(school=school)
+    athletes = Athlete.objects.filter(school=school)[:6]
     athletes_count = Athlete.objects.filter(school=school).count
     officials_count = school_official.objects.all().count
     athletes_bcount = Athlete.objects.filter(gender="male").count
