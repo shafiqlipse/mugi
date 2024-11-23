@@ -169,7 +169,7 @@ import re
 
 def validate_index_number(value):
     # Define the pattern for validation
-    pattern = re.compile(r"^\d{4}/\d{3}/\d{4}$")
+    pattern = re.compile(r"^\d{6}/\d{3}/\d{4}$")
     if not pattern.match(value):
         raise ValidationError("Index number must be in the format YYYY/XXX/YYYY.")
 
@@ -208,7 +208,7 @@ class Athlete(models.Model):
     )
     uce_index_number = models.CharField(
         max_length=255,
-        unique=True,
+        # unique=True,
         null=True,
         blank=True,
     )
@@ -341,7 +341,6 @@ class Athlete(models.Model):
     )
 
     qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)
-
 
     def generate_qr_code(self):
         # Information you want encoded in the QR code
