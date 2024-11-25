@@ -19,17 +19,6 @@
      object-fit: cover;
   margin-bottom: 10px;
 }
-.soverview .school-box .school .attr {
-  font-weight: 500;
-  font-size: 10px;
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  gap: 10px;
-  font-size: 15px;
-}
-.soverview .school-box .school .attr article {
-  font-weight: bold;
-}
 .soverview .dextails {
   margin: 10px 0;
   width: 100%;

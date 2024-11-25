@@ -21,4 +21,22 @@ h5 {
 * .p_input:focus,
 * select:focus {
   background-color: #fff;
+}
+
+@media only screen and (max-width: 600px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  th,
+  td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  td {
+    text-align: right;
+    padding-left: 50%;
+  }
 }/*# sourceMappingURL=dash.css.map */

@@ -54,7 +54,7 @@ class Trainee(models.Model):
         default="Inactive",
     )
     course = models.CharField(
-        max_length=20,
+        max_length=40,
         choices=[
             ("Refereeing", "Refereeing"),
             ("Coaching", "Coaching"),
@@ -63,6 +63,10 @@ class Trainee(models.Model):
             ("First-Aid", "First-Aid"),
             ("Umpiring", "Umpiring"),
             ("Officiating", "Officiating"),
+            (
+                "SPORTS FACILITIES FACILITY MANAGEMENT",
+                "SPORTS FACILITIES FACILITY MANAGEMENT",
+            ),
         ],
     )
     residence_type = models.CharField(

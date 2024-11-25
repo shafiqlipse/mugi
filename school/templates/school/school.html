@@ -6,60 +6,13 @@
 <!---->
 {% block content %}
 <div class="soverview content-wrapper">
-  <div class="school-box  grid3">
+  <div class="school-box">
     <div class="school card">
-      <h1>School info</h1>
-      <div class="img">
-      {% if school.badge %}
-      <img src="{{school.badge.url}}" alt="">
-      {% else %}
-      <img src="{%static 'images/derty.jpg'%}" alt="">
-      {% endif %}</div>
-      <div class="attr"><span>Name : </span><article>{{school.name}}</article></div>
-      <div class="attr"><span>EMIS : </span><article>{{school.emis_number}}</article></div>
-      <div class="attr">
-        <span>C-Number : </span><article>{{school.center_number}}
-      </article></div>
-      <div class="attr"><span>Region : </span><article>{{school.region}}</article></div>
-      <div class="attr"><span>District : </span><article>{{school.zone}}</article></div>
-      
-    </div>
-
-    <div class="school card">
-      <h1>Head Teacher</h1>  {% if school.photo %}
-        <img src="{{school.photo.url}}" alt="">
-        {% else %}
-        <img src="{%static 'images/profile.png'%}" alt="">
-        {% endif %}
-      <div class="attr">
-      
-        <span>Name : </span><article>{{school.fname}} {{school.lname}}</article>
-      </div>
-      <div class="attr"><span>NIN : </span><article>{{school.nin}}</article></div>
-      <div class="attr"><span>Email : </span><article>{{school.email}}</article></div>
-      <div class="attr"><span>Phone : </span><article>{{school.phone_number}}</article></div>
-      <div class="attr"><span>Gender : </span><article>{{school.gender}}</article></div>
-      <div class="attr">
-        <span>Date of Birth : </span><article>{{school.date_of_birth}}</article>
-      </div>
-    </div>
-    <div class="school card">
-      <h1>Games Teacher</h1>{% if school.gphoto %}
-        <img src="{{school.gphoto.url}}" alt="">
-        {% else %}
-        <img src="{%static 'images/profile.png'%}" alt="">
-        {% endif %}
-      <div class="attr">
-        
-        <span>Name : </span><article>{{school.gfname}} {{school.glname}}</article>
-      </div>
-      <div class="attr"><span>NIN : </span><article>{{school.gnin}}</article></div>
-      <div class="attr"><span>Email : </span><article>{{school.gemail}}</article></div>
-      <div class="attr"><span>Phone : </span><article>{{school.gphone}}</article></div>
-      <div class="attr"><span>Gender : </span><article>{{school.ggender}}</article></div>
-      <div class="attr">
-        <span>Date of Birth : </span><article>{{school.gdate_of_birth}}</article>
-      </div>
+      <h1>{{school.name}}</h1>
+      <p>
+        {{school.emis_number}} | {{school.district}} | {{school.district.zone}} |
+        {{school.district.zone.region}}
+      </p>
     </div>
   </div>
   <div class="dextails">
@@ -76,12 +29,14 @@
                 <thead>
                   <tr>
                     <th>Names</th>
-                    <th>Lin</th>
-                    <th>School</th>
+                    <th>Index Number</th>
+                    <th>Nationality</th>
                     <th>Gender</th>
                     <th>Sport</th>
-                    <th>Age</th>
+                    <th>Date of birth</th>
+                    {% if user.is_superuser %}
                     <th>Edit</th>
+                    {% endif %}
                   </tr>
                 </thead>
                 <tbody>
@@ -92,17 +47,18 @@
                         >{{athlete.fname}} {{athlete.lname}}</a
                       >
                     </td>
-                    <td>{{athlete.lin}}</td>
-                    <td>{{athlete.school}}</td>
+                    <td>{{athlete.index_number}}</td>
+                    <td>{{athlete.nationality}}</td>
                     <td>{{athlete.gender}}</td>
                     <td>{{athlete.sport}}</td>
-                    <td>{{athlete.age}}</td>
-                    
+                    <td>{{athlete.date_of_birth}}</td>
+                    {% if user.is_superuser %}
                     <td>
                       <a href="{% url 'updateathlete' athlete.id%}" class="del"
                         ><i class="fa fa-pencil"></i
                       ></a>
                     </td>
+                    {% endif %}
                   </tr>
 
                   {%endfor%}

@@ -11,7 +11,7 @@ import csv
 from django.db import IntegrityError
 from django.core.files.base import ContentFile
 import base64
-
+from django.core.paginator import Paginator
 
 @school_required
 def Dash(request):
@@ -365,15 +365,28 @@ def AthleteDetail(request, id):
 def athletes(request):
     user = request.user
     school_profile = user.school  # Retrieve the first related School object
+
+    # Retrieve athletes associated with the user's school
     if school_profile:
         school_id = school_profile.id
         athletes = Athlete.objects.filter(school_id=school_id)
     else:
-        # Handle the case where the user is not associated with any school
+        # If the user is not associated with any school, return no athletes
         athletes = Athlete.objects.none()
-    # officialFilter = OfficialFilter(request.GET, queryset=officials)
 
-    context = {"athletes": athletes, "school_profile": school_profile}
+    # Pagination
+    paginator = Paginator(athletes, 10)  # Show 10 athletes per page
+    page_number = request.GET.get(
+        "page"
+    )  # Get the current page number from the request
+    page_obj = paginator.get_page(
+        page_number
+    )  # Get the page object for the current page
+
+    context = {
+        "page_obj": page_obj,  # This will be used in the template to access paginated data
+        "school_profile": school_profile,
+    }
 
     return render(request, "athletes/athletes.html", context)
 
