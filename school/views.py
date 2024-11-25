@@ -339,7 +339,7 @@ def AthleteDetail(request, id):
     athlete = get_object_or_404(Athlete, id=id)
     relatedathletes = Athlete.objects.filter(
         school=athlete.school, sport=athlete.sport
-    ).exclude(id=id)
+    ).exclude(id=id)[:3]
 
     # Calculate the athlete's age
     today = datetime.date.today()
