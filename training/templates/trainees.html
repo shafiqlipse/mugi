@@ -34,6 +34,7 @@
       <table id="myTable" class="display">
         <thead>
           <tr>
+            <th>Entry date</th>
             <th>Names</th>
             <th>Gender</th>
             <th>Contact</th>
@@ -48,6 +49,7 @@
         <tbody>
           {% for trainees in filter.qs %}
           <tr>
+            <td>{{trainees.entry_date}}</td>
             <td>
               <a href="{% url 'trainee' trainees.id%}"
                 >{{trainees.first_name}} {{trainees.last_name}}</a
