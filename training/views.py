@@ -78,7 +78,7 @@ from .filters import TraineeFilter  # Assume you have created this filter
 
 def trainees(request):
     # Get all trainees
-    trainees = Trainee.objects.all()
+    trainees = Trainee.objects.all().order_by("entry_date")
 
     # Apply the filter
     trainee_filter = TraineeFilter(request.GET, queryset=trainees)

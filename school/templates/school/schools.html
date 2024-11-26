@@ -6,7 +6,7 @@
 <!---->
 {% block content %}
 <div class="schools-dew content-wrapper">
-  <div class="head flex card">
+  <div class="head flex ">
     <h1>Schools</h1>
     <div class="report">
       <a href="{% url 'export_csv'%}"
@@ -16,6 +16,7 @@
         ><i class="fa fa-file-pdf" aria-hidden="true"></i>
       </a>
     </div>
+    <a href="{% url 'add_athlete'%}" class="btn-submit">Add School</a>
   </div>
 
   <div class="filterlist card">
