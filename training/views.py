@@ -71,14 +71,14 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from io import BytesIO
-
+from django.contrib.auth.decorators import login_required
 
 from .filters import TraineeFilter  # Assume you have created this filter
 
-
+@login_required(login_url="login")
 def trainees(request):
     # Get all trainees
-    trainees = Trainee.objects.all().order_by("entry_date")
+    trainees = Trainee.objects.all().order_by("-entry_date")
 
     # Apply the filter
     trainee_filter = TraineeFilter(request.GET, queryset=trainees)
