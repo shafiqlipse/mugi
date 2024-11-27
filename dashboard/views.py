@@ -47,7 +47,7 @@ def dashboard(request):
 
 
 # championships
-@admin_required
+# @admin_required
 def championships(request):
     championships = Championship.objects.all()
     new_championship = None
@@ -68,7 +68,7 @@ def championships(request):
 
 @admin_required
 def championship_details(request, id):
-    championship = Championship.objects.get(id=id)
+    championship = get_object_or_404(Championship, id=id)
 
     context = {"championship": championship}
     return render(request, "all/championship.html", context)

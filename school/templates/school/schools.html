@@ -30,7 +30,7 @@
               <th>Status</th>
               <th>region</th>
               <th>Zone</th>
-              {% if user.is_staff %}
+              {% if user.is_admin %}
               <th>Actions</th>
               {% endif %}
             </tr>
@@ -45,7 +45,7 @@
               <td>{{school.status}}</td>
               <td>{{school.region}}</td>
               <td>{{school.zone}}</td>
-              {% if user.is_staff %}
+              {% if user.is_admin %}
               <td>
                 <div class="report">
                   <a href="{% url 'schoolupdate' school.id%}"
