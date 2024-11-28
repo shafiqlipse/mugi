@@ -179,11 +179,12 @@ def export_csv(request):
             "id",
             "first_name",
             "last_name",
-            "school",
-            "zone",
-            "contact",
+            "place",
+            "contract",
             "district",
-            "region",
+            "venue",
+            "discipline",
+            "course",
         ]
     )  # Replace with your model's fields
 
@@ -194,11 +195,12 @@ def export_csv(request):
                 obj.id,
                 obj.first_name,
                 obj.last_name,
-                obj.school,
+                obj.place,
                 obj.contact,
-                obj.zone,
                 obj.district,
-                obj.region,
+                obj.venue,
+                obj.discipline,
+                obj.course,
             ]
         )  # Replace with your model's fields
 

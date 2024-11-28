@@ -15,44 +15,40 @@
   </div>
 
   <div class="filterlist card">
-    <div class="lo">
-      <div class="official-list">
-        <table>
-          <thead>
-            <tr>
-              <th>Names</th>
-
-              <th>Lin</th>
-              <th>Index</th>
-              <th>Nationality </th>
-
-              <th>Gender</th>
-              <th>Sport</th>
-
-              <th>Age</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for athlete in athletes%}
-            <tr>
-              <td>
-                <a href="{% url 'athlete' athlete.id%}"
-                  >{{athlete.fname}} {{athlete.lname}}</a
-                >
-              </td>
-              <td>{{athlete.lin}}</td>
-              <td>{{athlete.index_number}}</td>
-              <td>{{athlete.nationality}}</td>
-              <td>{{athlete.gender}}</td>
-              <td>{{athlete.sport}}</td>
-
-              <td>{{athlete.classroom}}</td>
-            </tr>
-
-            {%endfor%}
-          </tbody>
-        </table>
-      </div>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Athlete Name</th>
+            <th>Athlete ID No</th>
+            <th>School</th>
+            <th>Nationality</th>
+            <th>Gender</th>
+            <th>Class</th>
+            <th>Date of Birth</th>
+            <th>Payment Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for athlete in athletes %}
+          <tr>
+            <td>
+              <img src="{{athlete.photo.url}}" alt="image" />
+              <span class="pl-2">{{athlete.fname}} {{athlete.lname}}</span>
+            </td>
+            <td>{{athlete.athlete_id}}</td>
+            <td>{{athlete.school}}</td>
+            <td>{{athlete.nationality}}</td>
+            <td>{{athlete.gender}}</td>
+            <td>{{athlete.classroom}}</td>
+            <td>{{athlete.date_of_birth}}</td>
+            <td>
+              <div class="badge badge-outline-success">Approved</div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
