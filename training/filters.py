@@ -13,7 +13,22 @@ class TraineeFilter(django_filters.FilterSet):
     discipline = django_filters.ModelChoiceFilter(
         queryset=Discipline.objects.all(), label="Discipline"
     )
-    course = django_filters.CharFilter(lookup_expr="icontains", label="Course")
+    course = django_filters.ChoiceFilter(
+        choices=[
+            ("Refereeing", "Refereeing"),
+            ("Coaching", "Coaching"),
+            ("Media", "Media"),
+            ("Safeguarding", "Safeguarding"),
+            ("First-Aid", "First-Aid"),
+            ("Umpiring", "Umpiring"),
+            ("Officiating", "Officiating"),
+            (
+                "SPORTS FACILITIES FACILITY MANAGEMENT",
+                "SPORTS FACILITIES FACILITY MANAGEMENT",
+            ),
+        ],
+        label="Course",
+    )
 
     class Meta:
         model = Trainee

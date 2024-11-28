@@ -1,0 +1,41 @@
+.schools-dew .filter {
+  flex-direction: column;
+}
+.schools-dew .filter .formiex {
+  background-color: rgb(228, 228, 228);
+  padding: 10px;
+  flex-direction: column;
+  width: 100%;
+}
+.schools-dew .filter .formiex .formlix {
+  width: 100%;
+  align-items: flex-end;
+}
+.schools-dew .filter .formiex .formlix .formix {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 80%;
+}
+.schools-dew .filter .formiex .formlix .formix .form-group {
+  flex-direction: column;
+  align-items: flex-start;
+}
+.schools-dew .filter .formiex .formlix .formix .form-group select {
+  padding: 10px;
+  width: 100%;
+  border-radius: 2px;
+  border: 0;
+  background-color: rgb(240, 240, 240);
+}
+.schools-dew .filter .formiex .formlix .formix .form-group label {
+  font-size: 1.2em;
+}
+.schools-dew .filter .formiex .formlix button {
+  padding: 10px;
+  border-radius: 2px;
+  width: 18%;
+  border: 0;
+  background-color: rgb(0, 106, 187);
+  margin: 10px;
+}/*# sourceMappingURL=trainees.css.map */

@@ -1,22 +1,21 @@
 import django_filters
-from .models import Delegates
+from .models import *
 from django import forms
 
 
 class DelegateFilter(django_filters.FilterSet):
 
-    zone = django_filters.ChoiceFilter(
-        widget=forms.Select(attrs={"class": "form-control"})
+    zone = django_filters.ModelChoiceFilter(
+        queryset=Zone.objects.all(), label="Zone"
     )
-    region = django_filters.ChoiceFilter(
-        widget=forms.Select(attrs={"class": "form-control"})
+    region = django_filters.ModelChoiceFilter(
+        queryset=Region.objects.all(), label="Region"
     )
-    district = django_filters.ChoiceFilter(
-        widget=forms.Select(attrs={"class": "form-control"})
+
+    district = django_filters.ModelChoiceFilter(
+        queryset=District.objects.all(), label="District"
     )
-    gender = django_filters.ChoiceFilter(
-        widget=forms.Select(attrs={"class": "form-control"})
-    )
+
 
     class Meta:
         model = Delegates
@@ -24,5 +23,5 @@ class DelegateFilter(django_filters.FilterSet):
             "district",
             "region",
             "zone",
-            "gender",
+           
         ]

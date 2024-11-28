@@ -9,24 +9,41 @@
 <div class="schools-dew content-wrapper">
   <div class="head flex">
     <h1>Annual General Meeting</h1>
-    <hr />
-  </div>
-  <div class="filter">
-    <h2>Filter Delegates</h2>
-    <form method="get" class="form-contol">
-      {{ filter.form.as_p }}
-      <button type="submit">Apply Filter</button>
-    </form>
-    <form method="post" class="form-contol">
-      {% csrf_token %}
-      <input type="submit" name="Accreditation" value="Accreditation" />
-    </form>
+    <div class="others flex">
+      <form method="post" class="form-contol">
+        {% csrf_token %}
+        <input type="submit" name="Accreditation" value="Accreditation" />
+      </form>
 
-    <form method="post" class="form-contol">
-      {% csrf_token %}
-      <input type="submit" name="Certificate" value="Certificate" />
+      <form method="post" class="form-contol">
+        {% csrf_token %}
+        <input type="submit" name="Certificate" value="Certificate" />
+      </form>
+      <a href="{% url 'export_csv' %}">Export CSV</a>
+    </div>
+  </div>
+  <div class="filter flex">
+    <form method="get" class="formiex flex">
+      <h2>Filter Delegates</h2>
+      <div method="get" class="formlix flex">
+        <div method="get" class="formix">
+          <div class="form-group flex">
+            <label for="school">Region</label>
+            {{ delegate_filter.form.region }}
+          </div>
+          <div class="form-group flex">
+            <label for="school">Zone</label>
+            {{ delegate_filter.form.zone }}
+          </div>
+          <div class="form-group flex">
+            <label for="school">District</label>
+            {{ delegate_filter.form.district }}
+          </div>
+        </div>
+
+        <button type="submit">Apply Filter</button>
+      </div>
     </form>
-    <a href="{% url 'export_dcsv' %}">Export CSV</a>
   </div>
   <div class="filterlist glue">
     <div class="official-list">
@@ -35,7 +52,6 @@
           <tr>
             <th>Names</th>
             <th>School</th>
-
             <th>Region</th>
             <th>Zone</th>
             <th>District</th>

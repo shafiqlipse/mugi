@@ -9,25 +9,47 @@
 <div class="schools-dew content-wrapper">
   <div class="head flex">
     <h1>capacity building 2024</h1>
-    <hr />
+    <div class="others flex">
+      <form method="post" class="form-contol">
+        {% csrf_token %}
+        <input type="submit" name="Accreditation" value="Accreditation" />
+      </form>
+
+      <form method="post" class="form-contol">
+        {% csrf_token %}
+        <input type="submit" name="Certificate" value="Certificate" />
+      </form>
+      <a href="{% url 'export_csv' %}">Export CSV</a>
+    </div>
+ 
   </div>
   <div class="filter flex">
-    <h2>Filter trainees</h2>
-    <form method="get">
-      {{ trainee_filter.form.as_p }}
-      <button type="submit">Apply Filter</button>
-    </form>
+    <form method="get" class="formiex flex">
+      <h2>Filter trainees</h2>
+      <div method="get" class="formlix flex">
+        <div method="get" class="formix">
+          <div class="form-group flex">
+            <label for="gender">Gender</label>
+            {{ trainee_filter.form.gender }}
+          </div>
 
-    <form method="post" class="form-contol">
-      {% csrf_token %}
-      <input type="submit" name="Accreditation" value="Accreditation" />
-    </form>
+          <div class="form-group flex">
+            <label for="school">Venue</label>
+            {{ trainee_filter.form.venue }}
+          </div>
+          <div class="form-group flex">
+            <label for="school">Discipline</label>
+            {{ trainee_filter.form.discipline }}
+          </div>
+          <div class="form-group flex">
+            <label for="school">Course</label>
+            {{ trainee_filter.form.course }}
+          </div>
+        </div>
 
-    <form method="post" class="form-contol">
-      {% csrf_token %}
-      <input type="submit" name="Certificate" value="Certificate" />
+        <button type="submit">Apply Filter</button>
+      </div>
     </form>
-    <a href="{% url 'export_csv' %}">Export CSV</a>
   </div>
   <div class="filterlist card">
     <div class="official-list">

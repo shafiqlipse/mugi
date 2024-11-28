@@ -63,13 +63,13 @@ def delegates(request):
 
     # Apply the filter
     delegate_filter = DelegateFilter(request.GET, queryset=delegates)
-    filtered_delegates = delegate_filter.qs
+    alldelegates = delegate_filter.qs
 
     if request.method == "POST":
         # Check which form was submitted
         if "Accreditation" in request.POST:
             template = get_template("acred.html")
-            filename = "Asshu_Accreditation.pdf"
+            filename = "Delegate_Accreditation.pdf"
         elif "Certificate" in request.POST:
             template = get_template(
                 "certificate_temaplate.html"
@@ -79,7 +79,7 @@ def delegates(request):
             return HttpResponse("Invalid form submission")
 
         # Generate PDF
-        context = {"delegates": filtered_delegates}
+        context = {"alldelegates": alldelegates}
         html = template.render(context)
 
         # Create a PDF
@@ -98,7 +98,7 @@ def delegates(request):
         return response
     else:
         # Render the filter form
-        return render(request, "delegates.html", {"filter": delegate_filter})
+        return render(request, "delegates.html", {"delegate_filter": delegate_filter})
 
 
 def delegate_details(request, id):
