@@ -43,7 +43,7 @@ def create_school_officials_and_admin(sender, instance, created, **kwargs):
         )
 
         # Create the admin user for the headteacher
-        admin_password = "Pass12345"  # Replace with secure password generation
+        admin_password = "Password@12345"  # Replace with secure password generation
         admin_user = User.objects.create(
             username=instance.email,
             email=instance.email,
@@ -52,7 +52,9 @@ def create_school_officials_and_admin(sender, instance, created, **kwargs):
         )
 
         # Create the user for the games teacher
-        games_teacher_password = "Pass12345"  # Replace with secure password generation
+        games_teacher_password = (
+            "Password@12345"  # Replace with secure password generation
+        )
         games_teacher_user = User.objects.create(
             username=instance.gemail,
             email=instance.gemail,

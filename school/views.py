@@ -13,6 +13,7 @@ from django.core.files.base import ContentFile
 import base64
 from django.core.paginator import Paginator
 
+
 @school_required
 def Dash(request):
     school = request.user.school
@@ -104,8 +105,11 @@ def exportp_csv(request):
 # schools list, tuple or array
 @staff_required
 def all_athletes(request):
+    athletes_list = Athlete.objects.all()
+    paginator = Paginator(athletes_list, 10)  # Show 10 athletes per page.
 
-    athletes = Athlete.objects.all()
+    page_number = request.GET.get("page")
+    athletes = paginator.get_page(page_number)
 
     context = {
         "athletes": athletes,
