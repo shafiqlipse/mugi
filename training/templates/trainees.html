@@ -41,9 +41,10 @@
             <th>Venue</th>
             <th>Discipline</th>
             <th>Course</th>
-
+            {% if user.is_admin %}
             <th>Edit</th>
             <th>Delete</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -60,10 +61,12 @@
             <td>{{trainees.venue}}</td>
             <td>{{trainees.discipline}}</td>
             <td>{{trainees.course}}</td>
+            {% if user.is_admin %}
             <td><a href="{%url 'update_trainee' trainees.id %}">Edit</a></td>
             <td>
               <a href="{%url 'delete_trainee' trainees.id %}">delete</a>
             </td>
+            {% endif %}
           </tr>
 
           {%endfor%}
