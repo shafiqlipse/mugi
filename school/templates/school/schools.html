@@ -6,7 +6,7 @@
 <!---->
 {% block content %}
 <div class="schools-dew content-wrapper">
-  <div class="head flex ">
+  <div class="head flex">
     <h1>Schools</h1>
     <div class="report">
       <a href="{% url 'export_csv'%}"
@@ -41,7 +41,7 @@
               <td>
                 <a href="{% url 'schooldetail' school.id%}">{{school.name}}</a>
               </td>
-              <td>{{school.emis_number}}</td>
+              <td>{{school.center_number}}</td>
               <td>{{school.status}}</td>
               <td>{{school.region}}</td>
               <td>{{school.zone}}</td>
