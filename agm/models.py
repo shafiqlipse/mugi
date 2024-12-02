@@ -56,6 +56,7 @@ class Delegates(models.Model):
             ("ASSHU Representative", "ASSHU Representative"),
             ("Assistant General Secretary", "Assistant General Secretary"),
             ("Treasurer", "Treasurer"),
+            ("Secretariat", "Secretariat"),
             ("Secretary for Women", "Secretary for Women"),
             ("Western Representative", "Western Representative"),
             ("Eastern Representative", "Eastern Representative"),

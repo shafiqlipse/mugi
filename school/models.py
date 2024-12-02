@@ -334,10 +334,10 @@ class Athlete(models.Model):
 
     status = models.CharField(
         max_length=10,
-        choices=[("Active", "Active"), ("Inactive", "Inactive")],
+        choices=[("New", "New"), ("Active", "Active"), ("Inactive", "Inactive")],
         null=True,
         blank=True,
-        default="Active",
+        default="New",
     )
 
     qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)
