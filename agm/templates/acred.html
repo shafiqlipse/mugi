@@ -18,40 +18,25 @@
           margin: 0; /* Remove default body margin */
           padding: 0; /* Remove default body padding */
         }
-
-        .athletes table {
-          display: grid;
-          grid-template-rows: repeat(2, 1fr); /* Two rows */
-          grid-template-columns: repeat(2, 1fr); /* Two columns */
-          gap: 10px; /* Adjust the gap between grid items */
-        }
       }
       .header .athletes table tbody tr td table tr .td {
         padding-top: 105px;
         padding-bottom: 40px;
-        padding-left: 50px;
-        padding-right: 40px;
+        padding-left: 20px;
+        padding-right: 30px;
         margin: 0;
       }
-      .header .athletes table tbody tr td table tr .td .inner {
-        width: 350px;
-        text-align: center;
-        text-transform: uppercase;
-      }
-      .header .athletes table tbody tr td table tr .td .inner img {
-        width: 160px;
-        height: 160px;
-        image-orientation: from-image;
-        transform: rotate(0deg);
-      }
-      .header .athletes table tbody tr td table tr .td .inner span {
+
+      .header .athletes table tbody tr td table tr .td .inners img {
+        width: 300px;
+        height: 300px;
       }
     </style>
     <div class="header">
       <div class="athletes">
         <table>
           <tbody>
-            {% for athlete in delegates %}
+            {% for athlete in alldelegates %}
             <!---->
             {% if forloop.counter0|divisibleby:2 %}
             <!-- Start a new row for every even-numbered athlete -->
@@ -63,10 +48,23 @@
                     <td class="td">
                       <div class="inner">
                         <span
-                          >{{ athlete.contact|upper}}
-                          ({{athlete.gender|upper}})</span
-                        >
+                          ><strong
+                            >{{ athlete.first_name|upper }}
+                            {{athlete.last_name|upper }}</strong
+                          >
+                        </span>
                         <br />
+
+                        <span class="des"
+                          >{{ athlete.zone|upper }} |
+                          {{athlete.district|upper}}</span
+                        ><br />
+                        <div class="pos">{{ athlete.position|upper }}</div>
+                        <br />
+                      </div>
+                    </td>
+                    <td class="td">
+                      <div class="inners">
                         {% if athlete.photo %}
                         <img
                           src="{{ athlete.photo.path }}"
@@ -78,15 +76,6 @@
                           alt="{{ athlete.last_name }}"
                         />
                         {% endif %}
-                        <br />
-                        <span
-                          >{{ athlete.first_name|upper }}
-                          {{athlete.last_name|upper }}
-                        </span>
-                        <br />
-                        <span>{{ athlete.designation|upper }}</span><br />
-                        <span>{{ athlete.school|upper }}</span><br />
-                        <span>{{ athlete.district|upper }}</span><br />
                       </div>
                     </td>
                   </tr>

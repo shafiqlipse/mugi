@@ -59,7 +59,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for delegates in filter.qs %}
+          {% for delegates in delegate_filter.qs %}
           <tr>
             <td>
               <a href="{% url 'delegate' delegates.id%}"
