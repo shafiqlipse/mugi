@@ -26,6 +26,16 @@
         padding-right: 30px;
         margin: 0;
       }
+      .header .athletes table tbody tr td table tr .td .inners img {
+        width: 700px;
+        padding: 10px;
+      }
+      .header .athletes table tbody tr td table tr .td .inner {
+        width: 800px;
+      }
+      .header .athletes table tbody tr td table tr .td .inner .pos {
+        color: blue;
+      }
     </style>
     <div class="header">
       <div class="athletes">
@@ -54,7 +64,9 @@
                           >{{ athlete.zone|upper }} |
                           {{athlete.district|upper}}</span
                         ><br />
-                        <span class="pos">{{ athlete.position|upper }}</span>
+                        <span class="pos"
+                          ><strong>{{ athlete.position|upper }}</strong></span
+                        >
                         <br />
                       </div>
                     </td>
