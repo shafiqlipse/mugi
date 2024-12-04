@@ -67,38 +67,38 @@
                 </table>
               </div>
             </div>
-            <div class="tabpanel card" aria-labelledby="ruby" hidden>
-              <div class="official-list">
-                <table id="myaTable" class="displlay">
-                  <thead>
-                    <tr>
-                      <th>Names</th>
-                      <th>Role</th>
-                      <th>Nin</th>
-                      <th>contact</th>
-                      <th>Email</th>
-                      <th>Gender</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for official in officials%}
-                    <tr>
-                      <td>
-                        <a href="{% url 'official' official.id%}"
-                          >{{official.fname}} {{official.lname}}</a
-                        >
-                      </td>
-                      <td>{{official.role}}</td>
-                      <td>{{official.nin}}</td>
-                      <td>{{official.phone_number}}</td>
-                      <td>{{official.email}}</td>
-                      <td>{{official.gender}}</td>
-                    </tr>
+          </div>
+          <div class="tabpanel card" aria-labelledby="ruby" hidden>
+            <div class="official-list">
+              <table id="myaTable" class="displlay">
+                <thead>
+                  <tr>
+                    <th>Names</th>
+                    <th>Role</th>
+                    <th>Nin</th>
+                    <th>contact</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for official in officials%}
+                  <tr>
+                    <td>
+                      <a href="{% url 'official' official.id%}"
+                        >{{official.fname}} {{official.lname}}</a
+                      >
+                    </td>
+                    <td>{{official.role}}</td>
+                    <td>{{official.nin}}</td>
+                    <td>{{official.phone_number}}</td>
+                    <td>{{official.email}}</td>
+                    <td>{{official.gender}}</td>
+                  </tr>
 
-                    {%endfor%}
-                  </tbody>
-                </table>
-              </div>
+                  {%endfor%}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
