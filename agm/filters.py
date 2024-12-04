@@ -13,14 +13,14 @@ class DelegateFilter(django_filters.FilterSet):
     )
 
     district = django_filters.ModelChoiceFilter(
-        queryset=District.objects.all(), label="District"
+        queryset=District.objects.all(), label="Position"
     )
 
 
     class Meta:
         model = Delegates
         fields = [
-            "district",
+            "position",
             "region",
             "zone",
            
