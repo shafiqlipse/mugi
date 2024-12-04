@@ -18,7 +18,7 @@ class SchoolEnrollmentForm(forms.ModelForm):
 
 class AthleteEnrollmentForm(forms.ModelForm):
     athletes = forms.ModelMultipleChoiceField(
-        queryset=Athlete.objects.all(),
+        queryset=Athlete.objects.filter(status="ACTIVE"),
         widget=forms.CheckboxSelectMultiple,
         required=False,
     )

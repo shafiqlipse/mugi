@@ -25,83 +25,85 @@
         <div class="content">
           <div class="tabpanel card" aria-labelledby="js">
             <div class="official-list">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Names</th>
-                    <th>Index Number</th>
-                    <th>Nationality</th>
-                    <th>Gender</th>
-                    <th>Sport</th>
-                    <th>Date of birth</th>
-                    {% if user.is_superuser %}
-                    <th>Edit</th>
-                    {% endif %}
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for athlete in athletes %}
-                  <tr>
-                    <td>
-                      <a href="{% url 'athlete' athlete.id%}"
-                        >{{athlete.fname}} {{athlete.lname}}</a
-                      >
-                    </td>
-                    <td>{{athlete.index_number}}</td>
-                    <td>{{athlete.nationality}}</td>
-                    <td>{{athlete.gender}}</td>
-                    <td>{{athlete.sport}}</td>
-                    <td>{{athlete.date_of_birth}}</td>
-                    {% if user.is_superuser %}
-                    <td>
-                      <a href="{% url 'updateathlete' athlete.id%}" class="del"
-                        ><i class="fa fa-pencil"></i
-                      ></a>
-                    </td>
-                    {% endif %}
-                  </tr>
-
-                  {%endfor%}
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Athlete Name</th>
+                      <th>Athlete ID No</th>
+                      <th>Index Number</th>
+                      <th>Nationality</th>
+                      <th>Gender</th>
+                      <th>Class</th>
+                      <th>Date of Birth</th>
+                      <th>Payment Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for athlete in athletes %}
+                    <tr>
+                      <td>
+                        <a href="{% url 'athlete' athlete.id%}">
+                          <img src="{{athlete.photo.url}}" alt="image" />
+                          <span class="pl-2"
+                            >{{athlete.fname}} {{athlete.lname}}</span
+                          ></a
+                        >
+                      </td>
+                      <td>{{ athlete.athlete_id }}</td>
+                      <td>{{ athlete.index_number }}</td>
+                      <td>{{ athlete.nationality }}</td>
+                      <td>{{ athlete.gender }}</td>
+                      <td>{{ athlete.classroom }}</td>
+                      <td>{{ athlete.date_of_birth }}</td>
+                      <td>
+                        <div class="badge badge-outline-success">
+                          {{athlete.status}}
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-          <div class="tabpanel card" aria-labelledby="ruby" hidden>
-            <div class="official-list">
-              <table id="myaTable" class="displlay">
-                <thead>
-                  <tr>
-                    <th>Names</th>
-                    <th>Role</th>
-                    <th>Nin</th>
-                    <th>contact</th>
-                    <th>Email</th>
-                    <th>Gender</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for official in officials%}
-                  <tr>
-                    <td>
-                      <a href="{% url 'official' official.id%}"
-                        >{{official.fname}} {{official.lname}}</a
-                      >
-                    </td>
-                    <td>{{official.role}}</td>
-                    <td>{{official.nin}}</td>
-                    <td>{{official.phone_number}}</td>
-                    <td>{{official.email}}</td>
-                    <td>{{official.gender}}</td>
-                  </tr>
+            <div class="tabpanel card" aria-labelledby="ruby" hidden>
+              <div class="official-list">
+                <table id="myaTable" class="displlay">
+                  <thead>
+                    <tr>
+                      <th>Names</th>
+                      <th>Role</th>
+                      <th>Nin</th>
+                      <th>contact</th>
+                      <th>Email</th>
+                      <th>Gender</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for official in officials%}
+                    <tr>
+                      <td>
+                        <a href="{% url 'official' official.id%}"
+                          >{{official.fname}} {{official.lname}}</a
+                        >
+                      </td>
+                      <td>{{official.role}}</td>
+                      <td>{{official.nin}}</td>
+                      <td>{{official.phone_number}}</td>
+                      <td>{{official.email}}</td>
+                      <td>{{official.gender}}</td>
+                    </tr>
 
-                  {%endfor%}
-                </tbody>
-              </table>
+                    {%endfor%}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    {% endblock %}
   </div>
-  {% endblock %}
 </div>

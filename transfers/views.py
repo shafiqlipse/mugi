@@ -4,7 +4,7 @@ from .models import TransferRequest
 from school.models import *
 from .forms import *
 from django.utils import timezone
-
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 # from accounts.decorators import transfer_required
@@ -39,7 +39,11 @@ def approve_transfer(request, transfer_id):
 def transfers(request):
     user = request.user
     school = user.school
-    athletes = Athlete.objects.all().exclude(school=school)
+    athletes_list = Athlete.objects.all().exclude(school=school)
+    paginator = Paginator(athletes_list, 10)  # Show 10 athletes per page.
+
+    page_number = request.GET.get("page")
+    athletes = paginator.get_page(page_number)
     context = {"athletes": athletes}
     return render(request, "transfers/initiate_transfer.html", context)
 

@@ -15,42 +15,53 @@
   </div>
 
   <div class="filterlist card">
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Athlete Name</th>
-            <th>Athlete ID No</th>
-            <th>School</th>
-            <th>Nationality</th>
-            <th>Gender</th>
-            <th>Class</th>
-            <th>Date of Birth</th>
-            <th>Payment Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for athlete in athletes %}
-          <tr>
-            <td>
-              <a href="{% url 'athlete' athlete.id%}">
-                <img src="{{athlete.photo.url}}" alt="image" />
-                <span class="pl-2">{{athlete.fname}} {{athlete.lname}}</span></a
-              >
-            </td>
-            <td>{{athlete.athlete_id}}</td>
-            <td>{{athlete.school}}</td>
-            <td>{{athlete.nationality}}</td>
-            <td>{{athlete.gender}}</td>
-            <td>{{athlete.classroom}}</td>
-            <td>{{athlete.date_of_birth}}</td>
-            <td>
-              <div class="badge badge-outline-success">Approved</div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="lo">
+      <div class="official-list">
+        <table id="myTable" class="display">
+          <thead>
+            <tr>
+              <th>Athlete Name</th>
+              <th>Athlete ID No</th>
+              <th>Index</th>
+              <th>Nationality</th>
+              <th>Gender</th>
+              <th>Class</th>
+              <th>Date of Birth</th>
+
+              {% if user.is_superuser %}
+              <th>Edit</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for athlete in athletes %}
+            <tr>
+              <td>
+                <a href="{% url 'athlete' athlete.id%}">
+                  <img src="{{athlete.photo.url}}" alt="image" />
+                  <span class="pl-2"
+                    >{{athlete.fname}} {{athlete.lname}}</span
+                  ></a
+                >
+              </td>
+              <td>{{ athlete.athlete_id }}</td>
+              <td>{{ athlete.index_number }}</td>
+              <td>{{ athlete.nationality }}</td>
+              <td>{{ athlete.gender }}</td>
+              <td>{{ athlete.classroom }}</td>
+              <td>{{ athlete.date_of_birth }}</td>
+              {% if user.is_superuser %}
+              <td>
+                <a href="{% url 'updateathlete' athlete.id%}" class="del"
+                  ><i class="fa fa-pencil"></i
+                ></a>
+              </td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

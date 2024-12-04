@@ -1,0 +1,12 @@
+{% extends "dashboard/dashboard.html" %} {% block content %}
+<div class="content-wrapper">
+  <h2>Edit Profile</h2>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+  </form>
+  {% for message in messages %}
+  <p>{{ message }}</p>
+  {% endfor %}
+</div>
+{% endblock %}

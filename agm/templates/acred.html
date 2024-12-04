@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Album</title>
+    <title>Accreditation</title>
   </head>
 
   <body>
@@ -21,15 +21,10 @@
       }
       .header .athletes table tbody tr td table tr .td {
         padding-top: 105px;
-        padding-bottom: 40px;
+        padding-bottom: 50px;
         padding-left: 20px;
         padding-right: 30px;
         margin: 0;
-      }
-
-      .header .athletes table tbody tr td table tr .td .inners img {
-        width: 300px;
-        height: 300px;
       }
     </style>
     <div class="header">
@@ -59,7 +54,7 @@
                           >{{ athlete.zone|upper }} |
                           {{athlete.district|upper}}</span
                         ><br />
-                        <div class="pos">{{ athlete.position|upper }}</div>
+                        <span class="pos">{{ athlete.position|upper }}</span>
                         <br />
                       </div>
                     </td>

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, login
 from accounts.decorators import school_required, anonymous_required, staff_required
 from django.http import JsonResponse
@@ -6,32 +6,55 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
 from .models import User
 from django.contrib import messages
-from .forms import SchoolRegistrationForm
+
+# from .forms import SchoolRegistrationForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from .forms import UserEditForm
+
+
+@login_required
+def edit_user(request, id=None):
+    if id:
+        # Fetch the user to edit by their ID
+        user = get_object_or_404(User, id=id)
+    else:
+        # Default to the logged-in user if no ID is provided
+        user = request.user
+
+    if request.method == "POST":
+        form = UserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "The profile was updated successfully.")
+            return redirect("edit_user", user_id=user.id)
+    else:
+        form = UserEditForm(instance=user)
+
+    return render(request, "accounts/edit_user.html", {"form": form, "id": user.id})
 
 
 # from accounts.forms import AthleteFilterForm
 
 
-@staff_required
-def school_registration(request):
-    if request.method == "POST":
-        form = SchoolRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(
-                commit=False
-            )  # Create the user object without saving to the database
-            user.is_school = True  # Set is_school to True
-            user.save()  # Save the user object with is_school set to True
+# @staff_required
+# def school_registration(request):
+#     if request.method == "POST":
+#         form = SchoolRegistrationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save(
+#                 commit=False
+#             )  # Create the user object without saving to the database
+#             user.is_school = True  # Set is_school to True
+#             user.save()  # Save the user object with is_school set to True
 
-            # Log in the user
-            login(request, user)
+#             # Log in the user
+#             login(request, user)
 
-            return redirect("confirmation")
-    else:
-        form = SchoolRegistrationForm()
-    return render(request, "register.html", {"form": form})
+#             return redirect("confirmation")
+#     else:
+#         form = SchoolRegistrationForm()
+#     return render(request, "register.html", {"form": form})
 
 
 # Create your views here.
@@ -76,7 +99,7 @@ def change_password(request):
             # Update the session to maintain the user's login status
             update_session_auth_hash(request, user)
             messages.success(request, "Your password was successfully updated!")
-            return redirect("login")
+            return redirect("success")
         else:
             messages.error(request, "Please correct the error below.")
     else:
@@ -109,3 +132,7 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
         "please make sure you've entered the address you registered with, and check your spam folder."
     )
     success_url = reverse_lazy("home")
+
+
+def success(request):
+    return render(request, "accounts/success.html")

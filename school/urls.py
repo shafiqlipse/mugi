@@ -18,6 +18,7 @@ urlpatterns = [
     # path("export_pdf/", exportp_csv, name="export_pdf"),
     path("newathlete/", newAthlete, name="add_athlete"),
     path("athletes/", athletes, name="athletes"),
+    path("archives/", archives, name="archives"),
     path("allathletes/", all_athletes, name="allathletes"),
     path("athlete/<int:id>", AthleteDetail, name="athlete"),
     path("editathlete/<int:id>", AthleteUpdate, name="updateathlete"),

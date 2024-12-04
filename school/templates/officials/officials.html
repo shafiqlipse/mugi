@@ -44,13 +44,8 @@
 
               <td>
                 <div class="actions flex">
-                  <a href="">
-                    <i class="fa fa-pencil-square-o" aria-hidden="true"
-                      >Edit</i
-                    ></a
-                  >
-                  <a href="">
-                    <i class="fa fa-trash-o" aria-hidden="true">Delete</i></a
+                  <a href="{% url 'del_official' official.id%}">
+                    <i class="fa fa-trash" aria-hidden="true">Delete</i></a
                   >
                 </div>
               </td>

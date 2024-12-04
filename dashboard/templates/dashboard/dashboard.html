@@ -190,6 +190,14 @@
             </a>
           </li>
           <li class="nav-item menu-items">
+            <a class="nav-link" href="{%url 'users'%}">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+              <span class="menu-title">Users</span>
+            </a>
+          </li>
+          <li class="nav-item menu-items">
             <a class="nav-link" href="{%url 'schools'%}">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
@@ -203,6 +211,14 @@
                 <i class="mdi mdi-speedometer"></i>
               </span>
               <span class="menu-title">Athletes</span>
+            </a>
+          </li>
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{%url 'archives'%}">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+              <span class="menu-title">Archives</span>
             </a>
           </li>
           {% elif user.is_school %}
@@ -242,7 +258,7 @@
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="pages/ui-features/typography.html"
-                    >Achieves</a
+                    >Registered</a
                   >
                 </li>
               </ul>
@@ -298,7 +314,7 @@
               <span class="menu-title">Enrollment</span>
             </a>
           </li>
-          {% endif %}
+          {% endif %} {% if user.is_staff %}
           <li class="nav-item menu-items">
             <a class="nav-link" href="{%url 'allofficials' %}">
               <span class="menu-icon">
@@ -307,7 +323,6 @@
               <span class="menu-title">Officials</span>
             </a>
           </li>
-          {% if user.is_staff %}
 
           <li class="nav-item menu-items">
             <a class="nav-link" href="{% url 'alltransfers'%}">

@@ -12,47 +12,85 @@
   </div>
 
   <div class="filterlist card">
-    <div class="lo">
-      <div class="official-list">
-        <table id="myTable" class="display">
-          <thead>
-            <tr>
-              <th>Names</th>
-              <th>Lin</th>
-              <th>Index</th>
-              <th>Gender</th>
-              <th>Sport</th>
-              <th>School</th>
-              <th>Transfer</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for athlete in athletes %}
-            <tr>
-              <td>
-                <a href="{% url 'athlete' athlete.id %}"
-                  >{{ athlete.fname }} {{ athlete.lname }}</a
-                >
-              </td>
-              <td>{{ athlete.lin }}</td>
-              <td>{{ athlete.index_number }}</td>
-              <td>{{ athlete.school }}</td>
-              <td>{{ athlete.gender }}</td>
-              <td>{{ athlete.sport }}</td>
-              <td>
-                <a
-                  href="{% url 'initiate_transfer' athlete.id %}"
-                  class="btn btn-outline-primary request-transfer"
-                  data-athlete="{{ athlete.fname }} {{ athlete.lname }}"
-                >
-                  <i class="fa fa-plus"></i> Request transfer
-                </a>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Athlete Name</th>
+           
+            <th>School</th>
+            <th>Nationality</th>
+            <th>Gender</th>
+            <th>Class</th>
+            <th>Date of Birth</th>
+
+            <th>Transfer</th>
+          
+           
+          </tr>
+        </thead>
+        <tbody>
+          {% for athlete in athletes %}
+          <tr>
+            <td>
+              <a href="{% url 'athlete' athlete.id%}">
+                <img src="{{athlete.photo.url}}" alt="image" />
+                <span class="pl-2">{{athlete.fname}} {{athlete.lname}}</span></a
+              >
+            </td>
+        
+            <td>{{ athlete.school }}</td>
+            <td>{{ athlete.nationality }}</td>
+            <td>{{ athlete.gender }}</td>
+            <td>{{ athlete.classroom }}</td>
+            <td>{{ athlete.date_of_birth }}</td>
+            <td>
+              <a
+                href="{% url 'initiate_transfer' athlete.id %}"
+                class="btn btn-outline-primary request-transfer"
+                data-athlete="{{ athlete.fname }} {{ athlete.lname }}"
+              >
+                <i class="fa fa-plus"></i> Request transfer
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    
+
+    <div class="pagination">
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          {% if athletes.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ athletes.previous_page_number }}">Previous</a></li>
+          {% endif %}
+    
+          {% for page_num in athletes.paginator.page_range %}
+            {% if page_num == 1 or page_num == athletes.paginator.num_pages %}
+              <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
+            {% elif page_num >= athletes.number|add:"-2" and page_num <= athletes.number|add:"2" %}
+              {% if page_num == athletes.number %}
+                <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+              {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
+              {% endif %}
+            {% elif page_num == athletes.number|add:"3" or page_num == athletes.number|add:"-3" %}
+              <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+          {% endfor %}
+    
+          {% if athletes.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ athletes.next_page_number }}">Next</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+    
+    </div>
+    
+    
     </div>
   </div>
   <script>

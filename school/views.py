@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from accounts.models import *
 from accounts.forms import *
-from .models import *
+from .models import User
 from .forms import *
 from accounts.forms import *
 from django.contrib import messages
@@ -43,18 +43,20 @@ def Dash(request):
 # schools list, tuple or array
 @staff_required
 def users(request):
-
-    users = User.objects.all()
+    staff = User.objects.all().exclude(is_school=True)
+    users = User.objects.filter(is_school=True)
 
     context = {
         "users": users,
+        "staff": staff,
         # "teamsFilter": teams
     }
-    return render(request, "dashboard/users.html", context)
+    return render(request, "all/users.html", context)
 
 
 # schools list, tuple or array
 # @staff_required
+@login_required(login_url="login")
 def Schools(request):
 
     schools = School.objects.all()
@@ -68,6 +70,7 @@ def Schools(request):
     # schools list, tuple or array
 
 
+@login_required(login_url="login")
 def export_csv(request):
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="schools.csv"'
@@ -85,6 +88,7 @@ def export_csv(request):
     return response
 
 
+@login_required(login_url="login")
 def exportp_csv(request):
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="schools.csv"'
@@ -105,7 +109,7 @@ def exportp_csv(request):
 # schools list, tuple or array
 @staff_required
 def all_athletes(request):
-    athletes_list = Athlete.objects.all()
+    athletes_list = Athlete.objects.all().exclude(status="COMPLETED")
     paginator = Paginator(athletes_list, 10)  # Show 10 athletes per page.
 
     page_number = request.GET.get("page")
@@ -115,6 +119,21 @@ def all_athletes(request):
         "athletes": athletes,
     }
     return render(request, "athletes/all_athletes.html", context)
+
+
+# schools list, tuple or array
+@staff_required
+def archives(request):
+    archives_list = Athlete.objects.filter(status="COMPLETED")
+    paginator = Paginator(archives_list, 10)  # Show 10 athletes per page.
+
+    page_number = request.GET.get("page")
+    athletes = paginator.get_page(page_number)
+
+    context = {
+        "athletes": athletes,
+    }
+    return render(request, "athletes/archives.html", context)
 
 
 # schools list, tuple or array
@@ -192,7 +211,7 @@ def schoolupdate(request, id):
 
 
 # @staff_required
-@login_required
+@login_required(login_url="login")
 def school_detail(request, id):
     school = get_object_or_404(School, id=id)
     officials = school_official.objects.filter(school_id=id)
@@ -261,7 +280,7 @@ def Official(request):
     return render(request, "officials/NOfficial.html", context)
 
 
-@login_required
+@login_required(login_url="login")
 def newAthlete(request):
     if request.method == "POST":
         form = NewAthleteForm(request.POST, request.FILES)
@@ -369,27 +388,11 @@ def AthleteDetail(request, id):
 def athletes(request):
     user = request.user
     school_profile = user.school  # Retrieve the first related School object
-
-    # Retrieve athletes associated with the user's school
-    if school_profile:
-        school_id = school_profile.id
-        athletes = Athlete.objects.filter(school_id=school_id)
-    else:
-        # If the user is not associated with any school, return no athletes
-        athletes = Athlete.objects.none()
-
-    # Pagination
-    paginator = Paginator(athletes, 10)  # Show 10 athletes per page
-    page_number = request.GET.get(
-        "page"
-    )  # Get the current page number from the request
-    page_obj = paginator.get_page(
-        page_number
-    )  # Get the page object for the current page
+    school_id = school_profile.id
+    athletes = Athlete.objects.filter(school_id=school_id).exclude(status="COMPLETED")
 
     context = {
-        "page_obj": page_obj,  # This will be used in the template to access paginated data
-        "school_profile": school_profile,
+        "athletes": athletes,
     }
 
     return render(request, "athletes/athletes.html", context)
@@ -471,6 +474,7 @@ def DeleteSchool(request, id):
 
 
 # # Athletes details......................................................
+@login_required(login_url="login")
 def OfficialDetail(request, id):
     official = get_object_or_404(school_official, id=id)
     relatedathletes = school_official.objects.filter(school=official.school).exclude(
@@ -486,6 +490,7 @@ def OfficialDetail(request, id):
     return render(request, "officials/official.html", context)
 
 
+@login_required(login_url="login")
 def athlete_list(request):
     athletes = Athlete.objects.all()
     context = {"athletes": athletes}

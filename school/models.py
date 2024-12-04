@@ -171,13 +171,13 @@ def validate_index_number(value):
     # Define the pattern for validation
     pattern = re.compile(r"^\d{6}/\d{3}/\d{4}$")
     if not pattern.match(value):
-        raise ValidationError("Index number must be in the format YYYY/XXX/YYYY.")
+        raise ValidationError("Index number must be in the format AAAAAA/XXX/YYYY.")
 
     # Extract the year part from the index number
     parts = value.split("/")
     year = int(parts[2])
     if year < 2005:
-        raise ValidationError("Year cannot exceed 2005.")
+        raise ValidationError("Year cannot be below 2005.")
 
 
 class Athlete(models.Model):
@@ -334,10 +334,15 @@ class Athlete(models.Model):
 
     status = models.CharField(
         max_length=10,
-        choices=[("New", "New"), ("Active", "Active"), ("Inactive", "Inactive")],
+        choices=[
+            ("NEW", "NEW"),
+            ("ACTIVE", "ACTIVE"),
+            ("INACTIVE", "INACTIVE"),
+            ("COMPLETED", "COMPLETED"),
+        ],
         null=True,
         blank=True,
-        default="New",
+        default="NEW",
     )
 
     qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)

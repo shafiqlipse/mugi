@@ -94,7 +94,7 @@ def school_enrollment_details(request, id):
     athlete_enrollments = AthleteEnrollment.objects.filter(
         school_enrollment=school_enrollment
     )
-    all_athletes = Athlete.objects.filter(school=school)
+    all_athletes = Athlete.objects.filter(school=school, status="ACTIVE")
 
     context = {
         "school_enrollment": school_enrollment,
@@ -157,6 +157,8 @@ from xhtml2pdf import pisa
 # Make sure to import your models
 
 admin_required
+
+
 def Accreditation(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)
@@ -229,7 +231,10 @@ def Albums(request, id):
 
     return response
 
+
 admin_required
+
+
 def Certificate(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)
