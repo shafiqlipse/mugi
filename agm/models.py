@@ -46,6 +46,7 @@ class Delegates(models.Model):
         max_length=44,
         choices=[
             ("President ", "President "),
+            ("President Emeritus ", "President Emeritus "),
             ("Vice President 1", "Vice President 1"),
             ("Vice President 2", "Vice President 2"),
             ("Vice President 3", "Vice President 3"),
