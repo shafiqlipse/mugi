@@ -55,6 +55,7 @@ class Delegates(models.Model):
             ("Vice Chairperson", "Vice Chairperson"),
             ("General Secretary", "General Secretary"),
             ("ASSHU Representative", "ASSHU Representative"),
+            ("ASSHU President", "ASSHU President"),
             ("Assistant General Secretary", "Assistant General Secretary"),
             ("Treasurer", "Treasurer"),
             ("Secretariat", "Secretariat"),
