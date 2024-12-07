@@ -21,28 +21,26 @@
         border-collapse: collapse;
       }
       .header .delegates table tbody tr td {
-        padding-top: 290px;
+        padding-top: 280px;
         padding-left: 70px;
         padding-right: 30px;
         margin: 0;
       }
       .header .delegates table tbody tr .delegate-cell .delegate-info {
-        font-size: 1.4em; /* Adjust font size */
-        text-align: center; /* Align text to the left */
-        width: 800px; /* Set a fixed width to ensure text fits on one line */
+        font-size: 1.4em;
+        text-align: center;
+        width: 950px;
       }
       .header .delegates table tbody tr .delegate-cell .delegate-image img {
         width: 120px;
         height: 120px;
-        image-orientation: from-image;
-        transform: rotate(0deg);
       }
     </style>
     <div class="header">
       <div class="delegates">
         <table class="delegate-table">
           <tbody>
-            {% for delegate in delegates %}
+            {% for delegate in alltrainees %}
             <tr>
               <td class="delegate-cell">
                 <div class="delegate-info">
@@ -53,9 +51,10 @@
                     </strong></span
                   ><br />
 
-                  <span>{{ delegate.designation|upper }}</span><br />
-                  <span>{{ delegate.school|upper }}</span><br />
-                  <span>{{ delegate.district|upper }} </span><br />
+                  <span>{{ delegate.venue|upper }}</span><br />
+                  <span
+                    >{{ delegate.discipline|upper }} | {{delegate.course|upper}} </span
+                  ><br />
                 </div>
               </td>
               <td class="delegate-cell">
