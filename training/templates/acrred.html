@@ -39,8 +39,8 @@
         text-transform: uppercase;
       }
       .header .athletes table tbody tr td table tr .td .inner img {
-        width: 160px;
-        height: 160px;
+        width: 140px;
+        height: 140px;
         image-orientation: from-image;
         transform: rotate(0deg);
       }
@@ -51,7 +51,7 @@
       <div class="athletes">
         <table>
           <tbody>
-            {% for trainee in trainees %}
+            {% for trainee in alltrainees %}
             <!---->
             {% if forloop.counter0|divisibleby:2 %}
             <!-- Start a new row for every even-numbered trainee -->

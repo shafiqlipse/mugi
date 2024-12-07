@@ -75,6 +75,7 @@ from django.contrib.auth.decorators import login_required
 
 from .filters import TraineeFilter  # Assume you have created this filter
 
+
 @login_required(login_url="login")
 def trainees(request):
     # Get all trainees
@@ -87,7 +88,7 @@ def trainees(request):
     if request.method == "POST":
         # Check which form was submitted
         if "Accreditation" in request.POST:
-            template = get_template("acred.html")
+            template = get_template("acrred.html")
             filename = "Trainee_Accreditation.pdf"
         elif "Certificate" in request.POST:
             template = get_template(
@@ -98,7 +99,7 @@ def trainees(request):
             return HttpResponse("Invalid form submission")
 
         # Generate PDF
-        context = {"trainees": alltrainees}
+        context = {"alltrainees": alltrainees}
         html = template.render(context)
 
         # Create a PDF
@@ -120,7 +121,7 @@ def trainees(request):
         return render(
             request,
             "trainees.html",
-            {"trainee_filter": trainee_filter, "filter": trainee_filter},
+            {"trainee_filter": trainee_filter},
         )
 
 
