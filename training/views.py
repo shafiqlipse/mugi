@@ -92,7 +92,7 @@ def trainees(request):
             filename = "Trainee_Accreditation.pdf"
         elif "Certificate" in request.POST:
             template = get_template(
-                "certificate_temaplate.html"
+                "certficate_temaplate.html"
             )  # Your certificate template
             filename = "Trainee_Certificate.pdf"
         else:
