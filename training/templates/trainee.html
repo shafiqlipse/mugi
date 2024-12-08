@@ -1,7 +1,19 @@
 {% extends "dashboard/dashboard.html" %}
 
 <!--static-->
-{% block title %}{{trainee.fname}} {{trainee.lname}}{% endblock %}
+{% block title %}{{trainee.fname}} {{trainee.lname}}{% endblock %} {% block head
+%}
+<title>{{ trainee.fname }} {{ trainee.lname }}</title>
+<meta property="og:title" content="{{ trainee.fname }} {{ trainee.lname }}" />
+<meta
+  property="og:description"
+  content="{{ trainee.fname }} {{ trainee.lname }}"
+/>
+<meta property="og:image" content="{{ trainee.photo.url }}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:type" content="website" />
+{% endblock %}
+
 <!--static-->
 {% load static %}
 <!--khfufufu-->
