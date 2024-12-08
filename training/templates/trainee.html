@@ -1,8 +1,9 @@
 {% extends "dashboard/dashboard.html" %}
 
 <!--static-->
-{% block title %}{{trainee.fname}} {{trainee.lname}}{% endblock %} {% block head
-%}
+{% block title %}{{trainee.fname}} {{trainee.lname}}{% endblock %}
+<!--static-->
+{% block head %}
 <title>{{ trainee.fname }} {{ trainee.lname }}</title>
 <meta property="og:title" content="{{ trainee.fname }} {{ trainee.lname }}" />
 <meta
