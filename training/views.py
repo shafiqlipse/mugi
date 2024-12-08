@@ -138,11 +138,33 @@ def trainee_update(request, id):
     if request.method == "POST":
         form = TraineesForm(request.POST, request.FILES, instance=trainee)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Trainees information updated successfully!")
-            return redirect("trainee", id=trainee.id)
-        else:
-            messages.error(request, "Please correct the errors below.")
+            try:
+                new_trainee = form.save(commit=False)
+
+                cropped_data = request.POST.get("photo_cropped")
+                if cropped_data:
+                    try:
+                        format, imgstr = cropped_data.split(";base64,")
+                        ext = format.split("/")[-1]
+                        data = ContentFile(
+                            base64.b64decode(imgstr), name=f"photo.{ext}"
+                        )
+                        new_trainee.photo = data  # Assign cropped image
+                    except (ValueError, TypeError):
+                        messages.error(request, "Invalid image data.")
+                        return render(request, "trainee_new.html", {"form": form})
+
+                new_trainee.save()
+                messages.success(
+                    request,
+                    "Registered successfully! PAY TO SECURE YOUR PLACE",
+                )
+                return redirect("trainees")
+
+            except IntegrityError:
+                messages.error(request, "There was an error saving the trainee.")
+                return render(request, "trainee_new.html", {"form": form})
+
     else:
         form = TraineesForm(instance=trainee)
 

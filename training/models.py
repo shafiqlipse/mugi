@@ -21,9 +21,7 @@ class Discipline(models.Model):
 
 class Trainee(models.Model):
 
-    photo = models.ImageField(
-        upload_to="trainee_photo/",
-    )
+
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     contact = models.CharField(max_length=50)
