@@ -23,6 +23,7 @@ urlpatterns = [
     path("athlete/<int:id>", AthleteDetail, name="athlete"),
     path("editathlete/<int:id>", AthleteUpdate, name="updateathlete"),
     path("delete-athlete/<int:id>", DeleteAthlete, name="del_athlete"),
+    path("screens/", Screened, name="screened"),
     # path("export_pdf/", exportp_csv, name="export_pdf"),
     path("newofficial/", Official, name="add_official"),
     path("officials/", school_offs, name="officials"),

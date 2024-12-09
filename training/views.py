@@ -157,7 +157,7 @@ def trainee_update(request, id):
                 new_trainee.save()
                 messages.success(
                     request,
-                    "Registered successfully! PAY TO SECURE YOUR PLACE",
+                    "Updated successfully! ",
                 )
                 return redirect("trainees")
 

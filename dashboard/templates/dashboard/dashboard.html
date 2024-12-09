@@ -211,21 +211,38 @@
               <span class="menu-title">Schools</span>
             </a>
           </li>
+
           <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'allathletes'%}">
+            <a
+              class="nav-link"
+              data-toggle="collapse"
+              href="#ui-basic-3"
+              aria-expanded="false"
+              aria-controls="ui-basic-3"
+            >
               <span class="menu-icon">
-                <i class="mdi mdi-speedometer"></i>
+                <i class="mdi mdi-laptop"></i>
               </span>
               <span class="menu-title">Athletes</span>
+              <i class="menu-arrow"></i>
             </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'archives'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-speedometer"></i>
-              </span>
-              <span class="menu-title">Archives</span>
-            </a>
+            <div class="collapse" id="ui-basic-3">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item">
+                  <a class="nav-link" href="{%url 'allathletes'%}"
+                    >All Athletes</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{%url 'archives'%}">Archives</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{%url 'screened' %}"
+                    >Screened out</a
+                  >
+                </li>
+              </ul>
+            </div>
           </li>
           {% elif user.is_school %}
           <li class="nav-item menu-items">

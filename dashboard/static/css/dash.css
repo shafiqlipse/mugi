@@ -14,11 +14,11 @@ h5 {
   font-optical-sizing: auto;
   font-style: normal;
 }
-* .p_input,
+* .input,
 * select {
   background-color: #fff;
 }
-* .p_input:focus,
+* .input:focus,
 * select:focus {
   background-color: #fff;
 }
@@ -39,4 +39,10 @@ h5 {
     text-align: right;
     padding-left: 50%;
   }
+}
+.form-control {
+  background-color: #e0e0e0;
+}
+.form-control:focus {
+  background-color: #fff;
 }/*# sourceMappingURL=dash.css.map */

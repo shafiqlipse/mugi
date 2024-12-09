@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from school.filters import AthleteFilter
 # from accounts.decorators import transfer_required
 
 
@@ -40,11 +41,19 @@ def transfers(request):
     user = request.user
     school = user.school
     athletes_list = Athlete.objects.all().exclude(school=school)
-    paginator = Paginator(athletes_list, 10)  # Show 10 athletes per page.
+    athlete_filter = AthleteFilter(request.GET, queryset=athletes_list)
+    filtered_athletes = athlete_filter.qs  # Get the filtered queryset
 
+    # Paginate filtered results
+    paginator = Paginator(filtered_athletes, 10)  # Show 10 athletes per page
     page_number = request.GET.get("page")
-    athletes = paginator.get_page(page_number)
-    context = {"athletes": athletes}
+    paginated_athletes = paginator.get_page(page_number)
+
+    # Pass the filter to the context for rendering the filter form
+    context = {
+        "athletes": paginated_athletes,
+        "athlete_filter": athlete_filter,
+    }
     return render(request, "transfers/initiate_transfer.html", context)
 
 

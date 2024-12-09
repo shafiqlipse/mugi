@@ -448,3 +448,31 @@ def clean(self):
             raise ValidationError("Student pass is required for non-refugees.")
 
     return super().clean()
+
+
+class Screening(models.Model):
+
+    athlete = models.ForeignKey(
+        Athlete, related_name="athlete", on_delete=models.CASCADE
+    )
+    screener = models.ForeignKey(
+        User, related_name="screener", on_delete=models.CASCADE
+    )
+    status = models.CharField(
+        choices=[
+            ("Impersonation", "Impersonation"),
+            ("Overage", "Overage"),
+            ("Underage", "Underage"),
+            ("Misconduct", "Misconduct"),
+            ("No UCE Results", "No UCE Results"),
+            ("Two Passports", "Two Passports"),
+            ("Unclear Identity", "Unclear Identity"),
+            ("Other", "Other"),
+        ],
+        max_length=20,
+    )
+    description = models.TextField()
+    created = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return self.athlete

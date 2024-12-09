@@ -106,17 +106,28 @@ def exportp_csv(request):
     return response
 
 
+from .filters import AthleteFilter
+
+
 # schools list, tuple or array
 @staff_required
 def all_athletes(request):
-    athletes_list = Athlete.objects.all().exclude(status="COMPLETED")
-    paginator = Paginator(athletes_list, 10)  # Show 10 athletes per page.
+    # Query all athletes except those with status "COMPLETED"
+    athletes_queryset = Athlete.objects.all().exclude(status="COMPLETED")
 
+    # Apply filtering
+    athlete_filter = AthleteFilter(request.GET, queryset=athletes_queryset)
+    filtered_athletes = athlete_filter.qs  # Get the filtered queryset
+
+    # Paginate filtered results
+    paginator = Paginator(filtered_athletes, 10)  # Show 10 athletes per page
     page_number = request.GET.get("page")
-    athletes = paginator.get_page(page_number)
+    paginated_athletes = paginator.get_page(page_number)
 
+    # Pass the filter to the context for rendering the filter form
     context = {
-        "athletes": athletes,
+        "athletes": paginated_athletes,
+        "athlete_filter": athlete_filter,
     }
     return render(request, "athletes/all_athletes.html", context)
 
@@ -354,6 +365,8 @@ def ofifcom(request):
 
 
 import datetime
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 
 # # Athletes details......................................................
@@ -363,6 +376,24 @@ def AthleteDetail(request, id):
     relatedathletes = Athlete.objects.filter(
         school=athlete.school, sport=athlete.sport
     ).exclude(id=id)[:3]
+    new_screen = None
+    user = request.user
+    if request.method == "POST":
+        dform = ScreenForm(request.POST, request.FILES)
+
+        if dform.is_valid():
+            new_screen = dform.save(commit=False)
+            new_screen.athlete = athlete
+            new_screen.screener = user
+            new_screen.save()
+
+            # Update athlete status to COMPLETED
+            athlete.status = "COMPLETED"
+            athlete.save()
+
+            return HttpResponseRedirect(reverse("athlete", args=[athlete.id]))
+    else:
+        dform = ScreenForm()
 
     # Calculate the athlete's age
     today = datetime.date.today()
@@ -379,6 +410,7 @@ def AthleteDetail(request, id):
         "athlete": athlete,
         "relatedathletes": relatedathletes,
         "age": age,  # Pass the calculated age to the template
+        "dform": dform,  # Add the form to the context
     }
 
     return render(request, "athletes/athlete.html", context)
@@ -424,11 +456,33 @@ def AthleteUpdate(request, id):
     if request.method == "POST":
         form = NewAthleteForm(request.POST, request.FILES, instance=athlete)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Athlete information updated successfully!")
-            return redirect("athletes")
-        else:
-            messages.error(request, "Please correct the errors below.")
+            try:
+                new_athlete = form.save(commit=False)
+
+                cropped_data = request.POST.get("photo_cropped")
+                if cropped_data:
+                    try:
+                        format, imgstr = cropped_data.split(";base64,")
+                        ext = format.split("/")[-1]
+                        data = ContentFile(
+                            base64.b64decode(imgstr), name=f"photo.{ext}"
+                        )
+                        new_athlete.photo = data  # Assign cropped image
+                    except (ValueError, TypeError):
+                        messages.error(request, "Invalid image data.")
+                        return render(request, "trainee_new.html", {"form": form})
+
+                new_athlete.save()
+                messages.success(
+                    request,
+                    "Updated successfully! ",
+                )
+                return redirect("allathletes")
+
+            except IntegrityError:
+                messages.error(request, "There was an error saving the trainee.")
+                return render(request, "trainee_new.html", {"form": form})
+
     else:
         form = NewAthleteForm(instance=athlete)
 
@@ -440,6 +494,13 @@ def AthleteUpdate(request, id):
 
 
 # # Athletes details......................................................
+@staff_required
+def Screened(request):
+    screens = Screening.objects.all()
+    context = {"screens": screens}
+    return render(request, "athletes/screens.html", context)
+
+
 # # Athletes details......................................................
 @admin_required(login_url="login")
 def DeleteAthlete(request, id):

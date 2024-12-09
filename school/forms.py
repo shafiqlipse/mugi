@@ -38,7 +38,6 @@ class SchoolProfileForm(forms.ModelForm):
             "emis_number": forms.TextInput(attrs={"class": "form-control"}),
             "center_number": forms.TextInput(attrs={"class": "form-control"}),
             "district": forms.Select(attrs={"class": "form-control"}),
-           
             #    --------------------------------------
             "fname": forms.TextInput(attrs={"class": "form-control"}),
             "lname": forms.TextInput(attrs={"class": "form-control"}),
@@ -167,4 +166,18 @@ class NewAthleteForm(forms.ModelForm):
             "date_of_birth": forms.DateInput(
                 attrs={"type": "date", "class": "form-control"}
             ),
+        }
+
+
+class ScreenForm(forms.ModelForm):
+    class Meta:
+        model = Screening
+        fields = [
+            "status",
+            "description",
+        ]
+
+        widgets = {
+            "description": forms.Textarea(attrs={"class": "form-control"}),
+            "status": forms.Select(attrs={"class": "form-control"}),
         }
