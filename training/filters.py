@@ -5,7 +5,7 @@ from .models import *
 class TraineeFilter(django_filters.FilterSet):
 
     gender = django_filters.ChoiceFilter(
-        choices=[("M", "Male"), ("F", "Female")], label="Gender"
+        choices=[("Male", "Male"), ("Female", "Female")], label="Gender"
     )
     venue = django_filters.ModelChoiceFilter(
         queryset=Venue.objects.all(), label="Venue"
