@@ -21,7 +21,6 @@ class Discipline(models.Model):
 
 class Trainee(models.Model):
 
-
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     contact = models.CharField(max_length=50)
@@ -62,8 +61,8 @@ class Trainee(models.Model):
             ("Umpiring", "Umpiring"),
             ("Officiating", "Officiating"),
             (
-                "SPORTS FACILITIES FACILITY MANAGEMENT",
-                "SPORTS FACILITIES FACILITY MANAGEMENT",
+                "SPORTS FACILITIES MANAGEMENT",
+                "SPORTS FACILITIES MANAGEMENT",
             ),
         ],
     )
