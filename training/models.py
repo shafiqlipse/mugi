@@ -73,6 +73,14 @@ class Trainee(models.Model):
             ("Non Residential", "Non Residential"),
         ],
     )
+    level = models.CharField(
+        max_length=20,
+        choices=[
+            ("Level 1", "Level 1"),
+            ("Level 2", "Level 2"),
+            
+        ],default="Level 1"
+    )
     is_paid = models.BooleanField(default=False)
     # is_trainee = models.BooleanField(default=False)
 

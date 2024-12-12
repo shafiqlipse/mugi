@@ -347,6 +347,9 @@ class Athlete(models.Model):
 
     qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.fname} {self.lname}"
+
     def generate_qr_code(self):
         # Information you want encoded in the QR code
         qr_info = f"Name: {self.fname} {self.lname}\nSCHOOL: {self.school.name}\nLIN: {self.lin}\nGender: {self.gender}\nDate of Birth: {self.date_of_birth}\nSport: {self.sport.name}"
