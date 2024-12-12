@@ -7,6 +7,9 @@ class TraineeFilter(django_filters.FilterSet):
     gender = django_filters.ChoiceFilter(
         choices=[("Male", "Male"), ("Female", "Female")], label="Gender"
     )
+    level = django_filters.ChoiceFilter(
+        choices=[("Level 1", "Level 1"), ("Level 2", "Level 2")], label="Level"
+    )
     venue = django_filters.ModelChoiceFilter(
         queryset=Venue.objects.all(), label="Venue"
     )
@@ -32,4 +35,4 @@ class TraineeFilter(django_filters.FilterSet):
 
     class Meta:
         model = Trainee
-        fields = ["gender", "venue", "discipline", "course"]
+        fields = ["gender", "venue", "discipline", "course", "level"]
