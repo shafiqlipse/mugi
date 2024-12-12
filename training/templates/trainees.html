@@ -54,6 +54,14 @@
       </div>
     </form>
   </div>
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li class="alert alert-{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
   <div class="filterlist card">
     <div class="official-list">
       <table id="myTable" class="display">
@@ -61,12 +69,12 @@
           <tr>
             <th>Entry date</th>
             <th>Names</th>
-            <th>Gender</th>
-            <th>Contact</th>
+
             <th>Venue</th>
             <th>Discipline</th>
             <th>Course</th>
             <th>Level</th>
+            <th>Deactivate</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
@@ -80,12 +88,22 @@
                 >{{trainees.first_name}} {{trainees.last_name}}</a
               >
             </td>
-            <td>{{trainees.gender}}</td>
-            <td>{{trainees.contact}}</td>
             <td>{{trainees.venue}}</td>
             <td>{{trainees.discipline}}</td>
             <td>{{trainees.course}}</td>
             <td>{{trainees.level}}</td>
+
+            <td>
+              {% if trainees.status == 'Active' %}
+              <span>{{trainees.status}}</span> {% else %}
+              <a
+                href="{% url 'activate_trainee' trainees.id%}"
+                class="btn btn-danger"
+                >Activate</a
+              >
+
+              {% endif %}
+            </td>
 
             <td><a href="{%url 'update_trainee' trainees.id %}">Edit</a></td>
             <td>

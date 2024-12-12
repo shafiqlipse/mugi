@@ -17,6 +17,7 @@ urlpatterns = [
     path("trainee/<int:id>", trainee_details, name="trainee"),
     path("delete_trainee/<int:id>", trainee_delete, name="delete_trainee"),
     path("update_trainee/<int:id>", trainee_update, name="update_trainee"),
+    path("activate_trainee/<int:id>", activate_trainee, name="activate_trainee"),
     # path("process-payment/", process_payment, name="process_payment"),  # Add this line
     # Add more URLs as ne
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
