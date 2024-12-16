@@ -113,7 +113,7 @@ def transfer_details(request, id):
     # Check if user has permission to view this transfer
     if not request.user.has_perm("transfers.approve_transfer"):
         messages.error(request, "You don't have permission to view this transfer.")
-        return redirect("home")
+        return redirect("alltransfers")
 
     context = {
         "transfer": transfer,
