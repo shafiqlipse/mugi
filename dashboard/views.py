@@ -169,7 +169,7 @@ def sport_delete(request, id):
 
 # @transfer_required
 def AllTransfers(request):
-    transfers = TransferRequest.objects.all()
+    transfers = TransferRequest.objects.filter(status ='Accepted')
     context = {"transfers": transfers}
     return render(request, "all/transfers.html", context)
 

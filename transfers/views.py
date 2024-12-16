@@ -12,28 +12,6 @@ from school.filters import AthleteFilter
 
 
 # @transfer_required
-def approve_transfer(request, transfer_id):
-    transfer_request = get_object_or_404(TransferRequest, id=transfer_id)
-
-    # Check if the user has the right permissions (e.g., if they are the approver)
-    if (
-        request.user == transfer_request.approver
-        and transfer_request.status == "accepted"
-    ):
-        transfer_request.approve_transfer()
-        messages.success(
-            request,
-            "Transfer approved and athlete has been transferred to the new school.",
-        )
-    else:
-        messages.error(
-            request,
-            "You are not authorized to approve this transfer or it is not ready for approval.",
-        )
-
-    return redirect("some_view_name")
-
-
 # Assume you create a form for transfer request
 
 
@@ -110,9 +88,9 @@ def myTransfers(request):
 def transfer_details(request, id):
     transfer = get_object_or_404(TransferRequest, id=id)
 
-    # Check if user has permission to view this transfer
-    if not request.user.has_perm("transfers.approve_transfer"):
-        messages.error(request, "You don't have permission to view this transfer.")
+    # Check if user is a technical user
+    if not getattr(request.user, "is_tech", False):
+        messages.error(request, "You must be a technical user to view this transfer.")
         return redirect("alltransfers")
 
     context = {
@@ -120,6 +98,7 @@ def transfer_details(request, id):
     }
 
     return render(request, "transfers/transfer.html", context)
+
 
 
 def myRequests(request):
@@ -190,9 +169,9 @@ def approve_transfer(request, id):
     try:
         transfer_request = get_object_or_404(TransferRequest, id=id)
 
-        # Validate if user has permission to approve transfers
-        if not request.user.has_perm("transfers.approve_transfer"):
-            messages.error(request, "You don't have permission to approve transfers.")
+        # Validate if user is a technical user
+        if not getattr(request.user, "is_technical", False):
+            messages.error(request, "You must be a technical user to approve transfers.")
             return redirect("alltransfers")
 
         # Check if transfer is in accepted state

@@ -14,6 +14,6 @@ class AcceptTransferForm(forms.ModelForm):
         if documents:
             if not documents.name.lower().endswith(".pdf"):
                 raise forms.ValidationError("Only PDF files are allowed.")
-            if documents.size > 5 * 1024 * 1024:  # 5MB limit
+            if documents.size > 1 * 1024 * 1024:  # 5MB limit
                 raise forms.ValidationError("File size must be under 5MB.")
         return documents
