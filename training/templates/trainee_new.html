@@ -178,9 +178,12 @@
                   <label>Season</label>
                   {{form.season}}
                 </div>
+
                 <div class="field">
                   <label>Venue</label>
-                  {{form.venue}}
+                  <select id="id_venue" name="venue" class="form-control">
+                    <option value="">---------</option>
+                  </select>
                 </div>
 
                 <div class="field">
@@ -214,6 +217,61 @@
       </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        $("#id_season").change(function () {
+          var seasonId = $(this).val();
+          if (seasonId) {
+            $.ajax({
+              url: "{% url 'get_venues' %}", // Use the URL for the updated view
+              data: {
+                season_id: seasonId,
+              },
+              success: function (data) {
+                var venueDropdown = $("#id_venue");
+                venueDropdown.empty();
+                venueDropdown.append(
+                  '<option value="">Select a venue</option>'
+                );
+                data.forEach(function (venue) {
+                  venueDropdown.append(
+                    `<option value="${venue.id}">${venue.name}</option>`
+                  );
+                });
+              },
+            });
+          } else {
+            $("#id_venue").empty();
+            $("#id_venue").append('<option value="">Select a venue</option>');
+          }
+        });
+      });
+    </script>
+
+
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        {% for message in messages %}
+        const toast = document.createElement("div");
+        toast.className = "toast show align-items-center text-white bg-{{ message.tags }} border-0";
+        toast.setAttribute("role", "alert");
+        toast.setAttribute("aria-live", "assertive");
+        toast.setAttribute("aria-atomic", "true");
+        toast.innerHTML = `
+          <div class="d-flex">
+            <div class="toast-body">
+
+              {{ message|escapejs }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>`;
+        document.getElementById("toast-container").appendChild(toast);
+      {% endfor %}
+      });
+    </script>
+
     <script>
       $(document).ready(function () {
         $("#id_venue").change(function () {
@@ -244,26 +302,6 @@
             );
           }
         });
-      });
-    </script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        {% for message in messages %}
-        const toast = document.createElement("div");
-        toast.className = "toast show align-items-center text-white bg-{{ message.tags }} border-0";
-        toast.setAttribute("role", "alert");
-        toast.setAttribute("aria-live", "assertive");
-        toast.setAttribute("aria-atomic", "true");
-        toast.innerHTML = `
-          <div class="d-flex">
-            <div class="toast-body">
-
-              {{ message|escapejs }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>`;
-        document.getElementById("toast-container").appendChild(toast);
-      {% endfor %}
       });
     </script>
 

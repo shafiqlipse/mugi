@@ -14,6 +14,7 @@ urlpatterns = [
     path('export-csv/', export_csv, name='export_csv'),
     path("trainees/", trainees, name="trainees"),
     path('get-disciplines/', get_disciplines, name='get_disciplines'),
+    path('get-venues/', get_venues, name='get_venues'),
     path("trainee/<int:id>", trainee_details, name="trainee"),
     path("delete_trainee/<int:id>", trainee_delete, name="delete_trainee"),
     path("update_trainee/<int:id>", trainee_update, name="update_trainee"),

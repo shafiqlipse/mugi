@@ -15,7 +15,7 @@ class Season(models.Model):
 
 class Venue(models.Model):
     name = models.CharField(max_length=50)
-
+    venue = models.ManyToManyField(Season)
     def __str__(self):
         return self.name
 
@@ -89,6 +89,8 @@ class Trainee(models.Model):
         choices=[
             ("Level 1", "Level 1"),
             ("Level 2", "Level 2"),
+            ("Beginers", "Beginers"),
+            ("CAFD", "CAFD"),
             
         ],default="Level 1"
     )

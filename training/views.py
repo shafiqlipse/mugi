@@ -14,6 +14,20 @@ import base64
 from django.http import JsonResponse
 
 
+
+def get_venues(request):
+    season_id = request.GET.get("season_id")  # Get the selected season ID from the request
+    if season_id:
+        try:
+            season = Season.objects.get(id=season_id)  # Retrieve the season instance
+            venues = season.venue_set.values(
+                "id", "name"
+            )  # Get related venues
+            return JsonResponse(list(venues), safe=False)
+        except Season.DoesNotExist:
+            return JsonResponse({"error": "Season not found"}, status=404)
+    return JsonResponse([], safe=False)
+
 def get_disciplines(request):
     venue_id = request.GET.get("venue_id")  # Get the selected venue ID from the request
     if venue_id:
