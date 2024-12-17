@@ -590,3 +590,40 @@ def athlete_list(request):
 #         return HttpResponse("Payment initiated successfully")
 #     else:
 #         return HttpResponse("Failed to initiate payment")
+
+import csv
+from django.http import HttpResponse
+
+
+def export_scsv(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="data.csv"'
+
+    # Create a CSV writer object using the HttpResponse as the file.
+    writer = csv.writer(response)
+
+    # Write the header row
+    writer.writerow(
+        [
+            "Name",
+            "District",
+            "Zone",
+            "Region",
+         
+        ]
+    )  # Replace with your model's fields
+
+    # Write data rows
+    for obj in School.objects.all():
+        writer.writerow(
+            [
+                
+                obj.name,
+                obj.district,
+                obj.district.zone,
+                obj.district.zone.region,
+            ]
+        )  # Replace with your model's fields
+
+    return response

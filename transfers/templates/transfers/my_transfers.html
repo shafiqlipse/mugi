@@ -31,18 +31,46 @@
             <tr>
               <td>
                 <a href=""
-                  >{{ mytransfer.athlete.fname }} {{ mytransfer.athlete.lname}}</a
+                  >{{ mytransfer.athlete.fname }}
+                  {{mytransfer.athlete.lname}}</a
                 >
               </td>
               <td>{{ mytransfer.owner }}</td>
 
               <td>{{ mytransfer.requested_at }}</td>
               <td>{{ mytransfer.status }}</td>
+              {% if mytransfer.status|default:"" == "pending" %}
               <td>
-                <a href="" class="btn btn-outline-primary">
-                  <i class="fa fa-plus"></i> Cancel Request
+                <a
+                  href="{% url 'cancel_transfer' mytransfer.id %}"
+                  class="btn btn-outline-primary"
+                >
+                  <i class="fas fa-times"></i> Cancel Request
                 </a>
               </td>
+
+              {% elif mytransfer.status == "accepted" %}
+              <td>
+                <span class="badge bg-warning text-dark">Pending Approval</span>
+              </td>
+
+              {% elif mytransfer.status == "rejected" %}
+              <td>
+                <span class="badge bg-danger">Transfer Rejected</span>
+              </td>
+
+              {% elif mytransfer.status == "approved" %}
+              <td>
+                <a href="#" class="btn btn-success">
+                  <i class="fas fa-check"></i> Transfer Successful
+                </a>
+              </td>
+
+              {% else %}
+              <td>
+                <span class="badge bg-secondary">Unknown Status</span>
+              </td>
+              {% endif %}
             </tr>
             {% endfor %}
           </tbody>

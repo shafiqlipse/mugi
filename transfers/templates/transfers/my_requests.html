@@ -87,6 +87,11 @@
           {% csrf_token %}
           <div class="modal-body">
             <p>Please upload the required transfer documents:</p>
+            <a
+              href="{% static 'assets/images/transfer_form.docx'%}"
+              target="_blank"
+              >Transfer form</a
+            >
             <div class="mb-3">
               <label for="documents" class="form-label"
                 >Transfer Documents (PDF)</label

@@ -10,6 +10,7 @@ class TraineesForm(forms.ModelForm):
             "first_name",
             "last_name",
             "venue",
+            "season",
             "photo",
             "contact",
             "discipline",
@@ -21,6 +22,7 @@ class TraineesForm(forms.ModelForm):
             "designation",
             "course",
             "level",
+            "tid",
         ]
         widgets = {
             "first_name": forms.TextInput(attrs={"class": "form-control"}),
@@ -29,7 +31,9 @@ class TraineesForm(forms.ModelForm):
             "contact": forms.TextInput(attrs={"class": "form-control"}),
             "email": forms.TextInput(attrs={"class": "form-control"}),
             "place": forms.TextInput(attrs={"class": "form-control"}),
+            "tid": forms.NumberInput(attrs={"class": "form-control"}),
             "venue": forms.Select(attrs={"class": "form-control"}),
+            "season": forms.Select(attrs={"class": "form-control"}),
             "designation": forms.Select(attrs={"class": "form-control"}),
             "discipline": forms.Select(attrs={"class": "form-control"}),
             "district": forms.Select(attrs={"class": "form-control"}),

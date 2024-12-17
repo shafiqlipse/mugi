@@ -198,3 +198,28 @@ def approve_transfer(request, id):
             request, f"An error occurred while approving the transfer: {str(e)}"
         )
         return redirect("alltransfers")
+
+
+def cancel_transfer(request, id):
+    try:
+        # Get the transfer request object
+        transfer_request = get_object_or_404(TransferRequest, id=id)
+
+        # Check if the requesting user has permission to cancel the transfer
+        if request.user.school != transfer_request.requester:
+            messages.error(request, "You are not authorized to cancel this transfer request.")
+            return redirect("mytransfers")
+
+        # Only allow pending transfer requests to be cancelled
+        if transfer_request.status != "pending":
+            messages.error(request, "You can only cancel pending transfer requests.")
+            return redirect("mytransfers")
+
+        # Delete the transfer request
+        transfer_request.delete()
+        messages.success(request, "Transfer request cancelled successfully.")
+        return redirect("mytransfers")
+
+    except Exception as e:
+        messages.error(request, f"An error occurred while cancelling the transfer: {str(e)}")
+        return redirect("mytransfers")
