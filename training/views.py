@@ -13,7 +13,8 @@ import base64
 
 from django.http import JsonResponse
 
-
+def redirection(request):
+    return render(request,'redirection.html')
 
 def get_venues(request):
     season_id = request.GET.get("season_id")  # Get the selected season ID from the request

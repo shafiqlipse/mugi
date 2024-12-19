@@ -18,5 +18,5 @@ admin.site.register(School)
 # admin.site.register(City)
 admin.site.register(Zone)
 admin.site.register(Classroom)
-admin.site.register(Season)
+
 # admin.site.register(school_official)
