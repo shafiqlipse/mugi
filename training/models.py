@@ -4,18 +4,10 @@ from accounts.models import District
 # Create your models here.
 
 
-class Season(models.Model):
-    name = models.CharField(max_length=50)
-    start_date = models.DateField()
-    year = models.IntegerField()
-
-    def __str__(self):
-        return self.name
-
 
 class Venue(models.Model):
     name = models.CharField(max_length=50)
-    venue = models.ManyToManyField(Season)
+
     def __str__(self):
         return self.name
 
@@ -37,7 +29,7 @@ class Trainee(models.Model):
     email = models.EmailField(max_length=50, null=True, blank=True)
     tid = models.EmailField(max_length=50, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
-    season = models.ForeignKey(Season, on_delete=models.CASCADE,null=True,blank=True)
+  
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
     discipline = models.ForeignKey(Discipline, on_delete=models.CASCADE)
     date_of_birth = models.DateField()
