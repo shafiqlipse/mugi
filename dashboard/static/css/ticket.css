@@ -1,0 +1,85 @@
+.ticket-detail h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+  text-transform: capitalize;
+}
+.ticket-detail .all-ticket {
+  display: grid;
+  grid-template-columns: 68% 30%;
+  gap: 25px;
+  padding: 10px;
+  background-color: #ebe8e8;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+@media ((max-width: 768px)) {
+  .ticket-detail .all-ticket {
+    grid-template-columns: 100%;
+  }
+}
+.ticket-detail .all-ticket .left-ticket {
+  width: 100%;
+}
+.ticket-detail .all-ticket .left-ticket .form-container {
+  background-color: rgb(255, 255, 255);
+  padding: 10px;
+  border-radius: 5px;
+}
+.ticket-detail .all-ticket .left-ticket .responses .ticket-responses .response {
+  background-color: rgb(255, 255, 255);
+  padding: 10px;
+  border-radius: 5px;
+}
+.ticket-detail .all-ticket .left-ticket .responses .ticket-responses .response .response-header h4 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.ticket-detail .all-ticket .left-ticket .responses .ticket-responses .response .response-header h4 span {
+  padding: 5px;
+  background-color: green;
+  font-size: 0.6em;
+  border-radius: 4px;
+  color: #fff;
+}
+.ticket-detail .all-ticket .left-ticket .responses .ticket-responses .response .response-body {
+  margin-top: 1rem;
+}
+.ticket-detail .all-ticket .left-ticket .responses .ticket-responses .response .response-body p {
+  font-size: 1.2rem;
+  text-transform: normal;
+  background-color: #f3f3f3;
+  padding: 10px;
+}
+.ticket-detail .all-ticket .right-ticket {
+  position: sticky;
+  top: 0;
+  padding: 10px;
+  border-radius: 10px;
+  width: 100%;
+}
+.ticket-detail .all-ticket .right-ticket .ticket-info {
+  margin-bottom: 1rem;
+  list-style: none;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+.ticket-detail .all-ticket .right-ticket .ticket-info li {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+.ticket-detail .all-ticket .right-ticket .Support-staff {
+  margin-bottom: 1rem;
+  list-style: none;
+  padding: 10px;
+}
+.ticket-detail .all-ticket .right-ticket .Support-staff li {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}/*# sourceMappingURL=ticket.css.map */

@@ -1,0 +1,13 @@
+{% extends "dashboard/dashboard.html" %}
+<!---->
+{% load static %}
+<!--    hjjhh-->
+{% block title %} | Open Ticket{% endblock title %} {% block content %}
+<div class="container content-wrapper">
+  <h1>Create Ticket</h1>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock content %}

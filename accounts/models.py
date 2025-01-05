@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.apps import apps
+import uuid 
 # Create your models here.
 
 
@@ -62,3 +63,55 @@ class Championship(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Ticket(models.Model):
+    title = models.CharField(max_length=100)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    status = models.CharField(
+        max_length=20,
+        choices=[("Open", "Open"), ("Picked up", "Picked up"), ("Answered", "Answered"), ("Closed", "Closed")],
+        default="Open",
+    )
+    topic = models.CharField(
+        max_length=20,
+        choices=[("Registration", "Registration"), ("Athletes", "Athletes"), ("Officials", "Officials"), ("Enrollments", "Enrollments"), ("Payments", "Payments"), ("Championships", "Championships")],
+        default="Open",
+    )
+    priority = models.CharField(
+        max_length=20,
+        choices=[("High", "High"), ("Medium", "Medium"), ("Low", "Low"), ("Urgent", "Urgent")],
+        default="Medium",
+    )
+    ticket_id = models.CharField(max_length=12, unique=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def save(self, *args, **kwargs):
+        if not self.ticket_id:
+            self.ticket_id = f"#{uuid.uuid4().hex[:8].upper()}"  # Example: #1A2B3C4D
+        super().save(*args, **kwargs)
+    def __str__(self):
+        return self.title
+
+class TicketMessage(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='responses')
+    responder = models.ForeignKey(User, on_delete=models.CASCADE, related_name='responses')
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        # Update ticket status based on the sender
+        if self.responder.is_staff:
+            self.ticket.status = 'Answered'
+        else:
+            self.ticket.status = 'School Response'
+        self.ticket.save()
+        
+    def __str__(self):
+        return f"Message from {self.responder.username} on {self.ticket.title}"
+    def __str__(self):
+        return self.ticket.title

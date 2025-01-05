@@ -1,0 +1,45 @@
+{% extends "dashboard/dashboard.html" %}
+<!---->
+{% load static %}
+<!--    hjjhh-->
+{% block title %} | Tickets{% endblock title %} {% block content %}
+<div class="container content-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Tickets</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead class="text-primary">
+                <th>Ticket ID</th>
+                <th>Topic</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Date</th>
+              </thead>
+              <tbody>
+                {% for ticket in tickets %}
+                <tr>
+                  <td>
+                    <a href="{% url 'ticket' ticket.id%}"
+                      >{{ ticket.ticket_id }}</a
+                    >
+                  </td>
+                  <td>{{ ticket.topic }}</td>
+                  <td>{{ ticket.title }}</td>
+                  <td>{{ ticket.status }}</td>
+                  <td>{{ticket.created_at}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

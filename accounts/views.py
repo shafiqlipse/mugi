@@ -4,13 +4,13 @@ from accounts.decorators import school_required, anonymous_required, staff_requi
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
-from .models import User
+from .models import *
 from django.contrib import messages
 
 # from .forms import SchoolRegistrationForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
-from .forms import UserEditForm
+from .forms import *
 
 
 @login_required
@@ -136,3 +136,53 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
 
 def success(request):
     return render(request, "accounts/success.html")
+
+def open_ticket(request):
+    if request.method == 'POST':
+        form = TicketForm(request.POST)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.sender = request.user
+            ticket.save()
+            return redirect('tickets')
+        # Form remains populated with submitted data if invalid
+    else:
+        form = TicketForm()
+    
+    context = {'form': form}  # Fixed dictionary syntax
+    return render(request, "support/open_ticket.html", context)
+
+def ticket(request, id):
+    ticket = get_object_or_404(Ticket, id=id)
+    responses = ticket.responses.all().order_by('created_at')
+    if request.method == 'POST':
+        form = TicketResponseForm(request.POST)
+        if form.is_valid():
+            response = form.save(commit=False)
+            response.ticket = ticket
+            response.responder = request.user
+            response.save()
+            return redirect('ticket', id=id)
+    else:
+        form = TicketResponseForm()
+        
+    context={
+        'ticket': ticket,
+        'responses': responses,
+        'form': form,
+    }
+    return render(request, "support/ticket.html",context)
+
+def tickets(request):
+    tickets = Ticket.objects.filter(sender=request.user)
+    context={
+        'tickets': tickets,
+    }
+    return render(request, "support/tickets.html", context)
+
+def support(request):
+    tickets = Ticket.objects.all()
+    context={
+        'tickets': tickets,
+    }
+    return render(request, "support/support.html", context)

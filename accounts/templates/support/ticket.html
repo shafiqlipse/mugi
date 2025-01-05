@@ -1,0 +1,74 @@
+{% extends "dashboard/dashboard.html" %}
+<!---->
+{% load static %}
+<!--    hjjhh-->
+{% block title %} | {{ticket.title}}{% endblock title %} {% block content %}
+<div class="ticket-detail content-wrapper">
+  <h2>Ticket {{ticket.ticket_id}} - {{ticket.title}}</h2>
+  <div class="all-ticket">
+    <div class="left-ticket">
+      <div class="form-container">
+        <div class="form-header">
+          <h3>Reply</h3>
+        </div>
+        <div class="form-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <textarea
+                class="form-control"
+                name="message"
+                id="message"
+                rows="3"
+              ></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit response</button>
+          </form>
+        </div>
+      </div>
+      <hr />
+      <div class="responses">
+        <div class="ticket-responses">
+          {% for response in ticket.responses.all %}
+          <div class="response">
+            <div class="response-header flex">
+              <h4>
+                {{response.responder.first_name}}
+                <span
+                  >{% if response.responder.is_staff %} STAFF {% else %} SCHOOL
+                  {% endif %}</span
+                >
+              </h4>
+
+              <p>{{response.created_at}}</p>
+            </div>
+            <hr />
+            <div class="response-body">
+              <p>{{response.message}}</p>
+            </div>
+          </div>
+
+          <hr />
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="right-ticket">
+      <h5>Ticket Information.</h5>
+      <ul class="ticket-info">
+        <li><strong>Sender</strong> {{ticket.sender}}</li>
+        <hr />
+        <li><strong>School</strong> {{ticket.sender.school}}</li>
+        <hr />
+        <li><strong>Topic</strong> {{ticket.topic}}</li>
+        <hr />
+        <li ><strong>Status</strong> <span class={% if ticket.status == "Open" %}"btn btn-primary" {% elif ticket.status == "Answered" %}"btn btn-info" {% else %}"btn btn-warning" {% endif %}>{{ticket.status}}</span> </li>
+        <hr />
+        <li><strong>Created At</strong> {{ticket.created_at}}</li>
+        <hr />
+        <li><strong>Last Updated On</strong> {{ticket.updated_at}}</li>
+      </ul>
+    </div>
+  </div>
+  {% endblock content %}
+</div>

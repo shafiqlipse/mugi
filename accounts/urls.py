@@ -25,4 +25,10 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
+    
+    # path('tickets/', views.ticket_list, name='ticket_list'),
+    path('ticket/<int:id>', ticket, name='ticket'),
+    path('tickets/', tickets, name='tickets'),
+    path('support/', support, name='support'),
+    path('tickets/create/', open_ticket, name='ticket_create'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

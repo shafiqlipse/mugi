@@ -1,8 +1,8 @@
 from django import forms
 # from dashboard.models import *
-from accounts.models import User
+from accounts.models import *
 # from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-
+from django.contrib.auth.hashers import make_password
 
 
 # class SchoolRegistrationForm(UserCreationForm):
@@ -24,9 +24,8 @@ from accounts.models import User
 #             "is_school",
 #         ]
 
-from django import forms
-from .models import User
-from django.contrib.auth.hashers import make_password
+
+
 
 class UserEditForm(forms.ModelForm):
     new_password = forms.CharField(
@@ -61,3 +60,14 @@ class UserEditForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class TicketForm(forms.ModelForm):
+    class Meta:
+        model = Ticket
+        fields = ['title', 'topic', 'priority', 'content']
+        
+class TicketResponseForm(forms.ModelForm):
+    class Meta:
+        model = TicketMessage
+        fields = ['message']
