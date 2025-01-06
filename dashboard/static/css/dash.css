@@ -70,6 +70,6 @@ h5 {
 }
 @media (max-width: 468px) {
   .custom-slider {
-    height: 200px; /* Smaller height for smaller screens */
+    height: 120px; /* Smaller height for smaller screens */
   }
 }/*# sourceMappingURL=dash.css.map */

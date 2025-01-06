@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
           previewContainer.innerHTML = `<img src="${event.target.result}" id="${field}_image">`;
           const image = document.getElementById(`${field}_image`);
           croppers[field] = new Cropper(image, {
-            aspectRatio: 728 / 90, // Set aspect ratio if needed
+            aspectRatio: 820 / 312, // Set aspect ratio if needed
             viewMode: 1,
             crop: function (event) {
               const canvas = this.cropper.getCroppedCanvas();

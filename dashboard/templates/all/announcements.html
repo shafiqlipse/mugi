@@ -43,7 +43,11 @@
                   <td>{{announcement.end_date}}</td>
 
                   <td>
-                    <a href="" class="del"><i class="fa fa-pencil">Edit</i></a>
+                    <a
+                      href="{% url 'edit_announcement' announcement.id%}"
+                      class="del"
+                      ><i class="fa fa-pencil">Edit</i></a
+                    >
                   </td>
                   <td>
                     <a href="" class="del"><i class="fa fa-trash">Delete</i></a>

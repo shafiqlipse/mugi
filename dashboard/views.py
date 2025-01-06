@@ -230,3 +230,48 @@ def announcement(request):
 def announcements(request):
     announcements = Announcement.objects.filter(is_active=True)
     return render(request, "all/announcements.html", {"announcements": announcements})
+
+
+def edit_announcement(request, id):
+    # Retrieve the existing announcement by ID
+    announcement = get_object_or_404(Announcement, id=id)
+    
+    if request.method == "POST":
+        form = AnnouncementForm(request.POST, request.FILES, instance=announcement)
+        if form.is_valid():
+            try:
+                updated_announcement = form.save(commit=False)
+
+                # Handle cropped image data for the "banner" field
+                cropped_data = request.POST.get("banner_cropped")
+                if cropped_data:
+                    try:
+                        format, imgstr = cropped_data.split(";base64,")
+                        ext = format.split("/")[-1]
+                        data = ContentFile(base64.b64decode(imgstr), name=f"banner.{ext}")
+                        updated_announcement.banner = data
+                    except (ValueError, TypeError) as e:
+                        messages.error(request, "Invalid image data.")
+                        return render(
+                            request, "all/anounce.html", {"form": form, "announcement": announcement}
+                        )
+
+                updated_announcement.save()
+                messages.success(request, "Announcement updated successfully!")
+                return redirect("announcements")  # Adjust to your announcement list view
+
+            except Exception as e:
+                messages.error(request, f"An unexpected error occurred: {e}")
+                return render(request, "all/anounce.html", {"form": form, "announcement": announcement})
+
+        else:
+            # Display form validation errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
+
+    else:
+        form = AnnouncementForm(instance=announcement)
+
+    context = {"form": form, "announcement": announcement}
+    return render(request, "all/anounce.html", context)

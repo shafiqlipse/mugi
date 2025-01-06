@@ -18,4 +18,5 @@ urlpatterns = [
     # path("sport/", sports, name="sports"),
     path("announcement/", announcement, name="announcement"),
     path("announcements/", announcements, name="announcements"),
+    path("edit_announcement/<int:id>", edit_announcement, name="edit_announcement"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
