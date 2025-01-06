@@ -28,4 +28,48 @@ h5 {
 }
 .form-control:focus {
   background-color: #fff;
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    margin-top: 30px;
+  }
+}
+@media (max-width: 568px) {
+  .content-wrapper {
+    margin-top: 70px;
+  }
+}
+@media (max-width: 368px) {
+  .content-wrapper {
+    margin-top: 100px;
+  }
+}
+
+.custom-slider {
+  height: 500px; /* Set the desired height */
+}
+.custom-slider .carousel-inner {
+  height: 100%; /* Ensure the inner content stretches to the full height */
+}
+.custom-slider .carousel-item img {
+  -o-object-fit: cover;
+     object-fit: cover; /* Ensures the image fills the container while maintaining aspect ratio */
+  height: 100%; /* Makes the image take the full height of the container */
+  width: 100%; /* Ensures the image stretches horizontally */
+}
+@media (min-width: 769px) {
+  .custom-slider {
+    height: 500px; /* Larger height for larger screens */
+  }
+}
+@media (max-width: 768px) {
+  .custom-slider {
+    height: 300px; /* Smaller height for smaller screens */
+  }
+}
+@media (max-width: 468px) {
+  .custom-slider {
+    height: 200px; /* Smaller height for smaller screens */
+  }
 }/*# sourceMappingURL=dash.css.map */
