@@ -6,16 +6,11 @@ from accounts.models import *
 from transfers.models import *
 from django.contrib import messages
 from .forms import *
-
-
-# Create your views here.
-from django.utils import timezone
-from django.db.models import Q
-
-# Get today's date
+from .models import *
 today = timezone.now().date()
 from django.db.models import Count
-
+from django.utils import timezone
+from django.db.models import Q
 
 # Filter schools created today
 @login_required
@@ -173,98 +168,59 @@ def AllTransfers(request):
     context = {"transfers": transfers}
     return render(request, "all/transfers.html", context)
 
+def announcement_add(request):
+    announcements = Announcement.objects.filter(is_active=True)
+    return render(request, 'your_template.html', {'announcements': announcements})
 
-# # championships
-# def schools(request):
-#     schools = School.objects.all()
-#     new_school = None
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.files.base import ContentFile
+from .models import Announcement
+from .forms import AnnouncementForm
+import base64
+from django.utils.timezone import now
 
-#     if request.method == "POST":
-#         sform = SchoolForm(request.POST, request.FILES)
+def announcement(request):
+   
+    if request.method == "POST":
+        form = AnnouncementForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                announce = form.save(commit=False)
 
-#         if sform.is_valid():
-#             new_school = sform.save(commit=False)
+                # Handle cropped image data for the "banner" field
+                cropped_data = request.POST.get("banner_cropped")
+                if cropped_data:
+                    try:
+                        format, imgstr = cropped_data.split(";base64,")
+                        ext = format.split("/")[-1]
+                        data = ContentFile(base64.b64decode(imgstr), name=f"banner.{ext}")
+                        announce.banner = data
+                    except (ValueError, TypeError) as e:
+                        messages.error(request, "Invalid image data.")
+                        return render(request, "all/announce.html", {"form": form})
 
-#             new_school.save()
-#             return redirect("schools")
-#     else:
-#         sform = SchoolForm()
-#     context = {"schools": schools, "sform": sform}
-#     return render(request, "school/schools.html", context)
+                announce.save()
+                messages.success(request, "Announcement added successfully!")
+                return redirect("announcement")
 
+            except Exception as e:
+                messages.error(request, f"An unexpected error occurred: {e}")
+                return render(request, "all/anounce.html", {"form": form})
 
-# # championships
-# def schools(request):
-#     schools = School.objects.all()
-#     new_school = None
+        else:
+            # Display form validation errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
 
-#     if request.method == "POST":
-#         sform = SchoolForm(request.POST, request.FILES)
+    else:
+        form = AnnouncementForm()
 
-#         if sform.is_valid():
-#             new_school = sform.save(commit=False)
-
-#             new_school.save()
-#             return redirect("schools")
-#     else:
-#         sform = SchoolForm()
-#     context = {"schools": schools, "sform": sform}
-#     return render(request, "school/schools.html", context)
-
-
-# # championships
-# def schools(request):
-#     schools = School.objects.all()
-#     new_school = None
-
-#     if request.method == "POST":
-#         sform = SchoolForm(request.POST, request.FILES)
-
-#         if sform.is_valid():
-#             new_school = sform.save(commit=False)
-
-#             new_school.save()
-#             return redirect("schools")
-#     else:
-#         sform = SchoolForm()
-#     context = {"schools": schools, "sform": sform}
-#     return render(request, "school/schools.html", context)
+    context = {"form": form}
+    return render(request, "all/anounce.html", context)
 
 
-# add championships
-
-
-# def schoolDetail(request, id):
-#     school = School.objects.get(id=id)
-#     athletes = Athlete.objects.filter(school=school)
-#     new_athlete = None
-
-#     if request.method == "POST":
-#         cform = AthleteForm(request.POST, request.FILES)
-
-#         if cform.is_valid():
-#             new_athlete = cform.save(commit=False)
-#             new_athlete.school = school
-
-#             new_athlete.save()
-#             return redirect("schoolDetail", school.id)
-#     else:
-#         cform = AthleteForm()
-
-#     context = {
-#         "school": school,
-#         "athletes": athletes,
-#         "cform": cform,
-#     }
-
-#     return render(request, "school/school.html", context)
-
-
-# def AthleteDetail(request, id):
-#     athlete = Athlete.objects.get(id=id)
-
-#     context = {
-#         "athlete": athlete,
-#     }
-
-#     return render(request, "school/athlete.html", context)
+def announcements(request):
+    announcements = Announcement.objects.filter(is_active=True)
+    return render(request, "all/announcements.html", {"announcements": announcements})

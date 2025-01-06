@@ -1,0 +1,58 @@
+{% extends "dashboard/dashboard.html" %}
+<!---->
+{% load static %} {% block content %}
+<div class="content-wrapper">
+  <h1>Announcements</h1>
+  <p>All fields labeled with <span>*</span> must be filled.</p>
+  <hr />
+  <form
+    action=""
+    method="POST"
+    class="form-ctttrl card"
+    enctype="multipart/form-data"
+  >
+    {% csrf_token %}
+    <div class="fields">
+      <div class="left">
+        {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+          <div
+            class="alert {% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}"
+          >
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="left0">
+          <div class="imgbox">
+            <div class="field">
+              <label>{{form.banner.label}} </label>
+              <div id="banners_preview" class="preview-bcontainer"></div>
+            </div>
+            <div class="field">
+              <input
+                type="file"
+                name="banner"
+                accept="image/*"
+                id="id_banner"
+              />
+            </div>
+          </div>
+          <div class="lefty">
+            <div class="field-grid grid2">
+              <div class="field"><label>Title</label>{{form.title}}</div>
+              <div class="field"><label>End date</label>{{form.end_date}}</div>
+            </div>
+            <div class="field-grid">
+              <div class="field"><label>Content</label>{{form.content}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="btn-submit">Save official</button>
+  </form>
+</div>
+{% endblock %}

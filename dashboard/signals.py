@@ -1,28 +1,22 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.mail import send_mail
-from django.conf import settings
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from school.models import *
+from transfers.models import TransferRequest
+from .models import Notification
+from django.contrib.auth.models import User
 
-
-@receiver(post_save, sender=School)
-def notify_admin_new_athlete(sender, instance, created, **kwargs):
-    if created:
-        subject = "New School Added"
-        html_message = render_to_string(
-            "emails/email_notification.html", {"school": instance}
+@receiver(post_save, sender=TransferRequest)
+def notify_ticket_update(sender, instance, created, **kwargs):
+    if not created:  # Only trigger on updates
+        # Define the recipients
+        recipient1 = instance.requester  # Assuming the ticket owner is a recipient
+        recipient2 = instance.owner  # Example second recipient
+        
+        # Create the notification
+        notification = Notification.objects.create(
+            sender=instance.approver,  # The user who updated the ticket
+            verb='updated the ticket',
+            target=f"Transfer #{instance.athlete}"
         )
-        plain_message = strip_tags(html_message)
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = settings.ADMIN_EMAILS
-
-        send_mail(
-            subject,
-            plain_message,
-            from_email,
-            recipient_list,
-            html_message=html_message,
-            fail_silently=False,
-        )
+        
+        # Add recipients to the notification
+        notification.recipients.add(recipient1, recipient2)

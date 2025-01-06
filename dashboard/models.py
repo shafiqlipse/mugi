@@ -1,100 +1,34 @@
-from django.db import models
 from accounts.models import User
-from school.models import *
+from school.models import School
+from django.db import models
+from django.utils.timezone import now
 
-# Create your models here.
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.TextField()
+    recipients = models.ManyToManyField(School, related_name='notifications')
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sent_notifications')
+    verb = models.CharField(max_length=255)  # e.g., "updated your ticket"
+    target = models.CharField(max_length=255, null=True, blank=True)  # e.g., "Ticket #123"
+    created_at = models.DateTimeField(default=now)
     is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Notification: {self.verb}"
 
 
 
-# notifications/templatetags/notification_tags.py
-"""
-from django import template
-from ..models import Notification
+class Announcement(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    start_date = models.DateTimeField(default=now)
+    end_date = models.DateTimeField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    banner = models.ImageField(
+        upload_to="banners/",
+        blank=True,
+        null=True,
+    )
+    def __str__(self):
+        return self.title
 
-register = template.Library()
-
-@register.inclusion_tag('notifications/show_notifications.html', takes_context=True)
-def show_notifications(context):
-    request_user = context['request'].user
-    notifications = Notification.objects.filter(user=request_user).order_by('-created_at')[:5]
-    return {'notifications': notifications}
-
-# notifications/views.py
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Notification
-
-@login_required
-def mark_as_read(request, notification_id):
-    notification = Notification.objects.get(id=notification_id, user=request.user)
-    notification.is_read = True
-    notification.save()
-    return redirect('notifications_list')
-
-@login_required
-def notifications_list(request):
-    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'notifications/list.html', {'notifications': notifications})
-
-# templates/base.html
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{% block title %}My Site{% endblock %}</title>
-    <style>
-        #notification-bar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 300px;
-            background-color: #f1f1f1;
-            padding: 10px;
-        }
-    </style>
-</head>
-<body>
-    <div id="notification-bar">
-        {% show_notifications %}
-    </div>
-    {% block content %}
-    {% endblock %}
-</body>
-</html>
-
-# templates/notifications/show_notifications.html
-
-{% for notification in notifications %}
-    <div class="notification {% if not notification.is_read %}unread{% endif %}">
-        {{ notification.message }}
-        {% if not notification.is_read %}
-            <a href="{% url 'mark_as_read' notification.id %}">Mark as read</a>
-        {% endif %}
-    </div>
-{% empty %}
-    <p>No new notifications.</p>
-{% endfor %}
-
-# templates/notifications/list.html
-
-{% extends 'base.html' %}
-
-{% block content %}
-    <h1>Notifications</h1>
-    {% for notification in notifications %}
-        <div class="notification {% if not notification.is_read %}unread{% endif %}">
-            {{ notification.message }}
-            {% if not notification.is_read %}
-                <a href="{% url 'mark_as_read' notification.id %}">Mark as read</a>
-            {% endif %}
-        </div>
-    {% empty %}
-        <p>No notifications.</p>
-    {% endfor %}
-{% endblock %}"""
+    def is_visible(self):
+        return self.is_active and (not self.end_date or self.end_date > now())

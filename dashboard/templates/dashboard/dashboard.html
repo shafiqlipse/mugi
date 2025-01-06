@@ -65,6 +65,8 @@
     <link rel="stylesheet" href="{% static 'css/school/schools.css'%}" />
     <link rel="stylesheet" href="{% static 'main/main.css'%}" />
     <link rel="stylesheet" href="{% static 'css/dash.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/ticket.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/banners.css'%}" />
     <link
       rel="stylesheet"
       href="{% static 'assets/styles/school_enroll.css'%}"
@@ -423,16 +425,49 @@
               </ul>
             </div>
           </li>
+
           <li class="nav-item menu-items">
             <a
               class="nav-link"
-              href="http://www.bootstrapdash.com/demo/corona-free/jquery/documentation/documentation.html"
+              data-toggle="collapse"
+              href="#auth2"
+              aria-expanded="false"
+              aria-controls="auth2"
             >
               <span class="menu-icon">
-                <i class="mdi mdi-file-document-box"></i>
+                <i class="mdi mdi-security"></i>
               </span>
-              <span class="menu-title">Documentation</span>
+              <span class="menu-title">Miscellaneous</span>
+              <i class="menu-arrow"></i>
             </a>
+            <div class="collapse" id="auth2">
+              <ul class="nav flex-column sub-menu">
+                {% if user.is_staff %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{%url 'announcements'%}">
+                    Announcements
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{%url 'announcement'%}">
+                    Add Announcement
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'support' %}"> Tickets </a>
+                </li>
+                {% elif user.is_school %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'tickets' %}"> Tickets </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'ticket_create' %}">
+                    Add Ticket
+                  </a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
           </li>
         </ul>
       </nav>
@@ -465,57 +500,6 @@
               </li>
             </ul>
             <ul class="navbar-nav navbar-nav-right">
-              <li class="nav-item dropdown d-none d-lg-block">
-                <a
-                  class="nav-link btn btn-success create-new-button"
-                  id="createbuttonDropdown"
-                  data-toggle="dropdown"
-                  aria-expanded="false"
-                  href="#"
-                  >+ Add new</a
-                >
-                <div
-                  class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
-                  aria-labelledby="createbuttonDropdown"
-                >
-                  <h6 class="p-3 mb-0">School Elements</h6>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                      <div class="preview-icon bg-dark rounded-circle">
-                        <i class="mdi mdi-file-outline text-primary"></i>
-                      </div>
-                    </div>
-                    <div class="preview-item-content">
-                      <p class="preview-subject ellipsis mb-1">New Athlete</p>
-                    </div>
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                      <div class="preview-icon bg-dark rounded-circle">
-                        <i class="mdi mdi-web text-info"></i>
-                      </div>
-                    </div>
-                    <div class="preview-item-content">
-                      <p class="preview-subject ellipsis mb-1">New official</p>
-                    </div>
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                      <div class="preview-icon bg-dark rounded-circle">
-                        <i class="mdi mdi-layers text-danger"></i>
-                      </div>
-                    </div>
-                    <div class="preview-item-content">
-                      <p class="preview-subject ellipsis mb-1">Enroll</p>
-                    </div>
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <p class="p-3 mb-0 text-center">Close</p>
-                </div>
-              </li>
               <li class="nav-item nav-settings d-none d-lg-block">
                 <a class="nav-link" href="#">
                   <i class="mdi mdi-view-grid"></i>
@@ -712,6 +696,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
     <script src="{% static 'js/opper.js' %}"></script>
+    <script src="{% static 'js/banner.js' %}"></script>
     <script src="{% static 'js/tabs.js' %}"></script>
     <!-- plugins:js -->
     <script src="{% static 'assets/vendors/js/vendor.bundle.base.js'%}"></script>

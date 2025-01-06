@@ -100,7 +100,8 @@ class TicketMessage(models.Model):
     responder = models.ForeignKey(User, on_delete=models.CASCADE, related_name='responses')
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    
+    class Meta:
+        ordering = ['-created_at']
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         

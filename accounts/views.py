@@ -154,7 +154,7 @@ def open_ticket(request):
 
 def ticket(request, id):
     ticket = get_object_or_404(Ticket, id=id)
-    responses = ticket.responses.all().order_by('created_at')
+    responses = ticket.responses.all().order_by('-created_at')
     if request.method == 'POST':
         form = TicketResponseForm(request.POST)
         if form.is_valid():

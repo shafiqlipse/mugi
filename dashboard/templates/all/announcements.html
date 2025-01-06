@@ -1,0 +1,63 @@
+{% extends "dashboard/dashboard.html" %} {%load static%}
+<!---->
+{% block title %}Championships{% endblock %}
+<!---->
+
+{%block content%}
+<div class="content-wrapper">
+  <div class="row">
+    <div class="col-12 grid-margin stretch-card flex">
+      <div class="card corona-gradient-card">
+        <div class="card-body py-0 px-0 px-sm-3">
+          <h1>ANNOUNCEMENTS</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xl-12 col-sm-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="official-list">
+            <table id="myTable" class="display">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>content</th>
+                  <th>Start date</th>
+                  <th>End Date</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for announcement in announcements%}
+                <tr>
+                  <td>
+                    <a href="">{{announcement.title}}</a>
+                  </td>
+                  <td>{{ announcement.content|truncatechars:55 }}</td>
+
+                  <td>{{announcement.start_date}}</td>
+                  <td>{{announcement.end_date}}</td>
+
+                  <td>
+                    <a href="" class="del"><i class="fa fa-pencil">Edit</i></a>
+                  </td>
+                  <td>
+                    <a href="" class="del"><i class="fa fa-trash">Delete</i></a>
+                  </td>
+                </tr>
+
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

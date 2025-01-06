@@ -20,11 +20,11 @@ def Dash(request):
 
     athletes = Athlete.objects.filter(school=school)[:6]
     athletes_count = Athlete.objects.filter(school=school).count
-    officials_count = school_official.objects.all().count
-    athletes_bcount = Athlete.objects.filter(gender="male").count
-    athletes_gcount = Athlete.objects.filter(gender="female").count
-    officials_bcount = school_official.objects.filter(gender="M").count
-    officials_gcount = school_official.objects.filter(gender="F").count
+    officials_count = school_official.objects.filter(school=school).count
+    athletes_bcount = Athlete.objects.filter(school=school,gender="male").count
+    athletes_gcount = Athlete.objects.filter(school=school,gender="female").count
+    officials_bcount = school_official.objects.filter(school=school,gender="M").count
+    officials_gcount = school_official.objects.filter(school=school,gender="F").count
     context = {
         "athletes": athletes,
         "athletes_count": athletes_count,

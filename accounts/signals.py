@@ -11,11 +11,13 @@ from django.core.mail import EmailMultiAlternatives
 User = get_user_model()
 
 
+
+
 @receiver(post_save, sender=School)
 def create_school_officials_and_admin(sender, instance, created, **kwargs):
     if created:
         # Create headteacher official
-        school_official.objects.create(
+        headteacher = school_official.objects.create(
             school=instance,
             fname=instance.fname,
             lname=instance.lname,
@@ -29,7 +31,7 @@ def create_school_officials_and_admin(sender, instance, created, **kwargs):
         )
 
         # Create games teacher official
-        school_official.objects.create(
+        games_teacher = school_official.objects.create(
             school=instance,
             fname=instance.gfname,
             lname=instance.glname,
@@ -42,33 +44,38 @@ def create_school_officials_and_admin(sender, instance, created, **kwargs):
             photo=instance.gphoto,
         )
 
-        # Create the admin user for the headteacher
+        # Generate secure passwords
         admin_password = "Password@12345"  # Replace with secure password generation
+        games_teacher_password = "Password@12345"  # Replace with secure password generation
+
+        # Create admin user for headteacher
         admin_user = User.objects.create(
             username=instance.email,
             email=instance.email,
             password=make_password(admin_password),
             is_school=True,
+            school=instance,
         )
 
-        # Create the user for the games teacher
-        games_teacher_password = (
-            "Password@12345"  # Replace with secure password generation
-        )
+        # Create user for games teacher
         games_teacher_user = User.objects.create(
             username=instance.gemail,
             email=instance.gemail,
             password=make_password(games_teacher_password),
             is_school=True,
+            school=instance,
         )
 
-        # Set up email context and message details
+        # Correct the context
         context = {
             "admin_username": instance.email,
             "admin_password": admin_password,
             "games_teacher_username": instance.gemail,
             "games_teacher_password": games_teacher_password,
         }
+
+        # You can use this context to send emails or display in templates
+
 
         # Render HTML email content
         html_message = render_to_string("accounts/email.html", context)

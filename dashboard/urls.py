@@ -14,4 +14,7 @@ urlpatterns = [
     path("alltransfers/", AllTransfers, name="alltransfers"),
     path("championships/", championships, name="championships"),
     path("sport/", sports, name="sports"),
+    # path("sport/", sports, name="sports"),
+    path("announcement/", announcement, name="announcement"),
+    path("announcements/", announcements, name="announcements"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

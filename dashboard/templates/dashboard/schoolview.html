@@ -74,8 +74,10 @@
           <div class="row">
             <div class="col-9">
               <div class="d-flex align-items-center align-self-start">
-                <h3 class="mb-0">$12.34</h3>
-                <p class="text-danger ml-2 mb-0 font-weight-medium">-2.4%</p>
+                <h3 class="mb-0">M{{athletes_bcount}}</h3>
+                 : 
+                <h3 class="mb-0">F{{athletes_gcount}}</h3>
+                
               </div>
             </div>
             <div class="col-3">
@@ -94,8 +96,10 @@
           <div class="row">
             <div class="col-9">
               <div class="d-flex align-items-center align-self-start">
-                <h3 class="mb-0">{{officials_count}}</h3>
-                <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
+                <h3 class="mb-0">M{{officials_bcount}}</h3>
+                 : 
+                <h3 class="mb-0">F{{officials_gcount}}</h3>
+                
               </div>
             </div>
             <div class="col-3">
@@ -105,6 +109,48 @@
             </div>
           </div>
           <h6 class="text-muted font-weight-normal">Officials</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="row">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Recent Athletes</h4>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Athlete</th>
+                  <th>LIN</th>
+                  <th>Index_Number</th>
+                  <th>Sport</th>
+                  <th>Gender</th>
+                  <th>Class</th>
+                  <th>Date of Birth</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for athlete in athletes %}
+                <tr>
+                  <td>
+                    <img src="{{athlete.photo.url}}" alt="image" />
+                    <span class="pl-2"
+                      >{{athlete.fname}} {{athlete.lname}}</span
+                    >
+                  </td>
+                  <td>{{athlete.lin}}</td>
+                  <td>{{athlete.index_number}}</td>
+                  <td>{{athlete.sport}}</td>
+                  <td>{{athlete.gender}}</td>
+                  <td>{{athlete.classroom}}</td>
+                  <td>{{athlete.date_of_birth}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -175,49 +221,8 @@
       </div>
     </div>
   </div>
-  -->
-  <div class="row">
-    <div class="col-12 grid-margin">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Recent Athletes</h4>
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Athlete</th>
-                  <th>LIN</th>
-                  <th>Index_Number</th>
-                  <th>Sport</th>
-                  <th>Gender</th>
-                  <th>Class</th>
-                  <th>Date of Birth</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for athlete in athletes %}
-                <tr>
-                  <td>
-                    <img src="{{athlete.photo.url}}" alt="image" />
-                    <span class="pl-2"
-                      >{{athlete.fname}} {{athlete.lname}}</span
-                    >
-                  </td>
-                  <td>{{athlete.lin}}</td>
-                  <td>{{athlete.index_number}}</td>
-                  <td>{{athlete.sport}}</td>
-                  <td>{{athlete.gender}}</td>
-                  <td>{{athlete.classroom}}</td>
-                  <td>{{athlete.date_of_birth}}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+
+
   <div class="row">
     <div class="col-md-6 col-xl-4 grid-margin stretch-card">
       <div class="card">
@@ -434,6 +439,6 @@
         </div>
       </div>
     </div>
-  </div>
+  </div>-->
 </div>
 {% endblock %}
