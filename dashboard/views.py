@@ -168,6 +168,12 @@ def AllTransfers(request):
     context = {"transfers": transfers}
     return render(request, "all/transfers.html", context)
 
+# @transfer_required
+def All_Transfers(request):
+    transfers = TransferRequest.objects.all()
+    context = {"transfers": transfers}
+    return render(request, "all/transfer_s.html", context)
+
 def announcement_add(request):
     announcements = Announcement.objects.filter(is_active=True)
     return render(request, 'your_template.html', {'announcements': announcements})

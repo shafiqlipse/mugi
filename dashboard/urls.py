@@ -12,6 +12,7 @@ urlpatterns = [
     path('user/edit/<int:id>/', edit_user, name='edit_user'),
     path("school-dashboard/", Dash, name="schooldash"),
     path("alltransfers/", AllTransfers, name="alltransfers"),
+    path("all_transfers/", All_Transfers, name="all_transfers"),
     path("championships/", championships, name="championships"),
     path("sport/", sports, name="sports"),
     # path("sport/", sports, name="sports"),

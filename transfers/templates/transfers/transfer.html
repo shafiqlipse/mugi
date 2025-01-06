@@ -124,6 +124,16 @@
           {% endif %}
         </div>
       </div>
+
+      {% if transfer.status == 'accepted' %}
+      <a
+        type="button"
+        class="btn btn-danger"
+        href="{% url 'reject_transfer' transfer.id %}"
+      >
+        <i class="fa fa-times"></i> Reject Transfer
+      </a>
+      {% endif %}
     </div>
   </div>
 

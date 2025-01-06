@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from .models import TransferRequest
 from school.models import *
+from dashboard.models import *
 from .forms import *
 from django.utils import timezone
 from django.core.paginator import Paginator
@@ -223,3 +224,47 @@ def cancel_transfer(request, id):
     except Exception as e:
         messages.error(request, f"An error occurred while cancelling the transfer: {str(e)}")
         return redirect("mytransfers")
+    
+    
+
+from django.utils.timezone import now
+# from .models import Notification, TransferRequest
+
+@login_required
+def reject_transfer(request, id):
+    try:
+        transfer_request = get_object_or_404(TransferRequest, id=id)
+
+        # Validate if user is authorized to reject transfers
+        if not getattr(request.user, "is_tech", False):
+            messages.error(request, "You must be a technical user to reject transfers.")
+            return redirect("alltransfers")
+
+        # Check if transfer is in accepted or pending state
+        if transfer_request.status not in ["accepted", "pending"]:
+            messages.error(request, "Only pending or accepted transfers can be rejected.")
+            return redirect("alltransfers")
+
+        # Update status to pending and clear documents
+        transfer_request.status = "pending"
+        transfer_request.documents = None
+        transfer_request.save()
+
+        # Create a notification
+        notification = Notification.objects.create(
+            sender=request.user,
+            verb=f"Transfer request for {transfer_request.athlete} was rejected.",
+            target=f"Athlete ID: {transfer_request.athlete.id}",
+            created_at=now(),
+        )
+        # Add recipients (e.g., owning and requesting schools)
+        notification.recipients.add(transfer_request.owner, transfer_request.requester)
+
+        messages.success(
+            request, f"Transfer request for {transfer_request.athlete} has been rejected and reset to pending."
+        )
+        return redirect("alltransfers")
+
+    except Exception as e:
+        messages.error(request, f"An error occurred while rejecting the transfer: {str(e)}")
+        return redirect("alltransfers")

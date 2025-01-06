@@ -358,6 +358,14 @@
             </a>
           </li>
           <li class="nav-item menu-items">
+            <a class="nav-link" href="{% url 'all_transfers'%}">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+              <span class="menu-title">AllTransfers</span>
+            </a>
+          </li>
+          <li class="nav-item menu-items">
             <a class="nav-link" href="{%url 'all_enrollments'%}">
               <span class="menu-icon">
                 <i class="mdi mdi-table-large"></i>
@@ -573,7 +581,7 @@
                   data-toggle="dropdown"
                 >
                   <i class="mdi mdi-bell"></i>
-                  <span class="count bg-danger"></span>
+                  <span class="count bg-danger">{{ unread_notifications_count }}</span>
                 </a>
                 <div
                   class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
@@ -581,33 +589,22 @@
                 >
                   <h6 class="p-3 mb-0">Notifications</h6>
                   <div class="dropdown-divider"></div>
-                  {% for notification in notifications %}
+                  <div>
+                    <h3>Notifications </h3>
+                    <ul>
+                      {% for notification in notifications %}
+                        <li class="{% if not notification.is_read %}unread{% endif %}">
+                          <strong>{{ notification.verb }}</strong>
+                          <small>{{ notification.created_at }}</small>
+                          <p>{{ notification.target }}</p>
+                        </li>
+                      {% empty %}
+                        <li>No new notifications.</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  
 
-                  <a
-                    class="dropdown-item preview-item notification {% if not notification.is_read %}unread{% endif %}"
-                  >
-                    <div class="preview-thumbnail">
-                      <div class="preview-icon bg-dark rounded-circle">
-                        <i class="mdi mdi-calendar text-success"></i>
-                      </div>
-                    </div>
-                    <div class="preview-item-content">
-                      <p class="preview-subject mb-1">
-                        {{ notification.message }}
-                      </p>
-                      <p class="text-muted ellipsis mb-0">
-                        Just a reminder that you have an event today
-                      </p>
-                    </div>
-                    {% if not notification.is_read %}
-                    <a href="{% url 'mark_as_read' notification.id %}"
-                      >Mark as read</a
-                    >
-                    {% endif %}
-                  </a>
-                  {% empty %}
-                  <p>No new notifications.</p>
-                  {% endfor %}
                   <div class="dropdown-divider"></div>
                   <p class="p-3 mb-0 text-center">See all notifications</p>
                 </div>
