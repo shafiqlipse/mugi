@@ -275,3 +275,17 @@ def edit_announcement(request, id):
 
     context = {"form": form, "announcement": announcement}
     return render(request, "all/anounce.html", context)
+
+
+def delete_announcement(request, id):
+    # Get the announcement by primary key
+    announcement = get_object_or_404(Announcement, id=id)
+
+    # Check if the user has permission to delete (e.g., only admins or the creator)
+    if request.user.is_staff:  # Example of permission check
+        announcement.delete()
+        messages.success(request, "Announcement deleted successfully!")
+    else:
+        messages.error(request, "You do not have permission to delete this announcement.")
+
+    return redirect('announcements') 

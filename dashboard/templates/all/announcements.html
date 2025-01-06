@@ -50,7 +50,11 @@
                     >
                   </td>
                   <td>
-                    <a href="" class="del"><i class="fa fa-trash">Delete</i></a>
+                    <a
+                      href="{% url 'delete_announcement' announcement.id%}"
+                      class="del"
+                      ><i class="fa fa-trash">Delete</i></a
+                    >
                   </td>
                 </tr>
 
