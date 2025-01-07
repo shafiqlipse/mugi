@@ -37,7 +37,7 @@ h5 {
 }
 
 .custom-slider {
-  height: 500px; /* Set the desired height */
+  height: 320px; /* Set the desired height */
 }
 .custom-slider .carousel-inner {
   height: 100%; /* Ensure the inner content stretches to the full height */
