@@ -23,10 +23,11 @@ class Announcement(models.Model):
     end_date = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     banner = models.ImageField(
-        upload_to="banners/",
-        blank=True,
-        null=True,
+        upload_to="banners/"
     )
+    link=models.URLField( max_length=255,
+        blank=True,
+        null=True,)
     def __str__(self):
         return self.title
 

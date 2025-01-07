@@ -32,28 +32,33 @@ h5 {
     margin-top: 10px;
   }
 }
+.card-body {
+  padding: 0;
+  .custom-slider {
+    height: auto; /* Set the desired height */
+    margin: 0;
+    padding: 0;
+    .carousel-inner {
+      width: 100%;
+      height: 100%;
+      margin: 0; /* Ensure the inner content stretches to the full height */
+      padding: 0;
+    }
 
-.custom-slider {
-  height: 320px; /* Set the desired height */
+    .carousel-item img {
+      object-fit: cover; /* Ensures the image fills the container while maintaining aspect ratio */
+      height: 100%; /* Makes the image take the full height of the container */
+      width: 100%; /* Ensures the image stretches horizontally */
+      margin: 0;
+      padding: 0;
+    }
 
-  .carousel-inner {
-    height: 100%; /* Ensure the inner content stretches to the full height */
-  }
-
-  .carousel-item img {
-    object-fit: cover; /* Ensures the image fills the container while maintaining aspect ratio */
-    height: 100%; /* Makes the image take the full height of the container */
-    width: 100%; /* Ensures the image stretches horizontally */
-  }
-
-  @media (min-width: 769px) {
-    height: 500px; /* Larger height for larger screens */
-  }
-  @media (max-width: 768px) {
-    height: 300px; /* Smaller height for smaller screens */
-  }
-  @media (max-width: 468px) {
-    height: 120px; /* Smaller height for smaller screens */
+    @media (min-width: 769px) {
+      height: 100%; /* Larger height for larger screens */
+    }
+    @media (max-width: 768px) {
+      height: 100%; /* Smaller height for smaller screens */
+    }
   }
 }
 

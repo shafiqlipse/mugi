@@ -44,12 +44,13 @@ class AnnouncementForm(forms.ModelForm):
             "title",
             "content",
             "end_date",
-            "banner",
+            "banner","link"
  
         ]
 
         widgets = {
             "title": forms.TextInput(attrs={"class": "form-control"}),
+            "link": forms.URLInput(attrs={"class": "form-control"}),
             "content": forms.Textarea(attrs={"class": "form-control", "rows": 7}),
             "end_date": forms.DateTimeInput(
                 attrs={"type": "datetime-local", "class": "form-control"}

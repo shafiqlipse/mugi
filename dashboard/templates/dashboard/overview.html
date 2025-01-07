@@ -8,11 +8,11 @@
 <div class="content-wrapper">
   <div class="row">
     <div class="col-12 grid-margin stretch-card">
-      <div class="card">
-        <div class="card-body py-0 px-0 px-sm-3">
+      <div class="car0d">
+        <div class="card-body">
           <div
             id="carouselExampleIndicators"
-            class="carousel slide  custom-slider"
+            class="carousel slide custom-slider"
             data-ride="carousel"
           >
             <ol class="carousel-indicators">
@@ -29,17 +29,21 @@
               <div
                 class="carousel-item {% if forloop.first %}active{% endif %}"
               >
-                <img
-                  src="{{ announcement.banner.url }}"
-                  alt="{{ announcement.title }}"
-                />
-                <div class="carousel-caption d-none d-md-block">
-                  <h5>{{ announcement.title }}</h5>
-                  <p>{{ announcement.content|truncatechars:55 }}</p>
-                </div>
+                <a href="{{ announcement.link }}" target="_blank">
+                  <img
+                    src="{{ announcement.banner.url }}"
+                    alt="{{ announcement.title }}"
+                    class="d-block w-100"
+                  />
+                  <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ announcement.title }}</h5>
+                    <p>{{ announcement.content|truncatechars:55 }}</p>
+                  </div>
+                </a>
               </div>
               {% endfor %}
             </div>
+
             <a
               class="carousel-control-prev"
               href="#carouselExampleIndicators"
