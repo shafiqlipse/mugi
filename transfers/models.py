@@ -13,7 +13,6 @@ class TransferRequest(models.Model):
         ("rejected", "Rejected"),
         ("approved", "Approved"),
     ]
-
     requester = models.ForeignKey(
         School,
         related_name="requesting_school",
@@ -88,4 +87,12 @@ class TransferRequest(models.Model):
         athlete.save()
         self.save()
 
-        
+class TransferMessage(models.Model):
+    transfer = models.ForeignKey(TransferRequest, on_delete=models.CASCADE)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    recipients = models.ManyToManyField(School)
+    message = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Message from Transfers department about transfer of {self.transfer.athlete}"
