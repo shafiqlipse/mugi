@@ -171,7 +171,7 @@ def approve_transfer(request, id):
         transfer_request = get_object_or_404(TransferRequest, id=id)
 
         # Validate if user is a technical user
-        if not getattr(request.user, "is_technical", False):
+        if not getattr(request.user, "is_tech", False):
             messages.error(request, "You must be a technical user to approve transfers.")
             return redirect("alltransfers")
 

@@ -214,7 +214,7 @@ def schoolupdate(request, id):
         if form.is_valid():
             form.save()
 
-            return redirect("school_dashboard")
+        return redirect(reverse('schooldetail', args=[id]))
     else:
         form = SchoolProfileForm(instance=school)
     context = {"form": form}

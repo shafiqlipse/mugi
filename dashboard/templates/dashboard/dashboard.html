@@ -66,6 +66,7 @@
     <link rel="stylesheet" href="{% static 'main/main.css'%}" />
     <link rel="stylesheet" href="{% static 'css/dash.css'%}" />
     <link rel="stylesheet" href="{% static 'css/ticket.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/new_ticket.css'%}" />
     <link rel="stylesheet" href="{% static 'css/banners.css'%}" />
     <link
       rel="stylesheet"
@@ -130,8 +131,8 @@
                   <span class="count bg-success"></span>
                 </div>
                 <div class="profile-name">
-                  <h5 class="mb-0 font-weight-normal">USSSA</h5>
-                  <span>4 school sports 4 better</span>
+                  <h5 class="mb-0 font-weight-normal">{{user.first_name}}</h5>
+                  <span>{{user.email}}</span>
                 </div>
               </div>
               <a href="#" id="profile-dropdown" data-toggle="dropdown"
@@ -437,7 +438,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-security"></i>
               </span>
-              <span class="menu-title">Miscellaneous</span>
+              <span class="menu-title">Support</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="auth2">
@@ -454,15 +455,15 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'support' %}"> Tickets </a>
+                  <a class="nav-link" href="{% url 'support' %}"> Messages </a>
                 </li>
                 {% elif user.is_school %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'tickets' %}"> Tickets </a>
+                  <a class="nav-link" href="{% url 'tickets' %}"> Messages </a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'ticket_create' %}">
-                    Add Ticket
+                    Add Message
                   </a>
                 </li>
                 {% endif %}
@@ -491,7 +492,7 @@
               <span class="mdi mdi-menu"></span>
             </button>
             <ul class="navbar-nav w-100">
-              <li class="nav-item w-100">
+              <li class="nav-item w-70">
                 {% if user.is_school %}
                 <h2>{{user.school}}</h2>
                 {% else %}
@@ -580,8 +581,13 @@
                   href="#"
                   data-toggle="dropdown"
                 >
-                  <i class="mdi mdi-bell"></i>
-                  <span class="count bg-danger">{{ unread_notifications_count }}</span>
+                  <i class="fa fa-bell"></i>
+                  {% if unread_notifications_count > 0 %}
+                  <div class="scount">
+                    <span>{{ unread_notifications_count }}</span>
+                  </div>
+
+                  {% endif %}
                 </a>
                 <div
                   class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
@@ -589,55 +595,25 @@
                 >
                   <h6 class="p-3 mb-0">Notifications</h6>
                   <div class="dropdown-divider"></div>
-                  <div>
-                    <h3>Notifications </h3>
-                    <ul>
-                      {% for notification in notifications %}
-                        <li class="{% if not notification.is_read %}unread{% endif %}">
-                          <strong>{{ notification.verb }}</strong>
-                          <small>{{ notification.created_at }}</small>
-                          <p>{{ notification.target }}</p>
-                        </li>
-                      {% empty %}
-                        <li>No new notifications.</li>
-                      {% endfor %}
-                    </ul>
-                  </div>
-                  
+
+                  <ul>
+                    {% for notification in notifications %}
+                    <li
+                      class="{% if not notification.is_read %}unread{% endif %}"
+                    >
+                      <strong>{{ notification.verb }}</strong>
+                      <small>{{ notification.created_at }}</small>
+                      <p>{{ notification.target }}</p>
+                    </li>
+                    <hr />
+                    {% empty %}
+                    <li>No new notifications.</li>
+                    {% endfor %}
+                  </ul>
 
                   <div class="dropdown-divider"></div>
                   <p class="p-3 mb-0 text-center">See all notifications</p>
                 </div>
-              </li>
-              <li class="nav-item dropdown">
-                <a
-                  class="nav-link"
-                  id="profileDropdown"
-                  href="#"
-                  data-toggle="dropdown"
-                >
-                  <div class="navbar-profile">
-                    {% if user.is_school %} {% if user.profile.badge %}
-                    <img
-                      class="img-xs rounded-circle"
-                      src="{{user.profile.badge.url}}"
-                      alt=""
-                    />{% endif %}
-                    <p class="mb-0 d-none d-sm-block navbar-profile-name">
-                      {{user.profile.name|upper}}
-                    </p>
-                    {% else %} {% if user.thumbnail %}
-                    <img
-                      class="img-xs rounded-circle"
-                      src="{{user.thumbnail.url}}"
-                      alt=""
-                    />{% endif %}
-                    <p class="mb-0 d-none d-sm-block navbar-profile-name">
-                      {{user|upper}}
-                    </p>
-                    {% endif %}
-                  </div>
-                </a>
               </li>
             </ul>
             <button

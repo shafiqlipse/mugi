@@ -26,11 +26,11 @@
           <thead>
             <tr>
               <th>School</th>
-              <th>Emis</th>
-              <th>Status</th>
-              <th>region</th>
+              <th>Center Number</th>
+
+              <th>District</th>
               <th>Zone</th>
-              {% if user.is_admin %}
+              {% if user.is_staff %}
               <th>Actions</th>
               {% endif %}
             </tr>
@@ -42,10 +42,10 @@
                 <a href="{% url 'schooldetail' school.id%}">{{school.name}}</a>
               </td>
               <td>{{school.center_number}}</td>
-              <td>{{school.status}}</td>
-              <td>{{school.region}}</td>
-              <td>{{school.zone}}</td>
-              {% if user.is_admin %}
+
+              <td>{{school.district}}</td>
+              <td>{{school.district.zone}}</td>
+              {% if user.is_staff %}
               <td>
                 <div class="report">
                   <a href="{% url 'schoolupdate' school.id%}"

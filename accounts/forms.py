@@ -67,6 +67,13 @@ class TicketForm(forms.ModelForm):
         model = Ticket
         fields = ['title', 'topic', 'priority', 'content']
         
+        widgets = {
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "topic": forms.Select(attrs={"class": "form-control"}),
+            "priority": forms.Select(attrs={"class": "form-control"}),
+            "content": forms.Textarea(attrs={"class": "form-control", "rows": 7}),
+        }
+        
 class TicketResponseForm(forms.ModelForm):
     class Meta:
         model = TicketMessage

@@ -5,9 +5,37 @@
 {% block title %} | Open Ticket{% endblock title %} {% block content %}
 <div class="container content-wrapper">
   <h1>Create Ticket</h1>
-  <form method="post">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Submit</button>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="fields-set">
+      <div class="field-group">
+        <label for="subject">Title</label>
+        <input
+          type="text"
+          name="title"
+          id="title"
+          class="form-control"
+          required
+        />
+      </div>
+      <div class="field-group grid2">
+        <div class="field">
+          <label for="topic">Topic</label>
+          {{form.topic}}
+        </div>
+        <div class="field">
+          <label for="priority">Priority</label>
+          {{form.priority}}
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field">
+          <label for="content">Message</label>
+          {{form.content}}
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Message</button>
   </form>
 </div>
 {% endblock content %}

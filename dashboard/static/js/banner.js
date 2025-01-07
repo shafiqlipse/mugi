@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
               // Resize and compress the image
               canvas.toBlob((blob) => {
-                const maxSize = 100 * 1024; // 100 KB
+                const maxSize = 500 * 1024; // 100 KB
                 const reader = new FileReader();
                 reader.readAsDataURL(blob);
                 reader.onloadend = function () {
