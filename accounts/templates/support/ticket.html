@@ -72,6 +72,27 @@
         <hr />
         <li><strong>Last Updated On</strong> {{ticket.updated_at}}</li>
       </ul>
+      {% if user.is_school %}
+      <h5>My Tickets.</h5>
+      <ul class="ticket-info">
+        {% for ticket in tickets %}
+        <li><strong><a href="{% url 'ticket' ticket.id%}"
+          >{{ ticket.ticket_id }}</a
+        ></strong> {{ticket.title}}</li>
+        <hr />
+      {% endfor %}
+      </ul>
+      {% else %}
+      <h5>Other Tickets.</h5>
+      <ul class="ticket-info">
+        {% for ticket in alltickets %}
+        <li><strong><a href="{% url 'ticket' ticket.id%}"
+          >{{ ticket.ticket_id }}</a
+        ></strong> {{ticket.title}}</li>
+        <hr />
+        
+        {% endfor %}
+      </ul>{% endif %}
     </div>
   </div>
   {% endblock content %}

@@ -154,6 +154,8 @@ def open_ticket(request):
 
 def ticket(request, id):
     ticket = get_object_or_404(Ticket, id=id)
+    alltickets = Ticket.objects.all().exclude(id =id)
+    tickets = Ticket.objects.filter(sender=request.user).exclude(id =id)
     responses = ticket.responses.all().order_by('-created_at')
     if request.method == 'POST':
         form = TicketResponseForm(request.POST)
@@ -168,6 +170,8 @@ def ticket(request, id):
         
     context={
         'ticket': ticket,
+        'tickets': tickets,
+        'alltickets': alltickets,
         'responses': responses,
         'form': form,
     }
