@@ -57,6 +57,15 @@
           }
         }
       }
+      .ticket-body {
+        background-color: rgb(255, 255, 255);
+        padding: 10px;
+        border-radius: 5px;
+        p {
+          font-size: 1.2em;
+          
+        }
+      }
     }
     .right-ticket {
       position: sticky;

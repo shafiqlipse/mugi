@@ -54,6 +54,14 @@
   background-color: #f3f3f3;
   padding: 10px;
 }
+.ticket-detail .all-ticket .left-ticket .ticket-body {
+  background-color: rgb(255, 255, 255);
+  padding: 10px;
+  border-radius: 5px;
+}
+.ticket-detail .all-ticket .left-ticket .ticket-body p {
+  font-size: 1.2em;
+}
 .ticket-detail .all-ticket .right-ticket {
   position: sticky;
   top: 0;
