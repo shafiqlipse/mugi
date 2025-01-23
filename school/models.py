@@ -479,3 +479,21 @@ class Screening(models.Model):
 
     def __str__(self):
         return self.athlete
+
+
+from django.utils.timezone import now
+from datetime import timedelta
+
+class Payment(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    athletes = models.ManyToManyField(Athlete, related_name='payments')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20, 
+        choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
+        default='PENDING'
+    )
+
+
+

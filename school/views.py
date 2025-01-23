@@ -627,3 +627,101 @@ def export_scsv(request):
         )  # Replace with your model's fields
 
     return response
+
+
+
+from .airtel_service import AirtelMoney
+@login_required
+def payment_view(request):
+    school = request.user.school
+    
+    if request.method == 'POST':
+        form = PaymentForm(request.POST, school=school)
+        if form.is_valid():
+            phone_number = form.cleaned_data['phone_number']
+            selected_athletes = form.cleaned_data['athletes']
+            total_amount = selected_athletes.count() * 3000  # $20 per learner
+
+            # Create a Payment record
+            airtel = AirtelMoney()
+            try:
+                response = airtel.initiate_payment(phone_number, total_amount)
+                if response.get("status") == "SUCCESS":
+                    # Save payment details
+                    payment = Payment.objects.create(
+                        school=school,
+                        amount=total_amount,
+                        transaction_id=response.get("transaction_id"),
+                        status="SUCCESS",
+                    )
+                    payment.athletes.set(selected_athletes)
+
+                    # Mark learners as paid
+                    selected_athletes.update(is_paid=True)
+
+                    return redirect('payment_success')
+                else:
+                    return render(request, 'payment_form.html', {
+                        'form': form,
+                        'error': response.get("message", "Payment failed.")
+                    })
+            except Exception as e:
+                return render(request, 'payment_form.html', {
+                    'form': form,
+                    'error': str(e),
+                })
+        else:
+            return render(request, 'payment_form.html', {'form': form, 'error': 'Invalid data.'})
+
+    else:
+        form = PaymentForm(school=school)
+
+
+    return render(request, 'emails/payment_form.html', {'form': form})
+
+
+
+
+
+
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+import logging
+import traceback
+
+logger = logging.getLogger(__name__)
+
+@csrf_exempt
+def airtel_payment_callback(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            
+            # Match details from payment initiation
+            transaction_id = data.get('transaction_id')
+            phone_number = data.get('phone_number')
+            amount = data.get('amount')
+            status = data.get('status')
+            
+            try:
+                payment = Payment.objects.get(
+                    transaction_id=transaction_id, 
+                    amount=amount
+                )
+                payment.status = status
+                payment.save()
+            except Payment.DoesNotExist:
+                logger.warning(f"Unknown transaction: {transaction_id}")
+
+            return JsonResponse({"message": "Callback processed"}, status=200)
+        except Exception as e:
+            logger.error(f"Callback error: {str(e)}")
+            return JsonResponse({"error": "Processing failed"}, status=400)
+    
+    return JsonResponse({"error": "POST required"}, status=405)

@@ -33,7 +33,7 @@
           <div class="response">
             <div class="response-header flex">
               <h4>
-                {{response.responder.first_name}}
+                {{response.responder.first_name}} {{response.responder.last_name}}
                 <span
                   >{% if response.responder.is_staff %} STAFF {% else %} SCHOOL
                   {% endif %}</span
@@ -94,6 +94,6 @@
         {% endfor %}
       </ul>{% endif %}
     </div>
-  </div>
-  {% endblock content %}
-</div>
+  </div></div>
+  {% endblock %}
+

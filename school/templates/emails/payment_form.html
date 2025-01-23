@@ -1,0 +1,111 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Athletes{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="schools-dew content-wrapper">
+  <div class="head flex">
+    <h2>Select athletes to Pay For</h2>
+  </div>
+  <!-- templates/payment_form.html -->
+  <form method="post" id="payment-form">
+    {% csrf_token %}
+    <div class="payments flex">
+      <div>
+        Total Amount: UGX
+        <span id="total-amount" class="p-2 bg-success rounded">0</span>
+      </div>
+      <button type="submit" class="btn btn-primary">Pay</button>
+    </div>
+    <label for="phone_number">Phone Number:</label>
+    <input
+      type="text"
+      name="phone_number"
+      id="phone_number"
+      placeholder="Enter Airtel Money phone number"
+      required
+    />
+    <table id="myTable" class="display">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="selectAll" />
+              <label class="form-check-label" for="selectAll"></label>
+            </div>
+          </th>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Index Number</th>
+          <th scope="col">Class</th>
+          <th scope="col">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for athlete in form.fields.athletes.queryset %}
+        <tr>
+          <td>
+            <div class="form-check">
+              <input
+                class="athlete-checkbox"
+                type="checkbox"
+                name="athletes"
+                value="{{ athlete.id }}"
+                id="athlete-{{ athlete.id }}"
+              />
+              <label
+                class="form-check-label"
+                for="athlete-{{ athlete.id }}"
+              ></label>
+            </div>
+          </td>
+          <td>{{ athlete.fname }}</td>
+          <td>{{ athlete.lname }}</td>
+          <td>{{ athlete.index_number }}</td>
+          <td>{{ athlete.classroom }}</td>
+          <td><span class="bg-success p-2">3000</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </form>
+
+  <script>
+    // JavaScript to dynamically update the total amount
+    document.addEventListener("DOMContentLoaded", function () {
+      const checkboxes = document.querySelectorAll(
+        '#payment-form input[type="checkbox"]'
+      );
+      const totalAmountSpan = document.getElementById("total-amount");
+      const amountPerathlete = 3000;
+
+      function updateTotal() {
+        const selectedCount = Array.from(checkboxes).filter(
+          (checkbox) => checkbox.checked
+        ).length;
+        totalAmountSpan.textContent = selectedCount * amountPerathlete;
+      }
+
+      checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", updateTotal);
+      });
+
+      // Initial calculation
+      updateTotal();
+    });
+  </script>
+  <script>
+    document
+      .getElementById("selectAll")
+      .addEventListener("change", function () {
+        const isChecked = this.checked;
+        document.querySelectorAll(".athlete-checkbox").forEach((checkbox) => {
+          checkbox.checked = isChecked;
+        });
+      });
+  </script>
+</div>
+{% endblock %}

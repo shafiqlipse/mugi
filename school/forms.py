@@ -181,3 +181,29 @@ class ScreenForm(forms.ModelForm):
             "description": forms.Textarea(attrs={"class": "form-control"}),
             "status": forms.Select(attrs={"class": "form-control"}),
         }
+
+
+
+class PaymentForm(forms.Form):
+    phone_number = forms.CharField(
+        label="Phone Number",
+        max_length=15,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': 'Enter Airtel Money phone number'})
+    )
+    athletes = forms.ModelMultipleChoiceField(
+        queryset=Athlete.objects.none(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+    )
+
+    def __init__(self, *args, **kwargs):
+        school = kwargs.pop('school', None)
+        super().__init__(*args, **kwargs)
+        if school:
+            # Fetch only unpaid learners in the specific class
+            self.fields['athletes'].queryset = Athlete.objects.filter(
+                school=school, status='NEW'
+            )
+            # Customize labels to include the amount for each learner
+            self.fields['athletes'].label_from_instance = lambda obj: f"{obj.fname} (Amount: 3000)"

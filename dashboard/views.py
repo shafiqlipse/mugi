@@ -289,3 +289,4 @@ def delete_announcement(request, id):
         messages.error(request, "You do not have permission to delete this announcement.")
 
     return redirect('announcements') 
+
