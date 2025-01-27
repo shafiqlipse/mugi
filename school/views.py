@@ -564,32 +564,6 @@ def athlete_list(request):
 #     return render(request, "school/payment_page.html", context)
 
 
-# import requests
-# from django.conf import settings
-
-
-# def initiate_payment(request):
-#     # Retrieve Airtel Money credentials from settings
-#     client_id = settings.AIRTEL_MONEY_CLIENT_ID
-#     client_secret = settings.AIRTEL_MONEY_CLIENT_SECRET
-
-#     # Your payment initiation logic here
-#     # Make requests to Airtel Money API using client_id, client_secret, etc.
-#     # Example:
-#     response = requests.post(
-#         "https://openapiuat.airtel.africa/",
-#         data={
-#             "client_id": client_id,
-#             "client_secret": client_secret,
-#         },
-#     )
-
-#     # Process the response and handle accordingly
-#     # Example:
-#     if response.status_code == 200:
-#         return HttpResponse("Payment initiated successfully")
-#     else:
-#         return HttpResponse("Failed to initiate payment")
 
 import csv
 from django.http import HttpResponse
@@ -628,72 +602,61 @@ def export_scsv(request):
 
     return response
 
+import requests
+from django.conf import settings
+def get_airtel_token():
+    client_id = settings.AIRTEL_MONEY_CLIENT_ID
+    client_secret = settings.AIRTEL_MONEY_CLIENT_SECRET
 
+    # Airtel authentication endpoint
+    url = "https://openapiuat.airtel.africa/auth/oauth2/token"
 
-from .airtel_service import AirtelMoney
-@login_required
-def payment_view(request):
-    school = request.user.school
-    
-    if request.method == 'POST':
-        form = PaymentForm(request.POST, school=school)
-        if form.is_valid():
-            phone_number = form.cleaned_data['phone_number']
-            selected_athletes = form.cleaned_data['athletes']
-            total_amount = selected_athletes.count() * 3000  # $20 per learner
+    headers = {"Content-Type": "application/json"}
+    payload = {
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "grant_type": "client_credentials",
+    }
 
-            # Create a Payment record
-            airtel = AirtelMoney()
-            try:
-                response = airtel.initiate_payment(phone_number, total_amount)
-                if response.get("status") == "SUCCESS":
-                    # Save payment details
-                    payment = Payment.objects.create(
-                        school=school,
-                        amount=total_amount,
-                        transaction_id=response.get("transaction_id"),
-                        status="SUCCESS",
-                    )
-                    payment.athletes.set(selected_athletes)
+    response = requests.post(url, json=payload, headers=headers)
 
-                    # Mark learners as paid
-                    selected_athletes.update(is_paid=True)
-
-                    return redirect('payment_success')
-                else:
-                    return render(request, 'payment_form.html', {
-                        'form': form,
-                        'error': response.get("message", "Payment failed.")
-                    })
-            except Exception as e:
-                return render(request, 'payment_form.html', {
-                    'form': form,
-                    'error': str(e),
-                })
-        else:
-            return render(request, 'payment_form.html', {'form': form, 'error': 'Invalid data.'})
-
+    if response.status_code == 200:
+        token_data = response.json()
+        return token_data.get("access_token")
     else:
-        form = PaymentForm(school=school)
+        raise Exception(f"Failed to get token: {response.text}")
 
 
-    return render(request, 'emails/payment_form.html', {'form': form})
+def initiate_payment(request):
+    try:
+        token = get_airtel_token()  # Get the access token
 
+        payment_url = "https://openapiuat.airtel.africa/merchant/v1/payments/"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "reference": "PAY123456",  # Unique transaction reference
+            "amount": "20.00",        # Payment amount
+            "currency": "UGX",        # Currency code
+            "phone_number": "+256755623472",  # Example phone number
+        }
 
+        response = requests.post(payment_url, json=payload, headers=headers)
 
-
-
-
-
+        if response.status_code == 200:
+            payment_response = response.json()
+            return HttpResponse(f"Payment initiated: {payment_response}")
+        else:
+            return HttpResponse(f"Failed to initiate payment: {response.text}")
+    except Exception as e:  # Ensure you capture the exception here
+        return HttpResponse(f"Error: {str(e)}")
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
 import logging
-import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -701,27 +664,27 @@ logger = logging.getLogger(__name__)
 def airtel_payment_callback(request):
     if request.method == "POST":
         try:
+            # Parse the incoming JSON data
             data = json.loads(request.body)
             
-            # Match details from payment initiation
-            transaction_id = data.get('transaction_id')
-            phone_number = data.get('phone_number')
-            amount = data.get('amount')
-            status = data.get('status')
+            # Extract relevant fields
+            transaction_id = data.get("transaction_id")
+            status = data.get("status")
+            amount = data.get("amount")
+            phone_number = data.get("phone_number")
             
+            # Validate and update the payment record
             try:
-                payment = Payment.objects.get(
-                    transaction_id=transaction_id, 
-                    amount=amount
-                )
+                payment = Payment.objects.get(transaction_id=transaction_id)
                 payment.status = status
                 payment.save()
+                logger.info(f"Payment {transaction_id} updated with status: {status}")
             except Payment.DoesNotExist:
-                logger.warning(f"Unknown transaction: {transaction_id}")
-
-            return JsonResponse({"message": "Callback processed"}, status=200)
+                logger.warning(f"Payment record not found for transaction: {transaction_id}")
+            
+            return JsonResponse({"message": "Callback processed successfully"}, status=200)
         except Exception as e:
-            logger.error(f"Callback error: {str(e)}")
-            return JsonResponse({"error": "Processing failed"}, status=400)
+            logger.error(f"Error processing callback: {str(e)}")
+            return JsonResponse({"error": "Failed to process callback"}, status=400)
     
     return JsonResponse({"error": "POST required"}, status=405)
