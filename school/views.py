@@ -602,38 +602,19 @@ def export_scsv(request):
 
     return response
 
-import requests
-from django.conf import settings
-def get_airtel_token():
-    client_id = settings.AIRTEL_MONEY_CLIENT_ID
-    client_secret = settings.AIRTEL_MONEY_CLIENT_SECRET
-
-    # Airtel authentication endpoint
-    url = "https://openapiuat.airtel.africa/auth/oauth2/token"
-
-    headers = {"Content-Type": "application/json"}
-    payload = {
-        "client_id": client_id,
-        "client_secret": client_secret,
-        "grant_type": "client_credentials",
-    }
-
-    response = requests.post(url, json=payload, headers=headers)
-
-    if response.status_code == 200:
-        token_data = response.json()
-        return token_data.get("access_token")
-    else:
-        raise Exception(f"Failed to get token: {response.text}")
 
 import requests
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import JsonResponse
 import logging
+import uuid
 
 logger = logging.getLogger(__name__)
 
 def get_airtel_token():
+    """
+    Retrieve Airtel Money OAuth token.
+    """
     try:
         url = "https://openapiuat.airtel.africa/auth/oauth2/token"
         headers = {"Content-Type": "application/json"}
@@ -655,51 +636,56 @@ def get_airtel_token():
         logger.error(f"Token error: {str(e)}")
         return None
 
+
 def initiate_payment(request):
+    """
+    Initiate Airtel Money payment.
+    """
     try:
         token = get_airtel_token()  
         if not token:
-            return HttpResponse("Error: Failed to get authentication token", status=500)
+            return JsonResponse({"error": "Failed to get authentication token"}, status=500)
 
-        # ✅ Correct Payment API URL
-        payment_url = "https://openapiuat.airtel.africa/merchant/v1/payments/"
+        payment_url = "https://openapiuat.airtel.africa/merchant/v2/payments/"
+        transaction_id = str(uuid.uuid4())  # Generate a unique transaction ID
 
         headers = {
-            "Authorization": f"Bearer {token}",
+            "Accept": "*/*",
             "Content-Type": "application/json",
+            "X-Country": "UG",
+            "X-Currency": "UGX",
+            "Authorization": f"Bearer {token}",
+            "x-signature": settings.AIRTEL_MONEY_SIGNATURE,  # Ensure this is set in settings.py
+            "x-key": settings.AIRTEL_MONEY_KEY,  # Ensure this is set in settings.py
         }
 
         payload = {
-            "reference": "PAY123456",  # Unique transaction reference
-            "amount": 3000,           # Amount in cents (e.g., 20000 UGX = 200 UGX)
-            "currency": "UGX",         
-            "country": "UG",           
-            "msisdn": "256755623472",  # Customer's Airtel phone number (without + sign)
-            "transaction": {
-                "id": "txn12345",
-                "message": "Payment for services",
-            },
+            "reference": "Testing transaction",
             "subscriber": {
                 "country": "UG",
                 "currency": "UGX",
-                "msisdn": "256755623472",
+                "msisdn": "256755623472",  # Ensure correct phone format (no '+')
+            },
+            "transaction": {
+                "amount": 1000,  # Adjust amount as needed
+                "country": "UG",
+                "currency": "UGX",
+                "id": transaction_id,
             },
         }
 
         response = requests.post(payment_url, json=payload, headers=headers)
-
         logger.info(f"Payment Response: {response.status_code}, {response.text}")
 
         if response.status_code == 200:
-            payment_response = response.json()
-            return HttpResponse(f"Payment initiated successfully: {payment_response}")
+            return JsonResponse({"message": "Payment initiated successfully", "response": response.json()})
         else:
-            return HttpResponse(f"Failed to initiate payment: {response.text}", status=400)
+            return JsonResponse({"error": "Failed to initiate payment", "details": response.text}, status=400)
 
     except Exception as e:
         logger.error(f"Payment error: {str(e)}")
-        return HttpResponse(f"Error: {str(e)}", status=500)
-    
+        return JsonResponse({"error": str(e)}, status=500)
+   
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
