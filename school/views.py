@@ -611,6 +611,13 @@ import uuid
 
 logger = logging.getLogger(__name__)
 
+import requests
+from django.conf import settings
+from django.http import JsonResponse
+import logging
+
+logger = logging.getLogger(__name__)
+
 def get_airtel_token():
     """
     Retrieve Airtel Money OAuth token.
@@ -624,18 +631,44 @@ def get_airtel_token():
             "grant_type": "client_credentials",
         }
 
-        response = requests.post(url, json=payload, headers=headers, params={}) 
+        response = requests.post(url, json=payload, headers=headers, params={})
         logger.info(f"Token Response: {response.status_code}, {response.text}")
 
         if response.status_code == 200:
             return response.json().get("access_token")
-        else:
-            logger.error(f"Failed to get token: {response.text}")
+
+        # Handle common errors
+        error_response = response.json()
+        error_message = error_response.get("error_description", error_response.get("message", "Unknown error"))
+
+        if response.status_code == 400:
+            logger.error("Invalid request format. Check parameters.")
             return None
-    except Exception as e:
-        logger.error(f"Token error: {str(e)}")
+        elif response.status_code == 401:
+            logger.error("Authentication failed. Check your API credentials.")
+            return None
+        elif response.status_code == 403:
+            logger.error("Permission denied. Your account may not have access.")
+            return None
+        elif response.status_code == 500:
+            logger.error("Airtel Money server error. Try again later.")
+            return None
+
+        logger.error(f"Failed to get token: {error_message}")
         return None
 
+    except requests.exceptions.ConnectionError:
+        logger.error("Network error: Unable to reach Airtel Money API.")
+        return None
+    except requests.exceptions.Timeout:
+        logger.error("Request timed out: Airtel Money API took too long to respond.")
+        return None
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Unexpected request error: {str(e)}")
+        return None
+    except Exception as e:
+        logger.error(f"Unknown error: {str(e)}")
+        return None
 
 def initiate_payment(request):
     """
