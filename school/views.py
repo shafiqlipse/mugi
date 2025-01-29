@@ -624,7 +624,7 @@ def get_airtel_token():
     """
     try:
         url = "https://openapiuat.airtel.africa/auth/oauth2/token"
-        headers = {"Content-Type": "application/json"}
+        headers = {"Content-Type": "application/json", "Accept": "*/*" }
         payload = {
             "client_id": settings.AIRTEL_MONEY_CLIENT_ID,
             "client_secret": settings.AIRTEL_MONEY_CLIENT_SECRET,
@@ -633,7 +633,7 @@ def get_airtel_token():
 
         response = requests.post(url, json=payload, headers=headers, params={})
         logger.info(f"Token Response: {response.status_code}, {response.text}")
-
+        print(response.json())
         if response.status_code == 200:
             return response.json().get("access_token")
 
