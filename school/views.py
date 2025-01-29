@@ -631,7 +631,7 @@ def initiate_payment(request):
     try:
         token = get_airtel_token()  # Get the access token
 
-        payment_url = "https://openapiuat.airtel.africa/merchant/v1/payments/"
+        payment_url = "https://openapiuat.airtel.africa/auth/oauth2/token/"
         headers = {
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
