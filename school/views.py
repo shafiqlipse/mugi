@@ -624,7 +624,7 @@ def get_airtel_token():
             "grant_type": "client_credentials",
         }
 
-        response = requests.post(url, json=payload, headers=headers)
+        response = requests.post(url, json=payload, headers=headers, params={}) 
         logger.info(f"Token Response: {response.status_code}, {response.text}")
 
         if response.status_code == 200:
