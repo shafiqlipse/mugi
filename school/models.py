@@ -489,6 +489,7 @@ class Payment(models.Model):
     athletes = models.ManyToManyField(Athlete, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
+    phone_number=models.CharField( max_length=50)
     status = models.CharField(
         max_length=20, 
         choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 

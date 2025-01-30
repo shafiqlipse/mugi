@@ -602,19 +602,38 @@ def export_scsv(request):
 
     return response
 
+def payment_view(request):
+    school = request.user.school  # Get the logged-in user's school
 
+    if request.method == 'POST':
+        form = PaymentForm(request.POST, school=school)
+        if form.is_valid():
+            phone_number = form.cleaned_data['phone_number']
+            selected_athletes = form.cleaned_data['athletes']
+            total_amount = selected_athletes.count() * 3000  # UGX 20,000 per athlete
+
+            # Create a Payment record
+            payment = Payment.objects.create(
+                school=school,
+                amount=total_amount,
+                phone_number=phone_number,
+                status="PENDING",
+            )
+            payment.athletes.set(selected_athletes)
+
+            # Redirect to initiate payment
+            return redirect('payment', payment.id)
+
+    else:
+        form = PaymentForm(school=school)
+
+    return render(request, 'emails/payment_form.html', {'form': form})
+import json
 import requests
 from django.conf import settings
 from django.http import JsonResponse
 import logging
-import uuid
-
-logger = logging.getLogger(__name__)
-
-import requests
-from django.conf import settings
-from django.http import JsonResponse
-import logging
+from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger(__name__)
 
@@ -670,10 +689,9 @@ def get_airtel_token():
         logger.error(f"Unknown error: {str(e)}")
         return None
 
-def initiate_payment(request):
-    """
-    Initiate Airtel Money payment.
-    """
+def initiate_payment(request, id):
+    payment = get_object_or_404(Payment, id=id)
+    
     try:
         token = get_airtel_token()  
         if not token:
@@ -688,24 +706,24 @@ def initiate_payment(request):
             "X-Country": "UG",
             "X-Currency": "UGX",
             "Authorization": f"Bearer {token}",
-            "x-signature": settings.AIRTEL_MONEY_SIGNATURE,  # Ensure this is set in settings.py
-            "x-key": settings.AIRTEL_MONEY_KEY,  # Ensure this is set in settings.py
+            "x-signature": settings.AIRTEL_API_SIGNATURE,  # Ensure this is set in settings.py
+            "x-key": settings.AIRTEL_API_KEY,  # Ensure this is set in settings.py
         }
 
         payload = {
-            "reference": "Testing transaction",
+            "reference": f"PAY-{payment.id}",
             "subscriber": {
                 "country": "UG",
                 "currency": "UGX",
-                "msisdn": "256755623472",  # Ensure correct phone format (no '+')
+                "msisdn": payment.phone_number,  # Phone number from the model
             },
             "transaction": {
-                "amount": 1000,  # Adjust amount as needed
+                "amount": float(payment.amount),  # Convert DecimalField to float
                 "country": "UG",
                 "currency": "UGX",
-                "id": transaction_id,
-            },
-        }
+                "id": f"txn-{payment.id}",
+            }
+            }
 
         response = requests.post(payment_url, json=payload, headers=headers)
         logger.info(f"Payment Response: {response.status_code}, {response.text}")
@@ -719,12 +737,6 @@ def initiate_payment(request):
         logger.error(f"Payment error: {str(e)}")
         return JsonResponse({"error": str(e)}, status=500)
    
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-import logging
-
-logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def airtel_payment_callback(request):

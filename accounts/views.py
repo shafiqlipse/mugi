@@ -27,7 +27,7 @@ def edit_user(request, id=None):
         if form.is_valid():
             form.save()
             messages.success(request, "The profile was updated successfully.")
-            return redirect("edit_user", user_id=user.id)
+            return redirect("users")
     else:
         form = UserEditForm(instance=user)
 
