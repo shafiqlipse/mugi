@@ -699,7 +699,7 @@ def initiate_payment(request, id):
             return JsonResponse({"error": "Failed to get authentication token"}, status=500)
 
         payment_url = "https://openapiuat.airtel.africa/merchant/v2/payments/"
-        transaction_id = str(uuid.uuid4())  # Generate a unique transaction ID
+        transaction_id = str(uuid.uuid4()).replace("-", "")[:20]  # Generate a unique transaction ID
 
         headers = {
             "Accept": "*/*",
@@ -712,19 +712,19 @@ def initiate_payment(request, id):
         }
 
         payload = {
-            "reference": transaction_id,
+            "reference": transaction_id,  # ✅ Fixed reference format
             "subscriber": {
                 "country": "UG",
                 "currency": "UGX",
-                "msisdn": payment.phone_number,  # Phone number from the model
+                "msisdn": re.sub(r"\D", "", str(payment.phone_number)),  # ✅ Remove non-numeric characters
             },
             "transaction": {
-                "amount": float(payment.amount),  # Convert DecimalField to float
+                "amount": float(payment.amount),  # ✅ Convert DecimalField to float
                 "country": "UG",
                 "currency": "UGX",
-                "id": f"txn-{payment.id}",
+                "id": f"txn{payment.id}",  # ✅ Removed hyphen to make it alphanumeric
             }
-            }
+        }
 
         response = requests.post(payment_url, json=payload, headers=headers)
         logger.info(f"Payment Response: {response.status_code}, {response.text}")
