@@ -743,27 +743,49 @@ def initiate_payment(request, id):
 def airtel_payment_callback(request):
     if request.method == "POST":
         try:
-            # Parse the incoming JSON data
+            # Parse incoming JSON data
             data = json.loads(request.body)
-            
-            # Extract relevant fields
-            transaction_id = data.get("transaction_id")
-            status = data.get("status")
-            amount = data.get("amount")
-            phone_number = data.get("phone_number")
-            
+            transaction = data.get("transaction", {})
+
+            # Extract required fields
+            transaction_id = transaction.get("airtel_money_id")  # Airtel's transaction ID
+            status_code = transaction.get("status_code")  # Payment status
+            message = transaction.get("message", "No message provided")  # Extract the message
+
+            if not transaction_id:
+                logger.error("Missing transaction ID in callback data")
+                return JsonResponse({"error": "Missing transaction ID"}, status=400)
+
+            # Convert Airtel status codes to system status
+            status_mapping = {
+                "TS": "COMPLETED",  # Transaction Successful
+                "TF": "FAILED",  # Transaction Failed
+                "TP": "PENDING",  # Transaction Pending
+            }
+            payment_status = status_mapping.get(status_code, "PENDING")
+
             # Validate and update the payment record
             try:
                 payment = Payment.objects.get(transaction_id=transaction_id)
-                payment.status = status
+                payment.status = payment_status
                 payment.save()
-                logger.info(f"Payment {transaction_id} updated with status: {status}")
+
+                logger.info(f"Payment {transaction_id} updated to {payment_status}, Message: {message}")
+                return JsonResponse({
+                    "message": "Callback processed successfully",
+                    "transaction_id": transaction_id,
+                    "status": payment_status,
+                    "response_message": message  # Include message in response
+                }, status=200)
             except Payment.DoesNotExist:
                 logger.warning(f"Payment record not found for transaction: {transaction_id}")
-            
-            return JsonResponse({"message": "Callback processed successfully"}, status=200)
+                return JsonResponse({"error": "Transaction not found"}, status=404)
+
+        except json.JSONDecodeError:
+            logger.error("Invalid JSON received in callback")
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
         except Exception as e:
             logger.error(f"Error processing callback: {str(e)}")
-            return JsonResponse({"error": "Failed to process callback"}, status=400)
-    
+            return JsonResponse({"error": "Failed to process callback"}, status=500)
+
     return JsonResponse({"error": "POST required"}, status=405)
