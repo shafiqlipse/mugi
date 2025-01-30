@@ -629,6 +629,7 @@ def payment_view(request):
 
     return render(request, 'emails/payment_form.html', {'form': form})
 import json
+import uuid
 import requests
 from django.conf import settings
 from django.http import JsonResponse
@@ -711,7 +712,7 @@ def initiate_payment(request, id):
         }
 
         payload = {
-            "reference": f"PAY-{payment.id}",
+            "reference": transaction_id,
             "subscriber": {
                 "country": "UG",
                 "currency": "UGX",
