@@ -738,54 +738,65 @@ def initiate_payment(request, id):
         logger.error(f"Payment error: {str(e)}")
         return JsonResponse({"error": str(e)}, status=500)
    
+import json
+import logging
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Payment
 
-@csrf_exempt
+logger = logging.getLogger(__name__)
+
+@csrf_exempt  # Disable CSRF protection for this endpoint
 def airtel_payment_callback(request):
-    if request.method == "POST":
+    # Ensure the request method is POST
+    if request.method != "POST":
+        return JsonResponse({"error": "POST method required"}, status=405)
+
+    try:
+        # Parse the JSON body
+        data = json.loads(request.body)
+        transaction = data.get("transaction", {})
+
+        # Extract required fields
+        transaction_id = transaction.get("airtel_money_id")
+        status_code = transaction.get("status_code")
+        message = transaction.get("message", "No message provided")
+
+        # Validate required fields
+        if not transaction_id:
+            return JsonResponse({"error": "Missing transaction ID (airtel_money_id)"}, status=400)
+        if not status_code:
+            return JsonResponse({"error": "Missing status code"}, status=400)
+
+        # Map status codes
+        status_mapping = {
+            "TS": "COMPLETED",
+            "TF": "FAILED",
+            "TP": "PENDING",
+        }
+        if status_code not in status_mapping:
+            return JsonResponse({"error": "Invalid status code"}, status=400)
+        payment_status = status_mapping[status_code]
+
+        # Update payment status (idempotently)
         try:
-            # Parse incoming JSON data
-            data = json.loads(request.body)
-            transaction = data.get("transaction", {})
-
-            # Extract required fields
-            transaction_id = transaction.get("airtel_money_id")  # Airtel's transaction ID
-            status_code = transaction.get("status_code")  # Payment status
-            message = transaction.get("message", "No message provided")  # Extract the message
-
-            if not transaction_id:
-                logger.error("Missing transaction ID in callback data")
-                return JsonResponse({"error": "Missing transaction ID"}, status=400)
-
-            # Convert Airtel status codes to system status
-            status_mapping = {
-                "TS": "COMPLETED",  # Transaction Successful
-                "TF": "FAILED",  # Transaction Failed
-                "TP": "PENDING",  # Transaction Pending
-            }
-            payment_status = status_mapping.get(status_code, "PENDING")
-
-            # Validate and update the payment record
-            try:
-                payment = Payment.objects.get(transaction_id=transaction_id)
+            payment, created = Payment.objects.get_or_create(transaction_id=transaction_id)
+            if payment.status != payment_status:  # Only update if status has changed
                 payment.status = payment_status
                 payment.save()
-
-                logger.info(f"Payment {transaction_id} updated to {payment_status}, Message: {message}")
-                return JsonResponse({
-                    "message": "Callback processed successfully",
-                    "transaction_id": transaction_id,
-                    "status": payment_status,
-                    "response_message": message  # Include message in response
-                }, status=200)
-            except Payment.DoesNotExist:
-                logger.warning(f"Payment record not found for transaction: {transaction_id}")
-                return JsonResponse({"error": "Transaction not found"}, status=404)
-
-        except json.JSONDecodeError:
-            logger.error("Invalid JSON received in callback")
-            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+            return JsonResponse({
+                "message": "Callback processed successfully",
+                "transaction_id": transaction_id,
+                "status": payment_status,
+                "response_message": message
+            }, status=200)
         except Exception as e:
-            logger.error(f"Error processing callback: {str(e)}")
-            return JsonResponse({"error": "Failed to process callback"}, status=500)
+            logger.error(f"Error updating payment: {str(e)}", exc_info=True)
+            return JsonResponse({"error": "Internal server error"}, status=500)
 
-    return JsonResponse({"error": "POST required"}, status=405)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON format"}, status=400)
+    except Exception as e:
+        logger.error(f"Failed to process callback: {str(e)}", exc_info=True)
+        return JsonResponse({"error": "Internal server error"}, status=500)
+    
