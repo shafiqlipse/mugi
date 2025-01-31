@@ -738,65 +738,47 @@ def initiate_payment(request, id):
         logger.error(f"Payment error: {str(e)}")
         return JsonResponse({"error": str(e)}, status=500)
    
-import json
-import logging
-from django.http import JsonResponse
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Payment
+import json
+from .models import Payment  # Assuming you have an Order model
 
-logger = logging.getLogger(__name__)
-
-@csrf_exempt  # Disable CSRF protection for this endpoint
+@csrf_exempt  # Disable CSRF protection for external requests
 def airtel_payment_callback(request):
-    # Ensure the request method is POST
-    if request.method != "POST":
-        return JsonResponse({"error": "POST method required"}, status=405)
-
-    try:
-        # Parse the JSON body
-        data = json.loads(request.body)
-        transaction = data.get("transaction", {})
-
-        # Extract required fields
-        transaction_id = transaction.get("airtel_money_id")
-        status_code = transaction.get("status_code")
-        message = transaction.get("message", "No message provided")
-
-        # Validate required fields
-        if not transaction_id:
-            return JsonResponse({"error": "Missing transaction ID (airtel_money_id)"}, status=400)
-        if not status_code:
-            return JsonResponse({"error": "Missing status code"}, status=400)
-
-        # Map status codes
-        status_mapping = {
-            "TS": "COMPLETED",
-            "TF": "FAILED",
-            "TP": "PENDING",
-        }
-        if status_code not in status_mapping:
-            return JsonResponse({"error": "Invalid status code"}, status=400)
-        payment_status = status_mapping[status_code]
-
-        # Update payment status (idempotently)
+    if request.method == 'POST':
         try:
-            payment, created = Payment.objects.get_or_create(transaction_id=transaction_id)
-            if payment.status != payment_status:  # Only update if status has changed
-                payment.status = payment_status
-                payment.save()
-            return JsonResponse({
-                "message": "Callback processed successfully",
-                "transaction_id": transaction_id,
-                "status": payment_status,
-                "response_message": message
-            }, status=200)
-        except Exception as e:
-            logger.error(f"Error updating payment: {str(e)}", exc_info=True)
-            return JsonResponse({"error": "Internal server error"}, status=500)
+            # Parse the JSON payload from Airtel Money
+            payload = json.loads(request.body)
+            
+            # Extract payment details (adjust fields based on Airtel Money's API)
+            transaction_id = payload.get('transaction_id')
+            status = payload.get('status')  # e.g., 'SUCCESS', 'FAILED'
+            amount = payload.get('amount')
+            reference = payload.get('reference')  # Your order reference ID
 
-    except json.JSONDecodeError:
-        return JsonResponse({"error": "Invalid JSON format"}, status=400)
-    except Exception as e:
-        logger.error(f"Failed to process callback: {str(e)}", exc_info=True)
-        return JsonResponse({"error": "Internal server error"}, status=500)
-    
+            # Validate the payment status
+            if status == 'SUCCESS':
+                # Payment was successful
+                # Example: Update the order status in your database
+                order = Payment.objects.get(reference_id=reference)
+                order.status = 'Completed'
+                order.id = transaction_id
+                order.save()
+
+                # Return a success response to Airtel Money
+                return HttpResponse(status=200)
+            else:
+                # Payment failed or was canceled
+                return HttpResponse(status=400)
+
+        except Payment.DoesNotExist:
+            # Log the error (order not found)
+            print(f"Payment with reference {reference} not found.")
+            return HttpResponse(status=404)
+        except Exception as e:
+            # Log the error for debugging
+            print(f"Error processing Airtel Money callback: {e}")
+            return HttpResponse(status=500)
+    else:
+        # Only POST requests are allowed
+        return HttpResponse(status=405)
