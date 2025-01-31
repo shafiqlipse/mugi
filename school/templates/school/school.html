@@ -26,17 +26,16 @@
           <div class="tabpanel card" aria-labelledby="js">
             <div class="official-list">
               <div class="table-responsive">
-                <table class="table">
+                <table id="myTable" class="display">
                   <thead>
                     <tr>
                       <th>Athlete Name</th>
                       <th>Athlete ID No</th>
                       <th>Index Number</th>
-                      <th>Nationality</th>
+
                       <th>Gender</th>
                       <th>Class</th>
                       <th>Date of Birth</th>
-                      <th>Payment Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -44,7 +43,8 @@
                     <tr>
                       <td>
                         <a href="{% url 'athlete' athlete.id%}">
-                          <img src="{{athlete.photo.url}}" alt="image" />
+                          <img src="{{athlete.photo.url}}" alt="image"
+                          style="width: 30px; border-radius: 50%;" />
                           <span class="pl-2"
                             >{{athlete.fname}} {{athlete.lname}}</span
                           ></a
@@ -52,15 +52,9 @@
                       </td>
                       <td>{{ athlete.athlete_id }}</td>
                       <td>{{ athlete.index_number }}</td>
-                      <td>{{ athlete.nationality }}</td>
                       <td>{{ athlete.gender }}</td>
                       <td>{{ athlete.classroom }}</td>
                       <td>{{ athlete.date_of_birth }}</td>
-                      <td>
-                        <div class="badge badge-outline-success">
-                          {{athlete.status}}
-                        </div>
-                      </td>
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -70,7 +64,7 @@
           </div>
           <div class="tabpanel card" aria-labelledby="ruby" hidden>
             <div class="official-list">
-              <table id="myaTable" class="displlay">
+              <table id="myaTable" class="display">
                 <thead>
                   <tr>
                     <th>Names</th>
@@ -107,4 +101,3 @@
     {% endblock %}
   </div>
 </div>
-
