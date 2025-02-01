@@ -483,18 +483,29 @@ class Screening(models.Model):
 
 from django.utils.timezone import now
 from datetime import timedelta
+import uuid
+
 
 class Payment(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     athletes = models.ManyToManyField(Athlete, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-    phone_number=models.CharField( max_length=50)
+    phone_number = models.CharField(max_length=50)
     status = models.CharField(
         max_length=20, 
         choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
         default='PENDING'
     )
-    transaction_id = models.CharField(max_length=100, null=True, blank=True, unique=True)  # 
+    transaction_id = models.CharField(max_length=8, unique=True, blank=True, null=True)  # Now only 8 characters
 
+    def save(self, *args, **kwargs):
+        if not self.transaction_id:  # Only generate if it's empty
+            self.transaction_id = str(uuid.uuid4().hex[:8])  # First 8 chars of UUID4
+        super().save(*args, **kwargs)
 
+    def save(self, *args, **kwargs):
+        """Override save method to update athlete status if payment is completed."""
+        super().save(*args, **kwargs)  # Save payment first
+
+        if self.status == "COMPLETED":
+            self.athletes.update(status="ACTIVE")  # Update all linked athletes
