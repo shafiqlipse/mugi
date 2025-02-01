@@ -497,7 +497,8 @@ class Payment(models.Model):
         default='PENDING'
     )
     transaction_id = models.CharField(max_length=8, unique=True, blank=True, null=True)  # Now only 8 characters
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    
     def save(self, *args, **kwargs):
         if not self.transaction_id:  # Only generate if it's empty
             self.transaction_id = str(uuid.uuid4().hex[:8])  # First 8 chars of UUID4
