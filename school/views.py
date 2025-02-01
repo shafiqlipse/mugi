@@ -746,6 +746,13 @@ from .models import Payment  # Use the Payment model
 
 logger = logging.getLogger(__name__)
 
+
+import json
+import logging
+from django.http import JsonResponse, HttpResponse
+from .models import Payment
+
+logger = logging.getLogger(__name__)
 @csrf_exempt
 def airtel_payment_callback(request):
     if request.method != 'POST':
@@ -754,53 +761,53 @@ def airtel_payment_callback(request):
     try:
         # Parse the JSON payload
         payload = json.loads(request.body)
-        logger.info(f"Received Airtel Money callback payload: {payload}")
+        logger.info(f"Received Airtel Money callback payload: {json.dumps(payload, indent=2)}")
 
-        # Extract status details
-        status_info = payload.get('status', {})
-        response_code = status_info.get('response_code')
-        status_code = status_info.get('code')
-        success = status_info.get('success', False)
-        result_code = status_info.get('result_code')
-        message = status_info.get('message', 'No message provided')
+        # Extract transaction details
+        transaction = payload.get("transaction", {})
+        transaction_id = transaction.get("id")  # Airtel's unique transaction ID
+        message = transaction.get("message", "No message provided")
+        status_code = transaction.get("status_code")  # Example: "TS" (Success)
+        airtel_money_id = transaction.get("airtel_money_id")  # Airtel Reference
+        reference = payload.get("reference")  # Your Payment ID (if sent)
 
-        # Log the status details
-        logger.info(f"Status Code: {status_code}, Response Code: {response_code}, Success: {success}, Result Code: {result_code}, Message: {message}")
+        logger.info(f"Transaction ID: {transaction_id}, Status Code: {status_code}, Reference: {reference}")
 
-        # Check if the transaction was successful
-        if success:
-            # Extract transaction details (adjust fields based on Airtel Money's API)
-            transaction_id = payload.get('transaction_id')
-            amount = payload.get('amount')
-            reference = payload.get('reference')  # Your payment reference ID
+        # Ensure necessary fields exist
+        if not all([transaction_id, status_code, reference]):
+            logger.error("Missing required fields in callback payload")
+            return JsonResponse({"error": "Invalid callback payload"}, status=400)
 
-            # Validate required fields
-            if not all([transaction_id, amount, reference]):
-                logger.error("Missing required fields in payload")
-                return HttpResponse(status=400)  # Bad Request
+        # Map Airtel Money status codes to your Payment model status
+        status_mapping = {
+            "TS": "COMPLETED",  # Success
+            "TF": "FAILED",     # Failure
+            "TP": "PENDING",    # Pending
+        }
+        payment_status = status_mapping.get(status_code, "PENDING")  # Default to PENDING
 
-            try:
-                # Update the Payment model
-                payment = Payment.objects.get(id=reference)  # Assuming reference is the Payment ID
-                payment.status = 'COMPLETED'  # Update status to COMPLETED
-                payment.transaction_id = transaction_id
+        # Find the corresponding Payment record
+        try:
+            payment = Payment.objects.get(id=reference)  # Assuming reference = Payment ID
+            if payment.status != payment_status:  # Avoid unnecessary updates
+                payment.transaction_id = transaction_id  # Store Airtel Transaction ID
+                payment.status = payment_status
                 payment.save()
+                logger.info(f"Payment {reference} updated successfully with status {payment.status}")
+            else:
+                logger.info(f"Payment {reference} already has status {payment.status}")
 
-                logger.info(f"Payment {reference} updated successfully with status COMPLETED")
-                return HttpResponse(status=200)  # Success
+            return JsonResponse({"message": "Callback processed successfully"}, status=200)
 
-            except Payment.DoesNotExist:
-                logger.error(f"Payment with reference {reference} not found")
-                return HttpResponse(status=404)  # Not Found
-
-        else:
-            # Handle failed or ambiguous transactions
-            logger.warning(f"Transaction failed or ambiguous: {message}")
-            return HttpResponse(status=400)  # Bad Request
+        except Payment.DoesNotExist:
+            logger.error(f"No matching Payment found for reference {reference}")
+            return JsonResponse({"error": "Payment not found"}, status=404)
 
     except json.JSONDecodeError:
         logger.error("Invalid JSON payload received")
-        return HttpResponse(status=400)  # Bad Request
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+    
     except Exception as e:
-        logger.error(f"Error processing Airtel Money callback: {e}")
-        return HttpResponse(status=500)  # Internal Server Error
+        logger.error(f"Error processing Airtel Money callback: {str(e)}")
+        return JsonResponse({"error": "Internal Server Error"}, status=500)
+    

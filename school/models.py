@@ -495,6 +495,6 @@ class Payment(models.Model):
         choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
         default='PENDING'
     )
-
+    transaction_id = models.CharField(max_length=100, null=True, blank=True, unique=True)  # 
 
 
