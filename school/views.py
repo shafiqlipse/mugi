@@ -712,17 +712,17 @@ def initiate_payment(request, id):
         }
 
         payload = {
-            "reference": transaction_id,  # ✅ Fixed reference format
+            "reference": str(payment.id),  # Use the Payment ID as the reference
             "subscriber": {
                 "country": "UG",
                 "currency": "UGX",
-                "msisdn": re.sub(r"\D", "", str(payment.phone_number)),  # ✅ Remove non-numeric characters
+                "msisdn": re.sub(r"\D", "", str(payment.phone_number)),  # Remove non-numeric characters
             },
             "transaction": {
-                "amount": float(payment.amount),  # ✅ Convert DecimalField to float
+                "amount": float(payment.amount),  # Convert DecimalField to float
                 "country": "UG",
                 "currency": "UGX",
-                "id": f"txn{payment.id}",  # ✅ Removed hyphen to make it alphanumeric
+                "id": transaction_id,  # Use the generated transaction ID
             }
         }
 
@@ -730,6 +730,10 @@ def initiate_payment(request, id):
         logger.info(f"Payment Response: {response.status_code}, {response.text}")
 
         if response.status_code == 200:
+            # Update the Payment record with the transaction ID
+            payment.transaction_id = transaction_id
+            payment.status = "PENDING"  # Set initial status
+            payment.save()
             return JsonResponse({"message": "Payment initiated successfully", "response": response.json()})
         else:
             return JsonResponse({"error": "Failed to initiate payment", "details": response.text}, status=400)
@@ -764,12 +768,11 @@ def airtel_payment_callback(request):
         logger.info(f"Received Airtel Money callback payload: {json.dumps(payload, indent=2)}")
 
         # Extract transaction details
-        transaction = payload.get("transaction", {})
-        transaction_id = transaction.get("id")  # Airtel's unique transaction ID
-        message = transaction.get("message", "No message provided")
-        status_code = transaction.get("status_code")  # Example: "TS" (Success)
-        airtel_money_id = transaction.get("airtel_money_id")  # Airtel Reference
-        reference = payload.get("reference")  # Your Payment ID (if sent)
+        transaction_id = payload.get("id")  # Airtel's transaction ID
+        message = payload.get("message", "No message provided")
+        status_code = payload.get("status_code")  # Example: "TS" (Success)
+        airtel_money_id = payload.get("airtel_money_id")  # Airtel Reference
+        reference = payload.get("reference")  # Your Payment ID
 
         logger.info(f"Transaction ID: {transaction_id}, Status Code: {status_code}, Reference: {reference}")
 
@@ -788,7 +791,7 @@ def airtel_payment_callback(request):
 
         # Find the corresponding Payment record
         try:
-            payment = Payment.objects.get(id=reference)  # Assuming reference = Payment ID
+            payment = Payment.objects.get(id=reference)  # Find Payment by reference (Payment ID)
             if payment.status != payment_status:  # Avoid unnecessary updates
                 payment.transaction_id = transaction_id  # Store Airtel Transaction ID
                 payment.status = payment_status
@@ -810,4 +813,3 @@ def airtel_payment_callback(request):
     except Exception as e:
         logger.error(f"Error processing Airtel Money callback: {str(e)}")
         return JsonResponse({"error": "Internal Server Error"}, status=500)
-    
