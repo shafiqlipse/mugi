@@ -498,14 +498,14 @@ class Payment(models.Model):
     transaction_id = models.CharField(max_length=5, unique=True, blank=True, null=True)  # Now only 8 characters
     created_at = models.DateTimeField(auto_now_add=True)
     
-    def generate_transaction_id(self):
-        """Generate a unique alphanumeric transaction ID (8-64 characters)."""
-        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    def save(self, *args, **kwargs):
+        if not self.transaction_id:
+            self.transaction_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+        super().save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        """Auto-generate transaction_id and prevent manual input."""
-        if not self.transaction_id:
-            self.transaction_id = self.generate_transaction_id() # Save payment first
+        """Override save method to update athlete status if payment is completed."""
+        super().save(*args, **kwargs)  # Save payment first
 
         if self.status == "COMPLETED":
             self.athletes.update(status="ACTIVE")  # Update all linked athletes
