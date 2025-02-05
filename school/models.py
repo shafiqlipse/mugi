@@ -496,12 +496,15 @@ class Payment(models.Model):
         choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
         default='PENDING'
     )
-    transaction_id = models.CharField(max_length=8, unique=True, blank=True, null=True)  # Now only 8 characters
+    transaction_id = models.CharField(max_length=5, unique=True, blank=True, null=True)  # Now only 8 characters
     created_at = models.DateTimeField(auto_now_add=True)
     
     def save(self, *args, **kwargs):
-        if not self.transaction_id:  # Only generate if it's empty
-            self.transaction_id = str(uuid.uuid4().hex[:5])  # First 8 chars of UUID4
+        if not self.transaction_id:
+            generated_id = str(uuid.uuid4().hex[:5])  # Extract only 5 characters
+            print(f"Generated ID: {generated_id} | Length: {len(generated_id)}")  # Debugging output
+            self.transaction_id = generated_id
+
         super().save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
