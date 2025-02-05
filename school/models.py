@@ -501,7 +501,7 @@ class Payment(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.transaction_id:  # Only generate if it's empty
-            self.transaction_id = str(uuid.uuid4().hex[:8])  # First 8 chars of UUID4
+            self.transaction_id = str(uuid.uuid4().hex[:5])  # First 8 chars of UUID4
         super().save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
