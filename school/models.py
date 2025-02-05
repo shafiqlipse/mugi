@@ -481,9 +481,8 @@ class Screening(models.Model):
         return self.athlete
 
 
-from django.utils.timezone import now
-from datetime import timedelta
-import uuid
+import random
+import string
 
 
 class Payment(models.Model):
@@ -501,10 +500,7 @@ class Payment(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.transaction_id:
-            generated_id = str(uuid.uuid4().hex[:5])  # Extract only 5 characters
-            print(f"Generated ID: {generated_id} | Length: {len(generated_id)}")  # Debugging output
-            self.transaction_id = generated_id
-
+            self.transaction_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
         super().save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
