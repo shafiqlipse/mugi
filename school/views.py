@@ -699,7 +699,7 @@ def initiate_payment(request, id):
             return JsonResponse({"error": "Failed to get authentication token"}, status=500)
 
         payment_url = "https://openapiuat.airtel.africa/merchant/v2/payments/"
-        transaction_id = str(uuid.uuid4()).replace("-", "")[:20]  # Generate a unique transaction ID
+        transaction_id = str(uuid.uuid4()).replace("-", "")[:5]  # Generate a unique transaction ID
 
         headers = {
             "Accept": "*/*",
@@ -748,18 +748,6 @@ import json
 import logging
 from .models import Payment  # Use the Payment model
 
-logger = logging.getLogger(__name__)
-
-
-import json
-import logging
-from django.http import JsonResponse, HttpResponse
-from .models import Payment
-
-logger = logging.getLogger(__name__)
-
-
-logger = logging.getLogger(__name__)
 @csrf_exempt
 def airtel_payment_callback(request):
     if request.method != 'POST':

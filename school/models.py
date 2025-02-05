@@ -497,11 +497,7 @@ class Payment(models.Model):
     )
     transaction_id = models.CharField(max_length=5, unique=True, blank=True, null=True)  # Now only 8 characters
     created_at = models.DateTimeField(auto_now_add=True)
-    
-    def save(self, *args, **kwargs):
-        if not self.transaction_id:
-            self.transaction_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
-        super().save(*args, **kwargs)
+
 
     def save(self, *args, **kwargs):
         """Override save method to update athlete status if payment is completed."""
