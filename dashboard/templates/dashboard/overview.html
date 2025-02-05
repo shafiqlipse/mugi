@@ -195,8 +195,10 @@
                       </p>
                     </div>
                     <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                      <p class="text-muted">15 minutes ago</p>
-                      <p class="text-muted mb-0">30 tasks, 5 issues</p>
+                      <p class="text-muted">
+                        {{ school.created_at|timesince }} ago
+                      </p>
+                      <p class="text-muted mb-0">{{ school.created_at }}</p>
                     </div>
                   </div>
                 </div>
