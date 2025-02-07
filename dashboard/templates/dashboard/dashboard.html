@@ -403,6 +403,36 @@
             </a>
           </li>
           {% endif %}
+
+          {% if user.is_accounts %}
+          <li class="nav-item menu-items">
+            <a
+              class="nav-link"
+              data-toggle="collapse"
+              href="#auth"
+              aria-expanded="false"
+              aria-controls="auth"
+            >
+              <span class="menu-icon">
+                <i class="mdi mdi-security"></i>
+              </span>
+              <span class="menu-title">Accounts</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="auth">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'accounts'%}">
+                   Overview
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'payments' %}"> Payments </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          {% endif %}
           <li class="nav-item menu-items">
             <a
               class="nav-link"

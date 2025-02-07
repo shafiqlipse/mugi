@@ -35,7 +35,6 @@ def transfers(request):
     }
     return render(request, "transfers/initiate_transfer.html", context)
 
-
 def initiate_transfer(request, id):
     try:
         user = request.user
@@ -49,14 +48,14 @@ def initiate_transfer(request, id):
             )
             return redirect("athletes_list")
 
-        # Check if there's already a pending transfer request
-        existing_request = TransferRequest.objects.filter(
-            athlete=athlete, status="pending"
+        # Check if there's already a pending transfer request from the same school
+        existing_request_from_same_school = TransferRequest.objects.filter(
+            athlete=athlete, requester=school, status="pending"
         ).exists()
 
-        if existing_request:
+        if existing_request_from_same_school:
             messages.error(
-                request, "There is already a pending transfer request for this athlete."
+                request, "Your school has already initiated a transfer request for this athlete."
             )
             return redirect("mytransfers")
 
@@ -75,8 +74,6 @@ def initiate_transfer(request, id):
     except Exception as e:
         messages.error(request, f"An error occurred: {str(e)}")
         return redirect("transfers")
-
-
 def myTransfers(request):
     user = request.user
     school = user.school
@@ -113,6 +110,7 @@ def myRequests(request):
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 
+from django.db.models import Q
 
 def accept_transfer(request, id):
     try:
@@ -120,51 +118,53 @@ def accept_transfer(request, id):
 
         # Ensure only the owning school can accept the transfer
         if transfer_request.owner != request.user.school:
-            return JsonResponse(
-                {
-                    "status": "error",
-                    "message": "You are not authorized to accept this transfer.",
-                }
-            )
+            return JsonResponse({
+                "status": "error",
+                "message": "You are not authorized to accept this transfer."
+            })
 
         if transfer_request.status != "pending":
-            return JsonResponse(
-                {
-                    "status": "error",
-                    "message": "This transfer request is no longer pending.",
-                }
-            )
+            return JsonResponse({
+                "status": "error",
+                "message": "This transfer request is no longer pending."
+            })
 
-        form = AcceptTransferForm(
-            request.POST, request.FILES, instance=transfer_request
-        )
-        if form.is_valid():
-            transfer_request = form.save(commit=False)
-            transfer_request.accept_transfer()
-            return JsonResponse(
-                {
+        if request.method == "POST":
+            form = AcceptTransferForm(request.POST, request.FILES, instance=transfer_request)
+            if form.is_valid():
+                # Reject all other pending transfers for the same athlete
+                TransferRequest.objects.filter(
+                    Q(athlete=transfer_request.athlete) & Q(status="pending")
+                ).exclude(id=transfer_request.id).update(status="rejected")
+
+                # Accept the current transfer
+                transfer_request = form.save(commit=False)
+                transfer_request.accept_transfer()  
+                transfer_request.save()
+
+                return JsonResponse({
                     "status": "success",
-                    "message": "Transfer request accepted successfully.",
-                }
-            )
-        else:
-            return JsonResponse(
-                {
+                    "message": "Transfer request accepted successfully. Other pending transfers for this athlete have been rejected."
+                })
+            else:
+                return JsonResponse({
                     "status": "error",
-                    "message": "Please upload valid transfer documents.",
-                }
-            )
+                    "message": form.errors.get('documents', ["Invalid file."])[0]
+                })
+
+        return JsonResponse({
+            "status": "error",
+            "message": "Invalid request method."
+        })
 
     except Exception as e:
-        print(f"Error in accept_transfer: {str(e)}")  # For debugging
-        return JsonResponse(
-            {
-                "status": "error",
-                "message": "An error occurred while processing your request.",
-            }
-        )
-
-
+        print(f"Error in accept_transfer: {str(e)}")  # Debugging
+        return JsonResponse({
+            "status": "error",
+            "message": "An error occurred while processing your request."
+        })
+        
+        
 @login_required
 def approve_transfer(request, id):
     try:

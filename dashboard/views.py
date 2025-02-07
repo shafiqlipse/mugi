@@ -290,3 +290,28 @@ def delete_announcement(request, id):
 
     return redirect('announcements') 
 
+# ---------------Accounts-----------------
+from django.db.models import Sum, Count, F
+def accounts(request):
+    
+    total_earnings = Payment.objects.filter(status="COMPLETED").aggregate(Sum('amount'))['amount__sum'] or 0
+    total_pending = Payment.objects.filter(status="PENDING").count()
+    total_completed = Payment.objects.filter(status="COMPLETED").count()
+    total_schools = Payment.objects.values('school').distinct().count()
+    total_athletes = Payment.objects.values('athletes').distinct().count()
+
+    recent_transactions = Payment.objects.order_by('-created_at')[:10]  # Last 10 transactions
+
+    context = {
+        'total_earnings': total_earnings,
+        'total_pending': total_pending,
+        'total_completed': total_completed,
+        'total_schools': total_schools,
+        'total_athletes': total_athletes,
+        'recent_transactions': recent_transactions,
+    }
+    return render(request, "dashboard/accounts.html", context)
+
+def payments(request):
+    context={}
+    return render(request, "dashboard/payments.html", context)
