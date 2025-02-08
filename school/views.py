@@ -750,6 +750,9 @@ from .models import Payment  # Use the Payment model
 
 @csrf_exempt
 def airtel_payment_callback(request):
+    """Handles Airtel payment callbacks."""
+
+    # Allow only POST requests
     if request.method != 'POST':
         return HttpResponse("Method Not Allowed", status=405)
 
@@ -774,7 +777,7 @@ def airtel_payment_callback(request):
             logger.error("❌ Missing required fields in callback payload")
             return JsonResponse({"error": "Invalid callback payload"}, status=400)
 
-        # Process the payment...
+        # Process the payment callback...
         return JsonResponse({"message": "Callback processed successfully"}, status=200)
 
     except json.JSONDecodeError:
@@ -784,3 +787,4 @@ def airtel_payment_callback(request):
     except Exception as e:
         logger.error(f"❌ Error processing callback: {str(e)}")
         return JsonResponse({"error": "Internal Server Error"}, status=500)
+
