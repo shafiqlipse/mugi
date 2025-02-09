@@ -690,6 +690,16 @@ def get_airtel_token():
         logger.error(f"Unknown error: {str(e)}")
         return None
 
+import random
+
+def generate_unique_transaction_id():
+    """Generate a unique 12-digit transaction ID."""
+    while True:
+        transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
+        if not Payment.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
+            return transaction_id
+
+
 def initiate_payment(request, id):
     payment = get_object_or_404(Payment, id=id)
     
@@ -699,7 +709,7 @@ def initiate_payment(request, id):
             return JsonResponse({"error": "Failed to get authentication token"}, status=500)
 
         payment_url = "https://openapiuat.airtel.africa/merchant/v2/payments/"
-        transaction_id = str(random.randint(10**11, 10**12 - 1))  
+        transaction_id = generate_unique_transaction_id()  
 
 
         headers = {
