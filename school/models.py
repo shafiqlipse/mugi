@@ -494,12 +494,12 @@ class Payment(models.Model):
         choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
         default='PENDING'
     )
-    transaction_id = models.CharField(null=True,max_length=12, unique=True, editable=False)  # Auto-generated, not editable
+    transaction_id = models.CharField(max_length=12, unique=True,null=True, editable=False)  # Numeric ID
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        if not self.transaction_id:  # Generate only if it's empty
-            self.transaction_id = str(uuid.uuid4()).replace("-", "")[:12]  # Unique 12-char ID
+        if not self.transaction_id:  # Generate only if empty
+            self.transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit number
         super().save(*args, **kwargs)
 
     def __str__(self):
