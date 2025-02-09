@@ -610,24 +610,27 @@ def payment_view(request):
         if form.is_valid():
             phone_number = form.cleaned_data['phone_number']
             selected_athletes = form.cleaned_data['athletes']
-            total_amount = selected_athletes.count() * 3000  # UGX 20,000 per athlete
+            total_amount = selected_athletes.count() * 3000  # UGX 3,000 per athlete
 
-            # Create a Payment record
-            payment = Payment.objects.create(
+            # Prevent duplicate payments
+            payment, created = Payment.objects.get_or_create(
                 school=school,
-                amount=total_amount,
                 phone_number=phone_number,
+                amount=total_amount,
                 status="PENDING",
             )
-            payment.athletes.set(selected_athletes)
 
-            # Redirect to initiate payment
-            return redirect('payment', payment.id)
+            if created:
+                payment.athletes.set(selected_athletes)
+
+            # Redirect safely
+            return redirect(reverse('initiate_payment', kwargs={'id': payment.id}))
 
     else:
         form = PaymentForm(school=school)
 
     return render(request, 'emails/payment_form.html', {'form': form})
+
 import json
 import uuid
 import requests
