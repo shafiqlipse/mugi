@@ -750,9 +750,7 @@ from .models import Payment  # Use the Payment model
 
 @csrf_exempt
 def airtel_payment_callback(request):
-    """Handles Airtel payment callbacks."""
 
-    # Allow only POST requests
     if request.method != 'POST':
         return HttpResponse("Method Not Allowed", status=405)
 
@@ -765,17 +763,11 @@ def airtel_payment_callback(request):
         payload = json.loads(raw_body)
         logger.info(f"Parsed JSON Payload: {json.dumps(payload, indent=2)}")
 
-        # Ensure 'transaction' key exists
-        transaction_data = payload.get("transaction")
-        if not transaction_data:
-            logger.error("❌ Missing 'transaction' object in callback payload")
-            return JsonResponse({"error": "Invalid callback payload"}, status=400)
-
-        # Extract transaction details
-        transaction_id = transaction_data.get("id")  # Airtel's transaction ID
-        status_code = transaction_data.get("status_code")  # Example: "TS" (Success)
-        airtel_money_id = transaction_data.get("airtel_money_id")  # Airtel Money Transaction ID
-        message = transaction_data.get("message")  # Transaction message
+        # Extract transaction details (corrected)
+        transaction = payload.get("transaction", {})  # Ensure transaction exists
+        transaction_id = transaction.get("id")  # Airtel's transaction ID
+        status_code = transaction.get("status_code")  # Example: "TS" (Success)
+        airtel_money_id = transaction.get("airtel_money_id")  # Airtel reference ID
 
         logger.info(f"Transaction ID: {transaction_id}, Status Code: {status_code}, Airtel Money ID: {airtel_money_id}")
 
@@ -784,7 +776,7 @@ def airtel_payment_callback(request):
             logger.error("❌ Missing required fields in callback payload")
             return JsonResponse({"error": "Invalid callback payload"}, status=400)
 
-        # Process the payment callback...
+        # Process the payment callback (Update Payment record)
         return JsonResponse({"message": "Callback processed successfully"}, status=200)
 
     except json.JSONDecodeError:
