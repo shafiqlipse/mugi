@@ -624,7 +624,7 @@ def payment_view(request):
                 payment.athletes.set(selected_athletes)
 
             # Redirect safely
-            return redirect(reverse('initiate_payment', kwargs={'id': payment.id}))
+            return redirect(reverse('payment', kwargs={'id': payment.id}))
 
     else:
         form = PaymentForm(school=school)
