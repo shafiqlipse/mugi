@@ -484,7 +484,6 @@ class Screening(models.Model):
 import random
 import string
 
-
 class Payment(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     athletes = models.ManyToManyField(Athlete, related_name='payments')
@@ -495,17 +494,13 @@ class Payment(models.Model):
         choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
         default='PENDING'
     )
-    transaction_id = models.CharField(max_length=5, unique=True, blank=True, null=True)  # Now only 8 characters
+    transaction_id = models.CharField(null=True,max_length=12, unique=True, editable=False)  # Auto-generated, not editable
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     def save(self, *args, **kwargs):
-        if not self.transaction_id:
-            self.transaction_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+        if not self.transaction_id:  # Generate only if it's empty
+            self.transaction_id = str(uuid.uuid4()).replace("-", "")[:12]  # Unique 12-char ID
         super().save(*args, **kwargs)
 
-    def save(self, *args, **kwargs):
-        """Override save method to update athlete status if payment is completed."""
-        super().save(*args, **kwargs)  # Save payment first
-
-        if self.status == "COMPLETED":
-            self.athletes.update(status="ACTIVE")  # Update all linked athletes
+    def __str__(self):
+        return f"Payment {self.transaction_id} - UGX {self.amount}"

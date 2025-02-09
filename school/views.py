@@ -731,7 +731,7 @@ def initiate_payment(request, id):
 
         if response.status_code == 200:
             # Update the Payment record with the transaction ID
-            payment.transaction_id = transaction_id
+            payment.id = transaction_id
             payment.status = "PENDING"  # Set initial status
             payment.save()
             return JsonResponse({"message": "Payment initiated successfully", "response": response.json()})
@@ -765,15 +765,22 @@ def airtel_payment_callback(request):
         payload = json.loads(raw_body)
         logger.info(f"Parsed JSON Payload: {json.dumps(payload, indent=2)}")
 
-        # Extract transaction details
-        transaction_id = payload.get("id")  # Airtel's transaction ID
-        status_code = payload.get("status_code")  # Example: "TS" (Success)
-        reference = payload.get("reference")  # Your Payment ID
+        # Ensure 'transaction' key exists
+        transaction_data = payload.get("transaction")
+        if not transaction_data:
+            logger.error("❌ Missing 'transaction' object in callback payload")
+            return JsonResponse({"error": "Invalid callback payload"}, status=400)
 
-        logger.info(f"Transaction ID: {transaction_id}, Status Code: {status_code}, Reference: {reference}")
+        # Extract transaction details
+        transaction_id = transaction_data.get("id")  # Airtel's transaction ID
+        status_code = transaction_data.get("status_code")  # Example: "TS" (Success)
+        airtel_money_id = transaction_data.get("airtel_money_id")  # Airtel Money Transaction ID
+        message = transaction_data.get("message")  # Transaction message
+
+        logger.info(f"Transaction ID: {transaction_id}, Status Code: {status_code}, Airtel Money ID: {airtel_money_id}")
 
         # Ensure required fields exist
-        if not all([transaction_id, status_code, reference]):
+        if not all([transaction_id, status_code, airtel_money_id]):
             logger.error("❌ Missing required fields in callback payload")
             return JsonResponse({"error": "Invalid callback payload"}, status=400)
 
@@ -787,4 +794,3 @@ def airtel_payment_callback(request):
     except Exception as e:
         logger.error(f"❌ Error processing callback: {str(e)}")
         return JsonResponse({"error": "Internal Server Error"}, status=500)
-
