@@ -699,7 +699,8 @@ def initiate_payment(request, id):
             return JsonResponse({"error": "Failed to get authentication token"}, status=500)
 
         payment_url = "https://openapiuat.airtel.africa/merchant/v2/payments/"
-        transaction_id = str(uuid.uuid4()).replace("-", "")[:5]  # Generate a unique transaction ID
+        transaction_id = str(random.randint(10**11, 10**12 - 1))  
+
 
         headers = {
             "Accept": "*/*",
