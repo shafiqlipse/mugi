@@ -610,27 +610,24 @@ def payment_view(request):
         if form.is_valid():
             phone_number = form.cleaned_data['phone_number']
             selected_athletes = form.cleaned_data['athletes']
-            total_amount = selected_athletes.count() * 3000  # UGX 3,000 per athlete
+            total_amount = selected_athletes.count() * 3000  # UGX 20,000 per athlete
 
-            # Prevent duplicate payments
-            payment, created = Payment.objects.get_or_create(
+            # Create a Payment record
+            payment = Payment.objects.create(
                 school=school,
-                phone_number=phone_number,
                 amount=total_amount,
+                phone_number=phone_number,
                 status="PENDING",
             )
+            payment.athletes.set(selected_athletes)
 
-            if created:
-                payment.athletes.set(selected_athletes)
-
-            # Redirect safely
-            return redirect(reverse('payment', kwargs={'id': payment.id}))
+            # Redirect to initiate payment
+            return redirect('payment', payment.id)
 
     else:
         form = PaymentForm(school=school)
 
     return render(request, 'emails/payment_form.html', {'form': form})
-
 import json
 import uuid
 import requests
@@ -699,7 +696,7 @@ def generate_unique_transaction_id():
     """Generate a unique 12-digit transaction ID."""
     while True:
         transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
-        if not Payment.objects.filter(transaction_id=transaction_id).exists():
+        if not Payment.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
             return transaction_id
 
 
