@@ -744,7 +744,7 @@ def initiate_payment(request, id):
             "subscriber": {
                 "country": "UG",
                 "currency": "UGX",
-                "msisdn": re.sub(r"\D", "", str(payment.phone_number)),  # Remove non-numeric characters
+                "msisdn": re.sub(r"\D", "", str(payment.phone_number)).lstrip('0'),   # Remove non-numeric characters
             },
             "transaction": {
                 "amount": float(payment.amount),  # Convert DecimalField to float
