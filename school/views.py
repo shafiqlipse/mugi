@@ -107,6 +107,15 @@ def exportp_csv(request):
 
 
 from .filters import AthleteFilter
+import csv
+from django.http import HttpResponse
+import json
+import uuid
+import requests
+from django.conf import settings
+from django.http import JsonResponse
+import logging
+from django.views.decorators.csrf import csrf_exempt
 
 
 # schools list, tuple or array
@@ -567,7 +576,15 @@ def athlete_list(request):
 
 import csv
 from django.http import HttpResponse
+import json
+import uuid
+import requests
+from django.conf import settings
+from django.http import JsonResponse
+import logging
+from django.views.decorators.csrf import csrf_exempt
 
+logger = logging.getLogger(__name__)
 
 def export_scsv(request):
     # Create the HttpResponse object with the appropriate CSV header.
@@ -601,6 +618,11 @@ def export_scsv(request):
         )  # Replace with your model's fields
 
     return response
+# def generate_unique_transaction_id():
+#     while True:
+#         transaction_id = str(random.randint(10**11, 10**12 - 1))
+#         if not Payment.objects.filter(transaction_id=transaction_id).exists():
+#             return transaction_id
 
 def payment_view(request):
     school = request.user.school  # Get the logged-in user's school
@@ -609,50 +631,28 @@ def payment_view(request):
         form = PaymentForm(request.POST, school=school)
         if form.is_valid():
             phone_number = form.cleaned_data['phone_number']
-            selected_athletes = form.cleaned_data['athletes']
-            total_amount = selected_athletes.count() * 3000  # UGX 20,000 per athlete
+            athletes = form.cleaned_data['athletes']
+            total_amount = athletes.count() * 3000  # UGX 3,000 per athlete
+            # transaction_id = generate_unique_transaction_id()  # Ensure uniqueness
 
-            # Check if a payment with the same phone_number and amount already exists
-            existing_payment = Payment.objects.filter(
-                school=school, 
-                phone_number=phone_number, 
-                amount=total_amount, 
-                status="PENDING"
-            ).first()
-
-        if existing_payment:
-            payment = existing_payment  # ✅ Define `payment` before using it
-        else: # Avoid creating a duplicate
-
-            # Generate a unique transaction_id upfront
-            transaction_id = str(uuid.uuid4()).replace("-", "")[:12]  
-
-            # Create a Payment record with transaction_id
+            # Create and save the payment
             payment = Payment.objects.create(
                 school=school,
                 amount=total_amount,
                 phone_number=phone_number,
-                status="PENDING",
-                transaction_id=transaction_id  # ✅ Assign transaction_id here
+                # transaction_id=transaction_id
             )
-            payment.athletes.set(selected_athletes)
 
-            # Redirect to initiate payment
-            return redirect('payment', payment.id)
+            # Set the ManyToMany relationship
+            payment.athletes.set(athletes)
+
+            return redirect('payment',payment.id)
 
     else:
         form = PaymentForm(school=school)
 
     return render(request, 'emails/payment_form.html', {'form': form})
-import json
-import uuid
-import requests
-from django.conf import settings
-from django.http import JsonResponse
-import logging
-from django.views.decorators.csrf import csrf_exempt
 
-logger = logging.getLogger(__name__)
 
 def get_airtel_token():
     """
@@ -758,8 +758,8 @@ def initiate_payment(request, id):
 
         if response.status_code == 200:
             # Update the Payment record with the transaction ID
-            payment.id = transaction_id
-            payment.status = "PENDING"  # Set initial status
+            payment.transaction_id = transaction_id
+            payment.status = "COMPLETED"  # Set initial status
             payment.save()
             return JsonResponse({"message": "Payment initiated successfully", "response": response.json()})
         else:
