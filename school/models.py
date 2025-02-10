@@ -497,10 +497,7 @@ class Payment(models.Model):
     transaction_id = models.CharField(max_length=12, unique=True,null=True, editable=False)  # Numeric ID
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        if not self.transaction_id:  # Generate only if empty
-            self.transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit number
-        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"Payment {self.transaction_id} - UGX {self.amount}"

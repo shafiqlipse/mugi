@@ -612,15 +612,18 @@ def payment_view(request):
             selected_athletes = form.cleaned_data['athletes']
             total_amount = selected_athletes.count() * 3000  # UGX 20,000 per athlete
 
-            # Create a Payment record
+            # Generate a unique transaction_id upfront
+            transaction_id = str(uuid.uuid4()).replace("-", "")[:12]  
+
+            # Create a Payment record with transaction_id
             payment = Payment.objects.create(
                 school=school,
                 amount=total_amount,
                 phone_number=phone_number,
                 status="PENDING",
+                transaction_id=transaction_id  # ✅ Assign transaction_id here
             )
             payment.athletes.set(selected_athletes)
-
             # Redirect to initiate payment
             return redirect('payment', payment.id)
 
