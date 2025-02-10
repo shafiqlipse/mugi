@@ -494,7 +494,7 @@ class Payment(models.Model):
         choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
         default='PENDING'
     )
-    transaction_id = models.CharField(max_length=12, unique=True,null=True, editable=False)  # Numeric ID
+    transaction_id = models.CharField(max_length=12,null=True, editable=False)  # Numeric ID
     created_at = models.DateTimeField(auto_now_add=True)
 
 

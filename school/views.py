@@ -621,7 +621,7 @@ def payment_view(request):
             ).first()
 
             if existing_payment:
-                return redirect('payment', existing_payment.id)  # Avoid creating a duplicate
+                return redirect('payment', payment.id)  # Avoid creating a duplicate
 
             # Generate a unique transaction_id upfront
             transaction_id = str(uuid.uuid4()).replace("-", "")[:12]  
