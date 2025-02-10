@@ -620,8 +620,9 @@ def payment_view(request):
                 status="PENDING"
             ).first()
 
-            if existing_payment:
-                return redirect('payment', payment.id)  # Avoid creating a duplicate
+        if existing_payment:
+            payment = existing_payment  # ✅ Define `payment` before using it
+        else: # Avoid creating a duplicate
 
             # Generate a unique transaction_id upfront
             transaction_id = str(uuid.uuid4()).replace("-", "")[:12]  
