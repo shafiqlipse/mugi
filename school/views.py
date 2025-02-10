@@ -612,6 +612,17 @@ def payment_view(request):
             selected_athletes = form.cleaned_data['athletes']
             total_amount = selected_athletes.count() * 3000  # UGX 20,000 per athlete
 
+            # Check if a payment with the same phone_number and amount already exists
+            existing_payment = Payment.objects.filter(
+                school=school, 
+                phone_number=phone_number, 
+                amount=total_amount, 
+                status="PENDING"
+            ).first()
+
+            if existing_payment:
+                return redirect('payment', existing_payment.id)  # Avoid creating a duplicate
+
             # Generate a unique transaction_id upfront
             transaction_id = str(uuid.uuid4()).replace("-", "")[:12]  
 
@@ -624,6 +635,7 @@ def payment_view(request):
                 transaction_id=transaction_id  # ✅ Assign transaction_id here
             )
             payment.athletes.set(selected_athletes)
+
             # Redirect to initiate payment
             return redirect('payment', payment.id)
 
