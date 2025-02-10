@@ -740,7 +740,7 @@ def initiate_payment(request, id):
         }
 
         payload = {
-            "reference": str(payment.id),  # Use the Payment ID as the reference
+            "reference": str(payment.transaction_id),  # Use the Payment ID as the reference
             "subscriber": {
                 "country": "UG",
                 "currency": "UGX",
