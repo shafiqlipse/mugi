@@ -707,6 +707,7 @@ def get_airtel_token():
         return None
 
 import random
+from django.db import transaction as db_transaction
 
 def generate_unique_transaction_id():
     """Generate a unique 12-digit transaction ID."""
@@ -756,11 +757,13 @@ def initiate_payment(request, id):
         response = requests.post(payment_url, json=payload, headers=headers)
         logger.info(f"Payment Response: {response.status_code}, {response.text}")
 
-        if response.status_code == 200:
-            # Update the Payment record with the transaction ID
+       # Update payment record with transaction ID and set status to PENDING
+        with db_transaction.atomic():
             payment.transaction_id = transaction_id
-            payment.status = "COMPLETED"  # Set initial status
+            payment.status = "PENDING"  # Set status to pending until confirmed
             payment.save()
+
+        if response.status_code == 200:
             return JsonResponse({"message": "Payment initiated successfully", "response": response.json()})
         else:
             return JsonResponse({"error": "Failed to initiate payment", "details": response.text}, status=400)
