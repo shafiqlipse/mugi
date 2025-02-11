@@ -1,5 +1,6 @@
 # Django settings
 usssa/settings.py
+django.log
 
 # Django migrations
 accounts/migrations/*
