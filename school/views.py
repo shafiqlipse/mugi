@@ -783,7 +783,8 @@ import logging
 import json
 
 logger = logging.getLogger(__name__)
-csrf_exempt
+
+@csrf_exempt
 def airtel_payment_callback(request):
     print("🚀 Callback function triggered!")
     logger.info("🚀 Callback function triggered!")
