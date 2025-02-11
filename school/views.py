@@ -784,7 +784,7 @@ import json
 
 logger = logging.getLogger(__name__)
 
-@csrf_exempt
+@csrf_exempt  # 🚀 Disables CSRF protection for this view
 def airtel_payment_callback(request):
     print("🚀 Callback function triggered!")
     logger.info("🚀 Callback function triggered!")
