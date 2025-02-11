@@ -764,7 +764,7 @@ def initiate_payment(request, id):
             payment.save()
 
         if response.status_code == 200:
-            return JsonResponse({"message": "Payment initiated successfully", "response": response.json()})
+            return redirect(reverse('payment_success', args=[payment.transaction_id]))  # ✅ Redirect to success page
         else:
             return JsonResponse({"error": "Failed to initiate payment", "details": response.text}, status=400)
 
@@ -779,79 +779,49 @@ import logging
 from .models import Payment  # Use the Payment model
 
 
-# def airtel_payment_callback(request):
-#     try:
-#         data = json.loads(request.body)
-#         logger.info(f"Received Airtel callback: {data}")
+import logging
+import json
 
-#         # Extract transaction details
-#         transaction = data.get("transaction", {})
-#         transaction_id = transaction.get("id")  # Ensure this matches what was sent
-#         status_code = transaction.get("status_code")  # Airtel success code
-#         airtel_money_id = transaction.get("airtel_money_id")  # Airtel money transaction ID
-
-#         # Check if transaction_id exists in our database
-#         payment = Payment.objects.filter(transaction_id=transaction_id).first()
-
-#         if not payment:
-#             logger.error(f"No payment found for transaction_id: {transaction_id}")
-#             return JsonResponse({"error": "Invalid transaction ID"}, status=400)
-
-#         # Only update if it's still pending
-#         if payment.status == "PENDING":
-#             if status_code == "TS":  # Airtel's success status code
-#                 payment.status = "COMPLETED"
-#                 payment.save()
-#                 logger.info(f"Payment {payment.id} completed successfully.")
-#                 return JsonResponse({"message": "Payment completed successfully"})
-#             else:
-#                 logger.warning(f"Payment {payment.id} failed with status {status_code}")
-#                 return JsonResponse({"error": "Payment not successful"}, status=400)
-
-#         return JsonResponse({"message": "Payment already processed"})
-
-#     except json.JSONDecodeError:
-#         logger.error("Invalid JSON received in callback")
-#         return JsonResponse({"error": "Invalid JSON"}, status=400)
-
-#     except Exception as e:
-#         logger.error(f"Error processing payment callback: {str(e)}")
-#         return JsonResponse({"error": str(e)}, status=500)
-@csrf_exempt
+logger = logging.getLogger(__name__)
+csrf_exempt
 def airtel_payment_callback(request):
+    print("🚀 Callback function triggered!")
+    logger.info("🚀 Callback function triggered!")
 
     if request.method != 'POST':
         return HttpResponse("Method Not Allowed", status=405)
 
     try:
-        # Log the raw request body
         raw_body = request.body.decode('utf-8')
+        print(f"🔹 RAW REQUEST BODY: {raw_body}")
         logger.info(f"Raw Request Body: {raw_body}")
 
-        # Parse JSON payload
         payload = json.loads(raw_body)
-        logger.info(f"Parsed JSON Payload: {json.dumps(payload, indent=2)}")
+        transaction = payload.get("transaction", {})
+        transaction_id = transaction.get("id")
+        status_code = transaction.get("status_code")
 
-        # Extract transaction details (corrected)
-        transaction = payload.get("transaction", {})  # Ensure transaction exists
-        transaction_id = transaction.get("id")  # Airtel's transaction ID
-        status_code = transaction.get("status_code")  # Example: "TS" (Success)
-        airtel_money_id = transaction.get("airtel_money_id")  # Airtel reference ID
+        print(f"🔹 TRANSACTION ID: {transaction_id}, STATUS: {status_code}")
+        logger.info(f"Transaction ID: {transaction_id}, Status: {status_code}")
 
-        logger.info(f"Transaction ID: {transaction_id}, Status Code: {status_code}, Airtel Money ID: {airtel_money_id}")
-
-        # Ensure required fields exist
-        if not all([transaction_id, status_code, airtel_money_id]):
-            logger.error("❌ Missing required fields in callback payload")
-            return JsonResponse({"error": "Invalid callback payload"}, status=400)
-
-        # Process the payment callback (Update Payment record)
         return JsonResponse({"message": "Callback processed successfully"}, status=200)
 
-    except json.JSONDecodeError:
-        logger.error("❌ Invalid JSON payload received")
-        return JsonResponse({"error": "Invalid JSON"}, status=400)
-
     except Exception as e:
+        print(f"❌ ERROR: {str(e)}")
         logger.error(f"❌ Error processing callback: {str(e)}")
         return JsonResponse({"error": "Internal Server Error"}, status=500)
+
+    
+    
+    
+def payment_success(request, transaction_id):
+    payment = Payment.objects.filter(transaction_id=transaction_id).first()
+    
+    if not payment:
+        return render(request, 'payment_failed.html', {'error': 'Transaction not found'})
+
+    return render(request, 'emails/payment_success.html', {
+        'amount': payment.amount,
+        'transaction_id': payment.transaction_id,
+        'timestamp': payment.created_at,  # Make sure your Payment model has `created_at`
+    })
