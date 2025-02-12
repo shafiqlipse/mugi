@@ -69,7 +69,7 @@
       <img src="https://upssaonline.com/head.png" alt="" />
 
       <h3 style="font-size: 20px; color: #00338b">
-        {{team.school|upper}} ~ {{team.sport}} ~
+        {{team.school|upper}} ~ {{team.sport}} ~ {{team.championship}}
         E{{team.id}}A00{{athlete_count}}O00{{official_count}}
       </h3>
 
@@ -105,17 +105,9 @@
                             Names: {{ official.fname|upper }}
                             {{official.lname|upper }} </span
                           ><br />
-                          <span>LIN: {{ official.nin|upper }}</span
+                          <span>NIN: {{ official.nin|upper }}</span
                           ><br />
-                          <span>School: {{ official.role|upper }}</span
-                          ><br />
-                          <span
-                            >Date of birth:
-                            {{official.date_of_birth|upper}}</span
-                          ><br />
-                          <span>Age: {{ official.age|upper }}</span
-                          ><br />
-                          <span>Sport: {{ official.sport|upper }}</span
+                          <span>Role: {{ official.role|upper }}</span
                           ><br />
                         </ul>
                       </td>
@@ -161,7 +153,10 @@
                           ><br />
                           <span>LIN: {{ athlete.lin|upper }}</span
                           ><br />
-                          <span>School: {{ athlete.school|upper }}</span
+                          <span
+                            >Index No.: {{ athlete.index_number|upper }}</span
+                          ><br />
+                          <span>Class: {{ athlete.classroom|upper }}</span
                           ><br />
                           <span
                             >Date of birth:
@@ -169,7 +164,7 @@
                           ><br />
                           <span>Age: {{ athlete.age|upper }}</span
                           ><br />
-                          <span>Sport: {{ athlete.sport|upper }}</span
+                          <span>Sport: {{ team.sport|upper }}</span
                           ><br />
                         </ul>
                       </td>

@@ -80,21 +80,31 @@ def remove_athlete(request, enrollment_id, athlete_id):
 def school_enrollment_details(request, id):
     school_enrollment = get_object_or_404(SchoolEnrollment, id=id)
     school = school_enrollment.school
+    sport = school_enrollment.sport  
+    max_entries = sport.entries 
+    
     if request.method == "POST":
         form = AthleteEnrollmentForm(request.POST)
         if form.is_valid():
-            athlete_enrollment = AthleteEnrollment.objects.create(
-                school_enrollment=school_enrollment
-            )
-            athlete_enrollment.athletes.set(form.cleaned_data["athletes"])
-            return HttpResponseRedirect(reverse("school_enrollment", args=[id]))
+            selected_athletes = form.cleaned_data["athletes"]
+            
+            # Ensure the number of selected athletes does not exceed max_entries
+            if len(selected_athletes) > max_entries:
+                form.add_error("athletes", f"You can only select up to {max_entries} athletes for this sport.")
+            else:
+                # Create the enrollment if within the limit
+                athlete_enrollment = AthleteEnrollment.objects.create(
+                    school_enrollment=school_enrollment
+                )
+                athlete_enrollment.athletes.set(selected_athletes)
+                return HttpResponseRedirect(reverse("school_enrollment", args=[id]))
     else:
         form = AthleteEnrollmentForm()
 
     athlete_enrollments = AthleteEnrollment.objects.filter(
         school_enrollment=school_enrollment
     )
-    all_athletes = Athlete.objects.filter(school=school, status="ACTIVE")
+    all_athletes = Athlete.objects.filter(school=school, status="NEW")
 
     context = {
         "school_enrollment": school_enrollment,
@@ -189,11 +199,26 @@ def Accreditation(request, id):
 
     return response
 
+from django.db.models import F, ExpressionWrapper, IntegerField, Case, When, Value
+from datetime import date
 
 def Albums(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)
-    athletes = Athlete.objects.filter(athleteenrollment__in=athlete_enrollments)
+    today = date.today()
+  
+    athletes = Athlete.objects.filter(athleteenrollment__in=athlete_enrollments).distinct().annotate(
+        age=ExpressionWrapper(
+            today.year - F('date_of_birth__year') - 
+            Case(
+                When(date_of_birth__month__gt=today.month, then=Value(1)),
+                When(date_of_birth__month=today.month, date_of_birth__day__gt=today.day, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ),
+            output_field=IntegerField()
+        )
+    )
     school = team.school
     officials = school_official.objects.filter(school=school)
 

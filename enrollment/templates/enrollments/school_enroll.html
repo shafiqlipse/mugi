@@ -10,7 +10,7 @@
     <h1>{{ school_enrollment.championship.name }} - {{ school_enrollment.sport}}</h1>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Enroll athletes</a>
   </div>
-
+  
 
   <div
   class="modal fade"
@@ -84,7 +84,8 @@
   <div class="enrolled-athletes">
   <div class="enrolled-athletes flex">
     <h2>Enrolled Athletes</h2>
-    <a href="{% url 'team_album' school_enrollment.id%}" class="btn btn-primary">Album</a> </div>
+    {% if user.is_staff %}
+    <a href="{% url 'team_album' school_enrollment.id%}" class="btn btn-primary">Album</a>{% endif %}  </div>
     <hr>
     <div class="conter">
      {% if athlete_enrollments %}
@@ -95,13 +96,14 @@
                 <!-- Row -->
           <div class="athlete">
             <div class="pro-pic">
-              <img src="{{athlete.photo.url}}" alt="">  
+              <img src="{{athlete.photo.url}}" alt="">
+              {% if user.is_staff %}
               <form method="POST" action="{% url 'remove_athlete' enrollment.id athlete.id %}">
                 {% if athlete.qr_code %}
                 <img src="{{ athlete.qr_code.url }}" alt="Athlete QR Code">{% endif %}
                   {% csrf_token %}
                   <button type="submit" class="btn btn-danger">Remove</button>
-                </form>
+                </form>{% endif %}  
             </div>
             <div class="deto">
               
@@ -133,6 +135,22 @@
   </div>
  
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const maxEntries = {{ max_entries }} - {{ current_enrolled_count }};
+      const checkboxes = document.querySelectorAll(".athlete-checkbox");
+
+      checkboxes.forEach(checkbox => {
+          checkbox.addEventListener("change", function() {
+              const selectedCount = document.querySelectorAll(".athlete-checkbox:checked").length;
+              if (selectedCount > maxEntries) {
+                  this.checked = false;
+                  alert(`You can only select up to ${maxEntries} more athletes.`);
+              }
+          });
+      });
+  });
+</script>
 
 {% endblock %}
         

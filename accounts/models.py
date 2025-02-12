@@ -22,6 +22,7 @@ class User(AbstractUser):
 
 class Sport(models.Model):
     name = models.CharField(max_length=245)
+    entries = models.IntegerField("Number of entries", default=30)
 
     class Meta:
         ordering = ["-name"]
