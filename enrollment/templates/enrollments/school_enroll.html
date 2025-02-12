@@ -135,22 +135,7 @@
   </div>
  
 </div>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-      const maxEntries = {{ max_entries }} - {{ current_enrolled_count }};
-      const checkboxes = document.querySelectorAll(".athlete-checkbox");
 
-      checkboxes.forEach(checkbox => {
-          checkbox.addEventListener("change", function() {
-              const selectedCount = document.querySelectorAll(".athlete-checkbox:checked").length;
-              if (selectedCount > maxEntries) {
-                  this.checked = false;
-                  alert(`You can only select up to ${maxEntries} more athletes.`);
-              }
-          });
-      });
-  });
-</script>
 
 {% endblock %}
         

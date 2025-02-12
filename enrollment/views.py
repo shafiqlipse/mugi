@@ -80,31 +80,21 @@ def remove_athlete(request, enrollment_id, athlete_id):
 def school_enrollment_details(request, id):
     school_enrollment = get_object_or_404(SchoolEnrollment, id=id)
     school = school_enrollment.school
-    sport = school_enrollment.sport  
-    max_entries = sport.entries 
-    
     if request.method == "POST":
         form = AthleteEnrollmentForm(request.POST)
         if form.is_valid():
-            selected_athletes = form.cleaned_data["athletes"]
-            
-            # Ensure the number of selected athletes does not exceed max_entries
-            if len(selected_athletes) > max_entries:
-                form.add_error("athletes", f"You can only select up to {max_entries} athletes for this sport.")
-            else:
-                # Create the enrollment if within the limit
-                athlete_enrollment = AthleteEnrollment.objects.create(
-                    school_enrollment=school_enrollment
-                )
-                athlete_enrollment.athletes.set(selected_athletes)
-                return HttpResponseRedirect(reverse("school_enrollment", args=[id]))
+            athlete_enrollment = AthleteEnrollment.objects.create(
+                school_enrollment=school_enrollment
+            )
+            athlete_enrollment.athletes.set(form.cleaned_data["athletes"])
+            return HttpResponseRedirect(reverse("school_enrollment", args=[id]))
     else:
         form = AthleteEnrollmentForm()
 
     athlete_enrollments = AthleteEnrollment.objects.filter(
         school_enrollment=school_enrollment
     )
-    all_athletes = Athlete.objects.filter(school=school, status="NEW")
+    all_athletes = Athlete.objects.filter(school=school, status="ACTIVE")
 
     context = {
         "school_enrollment": school_enrollment,
@@ -206,7 +196,6 @@ def Albums(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)
     today = date.today()
-  
     athletes = Athlete.objects.filter(athleteenrollment__in=athlete_enrollments).distinct().annotate(
         age=ExpressionWrapper(
             today.year - F('date_of_birth__year') - 
