@@ -778,7 +778,7 @@ import json
 import logging
 from .models import Payment  # Use the Payment model
 
-
+callback_logger = logging.getLogger('airtel_callback')
 # def airtel_payment_callback(request):
 #     try:
 #         data = json.loads(request.body)
