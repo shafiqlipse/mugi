@@ -494,10 +494,29 @@ class Payment(models.Model):
         choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
         default='PENDING'
     )
-    transaction_id = models.CharField(max_length=12,null=True, editable=False)  # Numeric ID
+    transaction_id = models.CharField(max_length=100,null=True, editable=False)  # Numeric ID
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 
     def __str__(self):
         return f"Payment {self.transaction_id} - UGX {self.amount}"
+    
+    
+    
+    class PaymentTransaction(models.Model):
+        request_id = models.UUIDField(unique=True)
+        biller_id = models.CharField(max_length=100)
+        reference = models.CharField(max_length=100)
+        amount_to_pay = models.DecimalField(max_digits=10, decimal_places=2)
+        payment_method = models.CharField(max_length=50)
+        mobile_number = models.CharField(max_length=15)
+        currency = models.CharField(max_length=3)
+        memo = models.TextField()
+        signature = models.CharField(max_length=100)
+        response_code = models.IntegerField(null=True, blank=True)
+        response_message = models.TextField(null=True, blank=True)
+        created_at = models.DateTimeField(auto_now_add=True)
+
+        def __str__(self):
+            return f"{self.reference} - {self.amount_to_pay} {self.currency}"

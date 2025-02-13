@@ -38,5 +38,6 @@ urlpatterns = [
     # path("delete-official/<int:id>", DeleteOfficial, name="del_official"),
     # path("delete-official/<int:id>", DeleteOfficial, name="del_official"),
     path('payment/success/<str:transaction_id>/', payment_success, name='payment_success'),
-    path('airtel/payment/callback/', airtel_payment_callback, name='airtel_payment_callback'),
+    # path('airtel/payment/callback/', airtel_payment_callback, name='airtel_payment_callback'),
+    path('payment/<uuid:transaction_id>/status/', payment_status, name='payment_status'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
