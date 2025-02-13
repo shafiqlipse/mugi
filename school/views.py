@@ -902,7 +902,7 @@ def payment_view(request):
             # Call the initiate_payment function from utils.py
             response = initiate_payment(
                 mobileNumber=mobileNumber,
-                amount=total_amount,
+                amount_to_pay=total_amount,
                 reference=transaction_id
             )
 
