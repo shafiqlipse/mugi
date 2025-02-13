@@ -185,7 +185,7 @@ class ScreenForm(forms.ModelForm):
 
 
 class PaymentForm(forms.Form):
-    phone_number = forms.CharField(
+    mobile_number = forms.CharField(
         label="Phone Number",
         max_length=15,
         required=True,
