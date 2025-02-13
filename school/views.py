@@ -890,9 +890,9 @@ def payment_view(request):
             # Create and save the payment with status as 'PENDING'
             payment = Payment.objects.create(
                 school=school,
-                amount=total_amount,
+                amount_to_pay=total_amount,
                 phone_number=mobileNumber,
-                transaction_id=transaction_id,
+                reference=transaction_id,
                 status='PENDING'  # Set status as 'PENDING' initially
             )
 
