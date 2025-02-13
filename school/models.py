@@ -502,6 +502,11 @@ class Payment(models.Model):
         currency = models.CharField(max_length=3)
         memo = models.TextField()
         signature = models.CharField(max_length=100)
+        status = models.CharField(
+        max_length=20, 
+        choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
+        default='PENDING'
+    )
         response_code = models.IntegerField(null=True, blank=True)
         response_message = models.TextField(null=True, blank=True)
         created_at = models.DateTimeField(auto_now_add=True)

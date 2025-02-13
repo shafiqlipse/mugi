@@ -880,7 +880,7 @@ def payment_view(request):
     if request.method == 'POST':
         form = PaymentForm(request.POST, school=school)
         if form.is_valid():
-            mobileNumber = form.cleaned_data['phone_number']
+            mobileNumber = form.cleaned_data['mobile_number']
             athletes = form.cleaned_data['athletes']
             total_amount = athletes.count() * 3000  # UGX 3,000 per athlete
             
@@ -891,7 +891,7 @@ def payment_view(request):
             payment = Payment.objects.create(
                 school=school,
                 amount_to_pay=total_amount,
-                phone_number=mobileNumber,
+                mobile_number=mobileNumber,
                 reference=transaction_id,
                 status='PENDING'  # Set status as 'PENDING' initially
             )
