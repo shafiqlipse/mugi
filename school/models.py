@@ -493,15 +493,15 @@ import string
     
     
 class Payment(models.Model):
-        request_id = models.UUIDField(unique=True)
-        biller_id = models.CharField(max_length=100)
-        reference = models.CharField(max_length=100)
-        amount_to_pay = models.DecimalField(max_digits=10, decimal_places=2)
-        payment_method = models.CharField(max_length=50)
+        request_id = models.UUIDField(unique=True,null=True, blank=True)
+        biller_id = models.CharField(max_length=100,null=True, blank=True)
+        reference = models.CharField(max_length=100,null=True, blank=True)
+        amount_to_pay = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
+        payment_method = models.CharField(max_length=50,null=True, blank=True)
         mobile_number = models.CharField(max_length=15)
-        currency = models.CharField(max_length=3)
-        memo = models.TextField()
-        signature = models.CharField(max_length=100)
+        currency = models.CharField(max_length=3,null=True, blank=True)
+        memo = models.TextField(null=True, blank=True)
+        signature = models.CharField(max_length=100,null=True, blank=True)
         status = models.CharField(
         max_length=20, 
         choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
