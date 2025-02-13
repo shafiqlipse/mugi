@@ -874,6 +874,8 @@ def payment_success(request, transaction_id):
 
 from django.http import JsonResponse
 from .utils import *
+logger = logging.getLogger(__name__)
+
 def payment_view(request):
     school = request.user.school  # Get the logged-in user's school
 
@@ -899,6 +901,8 @@ def payment_view(request):
             # Set the ManyToMany relationship for athletes
             payment.athletes.set(athletes)
 
+            logger.info(f"Payment created: {payment.transaction_id}, Status: PENDING, Amount: {total_amount}")
+
             # Call the initiate_payment function from utils.py
             response = initiate_payment(
                 mobileNumber=mobileNumber,
@@ -906,29 +910,24 @@ def payment_view(request):
                 reference=transaction_id
             )
 
-            # Process the response from the payment API
-      
-
             if isinstance(response, tuple):
                 response = response[0]  # Extract the JSON string or dict from the tuple
 
-        # ✅ If it's a string, convert it to a dictionary
             if isinstance(response, str):
                 response = json.loads(response)  # Convert JSON string to dictionary
 
-    # ✅ Now it's a dictionary, so we can safely use .get()
             payment_status_response = check_payment_status(transaction_id, mobileNumber)
-                
-                # Ensure the response is a dictionary
             response_code = payment_status_response.get("responseCode")
             response_message = payment_status_response.get("responseMessage")
 
             if response_code == 0:  # Assuming 0 is success
-                    payment.status = "SUCCESSFUL"
+                payment.status = "SUCCESSFUL"
+                logger.info(f"Payment successful for transaction {transaction_id}")
             else:
-                    payment.status = "FAILED"
+                payment.status = "FAILED"
+                logger.error(f"Payment failed for transaction {transaction_id}, Response: {response_message}")
                 
-                # Save the updated payment status
+            # Save the updated payment status
             payment.save()
 
             # Redirect to the payment status page
@@ -939,9 +938,12 @@ def payment_view(request):
 
     return render(request, 'emails/payment_form.html', {'form': form})
 
+
 def payment_status(request, transaction_id):
     # Retrieve the payment using the payment_id
     payment = get_object_or_404(Payment, transaction_id=transaction_id)
+
+    logger.info(f"Viewing payment status for transaction {transaction_id}, Status: {payment.status}")
 
     # Pass the payment object to the template
     return render(request, 'emails/payment_status.html', {'payment': payment})
