@@ -484,27 +484,15 @@ class Screening(models.Model):
 import random
 import string
 
+
+
+
+
+
+    
+    
+    
 class Payment(models.Model):
-    school = models.ForeignKey(School, on_delete=models.CASCADE)
-    athletes = models.ManyToManyField(Athlete, related_name='payments')
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    phone_number = models.CharField(max_length=50)
-    status = models.CharField(
-        max_length=20, 
-        choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
-        default='PENDING'
-    )
-    transaction_id = models.CharField(max_length=100,null=True, editable=False)  # Numeric ID
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-
-    def __str__(self):
-        return f"Payment {self.transaction_id} - UGX {self.amount}"
-    
-    
-    
-    class PaymentTransaction(models.Model):
         request_id = models.UUIDField(unique=True)
         biller_id = models.CharField(max_length=100)
         reference = models.CharField(max_length=100)
@@ -517,6 +505,7 @@ class Payment(models.Model):
         response_code = models.IntegerField(null=True, blank=True)
         response_message = models.TextField(null=True, blank=True)
         created_at = models.DateTimeField(auto_now_add=True)
-
+        school = models.ForeignKey(School, on_delete=models.CASCADE)
+        athletes = models.ManyToManyField(Athlete, related_name='payments')
         def __str__(self):
             return f"{self.reference} - {self.amount_to_pay} {self.currency}"
