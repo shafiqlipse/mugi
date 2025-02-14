@@ -9,6 +9,13 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ("username", "email", "school__name")  # Enables search
     list_filter = ("is_active", "is_school", "is_staff", "is_admin", "is_tech", "is_accounts", "school")  # Enables filtering
 
+class AthleteAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
+    list_display = ("fname", "lname", "index_number", "gender", "classroom", "school", "date_of_birth")
+    search_fields = ("fname", "lname", "index_number","school")
+    list_filter = ("classroom", "gender", "school")
+# Register your models here.
+admin.site.register(Athlete, AthleteAdmin) 
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Discipline)
 admin.site.register(Venue)
@@ -18,7 +25,7 @@ admin.site.register(Sport)
 admin.site.register(Championship)
 admin.site.register(Region)
 admin.site.register(District)
-admin.site.register(Athlete)
+
 admin.site.register(School)
 # admin.site.register(City)
 admin.site.register(Zone)
