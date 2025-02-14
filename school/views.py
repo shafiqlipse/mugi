@@ -145,13 +145,17 @@ def all_athletes(request):
 @staff_required
 def archives(request):
     archives_list = Athlete.objects.filter(status="COMPLETED")
-    paginator = Paginator(archives_list, 10)  # Show 10 athletes per page.
+    # Apply filtering
+    athlete_filter = AthleteFilter(request.GET, queryset=archives_list)
+    archived_athletes = athlete_filter.qs  # Get the filtered queryset
 
+    paginator = Paginator(archived_athletes, 10)  # Show 10 athletes per page.
     page_number = request.GET.get("page")
     athletes = paginator.get_page(page_number)
 
     context = {
         "athletes": athletes,
+        "athlete_filter": athlete_filter,
     }
     return render(request, "athletes/archives.html", context)
 

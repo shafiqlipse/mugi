@@ -483,15 +483,7 @@ class Screening(models.Model):
 
 import random
 import string
-
-
-
-
-
-
-    
-    
-    
+   
 class Payment(models.Model):
         request_id = models.UUIDField(unique=True,null=True, blank=True)
         biller_id = models.CharField(max_length=100,null=True, blank=True)
