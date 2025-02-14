@@ -11,8 +11,10 @@ urlpatterns = [
     # venues
     # path("teccred/", teccreditation, name="teccred"),
     path("team_accred/<int:id>", Accreditation, name="team_accred"),
+    path("team_occred/<int:id>", Occreditation, name="team_occred"),
     path("team_album/<int:id>", Albums, name="team_album"),
     path("team_cert/<int:id>", Certificate, name="team_cert"),
+    path("team_cort/<int:id>", Cortificate, name="team_cort"),
     path("school_enrollments/", SchoolEnrollments, name="school_enrollments"),
     path("all_enrollments/", AllEnrollments, name="all_enrollments"),
     path(

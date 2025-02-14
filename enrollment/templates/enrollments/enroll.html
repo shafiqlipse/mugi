@@ -25,11 +25,12 @@
       <table id="myTable" class="display">
         <thead>
           <tr>
-            <th>Names</th>
+      
             <th>School</th>
             <th>Championship</th>
             <th>Sport</th>
             <th>Reports</th>
+            <th>Officials</th>
       
           </tr>
         </thead>
@@ -38,18 +39,22 @@
           <tr>
             <td>
               <a href="{% url 'school_enrollment' school_enrollment.id%}"
-                >{{school_enrollment.first_name}}
+                >
                 {{school_enrollment.school}}</a
-              >
-            </td>
-            <td>{{school_enrollment.school}}</td>
-            <td>{{school_enrollment.championship}}</td>
-            <td>{{school_enrollment.sport}}</td>
+              ><td>{{school_enrollment.championship}}</td>
+            </td> <td>{{school_enrollment.sport}}</td>
+            
 
             <td>
               <a href="{% url 'team_album' school_enrollment.id%}" class="btn btn-primary">Album</a>
               <a href="{% url 'team_accred' school_enrollment.id%}" class="btn btn-info">Accreditation</a>
               <a href="{% url 'team_cert' school_enrollment.id%}" class="btn btn-success">Certificate</a>
+            </td>
+            <td>
+             
+              
+              <a href="{% url 'team_occred' school_enrollment.id%}" class="btn btn-info">Accreditation</a>
+              <a href="{% url 'team_cort' school_enrollment.id%}" class="btn btn-success">Certificate</a>
             </td>
           </tr>
 

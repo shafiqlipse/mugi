@@ -190,6 +190,37 @@ def Accreditation(request, id):
 
     return response
 
+def Occreditation(request, id):
+    team = get_object_or_404(SchoolEnrollment, id=id)
+    
+    officials = school_official.objects.filter(school=team.school)
+
+    # Get template
+    template = get_template("reports/ocred.html")
+
+    # Compress and fix rotation for athletes' photos
+
+    # Prepare context
+    context = {
+        "officials": officials,
+        "team": team,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    # Render HTML
+    html = template.render(context)
+
+    # Create a PDF
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="Occreditation.pdf"'
+
+    # Generate PDF from HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+
 from django.db.models import F, ExpressionWrapper, IntegerField, Case, When, Value
 from datetime import date
 
@@ -272,6 +303,38 @@ def Certificate(request, id):
     # Create a PDF
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = 'attachment; filename="Accreditation.pdf"'
+
+    # Generate PDF from HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+
+
+def Cortificate(request, id):
+    team = get_object_or_404(SchoolEnrollment, id=id)
+    
+    officials = school_official.objects.filter(school=team.school)
+
+    # Get template
+    template = get_template("reports/cort.html")
+
+    # Compress and fix rotation for athletes' photos
+
+    # Prepare context
+    context = {
+        "officials": officials,
+        "team": team,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    # Render HTML
+    html = template.render(context)
+
+    # Create a PDF
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="Cortificate.pdf"'
 
     # Generate PDF from HTML
     pisa_status = pisa.CreatePDF(html, dest=response)
