@@ -189,7 +189,7 @@ class PaymentForm(forms.Form):
         label="Phone Number",
         max_length=15,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': 'Enter Airtel Money phone number'})
+        widget=forms.TextInput(attrs={'placeholder': 'Enter phone number'})
     )
     athletes = forms.ModelMultipleChoiceField(
         queryset=Athlete.objects.none(),

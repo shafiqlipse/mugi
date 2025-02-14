@@ -52,7 +52,7 @@
         <table>
           <tbody>
             {% for athlete in athletes %} {% if forloop.counter0|divisibleby:2%}
-            
+
             <tr>
               {% endif %}
               <td>
@@ -61,7 +61,7 @@
                     <td class="td">
                       <div class="inner">
                         <span
-                          >{{ athlete.athlete_id|upper}}
+                          >{{ team.sport|upper}}
                           ({{athlete.gender|upper}})</span
                         >
                         <br />
@@ -78,7 +78,8 @@
                         {% endif %}
                         <br />
                         <span
-                          >{{ athlete.fname|upper }} {{athlete.lname|upper}}</span
+                          >{{ athlete.fname|upper }}
+                          {{athlete.lname|upper}}</span
                         >
                         <br />
                         <span>{{ athlete.index_number|upper }}</span><br />

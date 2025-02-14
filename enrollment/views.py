@@ -172,6 +172,7 @@ def Accreditation(request, id):
     # Prepare context
     context = {
         "athletes": athletes,
+        "team": team,
         "MEDIA_URL": settings.MEDIA_URL,
     }
 
