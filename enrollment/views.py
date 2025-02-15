@@ -11,7 +11,7 @@ from .forms import *
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from accounts.decorators import admin_required
-
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
@@ -20,7 +20,7 @@ from io import BytesIO
 
 from .filters import SchoolEnrollmentFilter  # Assume you have created this filter
 
-
+@login_required(login_url="login")
 def SchoolEnrollments(request):
     # Get school from user profile
     school = request.user.school  # Assuming profile has school attribute
@@ -45,7 +45,7 @@ def SchoolEnrollments(request):
     context = {"form": form, "enrollments": enrollments}
     return render(request, "enrollments/school_enrolls.html", context)
 
-
+@login_required(login_url="login")
 def AllEnrollments(request):
     # Get all school_enrolls
     school_enrolls = SchoolEnrollment.objects.all()
@@ -61,7 +61,7 @@ def AllEnrollments(request):
 
     return render(request, "enrollments/enroll.html", context)
 
-
+@login_required(login_url="login")
 def remove_athlete(request, enrollment_id, athlete_id):
     athlete_enrollment = get_object_or_404(AthleteEnrollment, id=enrollment_id)
     athlete = get_object_or_404(Athlete, id=athlete_id)
@@ -76,7 +76,7 @@ def remove_athlete(request, enrollment_id, athlete_id):
         "enrollments/school_enrollment", id=athlete_enrollment.school_enrollment.id
     )
 
-
+@login_required(login_url="login")
 def school_enrollment_details(request, id):
     school_enrollment = get_object_or_404(SchoolEnrollment, id=id)
     school = school_enrollment.school
@@ -104,7 +104,7 @@ def school_enrollment_details(request, id):
     }
     return render(request, "enrollments/school_enroll.html", context)
 
-
+@login_required(login_url="login")
 def school_enrollment_update(request, id):
     school_enrollment = get_object_or_404(SchoolEnrollment, id=id)
 
@@ -129,7 +129,7 @@ def school_enrollment_update(request, id):
     }
     return render(request, "enrollments/update_school_enroll.html", context)
 
-
+@login_required(login_url="login")
 def school_enroll_delete(request, id):
     stud = SchoolEnrollment.objects.get(id=id)
     if request.method == "POST":
@@ -158,7 +158,7 @@ from xhtml2pdf import pisa
 
 admin_required
 
-
+@login_required(login_url="login")
 def Accreditation(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)
@@ -189,7 +189,7 @@ def Accreditation(request, id):
         return HttpResponse("We had some errors <pre>" + html + "</pre>")
 
     return response
-
+@login_required(login_url="login")
 def Occreditation(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     
@@ -223,7 +223,7 @@ def Occreditation(request, id):
 
 from django.db.models import F, ExpressionWrapper, IntegerField, Case, When, Value
 from datetime import date
-
+@login_required(login_url="login")
 def Albums(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)
@@ -280,7 +280,7 @@ def Albums(request, id):
 
 admin_required
 
-
+@login_required(login_url="login")
 def Certificate(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)
@@ -293,6 +293,7 @@ def Certificate(request, id):
 
     # Prepare context
     context = {
+        "team": team,
         "athletes": athletes,
         "MEDIA_URL": settings.MEDIA_URL,
     }
@@ -311,7 +312,7 @@ def Certificate(request, id):
 
     return response
 
-
+@login_required(login_url="login")
 def Cortificate(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     
