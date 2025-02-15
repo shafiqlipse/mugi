@@ -84,8 +84,10 @@ def school_enrollment_details(request, id):
         form = AthleteEnrollmentForm(request.POST)
         if form.is_valid():
             athlete_enrollment = AthleteEnrollment.objects.create(
-                school_enrollment=school_enrollment
+                school_enrollment=school_enrollment,
+                enrolled_by = request.user
             )
+            athlete_enrollment.enrolled_by = request.user
             athlete_enrollment.athletes.set(form.cleaned_data["athletes"])
             return HttpResponseRedirect(reverse("school_enrollment", args=[id]))
     else:

@@ -27,7 +27,10 @@ class AthleteEnrollment(models.Model):
         on_delete=models.CASCADE,
     )
     athletes = models.ManyToManyField(Athlete)
-
+    enrollment_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    enrolled_by = models.ForeignKey(
+        User, related_name="enrollments", on_delete=models.CASCADE, blank=True, null=True
+    )
     def save(self, *args, **kwargs):
         # Check for duplicates before saving
         if self.pk:  # Only check if the instance already exists
