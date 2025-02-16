@@ -485,24 +485,19 @@ import random
 import string
    
 class Payment(models.Model):
-        request_id = models.UUIDField(unique=True,null=True, blank=True)
-        biller_id = models.CharField(max_length=100,null=True, blank=True)
-        reference = models.CharField(max_length=100,null=True, blank=True)
-        amount_to_pay = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
-        payment_method = models.CharField(max_length=50,null=True, blank=True)
-        mobile_number = models.CharField(max_length=15)
-        currency = models.CharField(max_length=3,null=True, blank=True)
-        memo = models.TextField(null=True, blank=True)
-        signature = models.CharField(max_length=100,null=True, blank=True)
+
+        transaction_id = models.CharField(max_length=100,null=True, blank=True)
+        amount = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
+     
+        phone_number = models.CharField(max_length=15)
         status = models.CharField(
         max_length=20, 
         choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
         default='PENDING'
     )
-        response_code = models.IntegerField(null=True, blank=True)
-        response_message = models.TextField(null=True, blank=True)
+  
         created_at = models.DateTimeField(auto_now_add=True)
         school = models.ForeignKey(School, on_delete=models.CASCADE)
         athletes = models.ManyToManyField(Athlete, related_name='payments')
         def __str__(self):
-            return f"{self.reference} - {self.amount_to_pay} {self.currency}"
+            return f"{self.transaction_id} - {self.amount} {self.school}"

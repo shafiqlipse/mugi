@@ -587,6 +587,9 @@ from django.conf import settings
 from django.http import JsonResponse
 import logging
 from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -622,205 +625,216 @@ def export_scsv(request):
         )  # Replace with your model's fields
 
     return response
-# def generate_unique_transaction_id():
-#     while True:
-#         transaction_id = str(random.randint(10**11, 10**12 - 1))
-#         if not Payment.objects.filter(transaction_id=transaction_id).exists():
-#             return transaction_id
-
-# def payment_view(request):
-#     school = request.user.school  # Get the logged-in user's school
-
-#     if request.method == 'POST':
-#         form = PaymentForm(request.POST, school=school)
-#         if form.is_valid():
-#             phone_number = form.cleaned_data['phone_number']
-#             athletes = form.cleaned_data['athletes']
-#             total_amount = athletes.count() * 3000  # UGX 3,000 per athlete
-#             # transaction_id = generate_unique_transaction_id()  # Ensure uniqueness
-
-#             # Create and save the payment
-#             payment = Payment.objects.create(
-#                 school=school,
-#                 amount=total_amount,
-#                 phone_number=phone_number,
-#                 # transaction_id=transaction_id
-#             )
-
-#             # Set the ManyToMany relationship
-#             payment.athletes.set(athletes)
-
-#             return redirect('payment',payment.id)
-
-#     else:
-#         form = PaymentForm(school=school)
-
-#     return render(request, 'emails/payment_form.html', {'form': form})
+def generate_unique_transaction_id():
+    while True:
+        transaction_id = str(random.randint(10**11, 10**12 - 1))
+        if not Payment.objects.filter(transaction_id=transaction_id).exists():
+            return transaction_id
 
 
-# def get_airtel_token():
-#     """
-#     Retrieve Airtel Money OAuth token.
-#     """
-#     try:
-#         url = "https://openapiuat.airtel.africa/auth/oauth2/token"
-#         headers = {"Content-Type": "application/json", "Accept": "*/*" }
-#         payload = {
-#             "client_id": settings.AIRTEL_MONEY_CLIENT_ID,
-#             "client_secret": settings.AIRTEL_MONEY_CLIENT_SECRET,
-#             "grant_type": "client_credentials",
-#         }
+def payment_view(request):
+    school = request.user.school  # Get the logged-in user's school
 
-#         response = requests.post(url, json=payload, headers=headers, params={})
-#         logger.info(f"Token Response: {response.status_code}, {response.text}")
-#         print(response.json())
-#         if response.status_code == 200:
-#             return response.json().get("access_token")
+    if request.method == 'POST':
+        form = PaymentForm(request.POST, school=school)
+        if form.is_valid():
+            try:
+                phone_number = form.cleaned_data['phone_number']
+                athletes = form.cleaned_data['athletes']
 
-#         # Handle common errors
-#         error_response = response.json()
-#         error_message = error_response.get("error_description", error_response.get("message", "Unknown error"))
+                if not athletes:
+                    messages.error(request, "You must select at least one athlete.")
+                    return render(request, 'emails/payment_form.html', {'form': form})
 
-#         if response.status_code == 400:
-#             logger.error("Invalid request format. Check parameters.")
-#             return None
-#         elif response.status_code == 401:
-#             logger.error("Authentication failed. Check your API credentials.")
-#             return None
-#         elif response.status_code == 403:
-#             logger.error("Permission denied. Your account may not have access.")
-#             return None
-#         elif response.status_code == 500:
-#             logger.error("Airtel Money server error. Try again later.")
-#             return None
+                total_amount = athletes.count() * 3000  # UGX 3,000 per athlete
 
-#         logger.error(f"Failed to get token: {error_message}")
-#         return None
+                with transaction.atomic():  # Ensures atomicity in case of failure
+                    payment = Payment.objects.create(
+                        school=school,
+                        amount=total_amount,
+                        phone_number=phone_number,
+                    )
+                    payment.athletes.set(athletes)
 
-#     except requests.exceptions.ConnectionError:
-#         logger.error("Network error: Unable to reach Airtel Money API.")
-#         return None
-#     except requests.exceptions.Timeout:
-#         logger.error("Request timed out: Airtel Money API took too long to respond.")
-#         return None
-#     except requests.exceptions.RequestException as e:
-#         logger.error(f"Unexpected request error: {str(e)}")
-#         return None
-#     except Exception as e:
-#         logger.error(f"Unknown error: {str(e)}")
-#         return None
+                messages.success(request, f"Payment of UGX {total_amount} successful!")
+                logger.info(f"Payment successful: School={school}, Amount={total_amount}, Phone={phone_number}")
 
-# import random
-# from django.db import transaction as db_transaction
+                return redirect('payment', payment.id)
 
-# def generate_unique_transaction_id():
-#     """Generate a unique 12-digit transaction ID."""
-#     while True:
-#         transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
-#         if not Payment.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
-#             return transaction_id
+            except Exception as e:
+                logger.error(f"Payment failed for {school}: {str(e)}", exc_info=True)
+                messages.error(request, "An error occurred while processing the payment. Please try again.")
+
+    else:
+        form = PaymentForm(school=school)
+
+    return render(request, 'emails/payment_form.html', {'form': form})
 
 
-# def initiate_payment(request, id):
-#     payment = get_object_or_404(Payment, id=id)
+
+def get_airtel_token():
+    """
+    Retrieve Airtel Money OAuth token.
+    """
+    try:
+        url = "https://openapiuat.airtel.africa/auth/oauth2/token"
+        headers = {"Content-Type": "application/json", "Accept": "*/*" }
+        payload = {
+            "client_id": settings.AIRTEL_MONEY_CLIENT_ID,
+            "client_secret": settings.AIRTEL_MONEY_CLIENT_SECRET,
+            "grant_type": "client_credentials",
+        }
+
+        response = requests.post(url, json=payload, headers=headers, params={})
+        logger.info(f"Token Response: {response.status_code}, {response.text}")
+        print(response.json())
+        if response.status_code == 200:
+            return response.json().get("access_token")
+
+        # Handle common errors
+        error_response = response.json()
+        error_message = error_response.get("error_description", error_response.get("message", "Unknown error"))
+
+        if response.status_code == 400:
+            logger.error("Invalid request format. Check parameters.")
+            return None
+        elif response.status_code == 401:
+            logger.error("Authentication failed. Check your API credentials.")
+            return None
+        elif response.status_code == 403:
+            logger.error("Permission denied. Your account may not have access.")
+            return None
+        elif response.status_code == 500:
+            logger.error("Airtel Money server error. Try again later.")
+            return None
+
+        logger.error(f"Failed to get token: {error_message}")
+        return None
+
+    except requests.exceptions.ConnectionError:
+        logger.error("Network error: Unable to reach Airtel Money API.")
+        return None
+    except requests.exceptions.Timeout:
+        logger.error("Request timed out: Airtel Money API took too long to respond.")
+        return None
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Unexpected request error: {str(e)}")
+        return None
+    except Exception as e:
+        logger.error(f"Unknown error: {str(e)}")
+        return None
+
+import random
+from django.db import transaction as db_transaction
+
+def generate_unique_transaction_id():
+    """Generate a unique 12-digit transaction ID."""
+    while True:
+        transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
+        if not Payment.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
+            return transaction_id
+
+
+def initiate_payment(request, id):
+    payment = get_object_or_404(Payment, id=id)
     
-#     try:
-#         token = get_airtel_token()  
-#         if not token:
-#             return JsonResponse({"error": "Failed to get authentication token"}, status=500)
+    try:
+        token = get_airtel_token()  
+        if not token:
+            return JsonResponse({"error": "Failed to get authentication token"}, status=500)
 
-#         payment_url = "https://openapiuat.airtel.africa/merchant/v2/payments/"
-#         transaction_id = generate_unique_transaction_id()  
+        payment_url = "https://openapiuat.airtel.africa/merchant/v2/payments/"
+        transaction_id = generate_unique_transaction_id()  
 
 
-#         headers = {
-#             "Accept": "*/*",
-#             "Content-Type": "application/json",
-#             "X-Country": "UG",
-#             "X-Currency": "UGX",
-#             "Authorization": f"Bearer {token}",
-#             "x-signature": settings.AIRTEL_API_SIGNATURE,  # Ensure this is set in settings.py
-#             "x-key": settings.AIRTEL_API_KEY,  # Ensure this is set in settings.py
-#         }
+        headers = {
+            "Accept": "*/*",
+            "Content-Type": "application/json",
+            "X-Country": "UG",
+            "X-Currency": "UGX",
+            "Authorization": f"Bearer {token}",
+            "x-signature": settings.AIRTEL_API_SIGNATURE,  # Ensure this is set in settings.py
+            "x-key": settings.AIRTEL_API_KEY,  # Ensure this is set in settings.py
+        }
 
-#         payload = {
-#             "reference": str(payment.transaction_id),  # Use the Payment ID as the reference
-#             "subscriber": {
-#                 "country": "UG",
-#                 "currency": "UGX",
-#                 "msisdn": re.sub(r"\D", "", str(payment.phone_number)).lstrip('0'),   # Remove non-numeric characters
-#             },
-#             "transaction": {
-#                 "amount": float(payment.amount),  # Convert DecimalField to float
-#                 "country": "UG",
-#                 "currency": "UGX",
-#                 "id": transaction_id,  # Use the generated transaction ID
-#             }
-#         }
+        payload = {
+            "reference": str(payment.transaction_id),  # Use the Payment ID as the reference
+            "subscriber": {
+                "country": "UG",
+                "currency": "UGX",
+                "msisdn": re.sub(r"\D", "", str(payment.phone_number)).lstrip('0'),   # Remove non-numeric characters
+            },
+            "transaction": {
+                "amount": float(payment.amount),  # Convert DecimalField to float
+                "country": "UG",
+                "currency": "UGX",
+                "id": transaction_id,  # Use the generated transaction ID
+            }
+        }
 
-#         response = requests.post(payment_url, json=payload, headers=headers)
-#         logger.info(f"Payment Response: {response.status_code}, {response.text}")
+        response = requests.post(payment_url, json=payload, headers=headers)
+        logger.info(f"Payment Response: {response.status_code}, {response.text}")
 
-#        # Update payment record with transaction ID and set status to PENDING
-#         with db_transaction.atomic():
-#             payment.transaction_id = transaction_id
-#             payment.status = "PENDING"  # Set status to pending until confirmed
-#             payment.save()
+       # Update payment record with transaction ID and set status to PENDING
+        with db_transaction.atomic():
+            payment.transaction_id = transaction_id
+            payment.status = "PENDING"  # Set status to pending until confirmed
+            payment.save()
 
-#         if response.status_code == 200:
-#             return redirect(reverse('payment_success', args=[payment.transaction_id]))  # ✅ Redirect to success page
-#         else:
-#             return JsonResponse({"error": "Failed to initiate payment", "details": response.text}, status=400)
+        if response.status_code == 200:
+            return redirect(reverse('payment_success', args=[payment.transaction_id]))  # ✅ Redirect to success page
+        else:
+            return JsonResponse({"error": "Failed to initiate payment", "details": response.text}, status=400)
 
-#     except Exception as e:
-#         logger.error(f"Payment error: {str(e)}")
-#         return JsonResponse({"error": str(e)}, status=500)
+    except Exception as e:
+        logger.error(f"Payment error: {str(e)}")
+        return JsonResponse({"error": str(e)}, status=500)
    
-# from django.http import HttpResponse, JsonResponse
-# from django.views.decorators.csrf import csrf_exempt
-# import json
-# import logging
-# from .models import Payment  # Use the Payment model
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+import logging
+from .models import Payment  # Use the Payment model
 
-# callback_logger = logging.getLogger('airtel_callback')
-# def airtel_payment_callback(request):
-#     try:
-#         data = json.loads(request.body)
-#         logger.info(f"Received Airtel callback: {data}")
+callback_logger = logging.getLogger('airtel_callback')
+def airtel_payment_callback(request):
+    try:
+        data = json.loads(request.body)
+        logger.info(f"Received Airtel callback: {data}")
 
-#         # Extract transaction details
-#         transaction = data.get("transaction", {})
-#         transaction_id = transaction.get("id")  # Ensure this matches what was sent
-#         status_code = transaction.get("status_code")  # Airtel success code
-#         airtel_money_id = transaction.get("airtel_money_id")  # Airtel money transaction ID
+        # Extract transaction details
+        transaction = data.get("transaction", {})
+        transaction_id = transaction.get("id")  # Ensure this matches what was sent
+        status_code = transaction.get("status_code")  # Airtel success code
+        airtel_money_id = transaction.get("airtel_money_id")  # Airtel money transaction ID
 
-#         # Check if transaction_id exists in our database
-#         payment = Payment.objects.filter(transaction_id=transaction_id).first()
+        # Check if transaction_id exists in our database
+        payment = Payment.objects.filter(transaction_id=transaction_id).first()
 
-#         if not payment:
-#             logger.error(f"No payment found for transaction_id: {transaction_id}")
-#             return JsonResponse({"error": "Invalid transaction ID"}, status=400)
+        if not payment:
+            logger.error(f"No payment found for transaction_id: {transaction_id}")
+            return JsonResponse({"error": "Invalid transaction ID"}, status=400)
 
-#         # Only update if it's still pending
-#         if payment.status == "PENDING":
-#             if status_code == "TS":  # Airtel's success status code
-#                 payment.status = "COMPLETED"
-#                 payment.save()
-#                 logger.info(f"Payment {payment.id} completed successfully.")
-#                 return JsonResponse({"message": "Payment completed successfully"})
-#             else:
-#                 logger.warning(f"Payment {payment.id} failed with status {status_code}")
-#                 return JsonResponse({"error": "Payment not successful"}, status=400)
+        # Only update if it's still pending
+        if payment.status == "PENDING":
+            if status_code == "TS":  # Airtel's success status code
+                payment.status = "COMPLETED"
+                payment.save()
+                logger.info(f"Payment {payment.id} completed successfully.")
+                return JsonResponse({"message": "Payment completed successfully"})
+            else:
+                logger.warning(f"Payment {payment.id} failed with status {status_code}")
+                return JsonResponse({"error": "Payment not successful"}, status=400)
 
-#         return JsonResponse({"message": "Payment already processed"})
+        return JsonResponse({"message": "Payment already processed"})
 
-#     except json.JSONDecodeError:
-#         logger.error("Invalid JSON received in callback")
-#         return JsonResponse({"error": "Invalid JSON"}, status=400)
+    except json.JSONDecodeError:
+        logger.error("Invalid JSON received in callback")
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-#     except Exception as e:
-#         logger.error(f"Error processing payment callback: {str(e)}")
-#         return JsonResponse({"error": str(e)}, status=500)
+    except Exception as e:
+        logger.error(f"Error processing payment callback: {str(e)}")
+        return JsonResponse({"error": str(e)}, status=500)
 # @csrf_exempt
 # def airtel_payment_callback(request):
 
@@ -876,78 +890,78 @@ def payment_success(request, transaction_id):
     
    
 
-from django.http import JsonResponse
-from .utils import *
-logger = logging.getLogger(__name__)
+# from django.http import JsonResponse
+# from .utils import *
+# logger = logging.getLogger(__name__)
 
-def payment_view(request):
-    school = request.user.school  # Get the logged-in user's school
+# def payment_view(request):
+#     school = request.user.school  # Get the logged-in user's school
 
-    if request.method == 'POST':
-        form = PaymentForm(request.POST, school=school)
-        if form.is_valid():
-            mobileNumber = form.cleaned_data['mobile_number']
-            athletes = form.cleaned_data['athletes']
-            total_amount = athletes.count() * 3000  # UGX 3,000 per athlete
+#     if request.method == 'POST':
+#         form = PaymentForm(request.POST, school=school)
+#         if form.is_valid():
+#             mobileNumber = form.cleaned_data['mobile_number']
+#             athletes = form.cleaned_data['athletes']
+#             total_amount = athletes.count() * 3000  # UGX 3,000 per athlete
             
-            # Generate unique transaction_id
-            transaction_id = str(uuid.uuid4())  # Short UUID for transaction
+#             # Generate unique transaction_id
+#             transaction_id = str(uuid.uuid4())  # Short UUID for transaction
 
-            # Create and save the payment with status as 'PENDING'
-            payment = Payment.objects.create(
-                school=school,
-                amount_to_pay=total_amount,
-                mobile_number=mobileNumber,
-                reference=transaction_id,
-                status='PENDING'  # Set status as 'PENDING' initially
-            )
+#             # Create and save the payment with status as 'PENDING'
+#             payment = Payment.objects.create(
+#                 school=school,
+#                 amount_to_pay=total_amount,
+#                 mobile_number=mobileNumber,
+#                 reference=transaction_id,
+#                 status='PENDING'  # Set status as 'PENDING' initially
+#             )
 
-            # Set the ManyToMany relationship for athletes
-            payment.athletes.set(athletes)
+#             # Set the ManyToMany relationship for athletes
+#             payment.athletes.set(athletes)
 
-            logger.info(f"Payment created: {payment.transaction_id}, Status: PENDING, Amount: {total_amount}")
+#             logger.info(f"Payment created: {payment.transaction_id}, Status: PENDING, Amount: {total_amount}")
 
-            # Call the initiate_payment function from utils.py
-            response = initiate_payment(
-                mobileNumber=mobileNumber,
-                amount_to_pay=total_amount,
-                reference=transaction_id
-            )
+#             # Call the initiate_payment function from utils.py
+#             response = initiate_payment(
+#                 mobileNumber=mobileNumber,
+#                 amount_to_pay=total_amount,
+#                 reference=transaction_id
+#             )
 
-            if isinstance(response, tuple):
-                response = response[0]  # Extract the JSON string or dict from the tuple
+#             if isinstance(response, tuple):
+#                 response = response[0]  # Extract the JSON string or dict from the tuple
 
-            if isinstance(response, str):
-                response = json.loads(response)  # Convert JSON string to dictionary
+#             if isinstance(response, str):
+#                 response = json.loads(response)  # Convert JSON string to dictionary
 
-            payment_status_response = check_payment_status(transaction_id, mobileNumber)
-            response_code = payment_status_response.get("responseCode")
-            response_message = payment_status_response.get("responseMessage")
+#             payment_status_response = check_payment_status(transaction_id, mobileNumber)
+#             response_code = payment_status_response.get("responseCode")
+#             response_message = payment_status_response.get("responseMessage")
 
-            if response_code == 0:  # Assuming 0 is success
-                payment.status = "SUCCESSFUL"
-                logger.info(f"Payment successful for transaction {transaction_id}")
-            else:
-                payment.status = "FAILED"
-                logger.error(f"Payment failed for transaction {transaction_id}, Response: {response_message}")
+#             if response_code == 0:  # Assuming 0 is success
+#                 payment.status = "SUCCESSFUL"
+#                 logger.info(f"Payment successful for transaction {transaction_id}")
+#             else:
+#                 payment.status = "FAILED"
+#                 logger.error(f"Payment failed for transaction {transaction_id}, Response: {response_message}")
                 
-            # Save the updated payment status
-            payment.save()
+#             # Save the updated payment status
+#             payment.save()
 
-            # Redirect to the payment status page
-            return redirect('payment_status', transaction_id=payment.transaction_id)
+#             # Redirect to the payment status page
+#             return redirect('payment_status', transaction_id=payment.transaction_id)
 
-    else:
-        form = PaymentForm(school=school)
+#     else:
+#         form = PaymentForm(school=school)
 
-    return render(request, 'emails/payment_form.html', {'form': form})
+#     return render(request, 'emails/payment_form.html', {'form': form})
 
 
-def payment_status(request, transaction_id):
-    # Retrieve the payment using the payment_id
-    payment = get_object_or_404(Payment, transaction_id=transaction_id)
+# def payment_status(request, transaction_id):
+#     # Retrieve the payment using the payment_id
+#     payment = get_object_or_404(Payment, transaction_id=transaction_id)
 
-    logger.info(f"Viewing payment status for transaction {transaction_id}, Status: {payment.status}")
+#     logger.info(f"Viewing payment status for transaction {transaction_id}, Status: {payment.status}")
 
-    # Pass the payment object to the template
-    return render(request, 'emails/payment_status.html', {'payment': payment})
+#     # Pass the payment object to the template
+#     return render(request, 'emails/payment_status.html', {'payment': payment})

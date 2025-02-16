@@ -22,8 +22,7 @@
  
             <th>Championship</th>
             <th>Sport</th>
-            <th>Edit</th>
-            <th>Delete</th>
+    
           </tr>
         </thead>
         <tbody>
@@ -39,16 +38,7 @@
             <td>{{school_enrollment.championship}}</td>
             <td>{{school_enrollment.sport}}</td>
 
-            <td>
-              <a class='btn btn-outline-primary' href="{%url 'update_school_enrollment' school_enrollment.id %}"
-                >Edit</a
-              >
-            </td>
-            <td>
-              <a class='btn btn-outline-danger' href="{%url 'delete_school_enrollment' school_enrollment.id %}"
-                >delete</a
-              >
-            </td>
+      
           </tr>
 
           {%endfor%}
