@@ -3,6 +3,12 @@ from django.conf.urls.static import static
 from django.urls import path
 from .views import *
 from django.contrib.auth import views as auth_views
+from django.conf.urls import handler404, handler500
+
+
+handler404 = custom_404_view
+handler500 = custom_500_view
+handler503 = custom_503_view
 
 urlpatterns = [
     path("login/", user_login, name="login"),

@@ -112,8 +112,7 @@ def Confirm(request):
     return render(request, "accounts/confirm.html")
 
 
-def custom_404(request, exception):
-    return render(request, "auth/custom404.html", {}, status=404)
+
 
 
 from django.urls import reverse_lazy
@@ -190,3 +189,14 @@ def support(request):
         'tickets': tickets,
     }
     return render(request, "support/support.html", context)
+
+
+# Error pages
+def custom_404_view(request, exception=None):
+    return render(request, 'pages/404.html', status=404)
+
+def custom_500_view(request):
+    return render(request, 'pages/500.html', status=500)
+
+def custom_503_view(request):
+    return render(request, 'pages/503.html', status=503)
