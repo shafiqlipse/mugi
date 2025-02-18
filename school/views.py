@@ -677,7 +677,7 @@ def get_airtel_token():
     Retrieve Airtel Money OAuth token.
     """
     try:
-        url = "https://openapiuat.airtel.africa/auth/oauth2/token"
+        url = "https://openapi.airtel.africa/auth/oauth2/token"
         headers = {"Content-Type": "application/json", "Accept": "*/*" }
         payload = {
             "client_id": settings.AIRTEL_MONEY_CLIENT_ID,
@@ -743,7 +743,7 @@ def initiate_payment(request, id):
         if not token:
             return JsonResponse({"error": "Failed to get authentication token"}, status=500)
 
-        payment_url = "https://openapiuat.airtel.africa/merchant/v2/payments/"
+        payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
         transaction_id = generate_unique_transaction_id()  
 
 
