@@ -817,6 +817,22 @@ def airtel_payment_callback(request):
         transaction_id = transaction.get("id")
         status_code = transaction.get("status_code")
         airtel_money_id = transaction.get("airtel_money_id")
+        
+        
+        # Find the Payment record using transaction_id
+        payment = get_object_or_404(Payment, transaction_id=transaction_id)
+
+        # Map Airtel status to our system status
+        status_mapping = {
+            "TS": "COMPLETED",  # Transaction Successful
+            "TF": "FAILED",      # Transaction Failed
+            "TP": "PENDING",     # Transaction Pending
+        }
+
+        # Update payment status
+        new_status = status_mapping.get(status_code, "FAILED")  # Default to FAILED if unknown status
+        payment.status = new_status
+        payment.save()
 
         airtel_logger.info(f"📌 Transaction ID: {transaction_id}, Status Code: {status_code}, Airtel Money ID: {airtel_money_id}")
 
@@ -828,7 +844,10 @@ def airtel_payment_callback(request):
 
     except Exception as e:
         airtel_logger.error(f"❌ Error processing callback: {str(e)}")
-        return JsonResponse({"error": "Internal Server Error"}, status=500)# @csrf_exempt
+        return JsonResponse({"error": "Internal Server Error"}, status=500)
+    
+    
+# @csrf_exempt
 # def airtel_payment_callback(request):
 
 #     if request.method != 'POST':
