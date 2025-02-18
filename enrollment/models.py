@@ -14,6 +14,7 @@ class SchoolEnrollment(models.Model):
     sport = models.ForeignKey(
         Sport, related_name="athlete_enrollments", on_delete=models.CASCADE
     )
+    level = models.CharField(max_length=144, blank=True, null=True, choices=(("District", "District"), ("Zone", "Zone"), ("National", "National")))
     enrollment_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

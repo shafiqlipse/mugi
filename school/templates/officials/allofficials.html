@@ -43,12 +43,21 @@
 
               <td>
                 <div class="actions flex">
+                  {% if official.user %}<a href="">
+                    <i class="fa fa-pencil-square" aria-hidden="true"></i
+                    >Deactivate</a
+                  >{% else %}
                   <a href="">
                     <i class="fa fa-pencil-square" aria-hidden="true"></i
-                    >Edit</a
+                    >Activate</a
                   >
+                  {% endif %}
                   <a href="">
-                    <i class="fa fa-trash" aria-hidden="true"></i>Delete</a
+                    <i class="fa fa-trash" aria-hidden="true"></i>Edit</a
+                  >
+
+                  <a href="{% url 'del_official' official.id%}">
+                    <i class="fa fa-trash"></i>Delete</a
                   >
                 </div>
               </td>

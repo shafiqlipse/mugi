@@ -23,11 +23,10 @@
               <th>Names</th>
 
               <th>NIN</th>
+              <th>Email</th>
               <th>Role</th>
 
               <th>Gender</th>
-
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -39,16 +38,9 @@
                 >
               </td>
               <td>{{official.nin}}</td>
+              <td>{{official.email}}</td>
               <td>{{official.role }}</td>
               <td>{{official.gender}}</td>
-
-              <td>
-                <div class="actions flex">
-                  <a href="{% url 'del_official' official.id%}">
-                    <i class="fa fa-trash" aria-hidden="true">Delete</i></a
-                  >
-                </div>
-              </td>
             </tr>
 
             {%endfor%}

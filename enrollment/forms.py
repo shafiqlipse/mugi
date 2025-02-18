@@ -9,16 +9,18 @@ class SchoolEnrollmentForm(forms.ModelForm):
         fields = [
             "championship",
             "sport",
+            "level",
         ]
         widgets = {
             "championship": forms.Select(attrs={"class": "form-control"}),
             "sport": forms.Select(attrs={"class": "form-control"}),
+            "level": forms.Select(attrs={"class": "form-control"}),
         }
 
 
 class AthleteEnrollmentForm(forms.ModelForm):
     athletes = forms.ModelMultipleChoiceField(
-        queryset=Athlete.objects.filter(status="NEW"),
+        queryset=Athlete.objects.filter(status="ACTIVE"),
         widget=forms.CheckboxSelectMultiple,
         required=False,
     )
