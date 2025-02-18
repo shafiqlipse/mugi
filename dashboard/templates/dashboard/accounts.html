@@ -93,6 +93,92 @@
     </div>
   </div>
   <div class="row">
+    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-9">
+              <div class="d-flex align-items-center align-self-start">
+                <h3 class="mb-0">{{schools_per_champs}}</h3>
+                <p class="text-success ml-2 mb-0 font-weight-medium"></p>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="icon icon-box-success">
+                <span class="mdi mdi-arrow-top-right icon-item"></span>
+              </div>
+            </div>
+          </div>
+          <h6 class="text-muted font-weight-normal">Schools</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-9">
+              <div class="d-flex align-items-center align-self-start">
+                <h3 class="mb-0">{{schools_count}}</h3>
+                <p class="text-success ml-2 mb-0 font-weight-medium">
+                  +{{schools_today}} today
+                </p>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="icon icon-box-success">
+                <span class="mdi mdi-arrow-top-right icon-item"></span>
+              </div>
+            </div>
+          </div>
+          <h6 class="text-muted font-weight-normal">Championships</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-9">
+              <div class="d-flex align-items-center align-self-start">
+                <h3 class="mb-0">{{total_earnings}}</h3>
+                <p class="text-success ml-2 mb-0 font-weight-medium">
+                  +{{total_pending}} pending
+                </p>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="icon icon-box-success">
+                <span class="mdi mdi-arrow-bottom-left icon-item"></span>
+              </div>
+            </div>
+          </div>
+          <h6 class="text-muted font-weight-normal">Earnings</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-9">
+              <div class="d-flex align-items-center align-self-start">
+                <h3 class="mb-0">{{total_transactions}}</h3>
+                <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="icon icon-box-success">
+                <span class="mdi mdi-arrow-top-right icon-item"></span>
+              </div>
+            </div>
+          </div>
+          <h6 class="text-muted font-weight-normal">transactions</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
@@ -144,90 +230,128 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-12 grid-margin">
+
+
+
+
+  <div class="row mt-2">
+    <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Recently Transactions</h4>
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>transaction ID No</th>
-                  <th>School</th>
-
-                  <th>Amount</th>
-                  <th>Athletes</th>
-                  <th>Number</th>
-                  <th>Paid on</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for transaction in recent_transactions %}
-                <tr>
-                  <td>
-                    <span class="pl-2">{{transaction.transaction_id}}</span>
-                  </td>
-
-                  <td>{{transaction.school}}</td>
-                  <td>{{transaction.amount}}</td>
-                  <td>{{transaction.athletes.all.count}}</td>
-                  <td>{{transaction.phone_number}}</td>
-
-                  <td>{{transaction.created_at}}</td>
-                  <td>
-                    <div class="badge badge-outline-success">
-                      {{transaction.status}}
-                    </div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Schools by Regions</h4>
+          <h4 class="card-title">Schools by Championship</h4>
           <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-12">
               <div class="table-responsive">
                 <table class="table">
                   <thead>
                     <tr>
-                      <th><h4>ICON</h4></th>
-                      <th><h4>region</h4></th>
-                      <th><h4>schools</h4></th>
-                      <th><h4>transactions</h4></th>
+                      <th><h4>Championship</h4></th>
+                      <th><h4>Schools</h4></th>
                     </tr>
                   </thead>
+
                   <tbody>
-                    {% for region in regions %}
+                    {% for item in schools_per_champs %}
                     <tr>
-                      <td>
-                        <i class="flag-icon flag-icon-ug"></i>
-                      </td>
-                      <td><h5>{{ region.name }}</h5></td>
-                      <td class="text-right">{{ region.school_count }}</td>
-                      <!-- School count -->
-                      <td class="text-right">{{ region.transaction_count }}</td>
-                      <!-- transaction count -->
-                      <!-- Example for percentage or other data -->
+                      <td>{{ item.championship__name }}</td>
+                      <td>{{ item.count }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>
                 </table>
               </div>
             </div>
-            <div class="col-md-7">
-              <div id="audience-map" class="vector-map"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Athletes by Championship</h4>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th><h4>Championship</h4></th>
+                      <th><h4>Athletes</h4></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {% for item in athletes_per_champ %}
+                    <tr>
+                      <td>{{ item.championship__name }}</td>
+                      <td>{{ item.count }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Schools by Sport</h4>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th><h4>Sport</h4></th>
+                      <th><h4>Schools</h4></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {% for item in school_per_sport %}
+                    <tr>
+                      <td>{{ item.sport__name }}</td>
+                      <td>{{ item.count }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Athletes by Sport</h4>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th><h4>Sport</h4></th>
+                      <th><h4>Athletes</h4></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {% for item in athletes_per_sport %}
+                    <tr>
+                      <td>{{ item.sport__name }}</td>
+                      <td>{{ item.count }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
