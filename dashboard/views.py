@@ -349,6 +349,6 @@ def accounts(request):
     return render(request, "dashboard/accounts.html", context)
 @login_required
 def payments(request):
-    pawyments = Payment.objects.all()    
+    pawyments = Payment.objects.filter(status="COMPLETED")    
     context={"pawyments":pawyments}
     return render(request, "dashboard/payments.html", context)
