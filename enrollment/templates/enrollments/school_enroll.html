@@ -84,10 +84,10 @@
   <div class="enrolled-athletes">
   <div class="enrolled-athletes flex">
     <h2>Enrolled Athletes</h2>
-    {% if user.is_staff %}
+    
     <a href="{% url 'team_album' school_enrollment.id%}" class="btn btn-primary">Album</a>
     
-    {% endif %}  </div>
+      </div>
     <hr>
     <div class="conter">
      {% if athlete_enrollments %}

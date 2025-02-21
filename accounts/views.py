@@ -153,7 +153,7 @@ def open_ticket(request):
 
 def ticket(request, id):
     ticket = get_object_or_404(Ticket, id=id)
-    alltickets = Ticket.objects.all().exclude(id =id)
+    alltickets = Ticket.objects.filter(topic=ticket.topic).exclude(id =id)
     tickets = Ticket.objects.filter(sender=request.user).exclude(id =id)
     responses = ticket.responses.all().order_by('-created_at')
     if request.method == 'POST':
@@ -183,8 +183,15 @@ def tickets(request):
     }
     return render(request, "support/tickets.html", context)
 
+def answered_tickets(request):
+    tickets = Ticket.objects.filter(status="Answered")
+    context={
+        'tickets': tickets,
+    }
+    return render(request, "support/all_tickets.html", context)
+
 def support(request):
-    tickets = Ticket.objects.all()
+    tickets = Ticket.objects.filter(status="Open")
     context={
         'tickets': tickets,
     }

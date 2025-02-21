@@ -163,12 +163,14 @@ def sport_delete(request, id):
 
 
 # @transfer_required
+@login_required
 def AllTransfers(request):
     transfers = TransferRequest.objects.filter(status ='Accepted')
     context = {"transfers": transfers}
     return render(request, "all/transfers.html", context)
 
 # @transfer_required
+@login_required
 def All_Transfers(request):
     transfers = TransferRequest.objects.all()
     context = {"transfers": transfers}
@@ -185,7 +187,7 @@ from .models import Announcement
 from .forms import AnnouncementForm
 import base64
 from django.utils.timezone import now
-
+@login_required
 def announcement(request):
    
     if request.method == "POST":
@@ -226,12 +228,12 @@ def announcement(request):
     context = {"form": form}
     return render(request, "all/anounce.html", context)
 
-
+@login_required
 def announcements(request):
     announcements = Announcement.objects.filter(is_active=True)
     return render(request, "all/announcements.html", {"announcements": announcements})
 
-
+@login_required
 def edit_announcement(request, id):
     # Retrieve the existing announcement by ID
     announcement = get_object_or_404(Announcement, id=id)
@@ -276,7 +278,7 @@ def edit_announcement(request, id):
     context = {"form": form, "announcement": announcement}
     return render(request, "all/anounce.html", context)
 
-
+@login_required
 def delete_announcement(request, id):
     # Get the announcement by primary key
     announcement = get_object_or_404(Announcement, id=id)
@@ -293,6 +295,8 @@ def delete_announcement(request, id):
 # ---------------Accounts-----------------
 from enrollment.models import *
 from django.db.models import Sum, Count, F
+
+@login_required
 def accounts(request):
     
     total_earnings = Payment.objects.filter(status="COMPLETED").aggregate(Sum('amount'))['amount__sum'] or 0
@@ -343,7 +347,8 @@ def accounts(request):
         'schools_per_champs_list': schools_per_champs_list,
     }
     return render(request, "dashboard/accounts.html", context)
-
+@login_required
 def payments(request):
-    context={}
+    pawyments = Payment.objects.all()    
+    context={"pawyments":pawyments}
     return render(request, "dashboard/payments.html", context)

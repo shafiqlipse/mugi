@@ -394,22 +394,15 @@
               <span class="menu-title">Disciplines</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'championships'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-contacts"></i>
-              </span>
-              <span class="menu-title">Championships</span>
-            </a>
-          </li>
+
           {% endif %} {% if user.is_accounts %}
           <li class="nav-item menu-items">
             <a
               class="nav-link"
               data-toggle="collapse"
-              href="#auth"
+              href="#awuth"
               aria-expanded="false"
-              aria-controls="auth"
+              aria-controls="awuth"
             >
               <span class="menu-icon">
                 <i class="mdi mdi-security"></i>
@@ -417,7 +410,7 @@
               <span class="menu-title">Accounts</span>
               <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="auth">
+            <div class="collapse" id="awuth">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'accounts'%}"> Overview </a>
@@ -480,7 +473,10 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'support' %}"> Messages </a>
+                  <a class="nav-link" href="{% url 'support' %}">Open Messages </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'answered_tickets' %}">Answered Messages </a>
                 </li>
                 {% elif user.is_school %}
                 <li class="nav-item">
@@ -634,6 +630,16 @@
     <!-- plugins:js -->
     <script src="{% static 'assets/vendors/js/vendor.bundle.base.js'%}"></script>
     <!-- endinject -->
+    <script>
+      $(document).ready(function () {
+        $("#myqTable").DataTable();
+      });
+    </script>
+    <script>
+      $(document).ready(function () {
+        $("#mypTable").DataTable();
+      });
+    </script>
     <script>
       $(document).ready(function () {
         $("#myTable").DataTable();

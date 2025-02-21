@@ -50,12 +50,9 @@
 </style>
 <div class="schools-dew content-wrapper">
   <div class="success-box">
-    <img
-      src="https://cdn-icons-png.flaticon.com/512/845/845646.png"
-      alt="Success"
-    />
+ 
     <div class="amount">UGX {{ amount }}</div>
-    <div class="message"><strong>Payment Successful!</strong></div>
+    <div class="message"><strong>Payment {{status}}, check your phone for Authorisation!</strong></div>
     <div class="details">
       Payment ID: {{ transaction_id }}<br />
       Date: {{ timestamp|date:"d M, Y - h:i A" }}
