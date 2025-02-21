@@ -11,6 +11,11 @@ class SchoolEnrollmentForm(forms.ModelForm):
             "sport",
             "level",
         ]
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            # Filter the championship queryset to only include active championships
+            self.fields['championship'].queryset = Championship.objects.filter(status='Active')
+            
         widgets = {
             "championship": forms.Select(attrs={"class": "form-control"}),
             "sport": forms.Select(attrs={"class": "form-control"}),

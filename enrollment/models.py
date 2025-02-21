@@ -9,7 +9,7 @@ class SchoolEnrollment(models.Model):
         School, related_name="enrollments", on_delete=models.CASCADE
     )
     championship = models.ForeignKey(
-        Championship, related_name="school_enrollments", on_delete=models.CASCADE
+        Championship, related_name="school_enrollments", on_delete=models.CASCADE, limit_choices_to={'status': 'Active'},
     )
     sport = models.ForeignKey(
         Sport, related_name="athlete_enrollments", on_delete=models.CASCADE
