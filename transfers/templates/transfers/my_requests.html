@@ -61,7 +61,10 @@
                 </button>
 
                 {% endif %}
-                <a href="" class="btn btn-outline-danger">
+                <a
+                  href="{% url 'reject_request' mytransfer.id%}"
+                  class="btn btn-outline-danger"
+                >
                   <i class="fa fa-trash"></i> Reject Request
                 </a>
               </td>

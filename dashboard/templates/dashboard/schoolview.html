@@ -8,65 +8,16 @@
 <div class="content-wrapper">
   <div class="row">
     <div class="col-12 grid-margin stretch-card">
-      <div class="card">
-        <div class="card-body py-0 px-0 px-sm-3">
-          <div
-            id="carouselExampleIndicators"
-            class="carousel slide"
-            data-ride="carousel"
-          >
-            <ol class="carousel-indicators">
-              {% for announcement in announcements %}
-              <li
-                data-target="#carouselExampleIndicators"
-                data-slide-to="{{ forloop.counter0 }}"
-                class="{% if forloop.first %}active{% endif %}"
-              ></li>
-              {% endfor %}
-            </ol>
-            <div class="carousel-inner">
-              {% for announcement in announcements %}
-              <div
-                class="carousel-item {% if forloop.first %}active{% endif %}"
-              >
-                <img
-                  src="{{ announcement.banner.url }}"
-                  alt="{{ announcement.title }}"
-                />
-                <div class="carousel-caption d-none d-md-block">
-                  <h5>{{ announcement.title }}</h5>
-                  <p>{{ announcement.content|truncatechars:55 }}</p>
-                </div>
-              </div>
-              {% endfor %}
-            </div>
-            <a
-              class="carousel-control-prev"
-              href="#carouselExampleIndicators"
-              role="button"
-              data-slide="prev"
-            >
-              <span
-                class="carousel-control-prev-icon"
-                aria-hidden="true"
-              ></span>
-              <span class="sr-only">Previous</span>
-            </a>
-            <a
-              class="carousel-control-next"
-              href="#carouselExampleIndicators"
-              role="button"
-              data-slide="next"
-            >
-              <span
-                class="carousel-control-next-icon"
-                aria-hidden="true"
-              ></span>
-              <span class="sr-only">Next</span>
-            </a>
-          </div>
-        </div>
-      </div>
+      <iframe
+        width="789"
+        height="391"
+        src="https://www.youtube.com/embed/2hsAgo_2j_Y"
+        title="USSSA REGISTRATION SYATEM A-Z"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe>
     </div>
   </div>
   <div class="row">

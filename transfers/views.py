@@ -268,3 +268,29 @@ def reject_transfer(request, id):
     except Exception as e:
         messages.error(request, f"An error occurred while rejecting the transfer: {str(e)}")
         return redirect("alltransfers")
+
+
+def reject_request(request, id):
+    try:
+        transfer_request = get_object_or_404(TransferRequest, id=id)
+
+        # Validate if user is authorized to reject transfer requests
+        if request.user.school != transfer_request.owner:
+            messages.error(request, "You are not authorized to reject this transfer request.")
+            return redirect("myrequests")
+
+        # Only allow pending transfer requests to be rejected
+        if transfer_request.status != "pending":
+            messages.error(request, "You can only reject pending transfer requests.")
+            return redirect("myrequests")
+
+        # Change the status to 'rejected' instead of deleting the request
+        transfer_request.status = "rejected"
+        transfer_request.save()
+
+        messages.success(request, "Transfer request rejected successfully.")
+        return redirect("myrequests")
+
+    except Exception as e:
+        messages.error(request, f"An error occurred while rejecting the transfer request: {str(e)}")
+        return redirect("myrequests")
