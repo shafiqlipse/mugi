@@ -442,6 +442,18 @@ def athletes(request):
 
     return render(request, "athletes/athletes.html", context)
 
+def red_athletes(request):
+    user = request.user
+    school_profile = user.school  # Retrieve the first related School object
+    school_id = school_profile.id
+    athletes = Athlete.objects.filter(school_id=school_id, status="ACTIVE")
+
+    context = {
+        "athletes": athletes,
+    }
+
+    return render(request, "athletes/dathletes.html", context)
+
 
 @login_required(login_url="login")
 def school_offs(request):

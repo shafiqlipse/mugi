@@ -1,0 +1,68 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Athletes{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="schools-dew content-wrapper">
+  <div class="head flex">
+    <h1>Athletes</h1>
+    <div class="ass">
+      <a href="{% url 'add_athlete'%}" class="btn-submit">Add Athlete</a>
+    </div>
+  </div>
+
+  <div class="filterlist card">
+    <div class="lo">
+      <div class="official-list">
+        <table id="myTable" class="display">
+          <thead>
+            <tr>
+              <th>Athlete Name</th>
+              <th>Athlete ID No</th>
+              <th>Index</th>
+              <th>Nationality</th>
+              <th>Gender</th>
+              <th>Class</th>
+              <th>Date of Birth</th>
+
+              {% if user.is_superuser %}
+              <th>Edit</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for athlete in athletes %}
+            <tr>
+              <td>
+                <a href="{% url 'athlete' athlete.id%}">
+                
+                  <span class="pl-2"
+                    >{{athlete.fname}} {{athlete.lname}}</span
+                  ></a
+                >
+              </td>
+              <td>{{ athlete.athlete_id }}</td>
+              <td>{{ athlete.index_number }}</td>
+              <td>{{ athlete.nationality }}</td>
+              <td>{{ athlete.gender }}</td>
+              <td>{{ athlete.classroom }}</td>
+              <td>{{ athlete.date_of_birth }}</td>
+              {% if user.is_superuser %}
+              <td>
+                <a href="{% url 'updateathlete' athlete.id%}" class="del"
+                  ><i class="fa fa-pencil"></i
+                ></a>
+              </td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -279,9 +279,7 @@
                   >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="pages/ui-features/typography.html"
-                    >Registered</a
-                  >
+                  <a class="nav-link" href="{% url 'dathletes'%}">Registered</a>
                 </li>
               </ul>
             </div>
@@ -473,10 +471,14 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'support' %}">Open Messages </a>
+                  <a class="nav-link" href="{% url 'support' %}"
+                    >Open Messages
+                  </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'answered_tickets' %}">Answered Messages </a>
+                  <a class="nav-link" href="{% url 'answered_tickets' %}"
+                    >Answered Messages
+                  </a>
                 </li>
                 {% elif user.is_school %}
                 <li class="nav-item">
