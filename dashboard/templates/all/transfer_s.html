@@ -8,18 +8,12 @@
 {% block content %}
 <div class="schools-dew content-wrapper">
   <div class="head flex">
-    <h1>Transfers</h1>
+    <h1>All Transfers</h1>
+    <a href="{% url 'export_tcsv'%}" class="btn btn-primary">
+      Export
+    </a>
   </div>
-  {% if messages %}
-  <div class="messages">
-    {% for message in messages %}
-    <div
-      class="alert {% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}"
-    >
-      {{ message }}
-    </div>
-    
-    {% endfor %}</div>{% endif %}
+ 
     <div class="filterlist card">
       <div class="lo">
         <div class="official-list">

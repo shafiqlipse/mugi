@@ -294,3 +294,49 @@ def reject_request(request, id):
     except Exception as e:
         messages.error(request, f"An error occurred while rejecting the transfer request: {str(e)}")
         return redirect("myrequests")
+
+
+
+import csv
+from django.http import HttpResponse
+
+def export_tcsv(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="data.csv"'
+
+    # Create a CSV writer object using the HttpResponse as the file.
+    writer = csv.writer(response)
+
+    # Write the header row
+    writer.writerow(
+        [
+            "id",
+            "athlete",
+            "requesting school",
+            "requesting school",
+            "status",
+            "requested at",
+            "accepted at",
+            "approved at",
+        ]
+    )  # Replace with your model's fields
+
+    # Write data rows
+    for obj in TransferRequest.objects.all():
+        writer.writerow(
+            [
+                obj.id,
+                obj.athlete,
+                obj.requester,
+                obj.owner,
+                obj.status,
+                obj.requested_at,
+                obj.accepted_at,
+                obj.approved_at,
+               
+            ]
+        )  # Replace with your model's fields
+
+    return response
+
