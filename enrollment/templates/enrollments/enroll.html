@@ -9,16 +9,12 @@
 <div class="schools-enr content-wrapper">
   <div class="top flex">
     <h1>ENROLLMENTS</h1>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Export</a>
+    <a href="{% url 'export_ecsv'%}" class='btn btn-success'>Export</a>
   </div>
   <hr />
 
   <div class="filter card">
-    <h2>Filter Teachers</h2>
-    <form method="get" class="form-contol">
-      {{ filter.form.as_p }}
-      <button type="submit">Apply Filter</button>
-    </form>
+
 
   <div class="filterlist  card">
     <div class="table-responsive">

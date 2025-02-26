@@ -345,3 +345,42 @@ def Cortificate(request, id):
         return HttpResponse("We had some errors <pre>" + html + "</pre>")
 
     return response
+
+
+
+
+import csv
+from django.http import HttpResponse
+
+def export_ecsv(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="enrollments.csv"'
+
+    # Create a CSV writer object using the HttpResponse as the file.
+    writer = csv.writer(response)
+
+    # Write the header row
+    writer.writerow(
+        [
+            "id",
+            "School",
+            "Championship",
+            "Sport",
+        ]
+    )  # Replace with your model's fields
+
+    # Write data rows
+    for obj in SchoolEnrollment.objects.all():
+        writer.writerow(
+            [
+                obj.id,
+                obj.school,
+                obj.championship,
+                obj.sport,
+               
+            ]
+        )  # Replace with your model's fields
+
+    return response
+

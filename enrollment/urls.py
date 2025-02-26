@@ -9,7 +9,7 @@ from .views import *
 
 urlpatterns = [
     # venues
-    # path("teccred/", teccreditation, name="teccred"),
+    path("export_ecsv/", export_ecsv, name="export_ecsv"),
     path("team_accred/<int:id>", Accreditation, name="team_accred"),
     path("team_occred/<int:id>", Occreditation, name="team_occred"),
     path("team_album/<int:id>", Albums, name="team_album"),
