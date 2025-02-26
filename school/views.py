@@ -239,7 +239,7 @@ def schoolupdate(request, id):
 def school_detail(request, id):
     school = get_object_or_404(School, id=id)
     officials = school_official.objects.filter(school_id=id)
-    athletes = Athlete.objects.filter(school_id=id)
+    athletes = Athlete.objects.filter(school_id=id).exclude(status="COMPLETED")
 
     context = {
         "school": school,
