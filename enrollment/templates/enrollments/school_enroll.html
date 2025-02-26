@@ -37,6 +37,7 @@
           <div class="school-long">
             <form method="post">
               {% csrf_token %}
+              <div class="table-responsive">
               <table class="table">
                 <thead>
                   <tr>
@@ -64,7 +65,7 @@
                   {% endfor %}
                 </tbody>
               </table>
-              <button type="submit" class="btn btn-success">Add Selected Athletes</button>
+              <button type="submit" class="btn btn-success">Add Selected Athletes</button></div>
             </form>
           </div>
         </div>
