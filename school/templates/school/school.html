@@ -42,8 +42,11 @@
                     <tr>
                       <td>
                         <a href="{% url 'athlete' athlete.id%}">
-                          <img src="{{athlete.photo.url}}" alt="image"
-                          style="width: 30px; border-radius: 50%;" />
+                          <img
+                            src="{{athlete.photo.url}}"
+                            alt="image"
+                            style="width: 30px; border-radius: 50%"
+                          />
                           <span class="pl-2"
                             >{{athlete.fname}} {{athlete.lname}}</span
                           ></a
@@ -72,6 +75,7 @@
                     <th>contact</th>
                     <th>Email</th>
                     <th>Gender</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -87,6 +91,31 @@
                     <td>{{official.phone_number}}</td>
                     <td>{{official.email}}</td>
                     <td>{{official.gender}}</td>
+                    <td>
+                      {% if official.user %}
+
+                      <a
+                        href="{% url 'deactivate_official' official.id %}"
+                        class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                        data-template="trashOne"
+                      >
+                        <i class="fa fa-trash"></i>
+                        <div id="trashOne" class="d-none">
+                          <span>Delete</span>
+                        </div>
+                      </a>
+                      {% else %}
+                      <a
+                        href="{% url 'activate_official' official.id %}"
+                        class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                        data-template="eyeOne"
+                      >
+                        <i class="fa fa-eye"></i>
+                        <div id="eyeOne" class="d-none">
+                          <span>Activate</span>
+                        </div> </a
+                      >{% endif %}
+                    </td>
                   </tr>
 
                   {%endfor%}
