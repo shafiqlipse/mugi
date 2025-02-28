@@ -15,7 +15,7 @@
       <img src="{% static 'images/profile.png'%}" alt="" />{% endif %}
     </div>
     <div class="line-ath">
-      <h1>{{athlete.fname}} {{athlete.lname}}</h1>
+      <h1>{{athlete.fname}} {{athlete.mname}} {{athlete.lname}}</h1>
       <span>{{athlete.athlete_id}}</span> | <span>{{athlete.gender}}</span> |
       <span>{{ age}} Years</span>
       <hr />
@@ -39,7 +39,7 @@
           >UNEB Equated Results Code:
           <h3>{{athlete.uneb_code}}</h3></span
         >{% endif %}
-  
+
         <span
           >Date of Birth:
           <h3>{{athlete.date_of_birth}}</h3></span
