@@ -195,7 +195,7 @@ def Accreditation(request, id):
 def Occreditation(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     
-    officials = school_official.objects.filter(school=team.school)
+    officials = school_official.objects.filter(school=team.school).exclude(status="Inactive")
 
     # Get template
     template = get_template("reports/ocred.html")
@@ -243,7 +243,7 @@ def Albums(request, id):
         )
     )
     school = team.school
-    officials = school_official.objects.filter(school=school)
+    officials = school_official.objects.filter(school=school).exclude(status="Inactive")
 
     # Get athlete and official counts
     athlete_count = athletes.count()
@@ -318,7 +318,7 @@ def Certificate(request, id):
 def Cortificate(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     
-    officials = school_official.objects.filter(school=team.school)
+    officials = school_official.objects.filter(school=team.school).exclude(status="Inactive")
 
     # Get template
     template = get_template("reports/cort.html")

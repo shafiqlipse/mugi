@@ -1,5 +1,5 @@
 from django import forms
-from .models import TransferRequest
+from .models import *
 
 
 class AcceptTransferForm(forms.ModelForm):
@@ -17,3 +17,13 @@ class AcceptTransferForm(forms.ModelForm):
             if documents.size > 10 * 1024 * 1024:  # 5MB limit
                 raise forms.ValidationError("File size must be under 5MB.")
         return documents
+
+
+
+class TransferRejectionForm(forms.ModelForm):
+    class Meta:
+        model = TransferMessage
+        fields = ['message']
+        widgets = {
+            'message': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Enter reason for rejection...'}),
+        }

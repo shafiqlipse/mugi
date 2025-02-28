@@ -13,6 +13,20 @@
       <a href="{% url 'add_official'%}" class="btn-submit">Add official</a>
     </div>
   </div>
+  {% if messages %} {% for message in messages %}
+  <div
+    class="alert alert-{{ message.tags }} alert-dismissible fade show"
+    role="alert"
+  >
+    {{ message }}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+  {% endfor %} {% endif %}
 
   <div class="filterlist card">
     <div class="lo">
@@ -21,12 +35,11 @@
           <thead>
             <tr>
               <th>Names</th>
-
               <th>NIN</th>
               <th>Email</th>
               <th>Role</th>
-
               <th>Gender</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -41,6 +54,39 @@
               <td>{{official.email}}</td>
               <td>{{official.role }}</td>
               <td>{{official.gender}}</td>
+
+              <td>
+                <a
+                  href="#!"
+                  class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                  data-template="eyeOne"
+                >
+                  <i class="fa fa-eye"></i>
+                  <div id="eyeOne" class="d-none">
+                    <span>View</span>
+                  </div>
+                </a>
+                <a
+                  href="#!"
+                  class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                  data-template="editOne"
+                >
+                  <i class="fa fa-pencil"></i>
+                  <div id="editOne" class="d-none">
+                    <span>Edit</span>
+                  </div>
+                </a>
+                <a
+                  href="{% url 'deactivate_official' official.id %}"
+                  class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                  data-template="trashOne"
+                >
+                  <i class="fa fa-trash"></i>
+                  <div id="trashOne" class="d-none">
+                    <span>Delete</span>
+                  </div>
+                </a>
+              </td>
             </tr>
 
             {%endfor%}

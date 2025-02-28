@@ -135,6 +135,13 @@
       </a>
       {% endif %}
     </div>
+    <h2>Reject Transfer for {{ transfer.athlete }}</h2>
+    <p>Provide a reason for rejecting this transfer request:</p>
+
+    <form method="post">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit" class="btn btn-danger">Reject Transfer</button>
+    </form>
   </div>
 
   <!-- Approve Transfer Modal -->

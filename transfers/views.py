@@ -78,7 +78,13 @@ def myTransfers(request):
     user = request.user
     school = user.school
     mytransfers = TransferRequest.objects.filter(requester=school)
-    context = {"mytransfers": mytransfers}
+    
+    trans_messages = TransferMessage.objects.filter(
+        transfer__requester=school
+    ) | TransferMessage.objects.filter(
+        transfer__owner=school
+    )
+    context = {"mytransfers": mytransfers, "trans_messages":trans_messages}
     return render(request, "transfers/my_transfers.html", context)
 
 
@@ -232,42 +238,51 @@ from django.utils.timezone import now
 
 @login_required
 def reject_transfer(request, id):
-    try:
-        transfer_request = get_object_or_404(TransferRequest, id=id)
+    transfer_request = get_object_or_404(TransferRequest, id=id)
 
-        # Validate if user is authorized to reject transfers
-        if not getattr(request.user, "is_tech", False):
-            messages.error(request, "You must be a technical user to reject transfers.")
-            return redirect("alltransfers")
-
-        # Check if transfer is in accepted or pending state
-        if transfer_request.status not in ["accepted", "pending"]:
-            messages.error(request, "Only pending or accepted transfers can be rejected.")
-            return redirect("alltransfers")
-
-        # Update status to pending and clear documents
-        transfer_request.status = "pending"
-        transfer_request.documents = None
-        transfer_request.save()
-
-        # Create a notification
-        notification = Notification.objects.create(
-            sender=request.user,
-            verb=f"Transfer request for {transfer_request.athlete} was rejected.",
-            target=f"Athlete ID: {transfer_request.athlete.id}",
-            created_at=now(),
-        )
-        # Add recipients (e.g., owning and requesting schools)
-        notification.recipients.add(transfer_request.owner, transfer_request.requester)
-
-        messages.success(
-            request, f"Transfer request for {transfer_request.athlete} has been rejected and reset to pending."
-        )
+    # Validate if user is authorized to reject transfers
+    if not getattr(request.user, "is_tech", False):
+        messages.error(request, "You must be a technical user to reject transfers.")
         return redirect("alltransfers")
 
-    except Exception as e:
-        messages.error(request, f"An error occurred while rejecting the transfer: {str(e)}")
+    # Ensure the transfer is in an appropriate state
+    if transfer_request.status not in ["accepted", "pending"]:
+        messages.error(request, "Only pending or accepted transfers can be rejected.")
         return redirect("alltransfers")
+
+    if request.method == "POST":
+        form = TransferRejectionForm(request.POST)
+        if form.is_valid():
+            # Update the transfer request status
+            transfer_request.status = "REJECTED"
+            transfer_request.documents = None  # Optional: Clear documents
+            transfer_request.save()
+
+            # Create a rejection message
+            rejection_message = form.cleaned_data["message"]
+            transfer_message = TransferMessage.objects.create(
+                transfer=transfer_request,
+                sender=request.user,
+                message=rejection_message,
+            )
+            transfer_message.recipients.add(request.user.school)  # Ensure sender's school is notified
+
+            # Create a notification for the rejection
+            notification = Notification.objects.create(
+                sender=request.user,
+                verb=f"Transfer request for {transfer_request.athlete} was rejected.",
+                target=f"Athlete ID: {transfer_request.athlete.id}",
+                created_at=now(),
+            )
+            notification.recipients.add(transfer_request.owner, transfer_request.requester)
+
+            messages.success(request, "Transfer request rejected, and message sent.")
+            return redirect("alltransfers")
+
+    else:
+        form = TransferRejectionForm()
+
+    return render(request, "transfers/transfer.html", {"form": form, "transfer": transfer_request})
 
 
 def reject_request(request, id):

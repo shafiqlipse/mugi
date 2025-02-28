@@ -18,13 +18,10 @@
           <thead>
             <tr>
               <th>Names</th>
-
               <th>SCHOOL</th>
               <th>NIN</th>
               <th>Role</th>
-
               <th>Gender</th>
-
               <th>Actions</th>
             </tr>
           </thead>
@@ -42,24 +39,36 @@
               <td>{{official.gender}}</td>
 
               <td>
-                <div class="actions flex">
-                  {% if official.user %}<a href="">
-                    <i class="fa fa-pencil-square" aria-hidden="true"></i
-                    >Deactivate</a
-                  >{% else %}
-                  <a href="">
-                    <i class="fa fa-pencil-square" aria-hidden="true"></i
-                    >Activate</a
-                  >
-                  {% endif %}
-                  <a href="">
-                    <i class="fa fa-trash" aria-hidden="true"></i>Edit</a
-                  >
-
-                  <a href="{% url 'del_official' official.id%}">
-                    <i class="fa fa-trash"></i>Delete</a
-                  >
-                </div>
+                <a
+                  href="#!"
+                  class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                  data-template="eyeOne"
+                >
+                  <i class="fa fa-eye"></i>
+                  <div id="eyeOne" class="d-none">
+                    <span>View</span>
+                  </div>
+                </a>
+                <a
+                  href="#!"
+                  class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                  data-template="editOne"
+                >
+                  <i class="fa fa-pencil"></i>
+                  <div id="editOne" class="d-none">
+                    <span>Edit</span>
+                  </div>
+                </a>
+                <a
+                  href="#!"
+                  class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                  data-template="trashOne"
+                >
+                  <i class="fa fa-trash"></i>
+                  <div id="trashOne" class="d-none">
+                    <span>Delete</span>
+                  </div>
+                </a>
               </td>
             </tr>
 

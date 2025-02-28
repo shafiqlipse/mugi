@@ -130,17 +130,25 @@ class school_official(models.Model):
         null=True,
         blank=True,
     )
+    status = models.CharField(
+        max_length=10,
+        choices=[("Active", "Active"), ("Inactive", "Inactive")],
+        default='New',
+        null=True,
+        blank=True,
+    )
     role = models.CharField(
         max_length=40,
         choices=[
             ("Coach", "Coach"),
+            ("HeadTeacher", "HeadTeacher"),
+            ("GamesTeacher", "GamesTeacher"),
             ("Teacher", "Teacher"),
             ("Assistant Games Teacher", "Assistant Games Teacher"),
             ("Assistant Head Teacher", "Assistant Head Teacher"),
             ("Nurse", "Nurse"),
             ("Doctor", "Doctor"),
-            ("District Education Officer", "District Education Officer"),
-            ("District Sports Officer", "District Sports Officer"),
+           
         ],
         null=True,
         blank=True,

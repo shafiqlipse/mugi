@@ -461,7 +461,7 @@ def school_offs(request):
     school_profile = user.school  # Retrieve the first related School object
     if school_profile:
         school_id = school_profile.id
-        school_offs = school_official.objects.filter(school_id=school_id)
+        school_offs = school_official.objects.filter(school_id=school_id).exclude(status="Inactive")
     else:
         # Handle the case where the user is not associated with any school
         school_offs = school_official.objects.none()
@@ -585,8 +585,25 @@ def athlete_list(request):
 
 # def payment_page(request):
 #     payment = Payment.objects.filter(is_paid=False).first()
+@login_required
+def activate_official(request, id):
+    official = get_object_or_404(school_official,id=id)
+    official.status = "Active"
+    official.save() # Save the updated status
+    messages.success(request, f"Official {official.fname} is now {official.status}.")
+    return redirect("officials")
 #     context = {"payment": payment}
-#     return render(request, "school/payment_page.html", context)
+
+@login_required
+def deactivate_official(request, id):
+    official = get_object_or_404(school_official,id=id)
+    official.status = "Inactive"
+    official.save() # Save the updated status
+    messages.error(request, f"Official {official.fname} has been deleted successfully.")
+    return redirect("officials")
+#     context = {"payment": payment}
+
+
 
 
 
