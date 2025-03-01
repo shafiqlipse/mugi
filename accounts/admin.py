@@ -11,7 +11,7 @@ class UserAdmin(BaseUserAdmin):
 
 class AthleteAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
     list_display = ("fname", "lname", "index_number", "gender", "classroom", "school", "date_of_birth")
-    search_fields = ("fname", "lname", "index_number","school")
+    search_fields = ("fname", "lname", "index_number", "school__name")  # Use school__name instead of school
     list_filter = ("classroom", "gender", "school")
 # Register your models here.
 admin.site.register(Athlete, AthleteAdmin) 
