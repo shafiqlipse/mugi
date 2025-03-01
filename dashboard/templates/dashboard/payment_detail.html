@@ -7,7 +7,7 @@
 {% block content %}
 <div class="schools-dew content-wrapper">
   <div class="head flex">
-    <h1>Payments Records</h1>
+    <h1>{{payment.school}}</h1>
     <div class="report">
       <a href=""><i class="fa fa-download" aria-hidden="true"></i> Export </a>
     </div>
@@ -19,33 +19,27 @@
           <table id="myTable" class="display">
             <thead>
               <tr>
-                <th>School</th>
-                <th>Phone Number</th>
-                <th>Amount</th>
-                <th>Athletes</th>
+                <th>Athlete</th>
+                <th>index</th>
+                <th>class</th>
+                <th>date of birth</th>
                 <th>Date</th>
-                 <th>Status</th>
+                 
               
               </tr>
             </thead>
             <tbody>
-              {% for payment in pawyments%}
+              {% for athlete in payment.athletes.all%}
               <tr>
                 <td>
-                  <a href="{% url 'payment_detail' payment.id%}"
-                    >{{payment.school}}</a
-                  >
+                 {{athlete.fname}} {{athlete.lname}}
                 </td>
-                <td>{{payment.phone_number}}</td>
-                <td>{{payment.amount}}</td>
-                <td>{{payment.athletes.count}}</td>
-                <td>{{payment.created_at}}</td>
+                <td>{{athlete.index_number}}</td>
+                <td>{{athlete.classroom}}</td>
+                <td>{{athlete.date_of_birth}}</td>
+                <td>{{athlete.status}}</td>
 
          
-                
-                <td>
-               <p class="badge badge-outline-success" styles="color:white;">{{payment.status}}</p>
-                </td>
           
               </tr>
 

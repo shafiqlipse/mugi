@@ -352,3 +352,25 @@ def payments(request):
     pawyments = Payment.objects.filter(status="COMPLETED")    
     context={"pawyments":pawyments}
     return render(request, "dashboard/payments.html", context)
+
+@login_required
+def pending_payments(request):
+    pawyments = Payment.objects.filter(status="PENDING")    
+    context={"pawyments":pawyments}
+    return render(request, "dashboard/pending.html", context)
+
+@login_required
+def activate_payment(request, id):
+    payment = get_object_or_404(Payment,id=id)
+    payment.status = "COMPLETED"
+    payment.save() # Save the updated status
+    messages.success(request, f"Payment {payment} is now {payment.status}.")
+    return redirect("pending_payments")
+#     context = {"payment": payment}
+@login_required
+def payment_detail(request, id):
+    payment = get_object_or_404(Payment,id=id)
+    context = {"payment": payment}
+    return render(request, "dashboard/payment_detail.html", context)
+   
+#     context = {"payment": payment}

@@ -25,6 +25,7 @@
                 <th>Athletes</th>
                 <th>Date</th>
                  <th>Status</th>
+                 <th>Activete</th>
               
               </tr>
             </thead>
@@ -46,7 +47,11 @@
                 <td>
                <p class="badge badge-outline-success" styles="color:white;">{{payment.status}}</p>
                 </td>
-          
+                <td>
+                    <a href="{% url 'activate_payment' payment.id%}"
+                      >Activate</a
+                    >
+                  </td>
               </tr>
 
               {%endfor%}
