@@ -338,7 +338,7 @@ def export_tcsv(request):
     )  # Replace with your model's fields
 
     # Write data rows
-    for obj in TransferRequest.objects.all():
+    for obj in TransferRequest.objects.filter(status="approved"):
         writer.writerow(
             [
                 obj.id,
