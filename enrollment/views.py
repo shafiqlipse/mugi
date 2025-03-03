@@ -348,7 +348,6 @@ def Cortificate(request, id):
 
 
 
-
 import csv
 from django.http import HttpResponse
 
