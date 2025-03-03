@@ -367,20 +367,22 @@ def export_ecsv(request):
             "School",
             "Championship",
             "Sport",
+            "Athlete Count",
         ]
     )  # Replace with your model's fields
 
-    # Write data rows
     for obj in SchoolEnrollment.objects.all():
+        athlete_count = obj.athlete_enrollments.aggregate(total=models.Count('athletes'))['total'] or 0
         writer.writerow(
             [
                 obj.id,
                 obj.school,
                 obj.championship,
                 obj.sport,
-               
+                athlete_count,
             ]
-        )  # Replace with your model's fields
+        ) 
+        # Replace with your model's fields
 
     return response
 
