@@ -254,7 +254,7 @@ def reject_transfer(request, id):
         form = TransferRejectionForm(request.POST)
         if form.is_valid():
             # Update the transfer request status
-            transfer_request.status = "REJECTED"
+            transfer_request.status = "Pending"
             transfer_request.documents = None  # Optional: Clear documents
             transfer_request.save()
 
