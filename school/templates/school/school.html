@@ -92,8 +92,6 @@
                     <td>{{official.email}}</td>
                     <td>{{official.gender}}</td>
                     <td>
-                      {% if official.user %}
-
                       <a
                         href="{% url 'deactivate_official' official.id %}"
                         class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
@@ -104,7 +102,7 @@
                           <span>Delete</span>
                         </div>
                       </a>
-                      {% else %}
+
                       <a
                         href="{% url 'activate_official' official.id %}"
                         class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
@@ -113,8 +111,8 @@
                         <i class="fa fa-eye"></i>
                         <div id="eyeOne" class="d-none">
                           <span>Activate</span>
-                        </div> </a
-                      >{% endif %}
+                        </div>
+                      </a>
                     </td>
                   </tr>
 
