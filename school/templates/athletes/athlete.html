@@ -15,7 +15,10 @@
       <img src="{% static 'images/profile.png'%}" alt="" />{% endif %}
     </div>
     <div class="line-ath">
-      <h1>{{athlete.fname}} {{athlete.mname}} {{athlete.lname}}</h1>
+      <h1>
+        {{athlete.fname}} {% if athlete.mname %}{{athlete.mname}}{% endif %}
+        {{athlete.lname}}
+      </h1>
       <span>{{athlete.athlete_id}}</span> | <span>{{athlete.gender}}</span> |
       <span>{{ age}} Years</span>
       <hr />
