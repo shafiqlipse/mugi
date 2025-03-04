@@ -364,6 +364,8 @@ def export_ecsv(request):
         [
             "id",
             "School",
+            "District",
+            "Zone",
             "Championship",
             "Sport",
             "Athlete Count",
@@ -376,6 +378,8 @@ def export_ecsv(request):
             [
                 obj.id,
                 obj.school,
+                obj.school.district,
+                obj.school.district.zone,
                 obj.championship,
                 obj.sport,
                 athlete_count,
