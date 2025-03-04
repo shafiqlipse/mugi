@@ -69,6 +69,7 @@
               <div class="field">
                 <label>Nationality</label>{{form.nationality}}
               </div>
+              <div class="field"><label>Class</label>{{form.classroom}}</div>
               <div class="field-container" id="lin_container">
                 <label>Learner's Identification Number</label>{{form.lin}}
               </div>
@@ -96,7 +97,6 @@
               <div class="field"><label>Sport</label>{{form.sport}}</div>
               <div class="field"><label>Gender</label>{{form.gender}}</div>
 
-              <div class="field"><label>Class</label>{{form.classroom}}</div>
               <div class="field">
                 <label for="date_of_birth">Date of Birth:</label>
                 {{form.date_of_birth}}
@@ -205,6 +205,7 @@
       const nationality = $("#id_nationality").val();
       const refugee = $("#id_refugee").val();
       const sponsorship = $("#id_sponsorship").val();
+      const classroom = $("#id_classroom").val();
 
       // National case
       if (nationality === "National") {
@@ -268,10 +269,14 @@
         $("#bursary_container").hide();
         $("#id_bursary").prop("required", false);
       }
+
+      // Sponsorship case
     }
 
     // Run the function on page load and when nationality, refugee, or sponsorship changes
-    $("#id_nationality, #id_refugee, #id_sponsorship").change(toggleFields);
+    $("#id_nationality, #id_refugee, #id_sponsorship, #id_classroom").change(
+      toggleFields
+    );
     toggleFields(); // Initial check on page load
   });
 </script>
