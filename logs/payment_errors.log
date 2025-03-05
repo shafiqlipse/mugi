@@ -1458,3 +1458,5 @@ Traceback (most recent call last):
     raise FieldError(
 django.core.exceptions.FieldError: Unsupported lookup 'icontains' for ForeignKey or join on the field not permitted.
 "GET /admin/school/athlete/?q=big+mouse HTTP/1.1" 500 212809
+Internal Server Error: /school/pay/2/
+"GET /school/pay/2/ HTTP/1.1" 500 47
