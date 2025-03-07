@@ -23,7 +23,12 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Enroll Athletes</h5>
+          {% if system_closed %}
+          <p>The system is currently closed.</p>
+        {% else %}
+ <h5 class="modal-title" id="exampleModalLabel">Enroll Athletes</h5>
+        {% endif %}
+         
           <button
             type="button"
             class="close"

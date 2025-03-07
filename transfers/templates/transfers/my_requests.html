@@ -51,7 +51,9 @@
               <td>{{ mytransfer.requested_at }}</td>
               <td>{{ mytransfer.status }}</td>
               <td>
-                {% if mytransfer.status == 'pending' %}
+                {% if system_closed %}
+                <p>The system is currently closed.</p>
+                {% else %} {% if mytransfer.status == 'pending' %}
                 <button
                   type="button"
                   class="btn btn-outline-success"
@@ -67,6 +69,7 @@
                 >
                   <i class="fa fa-trash"></i> Reject Request
                 </a>
+                {% endif %}
               </td>
             </tr>
             {% endfor %}

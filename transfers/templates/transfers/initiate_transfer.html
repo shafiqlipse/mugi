@@ -73,6 +73,9 @@
             <td>{{ athlete.classroom }}</td>
             <td>{{ athlete.date_of_birth }}</td>
             <td>
+              {% if system_closed %}
+                <p>The system is currently closed.</p>
+              {% else %}
               <a
                 href="{% url 'initiate_transfer' athlete.id %}"
                 class="btn btn-outline-primary request-transfer"
@@ -80,6 +83,7 @@
               >
                 <i class="fa fa-plus"></i> Request transfer
               </a>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}

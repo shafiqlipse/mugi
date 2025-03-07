@@ -207,3 +207,10 @@ def custom_500_view(request):
 
 def custom_503_view(request):
     return render(request, 'pages/503.html', status=503)
+
+
+
+
+if SystemStatus.is_system_closed():
+    # Disable features
+    print("System is currently closed")

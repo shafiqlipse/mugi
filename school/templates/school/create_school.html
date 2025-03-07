@@ -68,7 +68,10 @@
     </style>
 
     <div class="school">
-      <form
+      {% if system_closed %}
+      <p>The system is currently closed.</p>
+    {% else %}
+    <form
         action=""
         method="POST"
         class="form-control"
@@ -243,6 +246,8 @@
         {% endif %}
         <button type="submit" class="btn btn-success">Save school</button>
       </form>
+    {% endif %}
+     
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>

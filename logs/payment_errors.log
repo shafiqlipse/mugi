@@ -1460,3 +1460,19 @@ django.core.exceptions.FieldError: Unsupported lookup 'icontains' for ForeignKey
 "GET /admin/school/athlete/?q=big+mouse HTTP/1.1" 500 212809
 Internal Server Error: /school/pay/2/
 "GET /school/pay/2/ HTTP/1.1" 500 47
+Internal Server Error: /transfers/transfers/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\transfers\views.py", line 21, in transfers
+    school = user.school
+             ^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AnonymousUser' object has no attribute 'school'
+"GET /transfers/transfers/ HTTP/1.1" 500 75447
