@@ -33,7 +33,7 @@ admin.site.register(Championship)
 admin.site.register(Region)
 admin.site.register(District)
 
-admin.site.register(School)
+
 # admin.site.register(City)
 admin.site.register(Zone)
 admin.site.register(Classroom)
