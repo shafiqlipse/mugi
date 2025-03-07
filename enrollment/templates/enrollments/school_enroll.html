@@ -8,7 +8,10 @@
 <div class="enrollment content-wrapper">
   <div class="top flex">
     <h1>{{ school_enrollment.championship.name }} - {{ school_enrollment.sport}}</h1>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Enroll athletes</a>
+    {% if system_closed %}
+    <p>The system is currently closed.</p>
+  {% else %}
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Enroll athletes</a> {% endif %}
   </div>
   
 
@@ -23,11 +26,9 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          {% if system_closed %}
-          <p>The system is currently closed.</p>
-        {% else %}
+   
  <h5 class="modal-title" id="exampleModalLabel">Enroll Athletes</h5>
-        {% endif %}
+       
          
           <button
             type="button"
