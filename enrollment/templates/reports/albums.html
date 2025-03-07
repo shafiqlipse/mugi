@@ -102,7 +102,7 @@
                       <td>
                         <ul>
                           <span>
-                            Names: {{ official.fname|upper }} {{ official.mname|upper }}
+                            Names: {{ official.fname|upper }}
                             {{official.lname|upper }} </span
                           ><br />
                           <span>NIN: {{ official.nin|upper }}</span
@@ -148,7 +148,7 @@
                       <td>
                         <ul>
                           <span>
-                            Names: {{ athlete.fname|upper }}
+                            Names: {{ athlete.fname|upper }} {% if athlete.mname %}{{ athlete.mname|upper }}{% endif %} 
                             {{athlete.lname|upper }} </span
                           ><br />
                           <span>LIN: {{ athlete.lin|upper }}</span

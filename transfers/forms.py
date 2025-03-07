@@ -27,3 +27,5 @@ class TransferRejectionForm(forms.ModelForm):
         widgets = {
             'message': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Enter reason for rejection...'}),
         }
+        
+        
