@@ -675,7 +675,7 @@ def payment_view(request):
                     messages.error(request, "You must select at least one athlete.")
                     return render(request, 'emails/payment_form.html', {'form': form})
 
-                totals_amount = athletes.count() * 3000  # UGX 3,000 per athlete
+                totals_amount = athletes.count() * 6000  # UGX 3,000 per athlete
                 total_amount = totals_amount + 500  # UGX 3,000 per athlete
 
                 with transaction.atomic():  # Ensures atomicity in case of failure

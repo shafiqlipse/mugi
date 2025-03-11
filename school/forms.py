@@ -206,4 +206,4 @@ class PaymentForm(forms.Form):
                 school=school, status='NEW'
             )
             # Customize labels to include the amount for each learner
-            self.fields['athletes'].label_from_instance = lambda obj: f"{obj.fname} (Amount: 3000)"
+            self.fields['athletes'].label_from_instance = lambda obj: f"{obj.fname} (Amount: 6000)"
