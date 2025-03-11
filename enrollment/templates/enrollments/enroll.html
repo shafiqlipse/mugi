@@ -17,31 +17,46 @@
 
 
   <div class="filterlist  card">
-    <form method="get" class="formiex flex">
-      <h2>Filter trainees</h2>
+
+      <h2>Filter Enrollments</h2>
       <div method="get" class="formlix flex">
-        <div method="get" class="formix">
-          <div class="form-group flex">
-            <label for="gender">school</label>
-            {{ school_enroll_filter.form.school }}
+        <form method="get" class="formix">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="school">School</label>
+                {{ school_enroll_filter.form.school}}
+              </div>
+            </div>
+        
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="championship">Championship</label>
+                {{ school_enroll_filter.form.championship}}
+              </div>
+            </div>
+        
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="sport">Sport</label>
+                {{ school_enroll_filter.form.sport}}
+              </div>
+            </div>
+        
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="level">Level</label>
+                {{ school_enroll_filter.form.level}}
+              </div>
+            </div>
           </div>
-          <div class="form-group flex">
-            <label for="school">School</label>
-    
-            {{ school_enroll_filter.form.championship }}
+        
+          <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="" class="btn btn-secondary">Reset</a>
           </div>
-          <div class="form-group flex">
-            <label for="school">Names</label>
-            {{ school_enroll_filter.form.sport }}
-          </div>
-          <div class="form-group flex">
-            <label for="school">Index number</label>
-            {{ school_enroll_filter.form.level }}
-          </div>
-        </div>
-        <button type="submit">Apply Filter</button>
+        </form>
       </div>
-    </form>
     <div class="table-responsive">
       <table id="myTable" class="display">
         <thead>
@@ -139,7 +154,7 @@
       </nav>
     </div>
     
-    </div>
+  
   </div>
 </div>
 <div
