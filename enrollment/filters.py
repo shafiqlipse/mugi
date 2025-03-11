@@ -10,4 +10,5 @@ class SchoolEnrollmentFilter(django_filters.FilterSet):
             "school",
             "championship",
             "sport",
+            "level",
         ]  # Add all fields you want to filter on

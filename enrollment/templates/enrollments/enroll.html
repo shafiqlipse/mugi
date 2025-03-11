@@ -17,6 +17,31 @@
 
 
   <div class="filterlist  card">
+    <form method="get" class="formiex flex">
+      <h2>Filter trainees</h2>
+      <div method="get" class="formlix flex">
+        <div method="get" class="formix">
+          <div class="form-group flex">
+            <label for="gender">school</label>
+            {{ school_enroll_filter.form.school }}
+          </div>
+          <div class="form-group flex">
+            <label for="school">School</label>
+    
+            {{ school_enroll_filter.form.championship }}
+          </div>
+          <div class="form-group flex">
+            <label for="school">Names</label>
+            {{ school_enroll_filter.form.sport }}
+          </div>
+          <div class="form-group flex">
+            <label for="school">Index number</label>
+            {{ school_enroll_filter.form.level }}
+          </div>
+        </div>
+        <button type="submit">Apply Filter</button>
+      </div>
+    </form>
     <div class="table-responsive">
       <table id="myTable" class="display">
         <thead>
@@ -33,7 +58,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for school_enrollment in school_enrolls %}
+          {% for school_enrollment in enrolls %}
           <tr>
             <td>
               <a href="{% url 'school_enrollment' school_enrollment.id%}" style="font: size 10px;"
@@ -85,6 +110,35 @@
           {%endfor%}
         </tbody>
       </table>
+    </div>
+    <div class="pagination">
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          {% if enrolls.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ enrolls.previous_page_number }}">Previous</a></li>
+          {% endif %}
+    
+          {% for page_num in enrolls.paginator.page_range %}
+            {% if page_num == 1 or page_num == enrolls.paginator.num_pages %}
+              <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
+            {% elif page_num >= enrolls.number|add:"-2" and page_num <= enrolls.number|add:"2" %}
+              {% if page_num == enrolls.number %}
+                <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+              {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
+              {% endif %}
+            {% elif page_num == enrolls.number|add:"3" or page_num == enrolls.number|add:"-3" %}
+              <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+          {% endfor %}
+    
+          {% if enrolls.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ enrolls.next_page_number }}">Next</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+    
     </div>
   </div>
 </div>

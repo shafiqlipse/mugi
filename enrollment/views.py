@@ -16,7 +16,7 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from io import BytesIO
-
+from django.core.paginator import Paginator
 
 from .filters import SchoolEnrollmentFilter  # Assume you have created this filter
 
@@ -48,16 +48,26 @@ def SchoolEnrollments(request):
 @login_required(login_url="login")
 def AllEnrollments(request):
     # Get all school_enrolls
-    school_enrolls = SchoolEnrollment.objects.all()
+    school_enrolls = SchoolEnrollment.objects.filter(championship__status='Active').order_by("id")
 
-    # Apply the filter
-    # school_enroll_filter = SchoolEnrollmentFilter(request.GET, queryset=school_enrolls)
-    # filtered_school_enrolls = school_enroll_filter.qs
+
+     # Apply filtering
+    school_enroll_filter = SchoolEnrollmentFilter(request.GET, queryset=school_enrolls)
+    filtered_enrolls = school_enroll_filter.qs  # Get the filtered queryset
+
+    # Paginate filtered results
+    paginator = Paginator(filtered_enrolls, 10)  # Show 10 athletes per page
+    page_number = request.GET.get("page")
+    paginated_enrolls = paginator.get_page(page_number)
+
+    # Pass the filter to the context for rendering the filter form
+    context = {
+        "enrolls": paginated_enrolls,
+        "school_enroll_filter": school_enroll_filter,
+    }
 
     # Prepare context with athletes data
-    context = {
-        "school_enrolls": school_enrolls,
-    }
+
 
     return render(request, "enrollments/enroll.html", context)
 
