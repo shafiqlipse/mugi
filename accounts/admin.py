@@ -20,8 +20,13 @@ class SchoolAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
     list_display = ("name", "center_number", "emis_number", "district")
     search_fields =( "name", "center_number", "emis_number")  # Use school__name instead of school
 
+class PaymentAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
+    list_display = ("school", "phone_number",  "status", "amount", "date")
+    search_fields =( "school", "phone_number",  "status",)  # Use school__name instead of school
+
 # Register your models here.
 admin.site.register(School, SchoolAdmin) 
+admin.site.register(Payment, PaymentAdmin) 
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Discipline)
