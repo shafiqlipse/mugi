@@ -187,6 +187,10 @@ from .models import Announcement
 from .forms import AnnouncementForm
 import base64
 from django.utils.timezone import now
+from school.filters import PaymentFilter
+from django.core.paginator import Paginator
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 @login_required
 def announcement(request):
    
@@ -347,16 +351,48 @@ def accounts(request):
         'schools_per_champs_list': schools_per_champs_list,
     }
     return render(request, "dashboard/accounts.html", context)
+
 @login_required
 def payments(request):
     pawyments = Payment.objects.filter(status="COMPLETED")    
+    
+
+    # Apply filtering
+    payments_filter = PaymentFilter(request.GET, queryset=pawyments)
+    filtered_payments = payments_filter.qs  # Get the filtered queryset
+
+    # Paginate filtered results
+    paginator = Paginator(filtered_payments, 10)  # Show 10 athletes per page
+    page_number = request.GET.get("page")
+    paginated_payments = paginator.get_page(page_number)
+
+    # Pass the filter to the context for rendering the filter form
+    context = {
+        "payments": paginated_payments,
+        "payment_filter": payments_filter,
+    }
     context={"pawyments":pawyments}
     return render(request, "dashboard/payments.html", context)
 
 @login_required
 def pending_payments(request):
-    pawyments = Payment.objects.filter(status="PENDING")    
-    context={"pawyments":pawyments}
+    pawyments = Payment.objects.filter(status="PENDING")  
+    payments_filter = PaymentFilter(request.GET, queryset=pawyments)
+    filtered_payments = payments_filter.qs  # Get the filtered queryset
+
+    # Paginate filtered results
+    paginator = Paginator(filtered_payments, 10)  # Show 10 athletes per page
+    page_number = request.GET.get("page")
+    paginated_payments = paginator.get_page(page_number)
+
+    # Pass the filter to the context for rendering the filter form
+    context = {
+        "payments": paginated_payments,
+        "payment_filter": payments_filter,
+    }
+    # Pass the filter to the context for rendering the filter form
+ 
+
     return render(request, "dashboard/pending.html", context)
 
 @login_required
@@ -367,6 +403,8 @@ def activate_payment(request, id):
     messages.success(request, f"Payment {payment} is now {payment.status}.")
     return redirect("pending_payments")
 #     context = {"payment": payment}
+
+
 @login_required
 def payment_detail(request, id):
     payment = get_object_or_404(Payment,id=id)
