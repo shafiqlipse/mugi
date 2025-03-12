@@ -211,6 +211,6 @@ def custom_503_view(request):
 
 
 
-if SystemStatus.is_system_closed():
-    # Disable features
-    print("System is currently closed")
+# if SystemStatus.is_system_closed():
+#     # Disable features
+#     print("System is currently closed")
