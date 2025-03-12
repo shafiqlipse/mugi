@@ -46,6 +46,6 @@ admin.site.register(Classroom)
 
 from .models import SystemStatus
 
-@admin.register(SystemStatus)
-class SystemStatusAdmin(admin.ModelAdmin):
-    list_display = ('closure_start', 'closure_end')
+# @admin.register(SystemStatus)
+# class SystemStatusAdmin(admin.ModelAdmin):
+#     list_display = ('closure_start', 'closure_end')
