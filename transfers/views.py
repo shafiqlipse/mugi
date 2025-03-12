@@ -19,7 +19,7 @@ from school.filters import AthleteFilter
 def transfers(request):
     user = request.user
     school = user.school
-    athletes_list = Athlete.objects.all().exclude(school=school)
+    athletes_list = Athlete.objects.all().exclude(school=school,status ="COMPLETED")
     athlete_filter = AthleteFilter(request.GET, queryset=athletes_list)
     filtered_athletes = athlete_filter.qs  # Get the filtered queryset
 
@@ -74,6 +74,8 @@ def initiate_transfer(request, id):
     except Exception as e:
         messages.error(request, f"An error occurred: {str(e)}")
         return redirect("transfers")
+    
+    
 def myTransfers(request):
     user = request.user
     school = user.school
