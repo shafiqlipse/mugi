@@ -126,10 +126,10 @@ class SystemStatus(models.Model):
     closure_start = models.DateTimeField(null=True, blank=True)
     closure_end = models.DateTimeField(null=True, blank=True)
 
-    @classmethod
-    def is_system_closed(cls):
-        status = cls.objects.first()
-        if status and status.closure_start and status.closure_end:
-            now = timezone.now()
-            return status.closure_start <= now <= status.closure_end
-        return False
+    # @classmethod
+    # def is_system_closed(cls):
+    #     status = cls.objects.first()
+    #     if status and status.closure_start and status.closure_end:
+    #         now = timezone.now()
+    #         return status.closure_start <= now <= status.closure_end
+    #     return False
