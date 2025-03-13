@@ -354,7 +354,7 @@ def accounts(request):
 
 @login_required
 def payments(request):
-    pawyments = Payment.objects.filter(status="COMPLETED").order_by('-created_at')    
+    pawyments = Payment.objects.select_related("school").filter(status="COMPLETED").order_by('-created_at')    
     
     # Apply filtering
     payments_filter = PaymentFilter(request.GET, queryset=pawyments)
@@ -375,7 +375,7 @@ def payments(request):
 
 @login_required
 def pending_payments(request):
-    pawyments = Payment.objects.filter(status="PENDING").order_by('-created_at')  
+    pawyments = Payment.objects.select_related("school").filter(status="PENDING").order_by('-created_at')  
     payments_filter = PaymentFilter(request.GET, queryset=pawyments)
     filtered_payments = payments_filter.qs  # Get the filtered queryset
 

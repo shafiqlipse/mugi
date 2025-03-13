@@ -45,7 +45,7 @@ def Dash(request):
 @staff_required
 def users(request):
     staff = User.objects.all().exclude(is_school=True)
-    users = User.objects.filter(is_school=True)
+    users = User.objects.select_related("school").filter(is_school=True)
 
     context = {
         "users": users,
@@ -60,7 +60,8 @@ def users(request):
 @login_required(login_url="login")
 def Schools(request):
 
-    schools = School.objects.all()
+    schools = School.objects.select_related("district").all()
+
 
     schools_filter = SchoolFilter(request.GET, queryset=schools)
     filtered_schools = schools_filter.qs  # Get the filtered queryset
@@ -132,8 +133,8 @@ from django.views.decorators.csrf import csrf_exempt
 # schools list, tuple or array
 @staff_required
 def all_athletes(request):
-    # Query all athletes except those with status "COMPLETED"
-    athletes_queryset = Athlete.objects.all().exclude(status="COMPLETED")
+    
+    athletes_queryset = Athlete.objects.select_related("school").all().exclude(status="COMPLETED")
 
     # Apply filtering
     athlete_filter = AthleteFilter(request.GET, queryset=athletes_queryset)
@@ -155,7 +156,8 @@ def all_athletes(request):
 # schools list, tuple or array
 @staff_required
 def archives(request):
-    archives_list = Athlete.objects.filter(status="COMPLETED")
+
+    archives_list = Athlete.objects.select_related("school").filter(status="COMPLETED")
     # Apply filtering
     athlete_filter = AthleteFilter(request.GET, queryset=archives_list)
     archived_athletes = athlete_filter.qs  # Get the filtered queryset
@@ -175,7 +177,7 @@ def archives(request):
 @staff_required
 def all_officials(request):
 
-    officilas = school_official.objects.all()
+    officilas = school_official.objects.select_related("school").all()
 
     context = {
         "officilas": officilas,
@@ -249,8 +251,8 @@ def schoolupdate(request, id):
 @login_required(login_url="login")
 def school_detail(request, id):
     school = get_object_or_404(School, id=id)
-    officials = school_official.objects.filter(school_id=id)
-    athletes = Athlete.objects.filter(school_id=id).exclude(status="COMPLETED")
+    officials = school_official.objects.select_related("school").filter(school_id=id)
+    athletes = Athlete.objects.select_related("school").filter(school_id=id).exclude(status="COMPLETED")
 
     context = {
         "school": school,
@@ -445,7 +447,7 @@ def athletes(request):
     user = request.user
     school_profile = user.school  # Retrieve the first related School object
     school_id = school_profile.id
-    athletes = Athlete.objects.filter(school_id=school_id).exclude(status="COMPLETED")
+    athletes = Athlete.objects.select_related("school").filter(school_id=school_id).exclude(status="COMPLETED")
 
     context = {
         "athletes": athletes,
@@ -457,7 +459,7 @@ def red_athletes(request):
     user = request.user
     school_profile = user.school  # Retrieve the first related School object
     school_id = school_profile.id
-    athletes = Athlete.objects.filter(school_id=school_id, status="ACTIVE")
+    athletes = Athlete.objects.select_related("school").filter(school_id=school_id, status="ACTIVE")
 
     context = {
         "athletes": athletes,
@@ -472,7 +474,7 @@ def school_offs(request):
     school_profile = user.school  # Retrieve the first related School object
     if school_profile:
         school_id = school_profile.id
-        school_offs = school_official.objects.filter(school_id=school_id).exclude(status="Inactive")
+        school_offs = school_official.objects.select_related("school").filter(school_id=school_id).exclude(status="Inactive")
     else:
         # Handle the case where the user is not associated with any school
         school_offs = school_official.objects.none()
@@ -532,7 +534,7 @@ def AthleteUpdate(request, id):
 # # Athletes details......................................................
 @staff_required
 def Screened(request):
-    screens = Screening.objects.all()
+    screens = Screening.objects.select_related("school").all()
     context = {"screens": screens}
     return render(request, "athletes/screens.html", context)
 
@@ -589,7 +591,7 @@ def OfficialDetail(request, id):
 
 @login_required(login_url="login")
 def athlete_list(request):
-    athletes = Athlete.objects.all()
+    athletes = Athlete.objects.select_related("school").all()
     context = {"athletes": athletes}
     return render(request, "school/athlete_list.html", context)
 

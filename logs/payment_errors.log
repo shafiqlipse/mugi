@@ -311,3 +311,19 @@ Traceback (most recent call last):
     raise TemplateSyntaxError(
 django.template.exceptions.TemplateSyntaxError: Could not parse some characters: |<=schools.number||add:"2"
 "GET /school/schools/ HTTP/1.1" 500 268235
+Internal Server Error: /school/schools/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\school\views.py", line 63, in Schools
+    schools = School.select_related("district").objects.all()
+              ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'School' has no attribute 'select_related'
+"GET /school/schools/ HTTP/1.1" 500 76793

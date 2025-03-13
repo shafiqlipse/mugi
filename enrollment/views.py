@@ -26,7 +26,7 @@ def SchoolEnrollments(request):
     school = request.user.school  # Assuming profile has school attribute
 
     # Get all enrollments for the school
-    enrollments = SchoolEnrollment.objects.filter(school=school)
+    enrollments = SchoolEnrollment.objects.select_related("school").filter(school=school)
 
     if request.method == "POST":
         form = SchoolEnrollmentForm(request.POST, request.FILES)
@@ -48,7 +48,7 @@ def SchoolEnrollments(request):
 @login_required(login_url="login")
 def AllEnrollments(request):
     # Get all school_enrolls
-    school_enrolls = SchoolEnrollment.objects.filter(championship__status='Active').order_by("id")
+    school_enrolls = SchoolEnrollment.objects.select_related("school").filter(championship__status='Active').order_by("id")
 
 
      # Apply filtering
@@ -173,7 +173,7 @@ admin_required
 @login_required(login_url="login")
 def Accreditation(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
-    athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)
+    athlete_enrollments = AthleteEnrollment.objects.select_related("school").filter(school_enrollment=team)
     athletes = Athlete.objects.filter(athleteenrollment__in=athlete_enrollments)
 
     # Get template
