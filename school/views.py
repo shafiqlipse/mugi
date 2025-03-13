@@ -19,13 +19,13 @@ from django.core.paginator import Paginator
 def Dash(request):
     school = request.user.school
 
-    athletes = Athlete.objects.filter(school=school)[:6]
-    athletes_count = Athlete.objects.filter(school=school).count
-    officials_count = school_official.objects.filter(school=school).count
-    athletes_bcount = Athlete.objects.filter(school=school,gender="male").count
-    athletes_gcount = Athlete.objects.filter(school=school,gender="female").count
-    officials_bcount = school_official.objects.filter(school=school,gender="M").count
-    officials_gcount = school_official.objects.filter(school=school,gender="F").count
+    athletes = Athlete.objects.select_related("school").filter(school=school)[:6]
+    athletes_count = Athlete.objects.select_related("school").filter(school=school).count
+    officials_count = school_official.objects.select_related("school").filter(school=school).count
+    athletes_bcount = Athlete.objects.select_related("school").filter(school=school,gender="male").count
+    athletes_gcount = Athlete.objects.select_related("school").filter(school=school,gender="female").count
+    officials_bcount = school_official.objects.select_related("school").filter(school=school,gender="M").count
+    officials_gcount = school_official.objects.select_related("school").filter(school=school,gender="F").count
     context = {
         "athletes": athletes,
         "athletes_count": athletes_count,
@@ -633,6 +633,7 @@ from django.db import transaction
 
 
 
+logger = logging.getLogger(__name__)
 
 def export_scsv(request):
     # Create the HttpResponse object with the appropriate CSV header.

@@ -15,18 +15,18 @@ from django.db.models import Q
 # Filter schools created today
 @login_required
 def dashboard(request):
-    users_count = User.objects.filter(is_staff=True).count
-    schools_count = School.objects.all().count
+    users_count = User.objects.select_related("school").filter(is_staff=True).count
+    schools_count = School.objects.select_related("district").all().count
     regions = Region.objects.annotate(
         school_count=Count("zone__district__school"),
         athlete_count=Count("zone__district__school__athletes"),
     )
-    officials_count = school_official.objects.all().count
-    schools_today = School.objects.filter(created=today).count
-    athletes_today = Athlete.objects.filter(created=today).count
-    athletes_count = Athlete.objects.all().count
-    schools = School.objects.all().order_by("-created")[:5]
-    athletes = Athlete.objects.all().order_by("-created")[:6]
+    officials_count = school_official.objects.select_related("school").all().count
+    schools_today = School.objects.select_related("district").filter(created=today).count
+    athletes_today = Athlete.objects.select_related("school").filter(created=today).count
+    athletes_count = Athlete.objects.select_related("school").all().count
+    schools = School.objects.select_related("district").all().order_by("-created")[:5]
+    athletes = Athlete.objects.select_related("school").all().order_by("-created")[:6]
     context = {
         "users_count": users_count,
         "schools_count": schools_count,
