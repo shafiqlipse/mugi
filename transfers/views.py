@@ -19,7 +19,7 @@ from school.filters import AthleteFilter
 def transfers(request):
     user = request.user
     school = user.school
-    athletes_list = Athlete.objects.select_related("school").all().exclude(school=school,status ="COMPLETED")
+    athletes_list = Athlete.objects.select_related("school").all().exclude(school=school,status ="COMPLETED").order_by("id")
     athlete_filter = AthleteFilter(request.GET, queryset=athletes_list)
     filtered_athletes = athlete_filter.qs  # Get the filtered queryset
 
@@ -79,7 +79,7 @@ def initiate_transfer(request, id):
 def myTransfers(request):
     user = request.user
     school = user.school
-    mytransfers = TransferRequest.objects.select_related("school").filter(requester=school)
+    mytransfers = TransferRequest.objects.select_related("owner").filter(requester=school)
     
     trans_messages = TransferMessage.objects.filter(
         transfer__requester=school

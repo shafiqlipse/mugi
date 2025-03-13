@@ -15,18 +15,28 @@ from django.db.models import Q
 # Filter schools created today
 @login_required
 def dashboard(request):
-    users_count = User.objects.select_related("school").filter(is_staff=True).count
-    schools_count = School.objects.select_related("district").all().count
+    today = timezone.now().date()  # Assuming timezone is set
+
+    # Use a single query to get all counts
+    users_count = User.objects.filter(is_staff=True).count()
+    schools_count = School.objects.count()
+    officials_count = school_official.objects.count()
+    athletes_count = Athlete.objects.count()
+
+    # Get counts for today
+    schools_today = School.objects.filter(created=today).count()
+    athletes_today = Athlete.objects.filter(created=today).count()
+
+    # Use annotate to aggregate counts of schools and athletes for each region
     regions = Region.objects.annotate(
-        school_count=Count("zone__district__school"),
-        athlete_count=Count("zone__district__school__athletes"),
+        school_count=Count('zone__district__school'),
+        athlete_count=Count('zone__district__school__athletes')
     )
-    officials_count = school_official.objects.select_related("school").all().count
-    schools_today = School.objects.select_related("district").filter(created=today).count
-    athletes_today = Athlete.objects.select_related("school").filter(created=today).count
-    athletes_count = Athlete.objects.select_related("school").all().count
-    schools = School.objects.select_related("district").all().order_by("-created")[:5]
-    athletes = Athlete.objects.select_related("school").all().order_by("-created")[:6]
+
+    # Get the latest 5 schools and 6 athletes with related fields in one query
+    schools = School.objects.select_related("district").order_by("-created")[:5]
+    athletes = Athlete.objects.select_related("school").order_by("-created")[:6]
+
     context = {
         "users_count": users_count,
         "schools_count": schools_count,
@@ -39,6 +49,7 @@ def dashboard(request):
         "athletes_today": athletes_today,
     }
     return render(request, "dashboard/overview.html", context)
+
 
 
 # championships

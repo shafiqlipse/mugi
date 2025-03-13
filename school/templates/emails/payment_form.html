@@ -52,29 +52,27 @@
         </thead>
         <tbody>
           {% for athlete in form.fields.athletes.queryset %}
-          <tr>
-            <td>
-              <div class="form-check">
-                <input
-                  class="athlete-checkbox"
-                  type="checkbox"
-                  name="athletes"
-                  value="{{ athlete.id }}"
-                  id="athlete-{{ athlete.id }}"
-                />
-                <label
-                  class="form-check-label"
-                  for="athlete-{{ athlete.id }}"
-                ></label>
-              </div>
-            </td>
-            <td>{{ athlete.fname }}</td>
-            <td>{{ athlete.lname }}</td>
-            <td>{{ athlete.index_number }}</td>
-            <td>{{ athlete.classroom }}</td>
-            <td><span class="bg-success p-2">6000</span></td>
-          </tr>
+            <tr>
+              <td>
+                <div class="form-check">
+                  <input
+                    class="athlete-checkbox"
+                    type="checkbox"
+                    name="athletes"
+                    value="{{ athlete.id }}"
+                    id="athlete-{{ athlete.id }}"
+                  />
+                  <label class="form-check-label" for="athlete-{{ athlete.id }}"></label>
+                </div>
+              </td>
+              <td>{{ athlete.fname }}</td>
+              <td>{{ athlete.lname }}</td>
+              <td>{{ athlete.index_number }}</td>
+              <td>{{ athlete.classroom }}</td>
+              <td><span class="bg-success p-2">6000</span></td>
+            </tr>
           {% endfor %}
+        </tbody>
         </tbody>
       </table>
     </div>

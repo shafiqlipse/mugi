@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
+from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
 from dashboard.views import *
 from accounts.views import *
@@ -19,4 +20,4 @@ urlpatterns = [
     path("transfers/", include("transfers.urls")),
     path("agm/", include("agm.urls")),
     path("training/", include("training.urls")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()

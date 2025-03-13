@@ -4,6 +4,7 @@ from accounts.models import *
 from school.models import *
 from training.models import *
 
+
 class UserAdmin(BaseUserAdmin):
     list_display = ("username", "email", "is_active", "is_school", "is_staff", "is_admin", "is_tech", "is_accounts", "school")  # Columns to display
     search_fields = ("username", "email", "school__name")  # Enables search

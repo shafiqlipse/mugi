@@ -13,29 +13,44 @@ from django.db import IntegrityError
 from django.core.files.base import ContentFile
 import base64
 from django.core.paginator import Paginator
+from django.db.models import Count, Q
+from django.shortcuts import render
+from .models import Athlete, school_official
 
 
 @school_required
 def Dash(request):
     school = request.user.school
 
-    athletes = Athlete.objects.select_related("school").filter(school=school)[:6]
-    athletes_count = Athlete.objects.select_related("school").filter(school=school).count
-    officials_count = school_official.objects.select_related("school").filter(school=school).count
-    athletes_bcount = Athlete.objects.select_related("school").filter(school=school,gender="male").count
-    athletes_gcount = Athlete.objects.select_related("school").filter(school=school,gender="female").count
-    officials_bcount = school_official.objects.select_related("school").filter(school=school,gender="M").count
-    officials_gcount = school_official.objects.select_related("school").filter(school=school,gender="F").count
+    # Fetch all athletes related to the school once
+    athletes_qs = Athlete.objects.filter(school=school)
+
+    # Aggregate athlete counts in a single query
+    athlete_counts = athletes_qs.aggregate(
+        total=Count("id"),
+        male=Count("id", filter=Q(gender="male")),
+        female=Count("id", filter=Q(gender="female"))
+    )
+
+    # Aggregate officials counts in a single query
+    officials_counts = school_official.objects.filter(school=school).aggregate(
+        total=Count("id"),
+        male=Count("id", filter=Q(gender="M")),
+        female=Count("id", filter=Q(gender="F"))
+    )
+
     context = {
-        "athletes": athletes,
-        "athletes_count": athletes_count,
-        "athletes_bcount": athletes_bcount,
-        "athletes_gcount": athletes_gcount,
-        "officials_count": officials_count,
-        "officials_bcount": officials_bcount,
-        "officials_gcount": officials_gcount,
+        "athletes": athletes_qs.select_related("school")[:6],  # Fetch only 6 for display
+        "athletes_count": athlete_counts["total"],
+        "athletes_bcount": athlete_counts["male"],
+        "athletes_gcount": athlete_counts["female"],
+        "officials_count": officials_counts["total"],
+        "officials_bcount": officials_counts["male"],
+        "officials_gcount": officials_counts["female"],
     }
+
     return render(request, "dashboard/schoolview.html", context)
+
 
 
 # schools
@@ -60,7 +75,8 @@ def users(request):
 @login_required(login_url="login")
 def Schools(request):
 
-    schools = School.objects.select_related("district").all()
+    schools = School.objects.select_related("district__zone").order_by("-created")[:10]
+
 
 
     schools_filter = SchoolFilter(request.GET, queryset=schools)
@@ -398,45 +414,39 @@ from django.urls import reverse
 # # Athletes details......................................................
 @login_required
 def AthleteDetail(request, id):
+    # Fetch the athlete object or return a 404 error
     athlete = get_object_or_404(Athlete, id=id)
-    relatedathletes = Athlete.objects.filter(
-        school=athlete.school, sport=athlete.sport
-    ).exclude(id=id)[:3]
+    
+    # Initialize variables
     new_screen = None
-    user = request.user
-    if request.method == "POST":
-        dform = ScreenForm(request.POST, request.FILES)
+    dform = ScreenForm(request.POST or None, request.FILES or None)
 
-        if dform.is_valid():
-            new_screen = dform.save(commit=False)
-            new_screen.athlete = athlete
-            new_screen.screener = user
-            new_screen.save()
+    if request.method == "POST" and dform.is_valid():
+        # Save the form and associate it with the athlete and user
+        new_screen = dform.save(commit=False)
+        new_screen.athlete = athlete
+        new_screen.screener = request.user
+        new_screen.save()
 
-            # Update athlete status to COMPLETED
-            athlete.status = "COMPLETED"
-            athlete.save()
+        # Update athlete status to COMPLETED
+        athlete.status = "COMPLETED"
+        athlete.save()
 
-            return HttpResponseRedirect(reverse("athlete", args=[athlete.id]))
-    else:
-        dform = ScreenForm()
+        # Redirect to the athlete detail page
+        return HttpResponseRedirect(reverse("athlete", args=[athlete.id]))
 
     # Calculate the athlete's age
     today = datetime.date.today()
     age = (
         today.year
         - athlete.date_of_birth.year
-        - (
-            (today.month, today.day)
-            < (athlete.date_of_birth.month, athlete.date_of_birth.day)
-        )
+        - ((today.month, today.day) < (athlete.date_of_birth.month, athlete.date_of_birth.day))
     )
 
     context = {
         "athlete": athlete,
-        "relatedathletes": relatedathletes,
         "age": age,  # Pass the calculated age to the template
-        "dform": dform,  # Add the form to the context
+        "dform": dform,  # Pass the form to the template
     }
 
     return render(request, "athletes/athlete.html", context)
@@ -445,21 +455,33 @@ def AthleteDetail(request, id):
 @login_required(login_url="login")
 def athletes(request):
     user = request.user
-    school_profile = user.school  # Retrieve the first related School object
-    school_id = school_profile.id
-    athletes = Athlete.objects.select_related("school").filter(school_id=school_id).exclude(status="COMPLETED")
 
-    context = {
-        "athletes": athletes,
-    }
+    school_profile = getattr(user, "school", None)
+    if not school_profile:
+        return render(request, "athletes/athletes.html", {"athletes": []})
 
-    return render(request, "athletes/athletes.html", context)
+    athletes = (
+        Athlete.objects
+        .filter(school=school_profile)
+        .exclude(status="COMPLETED")
+        .values("id", "fname", "lname", "index_number","date_of_birth", "gender","classroom")  # Fetch only id and name
+    )
+
+    return render(request, "athletes/athletes.html", {"athletes": athletes})
 
 def red_athletes(request):
     user = request.user
-    school_profile = user.school  # Retrieve the first related School object
-    school_id = school_profile.id
-    athletes = Athlete.objects.select_related("school").filter(school_id=school_id, status="ACTIVE")
+    
+    school_profile = getattr(user, "school", None)
+    if not school_profile:
+        return render(request, "athletes/athletes.html", {"athletes": []})
+
+    athletes = (
+        Athlete.objects
+        .filter(school=school_profile, status="ACTIVE")
+         .values("id", "fname", "lname", "index_number","date_of_birth", "gender","classroom")  # Fetch only id and name
+    )
+    
 
     context = {
         "athletes": athletes,
@@ -471,14 +493,18 @@ def red_athletes(request):
 @login_required(login_url="login")
 def school_offs(request):
     user = request.user
-    school_profile = user.school  # Retrieve the first related School object
-    if school_profile:
-        school_id = school_profile.id
-        school_offs = school_official.objects.select_related("school").filter(school_id=school_id).exclude(status="Inactive")
-    else:
-        # Handle the case where the user is not associated with any school
-        school_offs = school_official.objects.none()
-    # officialFilter = OfficialFilter(request.GET, queryset=officials)
+
+    # Check if the user has a school profile
+    school_profile = getattr(user, "school", None)
+    if not school_profile:
+        return render(request, "officials/officials.html", {"school_offs": []})
+        # Fetch school officials for the user's school, excluding inactive ones
+    school_offs = (
+            school_official.objects
+            .select_related("school")  # Optimize by fetching school data in one query
+            .filter(school=user.school)  # Directly filter by the school object
+            .exclude(status="Inactive")  # Exclude inactive officials
+        )
 
     context = {
         "school_offs": school_offs,
@@ -534,7 +560,7 @@ def AthleteUpdate(request, id):
 # # Athletes details......................................................
 @staff_required
 def Screened(request):
-    screens = Screening.objects.select_related("school").all()
+    screens = Screening.objects.select_related("athlete").all()
     context = {"screens": screens}
     return render(request, "athletes/screens.html", context)
 
@@ -673,6 +699,12 @@ def generate_unique_transaction_id():
         if not Payment.objects.filter(transaction_id=transaction_id).exists():
             return transaction_id
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db import transaction
+import logging
+
+logger = logging.getLogger(__name__)
 
 def payment_view(request):
     school = request.user.school  # Get the logged-in user's school
@@ -688,8 +720,9 @@ def payment_view(request):
                     messages.error(request, "You must select at least one athlete.")
                     return render(request, 'emails/payment_form.html', {'form': form})
 
-                totals_amount = athletes.count() * 6000  # UGX 3,000 per athlete
-                total_amount = totals_amount + 500  # UGX 3,000 per athlete
+                # Calculate total amount
+                amount_per_athlete = 6000  # UGX 6,000 per athlete
+                total_amount = (athletes.count() * amount_per_athlete) + 500  # UGX 500 additional fee
 
                 with transaction.atomic():  # Ensures atomicity in case of failure
                     payment = Payment.objects.create(
@@ -697,7 +730,7 @@ def payment_view(request):
                         amount=total_amount,
                         phone_number=phone_number,
                     )
-                    payment.athletes.set(athletes)
+                    payment.athletes.set(athletes)  # Associate selected athletes with the payment
 
                 messages.success(request, f"Payment of UGX {total_amount} successful!")
                 logger.info(f"Payment successful: School={school}, Amount={total_amount}, Phone={phone_number}")
@@ -712,8 +745,6 @@ def payment_view(request):
         form = PaymentForm(school=school)
 
     return render(request, 'emails/payment_form.html', {'form': form})
-
-
 
 def get_airtel_token():
     """

@@ -152,25 +152,8 @@
           >
           {% endif %}
         </li>
-        {% if athlete.qr_code %}
-        <img src="{{athlete.qr_code.url}}" alt="" />{% endif %}
-      </div>
-    </div>
-  </div>
 
-  <div class="related_athletes">
-    <h1>Related athletes</h1>
-    <p>Athletes from the same school</p>
-    <div class="athletes grid5">
-      {% for athlete in relatedathletes %}
-      <a class="athlete" href="{% url 'athlete' athlete.id%}">
-        <img src="{{athlete.photo.url}}" alt="" />
-        <div class="atth">
-          <p>{{athlete.fname}} {{athlete.lname}}</p>
-          <p>{{athlete.athlete_id}}</p>
-        </div>
-      </a>
-      {% endfor %}
+      </div>
     </div>
   </div>
 
