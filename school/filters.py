@@ -54,6 +54,12 @@ class SchoolFilter(django_filters.FilterSet):
     def filter_by_name(self, queryset, name, value):
         return queryset.filter(Q(name__icontains=value) | Q(center_number__icontains=value))
 
+    def __init__(self, *args, **kwargs):
+        super(SchoolFilter, self).__init__(*args, **kwargs)
+        for field_name, field in self.form.fields.items():
+            field.widget.attrs.update({"class": "form-control"})
+
+
 class PaymentFilter(django_filters.FilterSet):
 
     school = django_filters.ModelChoiceFilter(
@@ -74,3 +80,7 @@ class PaymentFilter(django_filters.FilterSet):
         model = Athlete
         fields = ["school",  "phone_number"]
 
+    def __init__(self, *args, **kwargs):
+        super(PaymentFilter, self).__init__(*args, **kwargs)
+        for field_name, field in self.form.fields.items():
+            field.widget.attrs.update({"class": "form-control"})

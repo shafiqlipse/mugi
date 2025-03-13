@@ -354,9 +354,8 @@ def accounts(request):
 
 @login_required
 def payments(request):
-    pawyments = Payment.objects.filter(status="COMPLETED")    
+    pawyments = Payment.objects.filter(status="COMPLETED").order_by('-created_at')    
     
-
     # Apply filtering
     payments_filter = PaymentFilter(request.GET, queryset=pawyments)
     filtered_payments = payments_filter.qs  # Get the filtered queryset
@@ -371,12 +370,12 @@ def payments(request):
         "payments": paginated_payments,
         "payment_filter": payments_filter,
     }
-    context={"pawyments":pawyments}
+   
     return render(request, "dashboard/payments.html", context)
 
 @login_required
 def pending_payments(request):
-    pawyments = Payment.objects.filter(status="PENDING")  
+    pawyments = Payment.objects.filter(status="PENDING").order_by('-created_at')  
     payments_filter = PaymentFilter(request.GET, queryset=pawyments)
     filtered_payments = payments_filter.qs  # Get the filtered queryset
 

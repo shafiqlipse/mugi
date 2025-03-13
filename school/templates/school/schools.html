@@ -20,6 +20,31 @@
   </div>
 
   <div class="filterlist card">
+    <h2>Filter schools</h2>
+    <div method="get" class="formlix flex">
+      <form method="get" class="formix">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="school">Name</label>
+              {{ school_filter.form.search}}
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="championship">District</label>
+              {{ school_filter.form.district}}
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-3">
+          <button type="submit" class="btn btn-primary">Filter</button>
+          <a href="" class="btn btn-secondary">Reset</a>
+        </div>
+      </form>
+    </div>
     <div class="lo">
       <div class="table-responsive">
         <table id="myTable" class="display">
@@ -36,7 +61,7 @@
             </tr>
           </thead>
           <tbody>
-            {% for school in schools%}
+            {% for school in schooles%}
             <tr>
               <td>
                 <a href="{% url 'schooldetail' school.id%}">{{school.name}}</a>
@@ -63,6 +88,43 @@
           </tbody>
         </table>
       </div>
+    </div>
+    <div class="pagination">
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          {% if schools.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ schools.previous_page_number }}"
+              >Previous</a
+            >
+          </li>
+          </li>
+          {% endif %} {% for page_num in schools.paginator.page_range %}
+           {% if page_num == 1 or page_num == schools.paginator.num_pages %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+          </li>
+          {% elif page_num >= schools.number|add:"-2" and page_num <= schools.number|add:"2" %}
+           {% if page_num == schools.number %}
+          <li class="page-item active">
+            <span class="page-link">{{ page_num }}</span>
+          </li>
+          {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+          </li> 
+          {% endif %} {% elif page_num == schools.number|add:"3" or page_num == schools.number|add:"-3" %}
+          
+          <li class="page-item disabled"><span class="page-link">...</span></li>
+          {% endif %} {% endfor %} {% if schools.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ schools.next_page_number }}"
+              >Next</a
+            >
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
     </div>
   </div>
 </div>

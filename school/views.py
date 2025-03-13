@@ -4,6 +4,7 @@ from accounts.models import *
 from accounts.forms import *
 from .models import User
 from .forms import *
+from .filters import *
 from accounts.forms import *
 from django.contrib import messages
 from accounts.decorators import *
@@ -61,10 +62,20 @@ def Schools(request):
 
     schools = School.objects.all()
 
+    schools_filter = SchoolFilter(request.GET, queryset=schools)
+    filtered_schools = schools_filter.qs  # Get the filtered queryset
+
+    # Paginate filtered results
+    paginator = Paginator(filtered_schools, 10)  # Show 10 athletes per page
+    page_number = request.GET.get("page")
+    paginated_schools = paginator.get_page(page_number)
+
+    # Pass the filter to the context for rendering the filter form
     context = {
-        "schools": schools,
-        # "teamsFilter": teams
+        "schooles": paginated_schools,
+        "school_filter": schools_filter,
     }
+   
     return render(request, "school/schools.html", context)
 
     # schools list, tuple or array
