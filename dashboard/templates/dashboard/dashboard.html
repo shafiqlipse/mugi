@@ -750,45 +750,6 @@
       crossorigin="anonymous"
     ></script>
 
-    <script>
-      let closureTime = "{{ closure_time|date:'c' }}";
-      console.log("Closure Time from Django:", closureTime); // Debugging
-
-      if (closureTime) {
-        let targetTime = new Date(closureTime).getTime();
-        console.log("Parsed JavaScript Time:", targetTime); // Debugging
-
-        function updateCountdown() {
-          let now = new Date().getTime();
-          let timeRemaining = targetTime - now;
-
-          if (timeRemaining <= 0) {
-            document.getElementById("countdown").innerHTML =
-              "System is now closed!";
-            clearInterval(timer);
-            return;
-          }
-
-          let days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-          let hours = Math.floor(
-            (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-          );
-          let minutes = Math.floor(
-            (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
-          );
-          let seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-          document.getElementById("countdown").innerHTML =
-            (days > 0 ? days + "d " : "") +
-            (hours > 0 ? hours + "h " : "") +
-            (minutes > 0 ? minutes + "m " : "") +
-            seconds +
-            "s";
-        }
-
-        updateCountdown();
-        let timer = setInterval(updateCountdown, 1000);
-      }
-    </script>
+ 
   </body>
 </html>
