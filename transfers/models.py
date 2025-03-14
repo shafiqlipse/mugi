@@ -18,21 +18,21 @@ class TransferRequest(models.Model):
         related_name="requesting_school",
         on_delete=models.CASCADE,
         blank=True,
-        null=True,
+        null=True, db_index=True
     )
     owner = models.ForeignKey(
         School,
         related_name="owning_school",
         on_delete=models.CASCADE,
         blank=True,
-        null=True,
+        null=True, db_index=True
     )
     athlete = models.ForeignKey(
         Athlete,
         related_name="transferred_athlete",
         on_delete=models.CASCADE,
         blank=True,
-        null=True,
+        null=True, db_index=True
     )
     approver = models.ForeignKey(
         User,
@@ -47,7 +47,7 @@ class TransferRequest(models.Model):
         null=True,
         blank=True,
     )
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending", db_index=True)
     requested_at = models.DateTimeField(default=timezone.now)
     accepted_at = models.DateTimeField(null=True, blank=True)
     approved_at = models.DateTimeField(null=True, blank=True)

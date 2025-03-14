@@ -12,9 +12,9 @@ from django.dispatch import receiver
 
 class School(models.Model):
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, db_index=True)
     emis_number = models.CharField(max_length=100, unique=True)
-    center_number = models.CharField(max_length=100)
+    center_number = models.CharField(max_length=100, db_index=True)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
 
     status = models.CharField(
@@ -115,11 +115,11 @@ class school_official(models.Model):
         blank=True,
     )
     school = models.ForeignKey(
-        School, related_name="officials", on_delete=models.CASCADE
+        School, related_name="officials", on_delete=models.CASCADE, db_index=True
     )
     fname = models.CharField(max_length=100, null=True, blank=True, default="")
     lname = models.CharField(max_length=100, null=True, blank=True, default="")
-    email = models.EmailField(null=True, blank=True, default="")
+    email = models.EmailField(null=True, blank=True, default="", db_index=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True, default="")
     nin = models.CharField(max_length=20, default="", unique=True)
     residence = models.CharField(max_length=20, default="", null=True)
@@ -190,11 +190,11 @@ def validate_index_number(value):
 
 class Athlete(models.Model):
     school = models.ForeignKey(
-        School, related_name="athletes", on_delete=models.CASCADE
+        School, related_name="athletes", on_delete=models.CASCADE, db_index=True
     )
 
     athlete_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
-    fname = models.CharField(max_length=255)
+    fname = models.CharField(max_length=255, db_index=True)
     mname = models.CharField(
         max_length=255,
         null=True,
@@ -212,7 +212,7 @@ class Athlete(models.Model):
         unique=True,
         validators=[validate_index_number],
         null=True,
-        blank=True,
+        blank=True, db_index=True
     )
     uce_index_number = models.CharField(
         max_length=255,
@@ -228,7 +228,7 @@ class Athlete(models.Model):
         blank=True,
     )
 
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField( db_index=True)
     created = models.DateField(auto_now_add=True, null=True)
     gender = models.CharField(
         choices=[("Male", "male"), ("Female", "female")], max_length=10
@@ -266,7 +266,7 @@ class Athlete(models.Model):
         null=True,
     )
 
-    photo = models.ImageField(upload_to="athlete_photos/")
+    photo = models.ImageField(upload_to="athlete_photos/", db_index=True)
 
     ple_certificate = models.FileField(
         upload_to="certificates/",
@@ -350,7 +350,7 @@ class Athlete(models.Model):
         ],
         null=True,
         blank=True,
-        default="NEW",
+        default="NEW", db_index=True
     )
 
     qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)
@@ -464,7 +464,7 @@ def clean(self):
 class Screening(models.Model):
 
     athlete = models.ForeignKey(
-        Athlete, related_name="athlete", on_delete=models.CASCADE
+        Athlete, related_name="athlete", on_delete=models.CASCADE, db_index=True
     )
     screener = models.ForeignKey(
         User, related_name="screener", on_delete=models.CASCADE
@@ -505,7 +505,7 @@ class Payment(models.Model):
     )
   
         created_at = models.DateTimeField(auto_now_add=True)
-        school = models.ForeignKey(School, on_delete=models.CASCADE)
-        athletes = models.ManyToManyField(Athlete, related_name='payments')
+        school = models.ForeignKey(School, on_delete=models.CASCADE, db_index=True)
+        athletes = models.ManyToManyField(Athlete, related_name='payments', db_index=True)
         def __str__(self):
             return f"{self.transaction_id} - {self.amount} {self.school}"

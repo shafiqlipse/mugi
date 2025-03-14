@@ -4,10 +4,10 @@ from django.db import models
 from django.utils.timezone import now
 
 class Notification(models.Model):
-    recipients = models.ManyToManyField(School, related_name='notifications')
-    sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sent_notifications')
+    recipients = models.ManyToManyField(School, related_name='notifications', db_index=True)
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sent_notifications', db_index=True)
     verb = models.CharField(max_length=255)  # e.g., "updated your ticket"
-    target = models.CharField(max_length=255, null=True, blank=True)  # e.g., "Ticket #123"
+    target = models.CharField(max_length=255, null=True, blank=True, db_index=True)  # e.g., "Ticket #123"
     created_at = models.DateTimeField(default=now)
     is_read = models.BooleanField(default=False)
     

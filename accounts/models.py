@@ -17,7 +17,7 @@ class User(AbstractUser):
         related_name="users",
         on_delete=models.CASCADE,
         blank=True,  # Allows non-school users to leave this field empty
-        null=True,
+        null=True, db_index=True
     )
 
 class Sport(models.Model):
@@ -47,7 +47,7 @@ class Zone(models.Model):
 
 
 class District(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, db_index=True)
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
 
     def __str__(self):
