@@ -103,7 +103,7 @@
             <li class="page-item">
               <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
             </li>
-            {% elif page_num >= schools.number|add:"-2" and page_num <= schooles.number|add:"2" %}
+            {% elif page_num >= schooles.number|add:"-2" and page_num <= schooles.number|add:"2" %}
              {% if page_num == schooles.number %}
             <li class="page-item active">
               <span class="page-link">{{ page_num }}</span>
@@ -117,7 +117,7 @@
             <li class="page-item disabled"><span class="page-link">...</span></li>
             {% endif %} {% endfor %} {% if schooles.has_next %}
             <li class="page-item">
-              <a class="page-link" href="?page={{ schools.next_page_number }}"
+              <a class="page-link" href="?page={{ schooles.next_page_number }}"
                 >Next</a
               >
             </li>
