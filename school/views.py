@@ -126,12 +126,13 @@ def exportp_csv(request):
 
     return response
 
-
+from django.core.cache import cache
 from .filters import AthleteFilter
 import csv
 from django.http import HttpResponse
 import json
 import uuid
+import binascii
 import requests
 from django.conf import settings
 from django.http import JsonResponse
@@ -332,43 +333,55 @@ def newAthlete(request):
         form = NewAthleteForm(request.POST, request.FILES)
         if form.is_valid():
             try:
+                user_school = cache.get(f"user_school_{request.user.id}")
+
+                # Cache user's school for future requests (5 mins)
+                if not user_school:
+                    user_school = getattr(request.user, "school", None)
+                    cache.set(f"user_school_{request.user.id}", user_school, timeout=300)
+
+                if not user_school:
+                    messages.error(request, "You must be assigned to a school to add athletes.")
+                    return render(request, "athletes/new_athletes.html", {"form": form})
+
                 new_athlete = form.save(commit=False)
+                new_athlete.school = user_school  
 
-                # Assign the school from the user profile
-                new_athlete.school = request.user.school  # Ensure profile has a school
-
-                # Handle cropped image data for the "photo" field
-                cropped_data = request.POST.get("photo_cropped")
-                if cropped_data:
+                # **Avoid base64 decoding if image is already uploaded normally**
+                if "photo_cropped" in request.POST:
                     try:
+                        cropped_data = request.POST["photo_cropped"]
                         format, imgstr = cropped_data.split(";base64,")
                         ext = format.split("/")[-1]
-                        data = ContentFile(
-                            base64.b64decode(imgstr), name=f"photo.{ext}"
-                        )
-                        new_athlete.photo = data  # Assign cropped image
-                    except (ValueError, TypeError) as e:
+                        data = ContentFile(base64.b64decode(imgstr), name=f"photo.{ext}")
+                        new_athlete.photo = data
+                    except (ValueError, TypeError, binascii.Error):
                         messages.error(request, "Invalid image data.")
-                        return render(
-                            request, "athletes/new_athletes.html", {"form": form}
-                        )
+                        return render(request, "athletes/new_athletes.html", {"form": form})
 
+                # **Check cache before database lookup**
+                lin = form.cleaned_data.get("learner_id_number")
+                if cache.get(f"athlete_{lin}"):
+                    messages.error(request, "An athlete with this Learner ID already exists.")
+                    return render(request, "athletes/new_athletes.html", {"form": form})
+
+                # **Save the athlete and cache their existence**
                 new_athlete.save()
+                cache.set(f"athlete_{lin}", True, timeout=600)  # Cache for 10 minutes
+
                 messages.success(request, "Athlete added successfully!")
                 return redirect("athletes")
 
             except IntegrityError as e:
                 if "lin" in str(e).lower():
                     messages.error(
-                        request,
-                        "An athlete with this Learner Identification Number (LIN) already exists.",
+                        request, "An athlete with this Learner ID already exists."
                     )
                 else:
-                    messages.error(request, f"Error adding athlete: {str(e)}")
+                    messages.error(request, f"Database error: {str(e)}")
             except Exception as e:
-                messages.error(request, f"Error adding athlete: {str(e)}")
+                messages.error(request, f"Unexpected error: {str(e)}")
         else:
-            # Form validation error messages
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field.capitalize()}: {error}")
@@ -377,8 +390,6 @@ def newAthlete(request):
         form = NewAthleteForm()
 
     return render(request, "athletes/new_athletes.html", {"form": form})
-
-
 # a confirmation of credentials
 # @login_required
 def confirmation(request):
