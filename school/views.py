@@ -138,7 +138,7 @@ from django.conf import settings
 from django.http import JsonResponse
 import logging
 from django.views.decorators.csrf import csrf_exempt
-
+from django.db import connection
 
 # schools list, tuple or array
 @staff_required
@@ -333,61 +333,30 @@ def newAthlete(request):
         form = NewAthleteForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                user_school = cache.get(f"user_school_{request.user.id}")
+                lin = form.cleaned_data.get("learner_id_number").lower().strip()
+                
+                # 🔹 Clear any stale DB connections
+                connection.close()
 
-                # Cache user's school for future requests (5 mins)
-                if not user_school:
-                    user_school = getattr(request.user, "school", None)
-                    cache.set(f"user_school_{request.user.id}", user_school, timeout=300)
-
-                if not user_school:
-                    messages.error(request, "You must be assigned to a school to add athletes.")
-                    return render(request, "athletes/new_athletes.html", {"form": form})
-
-                new_athlete = form.save(commit=False)
-                new_athlete.school = user_school  
-
-                # **Avoid base64 decoding if image is already uploaded normally**
-                if "photo_cropped" in request.POST:
-                    try:
-                        cropped_data = request.POST["photo_cropped"]
-                        format, imgstr = cropped_data.split(";base64,")
-                        ext = format.split("/")[-1]
-                        data = ContentFile(base64.b64decode(imgstr), name=f"photo.{ext}")
-                        new_athlete.photo = data
-                    except (ValueError, TypeError, binascii.Error):
-                        messages.error(request, "Invalid image data.")
-                        return render(request, "athletes/new_athletes.html", {"form": form})
-
-                # **Check cache before database lookup**
-                lin = form.cleaned_data.get("learner_id_number")
-                if cache.get(f"athlete_{lin}"):
+                # 🔹 Check DB instead of cache
+                existing_athlete = Athlete.objects.filter(learner_id_number__iexact=lin).first()
+                if existing_athlete:
                     messages.error(request, "An athlete with this Learner ID already exists.")
                     return render(request, "athletes/new_athletes.html", {"form": form})
 
-                # **Save the athlete and cache their existence**
+                # 🔹 Proceed with saving new athlete
+                new_athlete = form.save(commit=False)
+                new_athlete.school = request.user.school
                 new_athlete.save()
-                cache.set(f"athlete_{lin}", True, timeout=600)  # Cache for 10 minutes
+
+                # 🔹 Cache new athlete entry
+                cache.set(f"athlete_{lin}", True, timeout=600)
 
                 messages.success(request, "Athlete added successfully!")
-                return redirect("athletes")
+                return redirect("new_athlete")
 
-            except IntegrityError as e:
-                if "lin" in str(e).lower():
-                    messages.error(
-                        request, "An athlete with this Learner ID already exists."
-                    )
-                else:
-                    messages.error(request, f"Database error: {str(e)}")
             except Exception as e:
                 messages.error(request, f"Unexpected error: {str(e)}")
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
-
-    else:
-        form = NewAthleteForm()
 
     return render(request, "athletes/new_athletes.html", {"form": form})
 # a confirmation of credentials
