@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from accounts.models import *
 from school.models import *
+from zone.models import *
 from training.models import *
 
 
@@ -43,6 +44,7 @@ admin.site.register(District)
 # admin.site.register(City)
 admin.site.register(Zone)
 admin.site.register(Classroom)
+admin.site.register(Zonalchair)
 
 
 
