@@ -339,30 +339,53 @@ def newAthlete(request):
         form = NewAthleteForm(request.POST, request.FILES)
         if form.is_valid():
             try:
+                # 🔹 Ensure learner_id_number is not None
                 lin = form.cleaned_data.get("lin")
-
-                if not lin:  # 🔹 Prevent NoneType error
+                if not lin:
                     messages.error(request, "Learner ID is required.")
                     return render(request, "athletes/new_athletes.html", {"form": form})
 
                 lin = lin.strip().lower()  # 🔹 Now safe to use .strip()
 
-                # Check if the athlete already exists
+                # 🔹 Check if the athlete already exists
                 if Athlete.objects.filter(lin__iexact=lin).exists():
                     messages.error(request, "An athlete with this Learner ID already exists.")
                     return render(request, "athletes/new_athletes.html", {"form": form})
 
-                # Save new athlete
+                # 🔹 Save new athlete
                 new_athlete = form.save(commit=False)
-                new_athlete.school = request.user.school
-                new_athlete.save()
+                new_athlete.school = request.user.school  # Ensure user has a school
 
+                # 🔹 Handle cropped image data
+                cropped_data = request.POST.get("photo_cropped")
+                if cropped_data:
+                    try:
+                        format, imgstr = cropped_data.split(";base64,")
+                        ext = format.split("/")[-1]
+                        data = ContentFile(base64.b64decode(imgstr), name=f"photo.{ext}")
+                        new_athlete.photo = data  # Assign cropped image
+                    except (ValueError, TypeError) as e:
+                        messages.error(request, "Invalid image data.")
+                        return render(request, "athletes/new_athletes.html", {"form": form})
+
+                new_athlete.save()
                 messages.success(request, "Athlete added successfully!")
                 return redirect("athletes")
 
+            except IntegrityError as e:
+                if "lin" in str(e).lower():
+                    messages.error(request, "An athlete with this Learner Identification Number (LIN) already exists.")
+                else:
+                    messages.error(request, f"Error adding athlete: {str(e)}")
+
             except Exception as e:
                 messages.error(request, f"Unexpected error: {str(e)}")
-                print(f"Error while saving athlete: {e}")
+
+        else:
+            # 🔹 Display form errors properly
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
 
     return render(request, "athletes/new_athletes.html", {"form": form})
 
