@@ -2065,3 +2065,19 @@ Traceback (most recent call last):
     _mysql.connection.query(self, query)
 django.db.utils.ProgrammingError: (1146, "Table 'pay.zone_zonalchair' doesn't exist")
 "GET /admin/zone/zonalchair/ HTTP/1.1" 500 249507
+Internal Server Error: /school/registration/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\school\views.py", line 726, in payment_view
+    school = request.user.school  # Get the logged-in user's school
+             ^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AnonymousUser' object has no attribute 'school'
+"GET /school/registration/ HTTP/1.1" 500 89805

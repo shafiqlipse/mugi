@@ -329,8 +329,9 @@ def Official(request):
 
 
 import logging
-
+from django.core.cache import cache
 logger = logging.getLogger(__name__)
+
 @login_required(login_url="login")
 def newAthlete(request):
     form = NewAthleteForm()
@@ -339,22 +340,28 @@ def newAthlete(request):
         form = NewAthleteForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                # 🔹 Ensure learner_id_number is not None
                 lin = form.cleaned_data.get("lin")
                 if not lin:
                     messages.error(request, "Learner ID is required.")
                     return render(request, "athletes/new_athletes.html", {"form": form})
 
-                lin = lin.strip().lower()  # 🔹 Now safe to use .strip()
+                lin = lin.strip().lower()
 
-                # 🔹 Check if the athlete already exists
-                if Athlete.objects.filter(lin__iexact=lin).exists():
+                # 🔹 Use cache to check if athlete exists
+                cache_key = f"athlete_exists_{lin}"
+                athlete_exists = cache.get(cache_key)
+
+                if athlete_exists is None:
+                    athlete_exists = Athlete.objects.filter(lin__iexact=lin).exists()
+                    cache.set(cache_key, athlete_exists, timeout=600)  # Cache for 10 minutes
+
+                if athlete_exists:
                     messages.error(request, "An athlete with this Learner ID already exists.")
                     return render(request, "athletes/new_athletes.html", {"form": form})
 
                 # 🔹 Save new athlete
                 new_athlete = form.save(commit=False)
-                new_athlete.school = request.user.school  # Ensure user has a school
+                new_athlete.school = request.user.school
 
                 # 🔹 Handle cropped image data
                 cropped_data = request.POST.get("photo_cropped")
@@ -363,12 +370,16 @@ def newAthlete(request):
                         format, imgstr = cropped_data.split(";base64,")
                         ext = format.split("/")[-1]
                         data = ContentFile(base64.b64decode(imgstr), name=f"photo.{ext}")
-                        new_athlete.photo = data  # Assign cropped image
-                    except (ValueError, TypeError) as e:
+                        new_athlete.photo = data
+                    except (ValueError, TypeError):
                         messages.error(request, "Invalid image data.")
                         return render(request, "athletes/new_athletes.html", {"form": form})
 
                 new_athlete.save()
+
+                # 🔹 Invalidate cache since we added a new athlete
+                cache.delete(cache_key)
+
                 messages.success(request, "Athlete added successfully!")
                 return redirect("athletes")
 
@@ -382,12 +393,12 @@ def newAthlete(request):
                 messages.error(request, f"Unexpected error: {str(e)}")
 
         else:
-            # 🔹 Display form errors properly
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field.capitalize()}: {error}")
 
     return render(request, "athletes/new_athletes.html", {"form": form})
+
 
 
 
