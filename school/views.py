@@ -138,7 +138,7 @@ from django.conf import settings
 from django.http import JsonResponse
 import logging
 from django.views.decorators.csrf import csrf_exempt
-from django.db import connection
+
 
 # schools list, tuple or array
 @staff_required
@@ -327,38 +327,47 @@ def Official(request):
     return render(request, "officials/NOfficial.html", context)
 
 
+
+import logging
+
+logger = logging.getLogger(__name__)
 @login_required(login_url="login")
 def newAthlete(request):
+    form = NewAthleteForm()
+
     if request.method == "POST":
         form = NewAthleteForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                lin = form.cleaned_data.get("learner_id_number").lower().strip()
-                
-                # 🔹 Clear any stale DB connections
-                connection.close()
+                lin = form.cleaned_data.get("lin")
 
-                # 🔹 Check DB instead of cache
-                existing_athlete = Athlete.objects.filter(learner_id_number__iexact=lin).first()
-                if existing_athlete:
+                if not lin:  # 🔹 Prevent NoneType error
+                    messages.error(request, "Learner ID is required.")
+                    return render(request, "athletes/new_athletes.html", {"form": form})
+
+                lin = lin.strip().lower()  # 🔹 Now safe to use .strip()
+
+                # Check if the athlete already exists
+                if Athlete.objects.filter(lin__iexact=lin).exists():
                     messages.error(request, "An athlete with this Learner ID already exists.")
                     return render(request, "athletes/new_athletes.html", {"form": form})
 
-                # 🔹 Proceed with saving new athlete
+                # Save new athlete
                 new_athlete = form.save(commit=False)
                 new_athlete.school = request.user.school
                 new_athlete.save()
 
-                # 🔹 Cache new athlete entry
-                cache.set(f"athlete_{lin}", True, timeout=600)
-
                 messages.success(request, "Athlete added successfully!")
-                return redirect("new_athlete")
+                return redirect("athletes")
 
             except Exception as e:
                 messages.error(request, f"Unexpected error: {str(e)}")
+                print(f"Error while saving athlete: {e}")
 
     return render(request, "athletes/new_athletes.html", {"form": form})
+
+
+
 # a confirmation of credentials
 # @login_required
 def confirmation(request):

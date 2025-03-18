@@ -1518,3 +1518,19 @@ Traceback (most recent call last):
     raise self.error(
 django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 247: 'endif'. Did you forget to register or load this tag?
 "GET /school/addschool/ HTTP/1.1" 500 186419
+Internal Server Error: /school/newathlete/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\school\views.py", line 361, in newAthlete
+    return render(request, "athletes/new_athletes.html", {"form": form})
+                                                                  ^^^^
+UnboundLocalError: cannot access local variable 'form' where it is not associated with a value
+"GET /school/newathlete/ HTTP/1.1" 500 90647
