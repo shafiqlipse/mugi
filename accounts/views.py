@@ -177,21 +177,21 @@ def ticket(request, id):
     return render(request, "support/ticket.html",context)
 
 def tickets(request):
-    tickets = Ticket.objects.select_related("school").filter(sender=request.user)
+    tickets = Ticket.objects.select_related("sender").filter(sender=request.user)
     context={
         'tickets': tickets,
     }
     return render(request, "support/tickets.html", context)
 
 def answered_tickets(request):
-    tickets = Ticket.objects.select_related("school").filter(status="Answered")
+    tickets = Ticket.objects.select_related("sender").filter(status="Answered")
     context={
         'tickets': tickets,
     }
     return render(request, "support/all_tickets.html", context)
 
 def support(request):
-    tickets = Ticket.objects.select_related("school").filter(status="Open")
+    tickets = Ticket.objects.select_related("sender").filter(status="Open")
     context={
         'tickets': tickets,
     }
