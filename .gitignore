@@ -1,5 +1,6 @@
 # Django settings
 usssa/settings.py
+usssa/urls.py
 django.log
 
 # Django migrations
