@@ -247,7 +247,7 @@ class Athlete(models.Model):
 
     nationality = models.CharField(
         max_length=25,
-        choices=[("National", "National"), ("Foreigner", "Foreigner")],
+        choices=[("National", "National"),("International", "International"), ("Foreigner", "Foreigner")],
         default="National",
     )
     refugee = models.CharField(
@@ -449,6 +449,19 @@ def clean(self):
         # No need for student_pass or refugee_card for nationals
         self.student_pass = None
         self.refugee_card = None
+    # Nationality checks
+    elif nationality == "International":
+        if refugee:
+            raise ValidationError("Refugee status cannot be set for national athletes.")
+        if not self.lin:
+            raise ValidationError("lin is required for nationals.")
+        # No need for student_pass or refugee_card for nationals
+        self.student_pass = None
+        self.refugee_card = None
+        self.index_number = None
+        self.student_pass_code = None
+        self.student_visa = None
+        
     elif nationality == "Foreigner":
         if self.index_number:
             raise ValidationError("Index number is not applicable for foreigners.")
