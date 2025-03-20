@@ -347,13 +347,8 @@ def newAthlete(request):
 
                 lin = lin.strip().lower()
 
-                # 🔹 Use cache to check if athlete exists
-                cache_key = f"athlete_exists_{lin}"
-                athlete_exists = cache.get(cache_key)
-
-                if athlete_exists is None:
-                    athlete_exists = Athlete.objects.filter(lin__iexact=lin).exists()
-                    cache.set(cache_key, athlete_exists, timeout=600)  # Cache for 10 minutes
+                # 🔹 Check if athlete exists without caching
+                athlete_exists = Athlete.objects.filter(lin__iexact=lin).exists()
 
                 if athlete_exists:
                     messages.error(request, "An athlete with this Learner ID already exists.")
@@ -377,9 +372,6 @@ def newAthlete(request):
 
                 new_athlete.save()
 
-                # 🔹 Invalidate cache since we added a new athlete
-                cache.delete(cache_key)
-
                 messages.success(request, "Athlete added successfully!")
                 return redirect("athletes")
 
@@ -398,6 +390,7 @@ def newAthlete(request):
                     messages.error(request, f"{field.capitalize()}: {error}")
 
     return render(request, "athletes/new_athletes.html", {"form": form})
+
 
 
 # a confirmation of credentials
