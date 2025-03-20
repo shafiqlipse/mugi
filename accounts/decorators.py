@@ -1,9 +1,9 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseForbidden
 from functools import wraps
-
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 def school_required(view_func):
@@ -65,10 +65,19 @@ def anonymous_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         if request.user.is_authenticated:
-            return render(
-                request, "dashboard/dashboard.html"
-            )  # Customize this template
+            user = request.user
+
+            # Check user roles and redirect accordingly
+            if getattr(user, 'is_school', False):
+                messages.success(request, "School login successful.")
+                return redirect("schooldash")
+
+            else:
+                messages.success(request, "Login successful.")
+                return redirect("dashboard")
         else:
+            # If the user is not authenticated, allow access to the view
             return view_func(request, *args, **kwargs)
 
     return _wrapped_view
+
