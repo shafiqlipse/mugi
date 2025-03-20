@@ -266,7 +266,7 @@ class Athlete(models.Model):
         null=True,
     )
 
-    photo = models.ImageField(upload_to="athlete_photos/", db_index=True)
+    photo = models.ImageField(upload_to="athlete_photos/")
 
     ple_certificate = models.FileField(
         upload_to="certificates/",
