@@ -340,16 +340,17 @@ def newAthlete(request):
         form = NewAthleteForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                lin = form.cleaned_data.get("lin", "").strip().lower()
-
+                lin = form.cleaned_data.get("lin")
                 if not lin:
                     messages.error(request, "Learner ID is required.")
                     return render(request, "athletes/new_athletes.html", {"form": form})
 
-                cache_key = f"athlete_exists_{lin}"
+                lin = lin.strip().lower()
 
-                # 🔹 Use cache before hitting the database
+                # 🔹 Use cache to check if athlete exists
+                cache_key = f"athlete_exists_{lin}"
                 athlete_exists = cache.get(cache_key)
+
                 if athlete_exists is None:
                     athlete_exists = Athlete.objects.filter(lin__iexact=lin).exists()
                     cache.set(cache_key, athlete_exists, timeout=600)  # Cache for 10 minutes
@@ -358,43 +359,35 @@ def newAthlete(request):
                     messages.error(request, "An athlete with this Learner ID already exists.")
                     return render(request, "athletes/new_athletes.html", {"form": form})
 
-                # 🔹 Save new athlete (without committing yet)
+                # 🔹 Save new athlete
                 new_athlete = form.save(commit=False)
                 new_athlete.school = request.user.school
 
-                # 🔹 Handle cropped image data (optimize and compress)
+                # 🔹 Handle cropped image data
                 cropped_data = request.POST.get("photo_cropped")
                 if cropped_data:
                     try:
                         format, imgstr = cropped_data.split(";base64,")
                         ext = format.split("/")[-1]
-                        image_data = base64.b64decode(imgstr)
-
-                        # 🔹 Compress and optimize image
-                        img = Image.open(io.BytesIO(image_data))
-                        img = img.convert("RGB")
-                        img.thumbnail((800, 800))  # Resize to max 800x800 pixels
-
-                        output = io.BytesIO()
-                        img.save(output, format="JPEG", quality=75)  # Compress image (75% quality)
-                        output.seek(0)
-
-                        new_athlete.photo.save(f"photo.{ext}", ContentFile(output.read()), save=False)
-
+                        data = ContentFile(base64.b64decode(imgstr), name=f"photo.{ext}")
+                        new_athlete.photo = data
                     except (ValueError, TypeError):
                         messages.error(request, "Invalid image data.")
                         return render(request, "athletes/new_athletes.html", {"form": form})
 
                 new_athlete.save()
 
-                # 🔹 Invalidate cache since a new athlete was added
+                # 🔹 Invalidate cache since we added a new athlete
                 cache.delete(cache_key)
 
                 messages.success(request, "Athlete added successfully!")
                 return redirect("athletes")
 
             except IntegrityError as e:
-                messages.error(request, "An athlete with this Learner Identification Number (LIN) already exists.")
+                if "lin" in str(e).lower():
+                    messages.error(request, "An athlete with this Learner Identification Number (LIN) already exists.")
+                else:
+                    messages.error(request, f"Error adding athlete: {str(e)}")
 
             except Exception as e:
                 messages.error(request, f"Unexpected error: {str(e)}")
