@@ -334,62 +334,56 @@ logger = logging.getLogger(__name__)
 
 @login_required(login_url="login")
 def newAthlete(request):
-    form = NewAthleteForm()
-
     if request.method == "POST":
         form = NewAthleteForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                lin = form.cleaned_data.get("lin")
-                if not lin:
-                    messages.error(request, "Learner ID is required.")
-                    return render(request, "athletes/new_athletes.html", {"form": form})
-
-                lin = lin.strip().lower()
-
-                # 🔹 Check if athlete exists without caching
-                athlete_exists = Athlete.objects.filter(lin__iexact=lin).exists()
-
-                if athlete_exists:
-                    messages.error(request, "An athlete with this Learner ID already exists.")
-                    return render(request, "athletes/new_athletes.html", {"form": form})
-
-                # 🔹 Save new athlete
                 new_athlete = form.save(commit=False)
-                new_athlete.school = request.user.school
 
-                # 🔹 Handle cropped image data
+                # Assign the school from the user profile
+                new_athlete.school = request.user.school  # Ensure profile has a school
+
+                # Handle cropped image data for the "photo" field
                 cropped_data = request.POST.get("photo_cropped")
                 if cropped_data:
                     try:
                         format, imgstr = cropped_data.split(";base64,")
                         ext = format.split("/")[-1]
-                        data = ContentFile(base64.b64decode(imgstr), name=f"photo.{ext}")
-                        new_athlete.photo = data
-                    except (ValueError, TypeError):
+                        data = ContentFile(
+                            base64.b64decode(imgstr), name=f"photo.{ext}"
+                        )
+                        new_athlete.photo = data  # Assign cropped image
+                    except (ValueError, TypeError) as e:
                         messages.error(request, "Invalid image data.")
-                        return render(request, "athletes/new_athletes.html", {"form": form})
+                        return render(
+                            request, "athletes/new_athletes.html", {"form": form}
+                        )
 
                 new_athlete.save()
-
                 messages.success(request, "Athlete added successfully!")
                 return redirect("athletes")
 
             except IntegrityError as e:
                 if "lin" in str(e).lower():
-                    messages.error(request, "An athlete with this Learner Identification Number (LIN) already exists.")
+                    messages.error(
+                        request,
+                        "An athlete with this Learner Identification Number (LIN) already exists.",
+                    )
                 else:
                     messages.error(request, f"Error adding athlete: {str(e)}")
-
             except Exception as e:
-                messages.error(request, f"Unexpected error: {str(e)}")
-
+                messages.error(request, f"Error adding athlete: {str(e)}")
         else:
+            # Form validation error messages
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field.capitalize()}: {error}")
 
+    else:
+        form = NewAthleteForm()
+
     return render(request, "athletes/new_athletes.html", {"form": form})
+
 
 
 
