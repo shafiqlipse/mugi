@@ -195,131 +195,46 @@ class Athlete(models.Model):
 
     athlete_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
     fname = models.CharField(max_length=255, db_index=True)
-    mname = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-    )
+    mname = models.CharField(max_length=255, null=True, blank=True)
     lname = models.CharField(max_length=255)
-    lin = models.CharField(
-        max_length=255,
-        unique=True,
-        null=True,
-        blank=True,
-    )
+    lin = models.CharField(max_length=255, unique=True, null=True, blank=True)
     index_number = models.CharField(
-        max_length=255,
-        unique=True,
-        validators=[validate_index_number],
-        null=True,
-        blank=True, db_index=True
+        max_length=255, unique=True, validators=[validate_index_number], null=True, blank=True, db_index=True
     )
-    uce_index_number = models.CharField(
-        max_length=255,
-        # unique=True,
-        null=True,
-        blank=True,
-    )
-    sport = models.ForeignKey(
-        Sport,
-        related_name="sport",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
+    uce_index_number = models.CharField(max_length=255, null=True, blank=True)
+    sport = models.ForeignKey(Sport, related_name="sport", on_delete=models.CASCADE, null=True, blank=True)
 
-    date_of_birth = models.DateField( db_index=True)
+    date_of_birth = models.DateField(db_index=True)
     created = models.DateField(auto_now_add=True, null=True)
-    gender = models.CharField(
-        choices=[("Male", "male"), ("Female", "female")], max_length=10
-    )
-    classroom = models.ForeignKey(
-        Classroom, related_name="classroom", on_delete=models.CASCADE
-    )
+    gender = models.CharField(choices=[("Male", "male"), ("Female", "female")], max_length=10)
+    classroom = models.ForeignKey(Classroom, related_name="classroom", on_delete=models.CASCADE)
 
     physic = models.CharField(
-        max_length=25,
-        choices=[("Normal", "Normal"), ("Special Needs", "Special Needs")],
-        default="Normal",
-        blank=True,
-        null=True,
+        max_length=25, choices=[("Normal", "Normal"), ("Special Needs", "Special Needs")],
+        default="Normal", blank=True, null=True
     )
 
     nationality = models.CharField(
-        max_length=25,
-        choices=[("National", "National"),("International", "International"), ("Foreigner", "Foreigner")],
-        default="National",
+        max_length=25, choices=[("National", "National"), ("International", "International"), ("Foreigner", "Foreigner")],
+        default="National"
     )
-    refugee = models.CharField(
-        max_length=25,
-        choices=[("Yes", "Yes"), ("No", "No")],
-        blank=True,
-        null=True,
-    )
+    refugee = models.CharField(max_length=25, choices=[("Yes", "Yes"), ("No", "No")], blank=True, null=True)
     sponsorship = models.CharField(
-        max_length=25,
-        choices=[
-            ("School sponsored", "School sponsored"),
-            ("Parent sponsored", "Parent sponsored"),
-        ],
-        blank=True,
-        null=True,
+        max_length=25, choices=[("School sponsored", "School sponsored"), ("Parent sponsored", "Parent sponsored")],
+        blank=True, null=True
     )
 
     photo = models.ImageField(upload_to="athlete_photos/")
 
-    ple_certificate = models.FileField(
-        upload_to="certificates/",
-        validators=[FileExtensionValidator(allowed_extensions=["pdf"])],
-        null=True,
-        blank=True,
-    )
-    uce_certificate = models.FileField(
-        upload_to="certificates/",
-        validators=[FileExtensionValidator(allowed_extensions=["pdf"])],
-        null=True,
-        blank=True,
-    )
-    student_pass = models.FileField(
-        upload_to="certificates/",
-        validators=[FileExtensionValidator(allowed_extensions=["pdf"])],
-        null=True,
-        blank=True,
-    )
-    student_visa = models.FileField(
-        upload_to="certificates/",
-        validators=[FileExtensionValidator(allowed_extensions=["pdf"])],
-        null=True,
-        blank=True,
-    )
-    bursary = models.FileField(
-        upload_to="certificates/",
-        validators=[FileExtensionValidator(allowed_extensions=["pdf"])],
-        null=True,
-        blank=True,
-    )
-    student_pass_code = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-    )
-    uneb_code = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-    )
-    uneb_eq_results = models.FileField(
-        upload_to="certificates/",
-        validators=[FileExtensionValidator(allowed_extensions=["pdf"])],
-        null=True,
-        blank=True,
-    )
-    refugee_card = models.FileField(
-        upload_to="certificates/",
-        validators=[FileExtensionValidator(allowed_extensions=["pdf"])],
-        null=True,
-        blank=True,
-    )
+    ple_certificate = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
+    uce_certificate = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
+    student_pass = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
+    student_visa = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
+    bursary = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
+    student_pass_code = models.CharField(max_length=255, null=True, blank=True)
+    uneb_code = models.CharField(max_length=255, null=True, blank=True)
+    uneb_eq_results = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
+    refugee_card = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
 
     Parent_fname = models.CharField(max_length=100)
     Parent_lname = models.CharField(max_length=100)
@@ -327,90 +242,20 @@ class Athlete(models.Model):
     parent_nin = models.CharField(max_length=20)
     address = models.CharField(max_length=20)
     relationship = models.CharField(
-        max_length=15,
-        choices=[("Father", "Father"), ("Mother", "Mother"), ("Other", "Other")],
+        max_length=15, choices=[("Father", "Father"), ("Mother", "Mother"), ("Other", "Other")]
     )
-    # New field to track payment status
-    added_by = models.ForeignKey(
-        User,
-        related_name="suploader",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-    # New field to track payment status
+
+    added_by = models.ForeignKey(User, related_name="suploader", on_delete=models.CASCADE, null=True, blank=True)
 
     status = models.CharField(
-        max_length=10,
-        choices=[
-            ("NEW", "NEW"),
-            ("ACTIVE", "ACTIVE"),
-            ("INACTIVE", "INACTIVE"),
-            ("COMPLETED", "COMPLETED"),
+        max_length=10, choices=[
+            ("NEW", "NEW"), ("ACTIVE", "ACTIVE"), ("INACTIVE", "INACTIVE"), ("COMPLETED", "COMPLETED")
         ],
-        null=True,
-        blank=True,
-        default="NEW", db_index=True
+        null=True, blank=True, default="NEW", db_index=True
     )
-
-    qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)
 
     def __str__(self):
         return f"{self.fname} {self.lname}"
-
-    def generate_qr_code(self):
-        # Information you want encoded in the QR code
-        qr_info = f"Name: {self.fname} {self.lname}\nSCHOOL: {self.school.name}\nLIN: {self.lin}\nGender: {self.gender}\nDate of Birth: {self.date_of_birth}\nSport: {self.sport.name}"
-
-        # Create QR code
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=10,
-            border=4,
-        )
-        qr.add_data(qr_info)
-        qr.make(fit=True)
-
-        # Create an image from the QR code
-        qr_img = qr.make_image(fill="black", back_color="white").convert("RGB")
-        qr_size = qr_img.size
-
-        # Resize athlete's photo to fit inside the QR code (optional size adjustment)
-        if self.photo:
-            photo = Image.open(self.photo.path)  # Load the athlete's photo
-            photo_size = (
-                qr_size[0] // 4,
-                qr_size[1] // 4,
-            )  # Resize the photo to 1/4 of the QR code
-            photo = photo.resize(photo_size)
-
-            # Paste the athlete's photo at the center of the QR code
-            qr_img.paste(
-                photo,
-                ((qr_size[0] - photo_size[0]) // 2, (qr_size[1] - photo_size[1]) // 2),
-            )
-
-        # Save the QR code to an in-memory file and then to the model field
-        buffer = BytesIO()
-        qr_img.save(buffer, format="PNG")
-        file_name = f"qr_{self.fname}_{self.lname}.png"
-        self.qr_code.save(file_name, File(buffer), save=False)
-        buffer.close()
-
-    def save(self, *args, **kwargs):
-        # Generate athlete_id if not already set
-        if not self.athlete_id:
-            self.athlete_id = self.generate_athlete_id()
-
-        # Call the parent class save method first to ensure the instance exists in DB
-        super(Athlete, self).save(*args, **kwargs)
-
-        # Generate the QR code after saving the athlete instance
-        self.generate_qr_code()
-
-        # Save again to update the QR code field
-        super(Athlete, self).save(*args, **kwargs)
 
     def generate_athlete_id(self):
         # Extract year from date_of_birth
@@ -434,8 +279,7 @@ class Athlete(models.Model):
             self.athlete_id = self.generate_athlete_id()
 
         super(Athlete, self).save(*args, **kwargs)
-
-
+        
 def clean(self):
     nationality = self.nationality
     refugee = self.refugee
