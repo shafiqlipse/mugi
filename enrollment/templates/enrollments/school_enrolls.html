@@ -10,13 +10,11 @@
   <div class="top flex">
     <h1>ENROLLMENTS</h1>
 
- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Enroll school</a>
- 
-   
-  </div>
+    <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Enroll school</a>
+  --></div>
   <hr />
 
-  <div class="filterlist  card">
+  <div class="filterlist card">
     <div class="table-responsive">
       <table id="myTable" class="display">
         <thead>
@@ -25,7 +23,6 @@
             <th>Championship</th>
             <th>Sport</th>
             <th>level</th>
-    
           </tr>
         </thead>
         <tbody>
@@ -37,12 +34,10 @@
                 {{school_enrollment.sport}}</a
               >
             </td>
-            
+
             <td>{{school_enrollment.championship}}</td>
             <td>{{school_enrollment.sport}}</td>
             <td>{{school_enrollment.level}}</td>
-
-      
           </tr>
 
           {%endfor%}
@@ -52,50 +47,47 @@
   </div>
 </div>
 
-
-
-
 <div
-class="modal fade"
-id="exampleModal"
-tabindex="-1"
-role="dialog"
-aria-labelledby="exampleModalLabel"
-aria-hidden="true"
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
 >
-<div class="modal-dialog" role="document">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Enroll School</h5>
-      <button
-        type="button"
-        class="close"
-        data-dismiss="modal"
-        aria-label="Close"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="school-long">
-        <form
-          action=""
-          method="POST"
-          class="form-ctrl"
-          enctype="multipart/form-data"
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Enroll School</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
         >
-          {% csrf_token %} {{form.as_p}}
-          <button type="submit" class="btn btn-success">Enroll</button>
-        </form>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="school-long">
+          <form
+            action=""
+            method="POST"
+            class="form-ctrl"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %} {{form.as_p}}
+            <button type="submit" class="btn btn-success">Enroll</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Cancel
+        </button>
       </div>
     </div>
-
-    <div class="modal-footer">
-      <button type="button" class="btn btn-danger" data-dismiss="modal">
-        Cancel
-      </button>
-    </div>
   </div>
-</div>
 </div>
 {% endblock %}

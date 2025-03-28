@@ -73,17 +73,17 @@
             <td>{{ athlete.classroom }}</td>
             <td>{{ athlete.date_of_birth }}</td>
             <td>
-              {% if system_closed %}
-                <p>The system is currently closed.</p>
-              {% else %}
+              
+                <p class='badge-danger'>The system is currently closed.</p>
+             <!--
               <a
                 href="{% url 'initiate_transfer' athlete.id %}"
                 class="btn btn-outline-primary request-transfer"
                 data-athlete="{{ athlete.fname }} {{ athlete.lname }}"
               >
                 <i class="fa fa-plus"></i> Request transfer
-              </a>
-              {% endif %}
+              </a>-->
+       
             </td>
           </tr>
           {% endfor %}

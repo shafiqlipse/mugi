@@ -21,11 +21,10 @@
   }
 </style>
 <div class="content-wrapper">
-
   <h1>Add Athlete</h1>
   <p>All fields labeled with <span>*</span> must be filled.</p>
   <hr />
-  <form
+   <form
     action=""
     method="POST"
     class="form-ctrl card"
@@ -175,135 +174,120 @@
     </div>
     <button type="submit" class="btn-submit">Save athlete</button>
   </form>
-  <div
-    class="toast-container position-fixed bottom-0 end-0 p-3"
-    id="toast-container"
-  >
-    {% for message in messages %}
-    <div
-      class="toast align-items-center text-bg-{{ message.tags }} border-0"
-      role="alert"
-      aria-live="assertive"
-      aria-atomic="true"
-    >
-      <div class="d-flex">
-        <div class="toast-body">{{ message }}</div>
-        <button
-          type="button"
-          class="btn-close me-2 m-auto"
-          data-bs-dismiss="toast"
-          aria-label="Close"
-        ></button>
+ <!--  -->
+  <div class="card">
+    <div class="card-body">
+      The system has been closed. Please check back later.
+      <div class="alert alert-danger" role="alert">
+        <strong>Alert!</strong> You cannot add athletes until further notice.
       </div>
     </div>
-    {% endfor %}
   </div>
-  
-</div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $(document).ready(function () {
-    function toggleFields() {
-      const nationality = $("#id_nationality").val();
-      const refugee = $("#id_refugee").val();
-      const sponsorship = $("#id_sponsorship").val();
-      const classroom = $("#id_classroom").val();
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      function toggleFields() {
+        const nationality = $("#id_nationality").val();
+        const refugee = $("#id_refugee").val();
+        const sponsorship = $("#id_sponsorship").val();
+        const classroom = $("#id_classroom").val();
 
-      // National case
-      if (nationality === "National") {
-        // Show LIN, Index Number, PLE/UCE Certificate for nationals
-        $("#lin_container").show();
-        $("#index_number_container").show();
-        $("#ple_certificate_container").show();
-        $("#uce_certificate_container").show();
+        // National case
+        if (nationality === "National") {
+          // Show LIN, Index Number, PLE/UCE Certificate for nationals
+          $("#lin_container").show();
+          $("#index_number_container").show();
+          $("#ple_certificate_container").show();
+          $("#uce_certificate_container").show();
 
-        // Set these fields to be required for nationals
-        $("#id_lin").prop("required", true);
-        $("#id_index_number").prop("required", true);
-        $("#id_ple_certificate").prop("required", true);
-        $("#id_uce_certificate").prop("required", false);
+          // Set these fields to be required for nationals
+          $("#id_lin").prop("required", true);
+          $("#id_index_number").prop("required", true);
+          $("#id_ple_certificate").prop("required", true);
+          $("#id_uce_certificate").prop("required", false);
 
-        // Hide refugee-related fields
-        $("#refugee_status_container").hide();
-        $("#student_pass_container").hide();
-        $("#student_pass_code_container").hide();
-        $("#refugee_card_container").hide();
-        $("#uneb_eq_results_container").hide();
-        $("#uneb_code_container").hide();
-        $("#student_visa_container").hide();
-      }
-      // National case
-      else if (nationality === "International") {
-        // Show LIN, Index Number, PLE/UCE Certificate for nationals
-        $("#lin_container").show();
-        $("#index_number_container").hide();
-        $("#ple_certificate_container").hide();
-        $("#uce_certificate_container").hide();
-
-        // Set these fields to be required for nationals
-        $("#id_lin").prop("required", true);
-        $("#id_index_number").prop("required", false);
-        $("#id_ple_certificate").prop("required", false);
-        $("#id_uce_certificate").prop("required", false);
-
-        // Hide refugee-related fields
-        $("#refugee_status_container").hide();
-        $("#student_pass_container").hide();
-        $("#student_pass_code_container").hide();
-        $("#refugee_card_container").hide();
-        $("#uneb_eq_results_container").show();
-        $("#uneb_code_container").show();
-        $("#student_visa_container").hide();
-      }
-      // Foreigner case
-      else if (nationality === "Foreigner") {
-        // Hide LIN, Index Number, PLE/UCE Certificate for foreigners
-        $("#lin_container").hide();
-        $("#index_number_container").hide();
-        $("#ple_certificate_container").hide();
-        $("#uce_certificate_container").hide();
-
-        // Remove required attribute for foreigners
-        $("#id_lin").prop("required", false);
-        $("#id_index_number").prop("required", false);
-        $("#id_ple_certificate").prop("required", false);
-        $("#id_uce_certificate").prop("required", false);
-
-        // Show refugee-related fields for foreigners
-        $("#refugee_status_container").show();
-        $("#uneb_eq_results_container").show();
-        $("#uneb_code_container").show();
-        //$("#student_visa_container").show();
-
-        if (refugee === "Yes") {
+          // Hide refugee-related fields
+          $("#refugee_status_container").hide();
           $("#student_pass_container").hide();
           $("#student_pass_code_container").hide();
-          $("#refugee_card_container").show().prop("required", true);
-        } else {
-          $("#student_pass_container").show().prop("required", true);
-          $("#student_pass_code_container").show().prop("required", true);
-          $("#refugee_card_container").hide().prop("required", false);
+          $("#refugee_card_container").hide();
+          $("#uneb_eq_results_container").hide();
+          $("#uneb_code_container").hide();
+          $("#student_visa_container").hide();
         }
+        // National case
+        else if (nationality === "International") {
+          // Show LIN, Index Number, PLE/UCE Certificate for nationals
+          $("#lin_container").show();
+          $("#index_number_container").hide();
+          $("#ple_certificate_container").hide();
+          $("#uce_certificate_container").hide();
+
+          // Set these fields to be required for nationals
+          $("#id_lin").prop("required", true);
+          $("#id_index_number").prop("required", false);
+          $("#id_ple_certificate").prop("required", false);
+          $("#id_uce_certificate").prop("required", false);
+
+          // Hide refugee-related fields
+          $("#refugee_status_container").hide();
+          $("#student_pass_container").hide();
+          $("#student_pass_code_container").hide();
+          $("#refugee_card_container").hide();
+          $("#uneb_eq_results_container").show();
+          $("#uneb_code_container").show();
+          $("#student_visa_container").hide();
+        }
+        // Foreigner case
+        else if (nationality === "Foreigner") {
+          // Hide LIN, Index Number, PLE/UCE Certificate for foreigners
+          $("#lin_container").hide();
+          $("#index_number_container").hide();
+          $("#ple_certificate_container").hide();
+          $("#uce_certificate_container").hide();
+
+          // Remove required attribute for foreigners
+          $("#id_lin").prop("required", false);
+          $("#id_index_number").prop("required", false);
+          $("#id_ple_certificate").prop("required", false);
+          $("#id_uce_certificate").prop("required", false);
+
+          // Show refugee-related fields for foreigners
+          $("#refugee_status_container").show();
+          $("#uneb_eq_results_container").show();
+          $("#uneb_code_container").show();
+          //$("#student_visa_container").show();
+
+          if (refugee === "Yes") {
+            $("#student_pass_container").hide();
+            $("#student_pass_code_container").hide();
+            $("#refugee_card_container").show().prop("required", true);
+          } else {
+            $("#student_pass_container").show().prop("required", true);
+            $("#student_pass_code_container").show().prop("required", true);
+            $("#refugee_card_container").hide().prop("required", false);
+          }
+        }
+
+        // Sponsorship case
+        if (sponsorship === "School sponsored") {
+          $("#bursary_container").show();
+          $("#id_bursary").prop("required", true);
+        } else {
+          $("#bursary_container").hide();
+          $("#id_bursary").prop("required", false);
+        }
+
+        // Sponsorship case
       }
 
-      // Sponsorship case
-      if (sponsorship === "School sponsored") {
-        $("#bursary_container").show();
-        $("#id_bursary").prop("required", true);
-      } else {
-        $("#bursary_container").hide();
-        $("#id_bursary").prop("required", false);
-      }
+      // Run the function on page load and when nationality, refugee, or sponsorship changes
+      $("#id_nationality, #id_refugee, #id_sponsorship, #id_classroom").change(
+        toggleFields
+      );
+      toggleFields(); // Initial check on page load
+    });
+  </script>
 
-      // Sponsorship case
-    }
-
-    // Run the function on page load and when nationality, refugee, or sponsorship changes
-    $("#id_nationality, #id_refugee, #id_sponsorship, #id_classroom").change(
-      toggleFields
-    );
-    toggleFields(); // Initial check on page load
-  });
-</script>
-
-{% endblock %}
+  {% endblock %}
+</div>

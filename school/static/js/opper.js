@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const imageFields = ["photo"]; // Only keeping "photo"
-  const croppers = {}; // Initialize the croppers object
+  const imageFields = ["photo"];
+  const croppers = {};
+  const MAX_SIZE_KB = 100;
+  const MAX_WIDTH = 1024;
 
   imageFields.forEach((field) => {
     const fileInput = document.getElementById(`id_${field}`);
@@ -12,73 +14,72 @@ document.addEventListener("DOMContentLoaded", function () {
 
     fileInput.addEventListener("change", function (e) {
       const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          if (croppers[field]) {
-            croppers[field].destroy(); // Destroy previous instance if exists
-          }
-          previewContainer.innerHTML = `<img src="${event.target.result}" id="${field}_image">`;
-          const image = document.getElementById(`${field}_image`);
-          croppers[field] = new Cropper(image, {
-            aspectRatio: 1,
-            viewMode: 1,
-            crop: function (event) {
-              const canvas = this.cropper.getCroppedCanvas();
+      if (!file) return;
 
-              // Resize and compress the image
-              canvas.toBlob((blob) => {
-                const maxSize = 100 * 1024; // 100 KB
-                const reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onloadend = function () {
-                  let quality = 0.9; // Initial quality
+      const reader = new FileReader();
+      reader.onload = async function (event) {
+        // Clean up previous cropper
+        if (croppers[field]) {
+          croppers[field].destroy();
+        }
 
-                  function resizeImage(dataUrl) {
-                    const img = new Image();
-                    img.src = dataUrl;
-                    img.onload = function () {
-                      const resizedCanvas = document.createElement("canvas");
-                      const ctx = resizedCanvas.getContext("2d");
+        previewContainer.innerHTML = `<img src="${event.target.result}" id="${field}_image">`;
+        const image = document.getElementById(`${field}_image`);
 
-                      // Set dimensions to maintain aspect ratio
-                      let width = img.width;
-                      let height = img.height;
-                      const maxWidth = 1024; // Adjust max size if needed
-                      if (width > maxWidth) {
-                        height = height * (maxWidth / width);
-                        width = maxWidth;
-                      }
+        croppers[field] = new Cropper(image, {
+          aspectRatio: 1,
+          viewMode: 1,
+          crop: async function (event) {
+            const canvas = this.cropper.getCroppedCanvas();
+            const optimizedBlob = await optimizeImage(
+              canvas,
+              MAX_SIZE_KB,
+              MAX_WIDTH
+            );
 
-                      resizedCanvas.width = width;
-                      resizedCanvas.height = height;
-                      ctx.drawImage(img, 0, 0, width, height);
-
-                      // Compress resized image
-                      let resizedDataUrl = resizedCanvas.toDataURL(
-                        "image/jpeg",
-                        quality
-                      );
-                      if (resizedDataUrl.length > maxSize) {
-                        quality -= 0.1; // Reduce quality to further compress
-                        resizedDataUrl = resizedCanvas.toDataURL(
-                          "image/jpeg",
-                          quality
-                        );
-                      }
-
-                      croppedInput.value = resizedDataUrl; // Set the hidden input value
-                    };
-                  }
-
-                  resizeImage(reader.result);
-                };
-              }, "image/jpeg");
-            },
-          });
-        };
-        reader.readAsDataURL(file);
-      }
+            // Convert to base64 only when absolutely necessary (for form submission)
+            const reader = new FileReader();
+            reader.onload = () => {
+              croppedInput.value = reader.result;
+            };
+            reader.readAsDataURL(optimizedBlob);
+          },
+        });
+      };
+      reader.readAsDataURL(file);
     });
   });
+
+  // Optimize image with progressive quality reduction
+  async function optimizeImage(canvas, maxSizeKB, maxWidth) {
+    let quality = 0.9;
+    let blob = await new Promise((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", quality)
+    );
+
+    // First resize if needed
+    if (canvas.width > maxWidth) {
+      const resizedCanvas = document.createElement("canvas");
+      const scale = maxWidth / canvas.width;
+      resizedCanvas.width = maxWidth;
+      resizedCanvas.height = canvas.height * scale;
+
+      const ctx = resizedCanvas.getContext("2d");
+      ctx.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
+
+      blob = await new Promise((resolve) =>
+        resizedCanvas.toBlob(resolve, "image/jpeg", quality)
+      );
+    }
+
+    // Then adjust quality if still too large
+    while (blob.size > maxSizeKB * 1024 && quality > 0.1) {
+      quality -= 0.1;
+      blob = await new Promise((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg", quality)
+      );
+    }
+
+    return blob;
+  }
 });
