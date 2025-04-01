@@ -1,0 +1,47 @@
+{% extends "dashboard/dashboard.html" %}
+<!---->
+{% load static %}
+<!---->
+{%block title%}Schools{% endblock %}
+<!---->
+{% block content %}
+<div class="schools-dew content-wrapper">
+  <div class="head">
+    <h1>Schools</h1>
+
+    <div class="filterlist card">
+      <div class="lo">
+        <div class="table-responsive">
+          <table class="display" id="myTable">
+            <thead>
+              <tr>
+                <th>School</th>
+                <th>Center Number</th>
+
+                <th>District</th>
+                <th>Zone</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for school in schools%}
+              <tr>
+                <td>
+                  <a href="{% url 'schooldetail' school.id%}"
+                    >{{school.name}}</a
+                  >
+                </td>
+                <td>{{school.center_number}}</td>
+
+                <td>{{school.district}}</td>
+                <td>{{school.district.zone}}</td>
+              </tr>
+
+              {%endfor%}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+</div>

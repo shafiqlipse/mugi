@@ -72,6 +72,10 @@ def user_login(request):
             elif user.is_admin:
                 messages.success(request, "Officer login successful.")
                 return redirect("dashboard")
+            
+            elif user.is_zone:
+                messages.success(request, "Officer login successful.")
+                return redirect("zonalchair_dashboard")
             else:
                 messages.success(request, "Login successful.")
                 return redirect(

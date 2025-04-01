@@ -398,7 +398,55 @@
             </a>
           </li>
 
-          {% endif %} {% if user.is_accounts %}
+          {% endif %} 
+          {% if user.is_zone %}
+          
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{%url 'zonalchair_dashboard' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+              <span class="menu-title">Dashboard</span>
+            </a>
+          </li>
+          
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{%url 'zonalchair_schools' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+              <span class="menu-title">Schools</span>
+            </a>
+          </li>
+          
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{%url 'zonalchair_athletes' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+              <span class="menu-title">Athletes</span>
+            </a>
+          </li>
+          
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{%url 'zonalchair_officials' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+              <span class="menu-title">Officials</span>
+            </a>
+          </li>
+          
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{%url 'zonalchair_enrollments' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+              <span class="menu-title">Enrollments</span>
+            </a>
+          </li>
+          {% endif %}
+          {% if user.is_accounts %}
           <li class="nav-item menu-items">
             <a
               class="nav-link"
@@ -430,6 +478,15 @@
                 {% endif %}
               </ul>
             </div>
+          </li>
+                    
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{%url 'zonalchair_list' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+              <span class="menu-title">Zonal Chairs</span>
+            </a>
           </li>
           {% endif %}
           <li class="nav-item menu-items">
@@ -609,56 +666,7 @@
           <!-- content-wrapper ends -->
           {% block content %}{% endblock %}
           <!-- partial:partials/_footer.html -->
-          <div class="count-down">
-            <!-- page-body-wrapper ends -->
-            {% if closure_time %}
-            <p>System will close in: <span id="countdown"></span></p>
-
-            <script>
-              let closureTime = "{{ closure_time|date:'c' }}";
-              console.log("Closure Time from Django:", closureTime); // Debugging
-
-              if (closureTime) {
-                let targetTime = new Date(closureTime).getTime();
-                console.log("Parsed JavaScript Time:", targetTime); // Debugging
-
-                function updateCountdown() {
-                  let now = new Date().getTime();
-                  let timeRemaining = targetTime - now;
-
-                  if (timeRemaining <= 0) {
-                    document.getElementById("countdown").innerHTML =
-                      "System is now closed!";
-                    clearInterval(timer);
-                    return;
-                  }
-
-                  let days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-                  let hours = Math.floor(
-                    (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-                  );
-                  let minutes = Math.floor(
-                    (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
-                  );
-                  let seconds = Math.floor(
-                    (timeRemaining % (1000 * 60)) / 1000
-                  );
-
-                  document.getElementById("countdown").innerHTML =
-                    (days > 0 ? days + "d " : "") +
-                    (hours > 0 ? hours + "h " : "") +
-                    (minutes > 0 ? minutes + "m " : "") +
-                    seconds +
-                    "s";
-                }
-
-                updateCountdown();
-                let timer = setInterval(updateCountdown, 1000);
-              }
-            </script>
-
-            {% endif %}
-          </div>
+ 
           <footer class="footer">
             <div
               class="d-sm-flex justify-content-center justify-content-sm-between"

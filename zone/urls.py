@@ -7,8 +7,10 @@ from .views import *
 
 urlpatterns = [
     path("zonalchair/", zonalchair_list, name="zonalchair_list"),
-    path("zonalchair/create/", zonalchair_create, name="zonalchair_create"),
-    path("zonalchair/<int:pk>/", zonalchair_detail, name="zonalchair_detail"),
-    path("zonalchair/<int:pk>/update/", zonalchair_update, name="zonalchair_update"),
-    path("zonalchair/<int:pk>/delete/", zonalchair_delete, name="zonalchair_delete"),
+    path("dashboard/chair/", zonalchair_dashboard, name="zonalchair_dashboard"),
+    path("zonalchair/<int:id>/", activate_zonalchair, name="zonalchair_activate"),
+    path("zonalchair/schools/", zonalchair_schools, name="zonalchair_schools"),
+    path("zonalchair/athletes/", zonalchair_athletes, name="zonalchair_athletes"),
+    path("zonalchair/officials/", zonalchair_officials, name="zonalchair_officials"),
+    path("zonalchair/enrollments/", zonalchair_enrollments, name="zonalchair_enrollments"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()

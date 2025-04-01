@@ -1,0 +1,97 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}chairs{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="schools-dew content-wrapper">
+  <div class="head flex">
+    <h1>chairs</h1>
+  </div>
+  {% if messages %} {% for message in messages %}
+  <div
+    class="alert alert-{{ message.tags }} alert-dismissible fade show"
+    role="alert"
+  >
+    {{ message }}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+  {% endfor %} {% endif %}
+
+  <div class="filterlist card">
+    <div class="lo">
+      <div class="table-responsive">
+        <table id="myTable" class="display">
+          <thead>
+            <tr>
+              <th>Names</th>
+              <th>Zone</th>
+              <th>Email</th>
+              <th>Contact</th>
+
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for chair in chairpersons%}
+            <tr>
+              <td>
+                <a href="">{{chair.fname}} {{chair.lname}}</a>
+              </td>
+              <td>{{chair.zone}}</td>
+              <td>{{chair.email}}</td>
+              <td>{{chair.phone }}</td>
+
+              <td>
+                {% if chair.user %}
+
+                <a
+                  href="#!"
+                  class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                  data-template="editOne"
+                >
+                  <i class="fa fa-pencil"></i>
+                  <div id="editOne" class="d-none">
+                    <span>Edit</span>
+                  </div>
+                </a>
+                {% else %}
+                <a
+                  href="{% url 'zonalchair_activate' chair.id %}"
+                  class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                  data-template="eyeOne"
+                >
+                  <i class="fa fa-eye"></i>
+                  <div id="eyeOne" class="d-none">
+                    <span>View</span>
+                  </div>
+                </a>
+                {% endif %}
+                <a
+                  href=""
+                  class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                  data-template="trashOne"
+                >
+                  <i class="fa fa-trash"></i>
+                  <div id="trashOne" class="d-none">
+                    <span>Delete</span>
+                  </div>
+                </a>
+              </td>
+            </tr>
+
+            {%endfor%}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
