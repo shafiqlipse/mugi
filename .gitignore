@@ -12,6 +12,7 @@ school/migrations/*
 training/migrations/*
 enrollment/migrations/*
 transfers/migrations/*
+zone/migrations/*
 
 
 # Media and uploaded files (one level up)
