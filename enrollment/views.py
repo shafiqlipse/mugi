@@ -20,12 +20,12 @@ from django.core.paginator import Paginator
 
 from .filters import SchoolEnrollmentFilter  # Assume you have created this filter
 
+
+from django.db import IntegrityError
+from django.contrib import messages
 @login_required(login_url="login")
 def SchoolEnrollments(request):
-    # Get school from user profile
-    school = request.user.school  # Assuming profile has school attribute
-
-    # Get all enrollments for the school
+    school = request.user.school
     enrollments = SchoolEnrollment.objects.select_related("school").filter(school=school)
 
     if request.method == "POST":
@@ -34,9 +34,15 @@ def SchoolEnrollments(request):
         if form.is_valid():
             enrollment = form.save(commit=False)
             enrollment.school = school
-            enrollment.save()
-            messages.success(request, "Enrollment created successfully!")
-            return redirect("school_enrollments")
+            try:
+                enrollment.save()
+                messages.success(request, "Enrollment created successfully!")
+                return redirect("school_enrollments")
+            except IntegrityError:
+                messages.error(
+                    request,
+                    "This school is already enrolled in the same championship, sport, and level."
+                )
         else:
             messages.error(request, "Please correct the errors below.")
     else:
@@ -44,6 +50,7 @@ def SchoolEnrollments(request):
 
     context = {"form": form, "enrollments": enrollments}
     return render(request, "enrollments/school_enrolls.html", context)
+
 
 @login_required(login_url="login")
 def AllEnrollments(request):
@@ -93,13 +100,32 @@ def school_enrollment_details(request, id):
     if request.method == "POST":
         form = AthleteEnrollmentForm(request.POST)
         if form.is_valid():
-            athlete_enrollment = AthleteEnrollment.objects.create(
+            selected_athletes = form.cleaned_data["athletes"]
+            already_enrolled = AthleteEnrollment.objects.filter(
                 school_enrollment=school_enrollment,
-                enrolled_by = request.user
-            )
-            athlete_enrollment.enrolled_by = request.user
-            athlete_enrollment.athletes.set(form.cleaned_data["athletes"])
-            return HttpResponseRedirect(reverse("school_enrollment", args=[id]))
+                athletes__in=selected_athletes
+            ).values_list("athletes__id", flat=True).distinct()
+
+            if already_enrolled:
+                messages.error(request, "Some of the selected athletes are already enrolled in this school enrollment.")
+            else:
+                current_total = AthleteEnrollment.objects.filter(
+                    school_enrollment=school_enrollment
+                ).values_list("athletes", flat=True).count()
+
+                if current_total + selected_athletes.count() > school_enrollment.sport.entries:
+                    messages.error(
+                        request,
+                        f"You can only enroll {school_enrollment.sport.entries - current_total} more athlete(s) for this sport."
+                    )
+                else:
+                    athlete_enrollment = AthleteEnrollment.objects.create(
+                        school_enrollment=school_enrollment,
+                        enrolled_by=request.user
+                    )
+                    athlete_enrollment.athletes.set(selected_athletes)
+                    messages.success(request, "Athletes enrolled successfully.")
+                    return HttpResponseRedirect(reverse("school_enrollment", args=[id]))
     else:
         form = AthleteEnrollmentForm()
 
@@ -115,6 +141,7 @@ def school_enrollment_details(request, id):
         "all_athletes": all_athletes,
     }
     return render(request, "enrollments/school_enroll.html", context)
+
 
 @login_required(login_url="login")
 def school_enrollment_update(request, id):

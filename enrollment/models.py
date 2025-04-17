@@ -17,6 +17,9 @@ class SchoolEnrollment(models.Model):
     level = models.CharField(max_length=144, blank=True, null=True, choices=(("District", "District"), ("Zone", "Zone"), ("National", "National")))
     enrollment_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ("school", "championship", "sport", "level")
+        
     def __str__(self):
         return f"{self.school.name} - {self.championship.name}"
 
