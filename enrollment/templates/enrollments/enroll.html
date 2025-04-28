@@ -93,6 +93,9 @@
                   <a class="dropdown-item" href="{% url 'team_album' school_enrollment.id%}" class="btn btn-primary">Album</a>
                   <a class="dropdown-item" href="{% url 'team_accred' school_enrollment.id%}" class="btn btn-info">Accreditation</a>
                   <a class="dropdown-item" href="{% url 'team_cert' school_enrollment.id%}" class="btn btn-success">Certificate</a>
+                  {% if user.is_superuser %}
+                  <a class="dropdown-item" href="{% url 'delete_school_enrollment' school_enrollment.id%}" class="btn btn-danger">Delete</a>
+                  {% endif %}
                 </div>
               </div>
              
@@ -111,6 +114,8 @@
               
               
             </td>
+ 
+
  
            
           </tr>
