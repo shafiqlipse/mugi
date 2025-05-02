@@ -9,12 +9,12 @@ from training.models import *
 class UserAdmin(BaseUserAdmin):
     list_display = ("username", "email", "is_active", "is_school", "is_staff", "is_admin", "is_tech", "is_accounts", "school")  # Columns to display
     search_fields = ("username", "email", "school__name")  # Enables search
-    list_filter = ("is_active", "is_school", "is_staff", "is_admin", "is_tech", "is_accounts", "school")  # Enables filtering
+    list_filter = ("is_active", "is_school", "is_staff", "is_admin", "is_tech", "is_accounts")  # Enables filtering
 
 class AthleteAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
     list_display = ("fname", "lname", "index_number", "gender", "classroom", "school", "date_of_birth")
     search_fields = ("fname", "lname", "index_number", "school__name")  # Use school__name instead of school
-    list_filter = ("classroom", "gender", "school")
+    list_filter = ("classroom", "gender")
 # Register your models here.
 admin.site.register(Athlete, AthleteAdmin) 
 
