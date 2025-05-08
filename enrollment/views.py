@@ -235,6 +235,12 @@ def Occreditation(request, id):
     officials = school_official.objects.filter(school=team.school).exclude(status="Inactive")
 
     # Get template
+    if request.method == "POST":
+        # Get list of official IDs to exclude
+        excluded_ids = request.POST.getlist("exclude_officials")
+        if excluded_ids:
+            officials = officials.exclude(id__in=excluded_ids)
+    # Get template
     template = get_template("reports/ocred.html")
 
     # Compress and fix rotation for athletes' photos
@@ -356,7 +362,12 @@ def Cortificate(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     
     officials = school_official.objects.filter(school=team.school).exclude(status="Inactive")
-
+    
+    if request.method == "POST":
+        # Get list of official IDs to exclude
+        excluded_ids = request.POST.getlist("exclude_officials")
+        if excluded_ids:
+            officials = officials.exclude(id__in=excluded_ids)
     # Get template
     template = get_template("reports/cort.html")
 
@@ -426,3 +437,13 @@ def export_ecsv(request):
 
     return response
 
+
+def prepare_certificate(request, id):
+    team = get_object_or_404(SchoolEnrollment, id=id)
+    officials = school_official.objects.filter(school=team.school).exclude(status="Inactive")
+    return render(request, "reports/off.html", {"officials": officials, "team": team})
+
+def prepare_accreditation(request, id):
+    team = get_object_or_404(SchoolEnrollment, id=id)
+    officials = school_official.objects.filter(school=team.school).exclude(status="Inactive")
+    return render(request, "reports/accreff.html", {"officials": officials, "team": team})

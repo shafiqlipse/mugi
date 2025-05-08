@@ -38,5 +38,7 @@ urlpatterns = [
         name="remove_athlete",
     ),
     # path("process-payment/", process_payment, name="process_payment"),  # Add this line
+    path("prepare-cert/<int:id>/", prepare_certificate, name="prepare_cert"),
+    path("prepare-accred/<int:id>/", prepare_accreditation, name="prepare_accred"),
     # Add more URLs as ne
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

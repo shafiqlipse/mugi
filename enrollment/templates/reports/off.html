@@ -1,0 +1,31 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Enrollment{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="schools-enr content-wrapper">
+  <div class="top flex">
+    <h1>ENROLLMENTS</h1>
+    <a href="{% url 'export_ecsv'%}" class="btn btn-success">Export</a>
+  </div>
+  <hr />
+
+  <h3>Select officials to exclude from accreditation slip</h3>
+  <form method="post" action="{% url 'team_cort' team.id %}">
+    {% csrf_token %} {% for official in officials %}
+    <label>
+      <input
+        type="checkbox"
+        name="exclude_officials"
+        value="{{ official.id }}"
+      />
+      {{ official.fname }} {{ official.lname }} | {{ official.role }} </label
+    ><br />
+    {% endfor %}
+    <button type="submit"class='btn btn-success'>Generate certificate</button>
+  </form>
+</div>
+{% endblock %}
