@@ -32,8 +32,8 @@
         width: 500px; /* Set a fixed width to ensure text fits on one line */
       }
       .header .athletes table tbody tr .athlete-cell .athlete-image img {
-        width: 120px;
-        height: 120px;
+        width: 130px;
+        height: 130px;
         image-orientation: from-image;
         transform: rotate(0deg);
       }
@@ -46,14 +46,13 @@
             <tr>
               <td class="athlete-cell">
                 <div class="athlete-info">
-                  <span
-                    >{{ athlete.fname|upper }} {{athlete.mname|upper}} {{athlete.lname|upper}}
-                    ({{athlete.classroom|upper}})</span
-                  ><br />
+                  <span style="font-size: 1.4em"
+                    ><strong>{{ athlete.fname|upper }} {% if athlete.mname%}
+                    {{athlete.mname|upper}}{% endif %} {{athlete.lname|upper}} </span
+                  ></strong><br />
 
                   <span>{{ athlete.school|upper }}</span><br />
-                  <span>{{ team.sport|upper }} ({{athlete.gender|upper}})</span
-                  ><br />
+                  <span>{{ team.sport|upper }}</span><br />
                 </div>
               </td>
               <td class="athlete-cell">
