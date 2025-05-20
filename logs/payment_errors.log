@@ -2909,3 +2909,29 @@ Traceback (most recent call last):
     raise self.error(
 django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 51: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
 "GET /enrollment/team_cert/1 HTTP/1.1" 500 188449
+Internal Server Error: /enrollment/export_ecsv/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\enrollment\views.py", line 432, in export_ecsv
+    athlete.first_name,
+    ^^^^^^^^^^^^^^^^^^
+AttributeError: 'Athlete' object has no attribute 'first_name'
+"GET /enrollment/export_ecsv/ HTTP/1.1" 500 87395
+Internal Server Error: /enrollment/export_ecsv/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\enrollment\views.py", line 432, in export_ecsv
+    athlete.f_name,
+    ^^^^^^^^^^^^^^
+AttributeError: 'Athlete' object has no attribute 'f_name'. Did you mean: 'fname'?
+"GET /enrollment/export_ecsv/ HTTP/1.1" 500 87495

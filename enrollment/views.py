@@ -400,42 +400,45 @@ import csv
 from django.http import HttpResponse
 
 def export_ecsv(request):
-    # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="enrollments.csv"'
 
-    # Create a CSV writer object using the HttpResponse as the file.
     writer = csv.writer(response)
 
-    # Write the header row
-    writer.writerow(
-        [
-            "id",
-            "School",
-            "District",
-            "Zone",
-            "Championship",
-            "Sport",
-            "Athlete Count",
-        ]
-    )  # Replace with your model's fields
+    # Header row
+    writer.writerow([
+        "Enrollment ID",
+        "School",
+        "District",
+        "Zone",
+        "Championship",
+        "Sport",
+        "level",
+        "first Name",
+        "last Name",
+        "Date of Birth",
+        "Index Number",
+    ])
 
-    for obj in SchoolEnrollment.objects.all():
-        athlete_count = obj.athlete_enrollments.aggregate(total=models.Count('athletes'))['total'] or 0
-        writer.writerow(
-            [
-                obj.id,
-                obj.school,
-                obj.school.district,
-                obj.school.district.zone,
-                obj.championship,
-                obj.sport,
-                athlete_count,
-            ]
-        ) 
-        # Replace with your model's fields
+    for enrollment in SchoolEnrollment.objects.all():
+        for athlete_enrollment in enrollment.athlete_enrollments.all():
+            for athlete in athlete_enrollment.athletes.all():
+                writer.writerow([
+                    enrollment.id,
+                    enrollment.school.name,
+                    enrollment.school.district.name if enrollment.school.district else "",
+                    enrollment.school.district.zone.name if enrollment.school.district and enrollment.school.district.zone else "",
+                    enrollment.championship.name,
+                    enrollment.sport.name,
+                    enrollment.level,
+                    athlete.fname,
+                    athlete.lname,
+                    athlete.date_of_birth,
+                    athlete.index_number,
+                ])
 
     return response
+
 
 
 def prepare_certificate(request, id):
