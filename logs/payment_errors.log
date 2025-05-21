@@ -2935,3 +2935,89 @@ Traceback (most recent call last):
     ^^^^^^^^^^^^^^
 AttributeError: 'Athlete' object has no attribute 'f_name'. Did you mean: 'fname'?
 "GET /enrollment/export_ecsv/ HTTP/1.1" 500 87495
+Internal Server Error: /enrollment/get-sports/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\enrollment\views.py", line 31, in get_sports
+    sports = championship.sport_set.values(
+             ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Championship' object has no attribute 'sport_set'
+"GET /enrollment/get-sports/?championship_id=1 HTTP/1.1" 500 86678
+Internal Server Error: /enrollment/school_enrollments/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\debug_toolbar\middleware.py", line 102, in __call__
+    return self._postprocess(request, response, toolbar)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\debug_toolbar\middleware.py", line 143, in _postprocess
+    rendered = toolbar.render_toolbar()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\debug_toolbar\toolbar.py", line 86, in render_toolbar
+    return render_to_string("debug_toolbar/base.html", context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: debug_toolbar/base.html
+"GET /enrollment/school_enrollments/ HTTP/1.1" 500 91398
+Internal Server Error: /enrollment/get-sports/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\enrollment\views.py", line 31, in get_sports
+    sports = championship.sport_set.values(
+             ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Championship' object has no attribute 'sport_set'
+"GET /enrollment/get-sports/?championship_id=1 HTTP/1.1" 500 73349
+Internal Server Error: /enrollment/get-sports/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\enrollment\views.py", line 31, in get_sports
+    sports = championship.sport_set.values(
+             ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Championship' object has no attribute 'sport_set'
+"GET /enrollment/get-sports/?championship_id=1 HTTP/1.1" 500 73349
+Internal Server Error: /enrollment/get-sports/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\enrollment\views.py", line 31, in get_sports
+    sports = championship.sport_set.values(
+             ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Championship' object has no attribute 'sport_set'
+"GET /enrollment/get-sports/?championship_id=1 HTTP/1.1" 500 73434
+Internal Server Error: /enrollment/get-sports/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\enrollment\views.py", line 31, in get_sports
+    sports = championship.sports_set.values(
+             ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Championship' object has no attribute 'sports_set'
+"GET /enrollment/get-sports/?championship_id=1 HTTP/1.1" 500 73579

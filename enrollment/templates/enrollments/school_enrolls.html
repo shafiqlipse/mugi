@@ -112,7 +112,23 @@
             class="form-ctrl"
             enctype="multipart/form-data"
           >
-            {% csrf_token %} {{form.as_p}}
+            {% csrf_token %}
+            <div class="field">
+              <label>Championship</label>
+              {{form.championship}}
+            </div>
+
+            <div class="field">
+              <label>Sport</label>
+              <select id="id_sport" name="sport" class="form-control">
+                <option value="">---------</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Level</label>
+              {{form.level}}
+            </div>
+
             <button type="submit" class="btn btn-success">Enroll</button>
           </form>
         </div>
@@ -126,4 +142,35 @@
     </div>
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $("#id_championship").change(function () {
+      var championshipId = $(this).val();
+      if (championshipId) {
+        $.ajax({
+          url: "{% url 'get_sports' %}", // Use the URL for the updated view
+          data: {
+            championship_id: championshipId,
+          },
+          success: function (data) {
+            var sportDropdown = $("#id_sport");
+            sportDropdown.empty();
+            sportDropdown.append('<option value="">Select a sport</option>');
+            data.forEach(function (sport) {
+              sportDropdown.append(
+                `<option value="${sport.id}">${sport.name}</option>`
+              );
+            });
+          },
+        });
+      } else {
+        $("#id_sport").empty();
+        $("#id_sport").append('<option value="">Select a sport</option>');
+      }
+    });
+  });
+</script>
 {% endblock %}

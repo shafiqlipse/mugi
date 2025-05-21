@@ -19,7 +19,19 @@ from io import BytesIO
 from django.core.paginator import Paginator
 
 from .filters import SchoolEnrollmentFilter  # Assume you have created this filter
+from django.http import JsonResponse
 
+
+def get_sports(request):
+    championship_id = request.GET.get("championship_id")
+    if championship_id:
+        try:
+            championship = Championship.objects.get(id=championship_id)
+            sports = championship.sport.values("id", "name")  # Correct accessor
+            return JsonResponse(list(sports), safe=False)
+        except Championship.DoesNotExist:
+            return JsonResponse({"error": "Championship not found"}, status=404)
+    return JsonResponse([], safe=False)
 
 from django.db import IntegrityError
 from django.contrib import messages
@@ -190,7 +202,6 @@ from io import BytesIO
 from django.conf import settings
 from django.http import HttpResponse
 from django.template.loader import get_template
-
 from xhtml2pdf import pisa
 
 # Make sure to import your models

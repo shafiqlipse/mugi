@@ -62,6 +62,7 @@ class Championship(models.Model):
         choices=[("Active", "Active"), ("Inactive", "Inactive")],
         default="Inactive",
     )
+    sport = models.ManyToManyField(Sport, verbose_name="Sport", blank=True)
 
     def __str__(self):
         return self.name
