@@ -25,7 +25,7 @@ import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db import transaction
-
+from django.db.models import F
 
 
 @school_required
@@ -101,6 +101,8 @@ def Schools(request):
     }
 
     return render(request, "school/schools.html", context)
+
+
 @login_required(login_url="login")
 def export_csv(request):
     response = HttpResponse(content_type="text/csv")
@@ -140,43 +142,102 @@ def exportp_csv(request):
 
 # schools list, tuple or array
 @staff_required
+def athlete_data_view(request):
+    draw = int(request.GET.get('draw', 1))
+    start = int(request.GET.get('start', 0))
+    length = int(request.GET.get('length', 10))
+    search_value = request.GET.get('search[value]', '')
+
+    queryset = Athlete.objects.select_related('school').exclude(status="COMPLETED")
+
+    total = queryset.count()
+
+    if search_value:
+        queryset = queryset.filter(fname__icontains=search_value)  # or `lname`
+
+    filtered_total = queryset.count()
+
+    data = list(
+        queryset[start:start + length].values(
+            'id',
+            'fname',
+            'lname',
+            'index_number',
+            'nationality',
+            'gender',
+            'status',
+            'classroom',
+            school_name=F('school__name'),
+        )
+    )
+
+    return JsonResponse({
+        'draw': draw,
+        'recordsTotal': total,
+        'recordsFiltered': filtered_total,
+        'data': data,
+    })
+    
+    
 def all_athletes(request):
     
     athletes_queryset = Athlete.objects.select_related("school").all().exclude(status="COMPLETED")
 
-    # Apply filtering
-    athlete_filter = AthleteFilter(request.GET, queryset=athletes_queryset)
-    filtered_athletes = athlete_filter.qs  # Get the filtered queryset
-
-    # Paginate filtered results
-    paginator = Paginator(filtered_athletes, 10)  # Show 10 athletes per page
-    page_number = request.GET.get("page")
-    paginated_athletes = paginator.get_page(page_number)
-
-    # Pass the filter to the context for rendering the filter form
     context = {
-        "athletes": paginated_athletes,
-        "athlete_filter": athlete_filter,
+        "athletes": athletes,
+
     }
     return render(request, "athletes/all_athletes.html", context)
 
 
 # schools list, tuple or array
+
+@staff_required
+def archives_data_view(request):
+    draw = int(request.GET.get('draw', 1))
+    start = int(request.GET.get('start', 0))
+    length = int(request.GET.get('length', 10))
+    search_value = request.GET.get('search[value]', '')
+
+    queryset = Athlete.objects.select_related("school").filter(status="COMPLETED")
+
+    total = queryset.count()
+
+    if search_value:
+        queryset = queryset.filter(fname__icontains=search_value)  # or `lname`
+
+    filtered_total = queryset.count()
+
+    data = list(
+        queryset[start:start + length].values(
+            'id',
+            'fname',
+            'lname',
+            'index_number',
+            'nationality',
+            'gender',
+            'status',
+            'classroom',
+            school_name=F('school__name'),
+        )
+    )
+
+    return JsonResponse({
+        'draw': draw,
+        'recordsTotal': total,
+        'recordsFiltered': filtered_total,
+        'data': data,
+    })
+    
 @staff_required
 def archives(request):
 
     archives_list = Athlete.objects.select_related("school").filter(status="COMPLETED")
     # Apply filtering
-    athlete_filter = AthleteFilter(request.GET, queryset=archives_list)
-    archived_athletes = athlete_filter.qs  # Get the filtered queryset
 
-    paginator = Paginator(archived_athletes, 10)  # Show 10 athletes per page.
-    page_number = request.GET.get("page")
-    athletes = paginator.get_page(page_number)
 
     context = {
-        "athletes": athletes,
-        "athlete_filter": athlete_filter,
+        "archives_list": archives_list,
     }
     return render(request, "athletes/archives.html", context)
 
@@ -333,33 +394,44 @@ logger = logging.getLogger(__name__)
 @login_required(login_url="login")
 def newAthlete(request):
     if request.method == "POST":
+        # Quick validation before form processing
+        required_fields = ['fname', 'lname', 'lin']  # adjust as needed
+        missing_fields = [field for field in required_fields if field not in request.POST]
+        if missing_fields:
+            messages.error(request, f"Missing required fields: {', '.join(missing_fields)}")
+            return render(request, "athletes/new_athletes.html", {"form": NewAthleteForm()})
+
         form = NewAthleteForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                new_athlete = form.save(commit=False)
+                with transaction.atomic():  # Database transaction
+                    # Check school assignment early
+                    if not hasattr(request.user, 'school') or not request.user.school:
+                        messages.error(request, "User profile missing school information")
+                        return render(request, "athletes/new_athletes.html", {"form": form})
+                    
+                    new_athlete = form.save(commit=False)
+                    new_athlete.school = request.user.school
 
-                # Assign the school from the user profile
-                new_athlete.school = request.user.school  # Ensure profile has a school
+                    # Process image only if form is valid and all other checks pass
+                    cropped_data = request.POST.get("photo_cropped")
+                    if cropped_data:
+                        try:
+                            format, imgstr = cropped_data.split(";base64,")
+                            ext = format.split("/")[-1]
+                            data = ContentFile(
+                                base64.b64decode(imgstr), 
+                                name=f"photo_{new_athlete.lin or 'temp'}.{ext}"  # More unique naming
+                            )
+                            new_athlete.photo = data
+                        except (ValueError, TypeError, binascii.Error) as e:
+                            messages.error(request, "Invalid image data")
+                            return render(request, "athletes/new_athletes.html", {"form": form})
 
-                # Handle cropped image data for the "photo" field
-                cropped_data = request.POST.get("photo_cropped")
-                if cropped_data:
-                    try:
-                        format, imgstr = cropped_data.split(";base64,")
-                        ext = format.split("/")[-1]
-                        data = ContentFile(
-                            base64.b64decode(imgstr), name=f"photo.{ext}"
-                        )
-                        new_athlete.photo = data  # Assign cropped image
-                    except (ValueError, TypeError) as e:
-                        messages.error(request, "Invalid image data.")
-                        return render(
-                            request, "athletes/new_athletes.html", {"form": form}
-                        )
-
-                new_athlete.save()
-                messages.success(request, "Athlete added successfully!")
-                return redirect("athletes")
+                    # Direct save without change detection
+                    new_athlete.save()
+                    messages.success(request, "Athlete added successfully!")
+                    return redirect("athletes")
 
             except IntegrityError as e:
                 if "lin" in str(e).lower():
@@ -368,16 +440,16 @@ def newAthlete(request):
                         "An athlete with this Learner Identification Number (LIN) already exists.",
                     )
                 else:
-                    messages.error(request, f"Error adding athlete: {str(e)}")
+                    messages.error(request, f"Database error: {str(e)}")
             except Exception as e:
-                messages.error(request, f"Error adding athlete: {str(e)}")
+                messages.error(request, f"Unexpected error: {str(e)}")
+                # Consider logging the full error here for debugging
         else:
-            # Form validation error messages
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field.capitalize()}: {error}")
 
-    else:
+    else:  # GET request
         form = NewAthleteForm()
 
     return render(request, "athletes/new_athletes.html", {"form": form})
