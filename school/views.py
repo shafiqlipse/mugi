@@ -2,10 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from accounts.models import *
 from accounts.forms import *
-from .models import User
 from .forms import *
 from .filters import *
-from accounts.forms import *
 from django.contrib import messages
 from accounts.decorators import *
 import csv
@@ -16,6 +14,18 @@ from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.shortcuts import render
 from .models import Athlete, school_official
+from django.core.cache import cache
+import json
+import requests
+from django.conf import settings
+from django.http import JsonResponse
+import logging
+from django.views.decorators.csrf import csrf_exempt
+import datetime
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.db import transaction
+
 
 
 @school_required
@@ -23,7 +33,7 @@ def Dash(request):
     school = request.user.school
 
     # Fetch all athletes related to the school once
-    athletes_qs = Athlete.objects.filter(school=school)
+    athletes_qs = Athlete.objects.filter(school=school,status="ACTIVE").select_related("school")
 
     # Aggregate athlete counts in a single query
     athlete_counts = athletes_qs.aggregate(
@@ -126,18 +136,6 @@ def exportp_csv(request):
 
     return response
 
-from django.core.cache import cache
-from .filters import AthleteFilter
-import csv
-from django.http import HttpResponse
-import json
-import uuid
-import binascii
-import requests
-from django.conf import settings
-from django.http import JsonResponse
-import logging
-from django.views.decorators.csrf import csrf_exempt
 
 
 # schools list, tuple or array
@@ -407,9 +405,6 @@ def ofifcom(request):
     return render(request, "ofifcom.html", context)
 
 
-import datetime
-from django.http import HttpResponseRedirect
-from django.urls import reverse
 
 
 # # Athletes details......................................................
@@ -646,17 +641,6 @@ def deactivate_official(request, id):
 
 
 
-
-import csv
-from django.http import HttpResponse
-import json
-import uuid
-import requests
-from django.conf import settings
-from django.http import JsonResponse
-import logging
-from django.views.decorators.csrf import csrf_exempt
-from django.db import transaction
 
 
 
@@ -922,44 +906,7 @@ def airtel_payment_callback(request):
         return JsonResponse({"error": "Internal Server Error"}, status=500)
     
     
-# @csrf_exempt
-# def airtel_payment_callback(request):
 
-#     if request.method != 'POST':
-#         return HttpResponse("Method Not Allowed", status=405)
-
-#     try:
-#         # Log the raw request body
-#         raw_body = request.body.decode('utf-8')
-#         logger.info(f"Raw Request Body: {raw_body}")
-
-#         # Parse JSON payload
-#         payload = json.loads(raw_body)
-#         logger.info(f"Parsed JSON Payload: {json.dumps(payload, indent=2)}")
-
-#         # Extract transaction details (corrected)
-#         transaction = payload.get("transaction", {})  # Ensure transaction exists
-#         transaction_id = transaction.get("id")  # Airtel's transaction ID
-#         status_code = transaction.get("status_code")  # Example: "TS" (Success)
-#         airtel_money_id = transaction.get("airtel_money_id")  # Airtel reference ID
-
-#         logger.info(f"Transaction ID: {transaction_id}, Status Code: {status_code}, Airtel Money ID: {airtel_money_id}")
-
-#         # Ensure required fields exist
-#         if not all([transaction_id, status_code, airtel_money_id]):
-#             logger.error("❌ Missing required fields in callback payload")
-#             return JsonResponse({"error": "Invalid callback payload"}, status=400)
-
-#         # Process the payment callback (Update Payment record)
-#         return JsonResponse({"message": "Callback processed successfully"}, status=200)
-
-#     except json.JSONDecodeError:
-#         logger.error("❌ Invalid JSON payload received")
-#         return JsonResponse({"error": "Invalid JSON"}, status=400)
-
-#     except Exception as e:
-#         logger.error(f"❌ Error processing callback: {str(e)}")
-#         return JsonResponse({"error": "Internal Server Error"}, status=500)
     
     
     
@@ -975,80 +922,4 @@ def payment_success(request, transaction_id):
         'timestamp': payment.created_at,  # Make sure your Payment model has `created_at`
     })
     
-   
-
-# from django.http import JsonResponse
-# from .utils import *
-# logger = logging.getLogger(__name__)
-
-# def payment_view(request):
-#     school = request.user.school  # Get the logged-in user's school
-
-#     if request.method == 'POST':
-#         form = PaymentForm(request.POST, school=school)
-#         if form.is_valid():
-#             mobileNumber = form.cleaned_data['mobile_number']
-#             athletes = form.cleaned_data['athletes']
-#             total_amount = athletes.count() * 3000  # UGX 3,000 per athlete
-            
-#             # Generate unique transaction_id
-#             transaction_id = str(uuid.uuid4())  # Short UUID for transaction
-
-#             # Create and save the payment with status as 'PENDING'
-#             payment = Payment.objects.create(
-#                 school=school,
-#                 amount_to_pay=total_amount,
-#                 mobile_number=mobileNumber,
-#                 reference=transaction_id,
-#                 status='PENDING'  # Set status as 'PENDING' initially
-#             )
-
-#             # Set the ManyToMany relationship for athletes
-#             payment.athletes.set(athletes)
-
-#             logger.info(f"Payment created: {payment.transaction_id}, Status: PENDING, Amount: {total_amount}")
-
-#             # Call the initiate_payment function from utils.py
-#             response = initiate_payment(
-#                 mobileNumber=mobileNumber,
-#                 amount_to_pay=total_amount,
-#                 reference=transaction_id
-#             )
-
-#             if isinstance(response, tuple):
-#                 response = response[0]  # Extract the JSON string or dict from the tuple
-
-#             if isinstance(response, str):
-#                 response = json.loads(response)  # Convert JSON string to dictionary
-
-#             payment_status_response = check_payment_status(transaction_id, mobileNumber)
-#             response_code = payment_status_response.get("responseCode")
-#             response_message = payment_status_response.get("responseMessage")
-
-#             if response_code == 0:  # Assuming 0 is success
-#                 payment.status = "SUCCESSFUL"
-#                 logger.info(f"Payment successful for transaction {transaction_id}")
-#             else:
-#                 payment.status = "FAILED"
-#                 logger.error(f"Payment failed for transaction {transaction_id}, Response: {response_message}")
-                
-#             # Save the updated payment status
-#             payment.save()
-
-#             # Redirect to the payment status page
-#             return redirect('payment_status', transaction_id=payment.transaction_id)
-
-#     else:
-#         form = PaymentForm(school=school)
-
-#     return render(request, 'emails/payment_form.html', {'form': form})
-
-
-# def payment_status(request, transaction_id):
-#     # Retrieve the payment using the payment_id
-#     payment = get_object_or_404(Payment, transaction_id=transaction_id)
-
-#     logger.info(f"Viewing payment status for transaction {transaction_id}, Status: {payment.status}")
-
-#     # Pass the payment object to the template
-#     return render(request, 'emails/payment_status.html', {'payment': payment})
+  

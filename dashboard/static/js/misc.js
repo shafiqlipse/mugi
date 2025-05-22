@@ -76,6 +76,7 @@
         body.toggleClass('sidebar-hidden');
       } else {
         body.toggleClass('sidebar-icon-only');
+        $('.sidebar-cta').toggleClass('cta-hide')
       }
     });
 
@@ -109,3 +110,44 @@
     
   });
 })(jQuery);
+
+//CTA button hover
+const ctaBtn = document.getElementById('cta-trigger')
+const crownblack = document.querySelector('.crown-black')
+const crownwhite = document.querySelector('.crown-white')
+
+ctaBtn.addEventListener('mouseover', () => {
+  crownwhite.classList.remove('cta-hover')
+  crownblack.classList.add('cta-hover')
+})
+ctaBtn.addEventListener('mouseout', () => {
+  crownwhite.classList.add('cta-hover')
+  crownblack.classList.remove('cta-hover')
+})
+
+// Link redirection 
+function redirection(url) {
+  // create show message
+  const message = document.createElement('div')
+
+  message.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: black;
+      color: white;
+      padding: 8rem;
+      font-size: 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+  `
+  message.textContent =  'Redirecting to Pro Demo....'
+  document.body.appendChild(message)
+
+  setTimeout(() => {
+    window.open(url, '_blank')
+    message.remove()
+  }, 1500)
+}
