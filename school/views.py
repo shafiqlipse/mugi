@@ -399,7 +399,7 @@ def school_new(request):
         "form": form,
         "regions": regions,
     }
-    return render(request, "school/create_school.html", context)
+    return render(request, "school/newschool.html", context)
 
 
 @login_required
