@@ -3967,3 +3967,16 @@ Traceback (most recent call last):
     raise self.error(token, msg)
 django.template.exceptions.TemplateSyntaxError: Unclosed tag on line 66: 'if'. Looking for one of: elif, else, endif.
 "GET /auth/login/ HTTP/1.1" 500 171046
+Internal Server Error: /enrollment/get-sports/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\enrollment\views.py", line 30, in get_sports
+    sports = championship.sport.values("id", "name")  # Correct accessor
+             ^^^^^^^^^^^^^^^^^^
+AttributeError: 'Championship' object has no attribute 'sport'
+"GET /enrollment/get-sports/?championship_id=1 HTTP/1.1" 500 73289
