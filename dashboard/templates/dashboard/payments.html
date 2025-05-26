@@ -5,16 +5,12 @@
 {%block title%}Schools{% endblock %}
 <!---->
 {% block content %}
-<div class="schools-dew content-wrapper">
-  <div class="head flex">
-    <h1>Payments Records</h1>
-    <div class="report">
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="fs-18 fw-semibold m-0">Payments</h1>
       <a href=""><i class="fa fa-download" aria-hidden="true"></i> Export </a>
-    </div>
-    </div>
 
-    <div class="filterlist card">
-      <h2>Filter payments</h2>
       <div method="get" class="formlix flex">
         <form method="get" class="formix">
           <div class="row">
@@ -40,7 +36,7 @@
           </div>
         </form>
       </div>
-      <div class="lo">
+      <div class="card-body">
         <div class="table-responsive">
           <table id="myTable" class="display">
             <thead>
@@ -106,5 +102,5 @@
       </div>
     </div>
   </div>
-  {% endblock %}
 </div>
+  {% endblock %}

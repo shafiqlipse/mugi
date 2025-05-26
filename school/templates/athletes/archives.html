@@ -6,68 +6,77 @@
 {% load static %}
 <!--khfufufu-->
 {% block content %}
-<div class="schools-dew content-wrapper">
-  <div class="head flex">
-    <h1>Athletes</h1>
-  </div>
-  <div class="filterlist card">
-    <div class="table-responsive">
-      <table id="athletes-table" class="table">
-        <thead>
-          <tr>
-            <th>Athlete Name</th>
-            <th>Index No</th>
-            <th>School</th>
-            <th>Nationality</th>
-            <th>Gender</th>
-            <th>Class</th>
-            <th>Status</th>
-            {% if user.is_superuser %}
-            <th>Edit</th>
-            {% endif %}
-          </tr>
-        </thead>
-      </table>
+<div class="container-fluid">
+  <!-- Datatables  -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Athletes Archives</h5>
+        </div>
+        <!-- end card header -->
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="athletes-table" class="table">
+              <thead>
+                <tr>
+                  <th>Athlete Name</th>
+                  <th>Index No</th>
+                  <th>School</th>
+                  <th>Nationality</th>
+                  <th>Gender</th>
+                  <th>Class</th>
+                  <th>Status</th>
+                  {% if user.is_superuser %}
+                  <th>Edit</th>
+                  {% endif %}
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+        <script>
+          $(document).ready(function () {
+            const isSuperuser = {{ user.is_superuser|yesno:"true,false" }};
+
+            $('#athletes-table').DataTable({
+              processing: true,
+              serverSide: true,
+              ajax: {
+                url: "{% url 'archives_data' %}",
+                type: "GET"
+              },
+              columns: [
+                {
+                  data: null,
+                  render: function (data, type, row) {
+                    const fullName = `${data.fname} ${data.lname}`;
+                    return `<a href="/school/athlete/${data.id}"><span class="pl-2">${fullName}</span></a>`;
+                  }
+                },
+                { data: 'index_number' },
+                { data: 'school_name' },
+                { data: 'nationality' },
+                { data: 'gender' },
+                { data: 'classroom' },
+                { data: 'status' },
+                isSuperuser ? {
+                  data: null,
+                  render: function (data, type, row) {
+                    return `<a href="/updateathlete/${data.id}" class="del"><i class="fa fa-pencil"></i></a>`;
+                  }
+                } : null
+              ].filter(Boolean),
+              pageLength: 10,
+              lengthMenu: [10, 25, 50, 100, 500],
+            });
+          });
+        </script>
+      </div>
     </div>
   </div>
-  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-
-  <script>
-    $(document).ready(function () {
-      const isSuperuser = {{ user.is_superuser|yesno:"true,false" }};
-
-      $('#athletes-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-          url: "{% url 'archives_data' %}",
-          type: "GET"
-        },
-        columns: [
-          {
-            data: null,
-            render: function (data, type, row) {
-              const fullName = `${data.fname} ${data.lname}`;
-              return `<a href="/school/athlete/${data.id}"><span class="pl-2">${fullName}</span></a>`;
-            }
-          },
-          { data: 'index_number' },
-          { data: 'school_name' },
-          { data: 'nationality' },
-          { data: 'gender' },
-          { data: 'classroom' },
-          { data: 'status' },
-          isSuperuser ? {
-            data: null,
-            render: function (data, type, row) {
-              return `<a href="/updateathlete/${data.id}" class="del"><i class="fa fa-pencil"></i></a>`;
-            }
-          } : null
-        ].filter(Boolean),
-        pageLength: 10,
-        lengthMenu: [10, 25, 50, 100, 500],
-      });
-    });
-  </script>
 </div>
 {% endblock %}

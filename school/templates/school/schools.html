@@ -5,128 +5,82 @@
 {%block title%}Schools{% endblock %}
 <!---->
 {% block content %}
-<div class="schools-dew content-wrapper">
-  <div class="head flex">
-    <h1>Schools</h1>
-    <div class="report">
-      <a href="{% url 'export_scsv'%}"
-        ><i class="fa fa-download" aria-hidden="true"></i> Export
-      </a>
-      <a href="{% url 'export_pdf'%}"
-        ><i class="fa fa-file-pdf" aria-hidden="true"></i>
-      </a>
+<div class="container-fluid">
+  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+    <div class="flex-grow-1">
+      <h4 class="fs-18 fw-semibold m-0">Schools</h4>
     </div>
-    <a href="{% url 'add_athlete'%}" class="btn-submit">Add School</a>
   </div>
 
-  <div class="filterlist card">
-    <h2>Filter schools</h2>
-    <div method="get" class="formlix flex">
-      <form method="get" class="formix">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="school">Name</label>
-              {{ school_filter.form.search}}
-            </div>
-          </div>
 
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="championship">District</label>
-              {{ school_filter.form.district}}
-            </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <table
+              id="datatable-buttons"
+              class="table table-striped dt-responsive nowrap"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th>School</th>
+                  <th>Center Number</th>
+                  <th>District</th>
+                  <th>Zone</th>
+                  {% if user.is_staff %}
+                  <th>Actions</th>
+                  {% endif %}
+                </tr>
+              </thead>
+            </table>
           </div>
         </div>
-
-        <div class="text-center mt-3">
-          <button type="submit" class="btn btn-primary">Filter</button>
-          <a href="" class="btn btn-secondary">Reset</a>
-        </div>
-      </form>
-    </div>
-    <div class="lo">
-      <div class="table-responsive">
-        <table  class="table">
-          <thead>
-            <tr>
-              <th>School</th>
-              <th>Center Number</th>
-
-              <th>District</th>
-              <th>Zone</th>
-              {% if user.is_staff %}
-              <th>Actions</th>
-              {% endif %}
-            </tr>
-          </thead>
-          <tbody>
-            {% for school in schooles%}
-            <tr>
-              <td>
-                <a href="{% url 'schooldetail' school.id%}">{{school.name}}</a>
-              </td>
-              <td>{{school.center_number}}</td>
-
-              <td>{{school.district}}</td>
-              <td>{{school.district.zone}}</td>
-              {% if user.is_staff %}
-              <td>
-                <div class="report">
-                  <a href="{% url 'schoolupdate' school.id%}"
-                    ><i class="fa fa-pencil-square" aria-hidden="true">Edit</i>
-                  </a>
-                  <a href="{% url 'delschool' school.id%}"
-                    ><i class="fa fa-trash" aria-hidden="true">Delete</i>
-                  </a>
-                </div>
-              </td>
-              {% endif %}
-            </tr>
-
-            {%endfor%}
-          </tbody>
-        </table>
-      </div>
-      <div class="pagination">
-        <nav aria-label="Page navigation">
-          <ul class="pagination">
-            {% if schooles.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ schooles.previous_page_number }}"
-                >Previous</a
-              >
-            </li>
-            </li>
-            {% endif %} {% for page_num in schooles.paginator.page_range %}
-             {% if page_num == 1 or page_num == schooles.paginator.num_pages %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
-            </li>
-            {% elif page_num >= schooles.number|add:"-2" and page_num <= schooles.number|add:"2" %}
-             {% if page_num == schooles.number %}
-            <li class="page-item active">
-              <span class="page-link">{{ page_num }}</span>
-            </li>
-            {% else %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
-            </li> 
-            {% endif %} {% elif page_num == schooles.number|add:"3" or page_num == schooles.number|add:"-3" %}
-            
-            <li class="page-item disabled"><span class="page-link">...</span></li>
-            {% endif %} {% endfor %} {% if schooles.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ schooles.next_page_number }}"
-                >Next</a
-              >
-            </li>
-            {% endif %}
-          </ul>
-        </nav>
       </div>
     </div>
-
   </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+
+<!-- DataTable Initialization -->
+<script>
+  $(document).ready(function () {
+    const isStaff = {{ user.is_staff|yesno:"true,false" }};
+
+    $('#datatable-buttons').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: {
+        url: "{% url 'school_data' %}",  // Adjust to your correct data URL
+        type: "GET"
+      },
+      dom: 'Bfrtip',
+      buttons: ['copy', 'csv', 'excel', 'print', 'colvis'],
+      columns: [
+        {
+          data: null,
+          render: function (data) {
+            return `<a href="/school/school/${data.id}"><span>${data.name}</span></a>`;
+          }
+        },
+        { data: 'center_number' },
+        { data: 'district' },
+        { data: 'zone' },
+        isStaff ? {
+          data: null,
+          orderable: false,
+          render: function (data) {
+            return `
+              <a href="/school/schoolupdate/${data.id}" class="btn btn-sm btn-primary mr-1">Edit</a>
+              <a href="/school/delschool/${data.id}" class="btn btn-sm btn-danger">Delete</a>
+            `;
+          }
+        } : null
+      ].filter(Boolean),
+      pageLength: 10,
+      lengthMenu: [10, 25, 50, 100, 500],
+    });
+  });
+</script>
 </div>
 {% endblock %}

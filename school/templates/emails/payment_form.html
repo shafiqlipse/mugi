@@ -6,16 +6,13 @@
 {% load static %}
 <!--khfufufu-->
 {% block content %}
-<div class="schools-dew content-wrapper">
-  <!--  <div class="card">
-    <div class="card-body">
-      The system has been closed. Please check back later.
-      <div class="alert alert-danger" role="alert">
-        <strong>Alert!</strong> You cannot pay for athletes until further notice.
-      </div>
+<div class="container-fluid">
+  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+    <div class="flex-grow-1">
+      <h1 class="fs-18 fw-semibold m-0">Payments</h1>
     </div>
   </div>
- templates/payment_form.html--> 
+<div class="card-body mt-0 p-0">
   <form method="post" id="payment-form">
     {% csrf_token %}
     <div class="payments flex">
@@ -23,17 +20,17 @@
         Total Amount: UGX
         <span id="total-amount" class="p-2 bg-success rounded">0</span>
       </div>
-      <button type="submit" class="btn btn-primary">Pay</button>
+      
     </div>
     <label for="phone_number">Airtel Phone Number:</label>
     <input
       type="text"
       name="phone_number"
       id="phone_number"
-      class="form-control"
+      class="form-control mb-2"
       placeholder="Enter Airtel Money phone number"
       required
-    />
+    /><button type="submit" class="btn btn-primary  mb-2">Pay</button>
     <div class="table-responsive">
       <table  class="table">
         <thead class="table-dark">
@@ -74,7 +71,7 @@
               <td>{{ athlete.lname }}</td>
               <td>{{ athlete.index_number }}</td>
               <td>{{ athlete.classroom }}</td>
-              <td><span class="bg-success p-2">6000</span></td>
+              <td><span class="btn btn-outline-primary ">3000</span></td>
             </tr>
           {% endfor %}
         </tbody>
@@ -82,7 +79,7 @@
       </table>
     </div>
   </form>
-
+</div>
   <script>
     // JavaScript to dynamically update the total amount
     document.addEventListener("DOMContentLoaded", function () {
@@ -90,7 +87,7 @@
         '#payment-form input[type="checkbox"]'
       );
       const totalAmountSpan = document.getElementById("total-amount");
-      const amountPerathlete = 6000;
+      const amountPerathlete = 3000;
 
       function updateTotal() {
         const selectedCount = Array.from(checkboxes).filter(

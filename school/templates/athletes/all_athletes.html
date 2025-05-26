@@ -6,29 +6,37 @@
 {% load static %}
 <!--khfufufu-->
 {% block content %}
-<div class="schools-dew content-wrapper">
-  <div class="head flex">
-    <h1>Athletes</h1>
-  </div>
+<div class="container-fluid">
+  <!-- Datatables  -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Athletes</h5>
+        </div>
+        <!-- end card header -->
 
-  <div class="filterlist card">
-    <div class="table-responsive">
-      <table id="athletes-table" class="table">
-        <thead>
-          <tr>
-            <th>Athlete Name</th>
-            <th>Index No</th>
-            <th>School</th>
-            <th>Nationality</th>
-            <th>Gender</th>
-            <th>Class</th>
-            <th>Status</th>
-            {% if user.is_superuser %}
-            <th>Edit</th>
-            {% endif %}
-          </tr>
-        </thead>
-      </table>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="athletes-table" class="table">
+              <thead>
+                <tr>
+                  <th>Athlete Name</th>
+                  <th>Index No</th>
+                  <th>School</th>
+                  <th>Nationality</th>
+                  <th>Gender</th>
+                  <th>Class</th>
+                  <th>Status</th>
+                  {% if user.is_superuser %}
+                  <th>Edit</th>
+                  {% endif %}
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -72,4 +80,4 @@
   </script>
 </div>
 
-  {% endblock %}
+{% endblock %}

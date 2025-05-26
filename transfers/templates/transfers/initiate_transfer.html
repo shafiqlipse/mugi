@@ -6,50 +6,36 @@
 {% load static %}
 <!--khfufufu-->
 {% block content %}
-<div class="schools-dew content-wrapper">
-  <div class="school">
-    <div class="card">
-      <div class="card-body">
-        Transfers are currently closed. Please check back later.
-        <div class="alert alert-danger" role="alert">
-          <strong>Alert!</strong> You cannot transfer athletes further
-          notice.
-        </div>
-      </div>
-    </div>
-    <!--
-  <div class="head flex">
-    <h1>Transfers</h1>
-  </div>
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1>My Transfers</h1>
+    
+
   <div class="filter flex">
     <form method="get" class="formiex flex">
-      <h2>Filter Athletes</h2>
-      <div method="get" class="formlix flex">
-        <div method="get" class="formix">
-          <div class="form-group flex">
-            <label for="gender">Gender</label>
-            {{ athlete_filter.form.gender }}
-          </div>
 
-          <div class="form-group flex">
+<div class="row mb-2">
+          <div class="form-group col-12 col-md-4">
             <label for="school">School</label>
             {{ athlete_filter.form.school }}
           </div>
-          <div class="form-group flex">
+          <div class="form-group col-12 col-md-4">
             <label for="school">Names</label>
             {{ athlete_filter.form.search }}
           </div>
-          <div class="form-group flex">
+          <div class="form-group col-12 col-md-4">
             <label for="school">Index_Number</label>
             {{ athlete_filter.form.index_number }}
           </div>
         </div>
 
-        <button type="submit">Search</button>
-      </div>
+        <button type="submit" class='btn btn-primary'>Search</button>
+
     </form>
   </div>
-  <div class="filterlist card">
+  </div>
+  <div class="card-body">
 
     <div class="table-responsive">
       <table class="table">
@@ -58,7 +44,7 @@
             <th>Athlete Name</th>
 
             <th>School</th>
-            <th>Nationality</th>
+            <th>Index_Number</th>
             <th>Gender</th>
             <th>Class</th>
             <th>Date of Birth</th>
@@ -73,13 +59,12 @@
           <tr>
             <td>
               <a href="">
-                <img src="{{athlete.photo.url}}" alt="image" />
                 <span class="pl-2">{{athlete.fname}} {{athlete.lname}}</span></a
               >
             </td>
         
             <td>{{ athlete.school }}</td>
-            <td>{{ athlete.nationality }}</td>
+            <td>{{ athlete.index_number }}</td>
             <td>{{ athlete.gender }}</td>
             <td>{{ athlete.classroom }}</td>
             <td>{{ athlete.date_of_birth }}</td>
@@ -132,7 +117,7 @@
     
     
     </div>
-  </div>-->
+  </div>
     <script>
       // Wait until the DOM is fully loaded
       document.addEventListener("DOMContentLoaded", function () {
@@ -164,5 +149,6 @@
       });
     </script>
   </div>
-  {% endblock %}
 </div>
+
+  {% endblock %}

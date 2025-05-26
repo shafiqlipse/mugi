@@ -25,3 +25,7 @@ class DelegateFilter(django_filters.FilterSet):
             "zone",
            
         ]
+    def __init__(self, *args, **kwargs):
+        super(DelegateFilter, self).__init__(*args, **kwargs)
+        for field_name, field in self.form.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})

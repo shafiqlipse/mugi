@@ -5,145 +5,157 @@
 {% load static %}
 <!--khfufufu-->
 {% block content %}
-<div class="enrollment content-wrapper">
-  <div class="top flex">
-    <h1>{{ school_enrollment.championship.name }} - {{ school_enrollment.sport}}</h1>
 
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Enroll athletes</a> 
- 
-  
-</div>
-  
-
-  <div
-  class="modal fade"
-  id="exampleModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
-  >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-   
- <h5 class="modal-title" id="exampleModalLabel">Enroll Athletes</h5>
-       
-         
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="school-long">
-            <form method="post">
-              {% csrf_token %}
-              <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Select</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Athlete ID</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for athlete in all_athletes %}
-                  <tr>
-                    <td>
-                      <input
-                        type="checkbox"
-                        id="athlete_{{ athlete.id }}"
-                        name="athletes"
-                        value="{{ athlete.id }}"
-                      />
-                    </td>
-                    <td>{{ athlete.fname }}</td>
-                    <td>{{ athlete.lname }}</td>
-                    <td>{{ athlete.athlete_id }}</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-              <button type="submit" class="btn btn-success">Add Selected Athletes</button></div>
-            </form>
-          </div>
-        </div>
-    
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">
-            Cancel
-          </button>
-        </div>
-      </div>
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">
+        {{ school_enrollment.championship.name }} - {{ school_enrollment.sport}}
+      </h1>
     </div>
-  </div>
- 
+    <div class="card-body">
+      <div class="row mb-4">
+        <button
+          type="button"
+          class="btn btn-primary mb-3"
+          data-toggle="modal"
+          data-target="#exampleModal"
+        >
+          Enroll athletes
+        </button>
 
-
-
-  <div class="enrolled-athletes">
-  <div class="enrolled-athletes flex">
-    <h2>Enrolled Athletes</h2>
-    
-    <a href="{% url 'team_album' school_enrollment.id%}" class="btn btn-primary">Album</a>
-    
+        <a
+          href="{% url 'team_album' school_enrollment.id%}"
+          class="btn btn-primary"
+          >Album</a
+        >
       </div>
-    <hr>
-    <div class="conter">
-     {% if athlete_enrollments %}
-      
-        <div class="athletes">
-            {% for enrollment in athlete_enrollments %}
-                {% for athlete in enrollment.athletes.all %}
-                <!-- Row -->
-          <div class="athlete">
-            <div class="pro-pic">
-              <img src="{{athlete.photo.url}}" alt="">
-              {% if user.is_staff %}
-              <form method="POST" action="{% url 'remove_athlete' enrollment.id athlete.id %}">
-                {% if athlete.qr_code %}
-                <img src="{{ athlete.qr_code.url }}" alt="Athlete QR Code">{% endif %}
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-danger">Remove</button>
-                </form>{% endif %}  
+
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Enroll Athletes
+              </h5>
+
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
-            <div class="deto">
-              
-                <h6 class="det grid_2"><span>Name:</span>{{athlete.fname}} {{athlete.lname}}</h6>
-                <hr>
-                <p class='det grid_2'><span>Gender:</span>{{athlete.gender}}</p>
-                <hr>
-                <p class='det grid_2'><span>Date of birth:</span>{{athlete.date_of_birth}}</p>
-                <hr>
-                <p class='det grid_2'><span>LIN:</span>{{athlete.lin}}</p>
-                <hr>
-                <p class='det grid_2'><span>Class:</span>{{athlete.classroom}}</p>
+            <div class="modal-body">
+              <div class="school-long">
+                <form method="post">
+                  {% csrf_token %}
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Select</th>
+                          <th>First Name</th>
+                          <th>Last Name</th>
+                          <th>Athlete ID</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for athlete in all_athletes %}
+                        <tr>
+                          <td>
+                            <input
+                              type="checkbox"
+                              id="athlete_{{ athlete.id }}"
+                              name="athletes"
+                              value="{{ athlete.id }}"
+                            />
+                          </td>
+                          <td>{{ athlete.fname }}</td>
+                          <td>{{ athlete.lname }}</td>
+                          <td>{{ athlete.athlete_id }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    <button type="submit" class="btn btn-success">
+                      Add Selected Athletes
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
 
-
-                <!-- Remove button -->
-              
-              
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                Cancel
+              </button>
             </div>
           </div>
-          <!-- Row -->
-               {% endfor %}
-            {% endfor %}
-           
         </div>
+      </div>
+
+      <div class="enrolled-athletes flex">
+        <h2>Enrolled Athletes</h2>
+      </div>
+      {% if athlete_enrollments %}
+      <div class="row">
+        {% for enrollment in athlete_enrollments %}
+        <!---->
+        {% for athlete in enrollment.athletes.all %}
+        <div class="col-12 col-md-3">
+          <div class="card border">
+            <div class="card-body">
+              <div class="text-center">
+                <img
+                  src="{{athlete.photo.url}}"
+                  class="rounded-circle avatar-xl img-thumbnail"
+                  alt="image profile"
+                />
+
+                <div class="mt-2 mb-3">
+                  <span
+                    class="badge bg-primary-subtle rounded-2 text-primary mb-2 fw-normal"
+                    >{{athlete.lin}} | {{athlete.gender}}</span
+                  >
+                  <h5 class="m-0 fw-medium text-dark fs-16">
+                    {{athlete.fname}} {{athlete.lname}}
+                  </h5>
+                  <p class="mt-1 mb-0">{{athlete.index_number}}</p>
+                  <p class="mt-1 mb-0">{{athlete.date_of_birth}}</p>
+                </div>
+                <div class="">
+                  {% if user.is_staff %}
+                  <form
+                    method="POST"
+                    action="{% url 'remove_athlete' enrollment.id athlete.id %}"
+                  >
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Remove</button>
+                  </form>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <!--end card-body-->
+          </div>
+        </div>
+        {% endfor %} {% endfor %}
+      </div>
       {% else %}
       <p>No athletes enrolled yet.</p>
       {% endif %}
     </div>
   </div>
- 
 </div>
 
 {% endblock %}
-        

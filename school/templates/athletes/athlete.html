@@ -6,78 +6,143 @@
 {% load static %}
 <!--khfufufu-->
 {% block content %}
-<div class="athlete-dew content-wrapper">
-  <div class="athlete flex">
-    <div class="img-ath">
-      {% if athlete.photo %}
-      <img src="{{athlete.photo.url}}" alt="" />
-      {% else %}
-      <img src="{% static 'images/profile.png'%}" alt="" />{% endif %}
+<div class="container-fluid">
+  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+    <div class="flex-grow-1">
+      <h1 class="fs-18 fw-semibold m-0">{{athlete.fname}} {{athlete.lname}}</h1>
     </div>
-    <div class="line-ath">
-      <h1>
-        {{athlete.fname}} {% if athlete.mname %}{{athlete.mname}}{% endif %}
-        {{athlete.lname}}
-      </h1>
-      <span>{{athlete.athlete_id}}</span> | <span>{{athlete.gender}}</span> |
-      <span>{{ age}} Years</span>
-      <hr />
-      <div class="small-details grid3">
-        {% if athlete.lin %}
-        <span
-          >LIN:
-          <h3>{{athlete.lin}}</h3></span
-        >
-        <span
-          >Index Number:
-          <h3>{{athlete.index_number}}</h3></span
-        >{% else %}
-        <span
-          >Nationality:
-          <h3>{{athlete.nationality}}</h3></span
-        ><span
-          >Refugee status:
-          <h3>{{athlete.refugee}}</h3></span
-        ><span
-          >UNEB Equated Results Code:
-          <h3>{{athlete.uneb_code}}</h3></span
-        >{% endif %}
+  </div>
 
-        <span
-          >Date of Birth:
-          <h3>{{athlete.date_of_birth}}</h3></span
-        >
-        <span
-          >Class:
-          <h3>{{athlete.classroom}}</h3></span
-        >
-        <span
-          >Physical status:
-          <h3>{{athlete.physic}}</h3></span
-        >
-        <span
-          >Registration date:
-          <h3>{{athlete.created}}</h3></span
-        >
-        <span
-          >Status:
-          <h3>{{athlete.status}}</h3></span
-        >
-        {% if user.is_staff %}
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-toggle="modal"
-          data-target="#exampleModal"
-        >
-          Screen Athlete
-        </button>
-        {% endif %}
+  <!-- Start Wdget Component -->
+  <div class="row">
+    <!-- Start Traffic Source -->
+    <div class="col-md-12 col-xl-4 col-xxl-4">
+      <div class="card overflow-hidden">
+        <div class="card-header">
+          <div class="d-flex align-items-center">
+            <h5 class="card-title text-dark mb-0">Photo</h5>
+          </div>
+        </div>
+
+        <div class="card-body mt-0 p-0">
+          <div class="img-ath">
+            {% if athlete.photo %}
+            <img src="{{athlete.photo.url}}" alt="" width="100%" />
+            {% else %}
+            <img src="{% static 'images/profile.png'%}" alt="" width="100%" />
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Growth Rate -->
+
+    <!-- Start Visit By Source -->
+    <div class="col-md-12 col-xl-8 col-xxl-8">
+      <div class="card overflow-hidden">
+        <div class="card-header">
+          <div class="d-flex align-items-center">
+            <h5 class="card-title text-dark mb-0">Other details</h5>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="row">
+            <!-- end col -->
+
+            <div class="col-6 col-md-8">
+              <span class="fs-14 text-muted">Names</span>
+              <h6 class="mb-1 text-dark fs-15">
+                {{athlete.fname}}{% if athlete.mname %} {{athlete.mname}}
+                <!---->
+                {% endif %} {{athlete.lname}}
+              </h6>
+            </div>
+          </div>
+          <div class="line-ath">
+            <h1></h1>
+            <span>{{athlete.athlete_id}}</span> |
+            <span>{{athlete.gender}}</span> |
+            <span>{{ age}} Years</span>
+            <hr />
+            <div class="row">
+              <!-- end col -->
+              {% if athlete.lin %}
+              <div class="col-6 col-md-4">
+                <span class="fs-14 text-muted">LIN</span>
+
+                <h6 class="mb-1 text-dark fs-15">{{athlete.lin}}</h6>
+              </div>
+              <div class="col-6 col-md-4 mb-4">
+                <span class="fs-14 text-muted">Index Number:</span>
+
+                <h6 class="mb-1 text-dark fs-15">{{athlete.index_number}}</h6>
+              </div>
+              {% else %}
+              <div class="col-6 col-md-4 mb-4">
+                <span class="fs-14 text-muted">Nationality</span>
+
+                <h6 class="mb-1 text-dark fs-15">{{athlete.nationality}}</h6>
+              </div>
+              <div class="col-6 col-md-4 mb-4">
+                <span class="fs-14 text-muted">Refugee status:</span>
+
+                <h6 class="mb-1 text-dark fs-15">{{athlete.refugee}}</h6>
+              </div>
+              <div class="col-6 col-md-4 mb-4">
+                <span class="fs-14 text-muted">UNEB Equated Results Code:</span>
+
+                <h6 class="mb-1 text-dark fs-15">{{athlete.uneb_code}}</h6>
+              </div>
+              {% endif %}
+              <div class="col-6 col-md-4 mb-4">
+                <span class="fs-14 text-muted">Date of Birth:</span>
+
+                <h6 class="mb-1 text-dark fs-15">{{athlete.date_of_birth}}</h6>
+              </div>
+              <div class="col-6 col-md-4 mb-4">
+                <span class="fs-14 text-muted">Class:</span>
+
+                <h6 class="mb-1 text-dark fs-15">{{athlete.classroom}}</h6>
+              </div>
+              <div class="col-6 col-md-4 mb-4">
+                <span class="fs-14 text-muted">Physical status:</span>
+
+                <h6 class="mb-1 text-dark fs-15">{{athlete.physic}}</h6>
+              </div>
+              <div class="col-6 col-md-4 mb-4">
+                <span class="fs-14 text-muted">Registration date:</span>
+
+                <h6 class="mb-1 text-dark fs-15">{{athlete.created}}</h6>
+              </div>
+              <div class="col-6 col-md-4 mb-4">
+                <span class="fs-14 text-muted">Status:</span>
+
+                <h6 class="mb-1 text-dark fs-15">{{athlete.status}}</h6>
+              </div>
+
+              <div class="col-6 col-md-4 mb-4">
+                {% if user.is_staff %}
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-toggle="modal"
+                  data-target="#exampleModal"
+                >
+                  Screen Athlete
+                </button>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="downgrade grid2">
-    <div class="athletesa">
+
+  <div class="row">
+    <div class="col-md-12 col-xl-4 col-xxl-4">
       <h3>Guardian Infor</h3>
       <hr />
       <div class="athlete-details card">
@@ -108,7 +173,8 @@
         </table>
       </div>
     </div>
-    <div class="athletea">
+
+    <div class="col-md-12 col-xl-4 col-xxl-4">
       <h3>Documents</h3>
       <hr />
       <div class="athlete-details card">
@@ -152,46 +218,46 @@
           >
           {% endif %}
         </li>
-
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="modal fade"
-    id="exampleModal"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Championship</h5>
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %} {{ dform.as_p }}
-            <button type="submit">Submit</button>
-          </form>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">
-            Cancel
-          </button>
-        </div>
       </div>
     </div>
   </div>
 </div>
+
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Championship</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %} {{ dform.as_p }}
+          <button type="submit" class='btn btn-primary'>Submit</button>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

@@ -26,7 +26,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db import transaction
 from django.db.models import F
+from enrollment.models import SchoolEnrollment
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 @school_required
 def Dash(request):
@@ -65,22 +68,116 @@ def Dash(request):
 
 # schools
 
+def users_data(request):
+    """Handle AJAX DataTables request for large datasets"""
+    try:
+        draw = int(request.GET.get('draw', 1))
+        start = int(request.GET.get('start', 0))
+        length = int(request.GET.get('length', 10))
+        search_value = request.GET.get("search[value]", "").strip()
+
+        # Filter base queryset
+        users_query = User.objects.filter(is_school=True).select_related("school")
+
+        # Apply search filters
+        if search_value:
+            users_query = users_query.filter(
+                Q(username__icontains=search_value) |
+                Q(email__icontains=search_value) |
+                Q(school__name__icontains=search_value) |
+                Q(school__emis_number__icontains=search_value)
+            )
+
+        # Pagination
+        paginator = Paginator(users_query, length)
+        page_number = (start // length) + 1
+        users_page = paginator.get_page(page_number)
+
+        data = []
+        for user in users_page:
+            school = getattr(user, 'school', None)
+            name = school.name if school else "No School"
+            emis = school.emis_number if school else "N/A"
+
+            data.append({
+                "username": user.username,
+                "email": user.email,
+                "school_profile": f"{name} | {emis}",
+                "actions": f"""
+                    <a href="/dashboard/user/edit/{user.id}/" class="btn btn-warning btn-sm">Edit</a>
+                """,
+            })
+
+        response = {
+            "draw": draw,
+            "recordsTotal": User.objects.filter(is_school=True).count(),
+            "recordsFiltered": users_query.count(),
+            "data": data,
+        }
+
+        return JsonResponse(response)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 # schools list, tuple or array
 @staff_required
 def users(request):
-    staff = User.objects.all().exclude(is_school=True)
+    
     users = User.objects.select_related("school").filter(is_school=True)
 
     context = {
         "users": users,
-        "staff": staff,
-        # "teamsFilter": teams
+       
     }
     return render(request, "all/users.html", context)
 
 
 # schools list, tuple or array
+
+@staff_required
+def school_data_view(request):
+    draw = int(request.GET.get("draw", 1))
+    start = int(request.GET.get("start", 0))
+    length = int(request.GET.get("length", 10))
+    search_value = request.GET.get("search[value]", "").strip()
+
+    # Filtering
+    schools = School.objects.select_related("district__zone")
+
+    if search_value:
+        schools = schools.filter(
+            Q(name__icontains=search_value) |
+            Q(center_number__icontains=search_value) |
+            Q(district__name__icontains=search_value) |
+            Q(district__zone__name__icontains=search_value)
+        )
+
+    total_records = School.objects.count()
+    filtered_records = schools.count()
+
+    # Pagination
+    paginator = Paginator(schools, length)
+    page_number = (start // length) + 1
+    page = paginator.get_page(page_number)
+
+    # Build response data
+    data = []
+    for school in page.object_list:
+        data.append({
+            "id": school.id,
+            "name": school.name,
+            "center_number": school.center_number,
+            "district": school.district.name if school.district else "",
+            "zone": school.district.zone.name if school.district and school.district.zone else "",
+        })
+
+    return JsonResponse({
+        "draw": draw,
+        "recordsTotal": total_records,
+        "recordsFiltered": filtered_records,
+        "data": data
+    })
 # @staff_required
 @login_required(login_url="login")
 def Schools(request):
@@ -153,7 +250,12 @@ def athlete_data_view(request):
     total = queryset.count()
 
     if search_value:
-        queryset = queryset.filter(fname__icontains=search_value)  # or `lname`
+        queryset = queryset.filter(
+            Q(fname__icontains=search_value) |
+            Q(lname__icontains=search_value) |
+            Q(index_number__icontains=search_value) |
+            Q(school__name__icontains=search_value)  # optionally include school name
+        ) 
 
     filtered_total = queryset.count()
 
@@ -321,12 +423,14 @@ def schoolupdate(request, id):
 def school_detail(request, id):
     school = get_object_or_404(School, id=id)
     officials = school_official.objects.select_related("school").filter(school_id=id)
+    enrollments = SchoolEnrollment.objects.filter(school=school)
     athletes = Athlete.objects.select_related("school").filter(school_id=id).exclude(status="COMPLETED")
 
     context = {
         "school": school,
         "athletes": athletes,
         "officials": officials,
+        "enrollments": enrollments,
     }
     return render(request, "school/school.html", context)
 
@@ -393,65 +497,31 @@ logger = logging.getLogger(__name__)
 
 @login_required(login_url="login")
 def newAthlete(request):
-    if request.method == "POST":
-        # Quick validation before form processing
-        required_fields = ['fname', 'lname', 'lin']  # adjust as needed
-        missing_fields = [field for field in required_fields if field not in request.POST]
-        if missing_fields:
-            messages.error(request, f"Missing required fields: {', '.join(missing_fields)}")
-            return render(request, "athletes/new_athletes.html", {"form": NewAthleteForm()})
-
+    if request.method == "POST" and request.FILES.get("cropped_photo"):
         form = NewAthleteForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                with transaction.atomic():  # Database transaction
-                    # Check school assignment early
-                    if not hasattr(request.user, 'school') or not request.user.school:
-                        messages.error(request, "User profile missing school information")
-                        return render(request, "athletes/new_athletes.html", {"form": form})
-                    
+                with transaction.atomic():
                     new_athlete = form.save(commit=False)
                     new_athlete.school = request.user.school
+                    new_athlete.photo = request.FILES["cropped_photo"]
 
-                    # Process image only if form is valid and all other checks pass
-                    cropped_data = request.POST.get("photo_cropped")
-                    if cropped_data:
-                        try:
-                            format, imgstr = cropped_data.split(";base64,")
-                            ext = format.split("/")[-1]
-                            data = ContentFile(
-                                base64.b64decode(imgstr), 
-                                name=f"photo_{new_athlete.lin or 'temp'}.{ext}"  # More unique naming
-                            )
-                            new_athlete.photo = data
-                        except (ValueError, TypeError, binascii.Error) as e:
-                            messages.error(request, "Invalid image data")
-                            return render(request, "athletes/new_athletes.html", {"form": form})
 
-                    # Direct save without change detection
                     new_athlete.save()
                     messages.success(request, "Athlete added successfully!")
-                    return redirect("athletes")
+                    return redirect('athletes')  # Redirect to your athlete list view
 
-            except IntegrityError as e:
-                if "lin" in str(e).lower():
-                    messages.error(
-                        request,
-                        "An athlete with this Learner Identification Number (LIN) already exists.",
-                    )
-                else:
-                    messages.error(request, f"Database error: {str(e)}")
+            except IntegrityError:
+                messages.error(request, "Index number already exists")
             except Exception as e:
-                messages.error(request, f"Unexpected error: {str(e)}")
-                # Consider logging the full error here for debugging
+                messages.error(request, f"Server error: {str(e)}")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
-
-    else:  # GET request
-        form = NewAthleteForm()
-
+                    messages.error(request, f"{field}: {error}")
+    
+    # GET request or form errors
+    form = NewAthleteForm()
     return render(request, "athletes/new_athletes.html", {"form": form})
 
 
@@ -778,7 +848,7 @@ def payment_view(request):
                     return render(request, 'emails/payment_form.html', {'form': form})
 
                 # Calculate total amount
-                amount_per_athlete = 6000  # UGX 6,000 per athlete
+                amount_per_athlete = 3000  # UGX 6,000 per athlete
                 total_amount = (athletes.count() * amount_per_athlete) + 500  # UGX 500 additional fee
 
                 with transaction.atomic():  # Ensures atomicity in case of failure

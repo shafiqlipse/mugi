@@ -5,130 +5,51 @@
 {%block title%}{{school}}{% endblock %}
 <!---->
 {% block content %}
-<div class="soverview content-wrapper">
-  <div class="school-box">
-    <div class="school card">
-      <h1>{{school.name}}</h1>
-      <p>
-        {{school.emis_number}} | {{school.district}} | {{school.district.zone}}
-        | {{school.district.zone.region}}
-      </p>
-    </div>
-  </div>
-  <div class="col-md-12 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <ul
-          class="nav nav-pills nav-pills-success"
-          id="pills-tab"
-          role="tablist"
-        >
-          <li class="nav-item">
-            <a
-              class="nav-link active"
-              id="pills-home-tab"
-              data-bs-toggle="pill"
-              href="#pills-home"
-              role="tab"
-              aria-controls="pills-home"
-              aria-selected="true"
-              >Home</a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              id="pills-profile-tab"
-              data-bs-toggle="pill"
-              href="#pills-profile"
-              role="tab"
-              aria-controls="pills-profile"
-              aria-selected="false"
-              >Profile</a
-            >
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              id="pills-contact-tab"
-              data-bs-toggle="pill"
-              href="#pills-contact"
-              role="tab"
-              aria-controls="pills-contact"
-              aria-selected="false"
-              >Contact</a
-            >
-          </li>
-        </ul>
-        <div class="tab-content" id="pills-tabContent">
-          <div
-            class="tab-pane fade show active"
-            id="pills-home"
-            role="tabpanel"
-            aria-labelledby="pills-home-tab"
-          >
-            <div class="media d-block d-sm-flex">
-              <img
-                class="me-3 w-25 rounded"
-                src="../../../assets/images/samples/300x300/12.jpg"
-                alt="sample image"
-              />
-              <div class="media-body mt-4 mt-sm-0">
-                <h5 class="mt-0">I'm doing mental jumping jacks.</h5>
-                <p>
-                  Only you could make those words cute. Oh I beg to differ, I
-                  think we have a lot to discuss. After all, you are a client. I
-                  am not a killer. I feel like a jigsaw puzzle missing a piece.
-                  And I'm not even sure what the picture should be.
-                </p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <img
+          src="{% static 'lib/images/user-image.jpg'%}"
+          class="rounded-top-2 img-fluid"
+          alt="image data"
+        />
+
+        <div class="card-body">
+          <div class="align-items-center">
+            <div class="dusty-main-sections">
+              <div class="dusty-profile-main">
+                {% if school.badge %}
+                <img
+                  src="{{school.badge.url}}"
+                  class="rounded-circle img-fluid avatar-xxl img-thumbnail float-start"
+                  alt="image profile"
+                />
+                {% else %}
+                <img
+                  src="{% static 'lib/images/badge-01.png'%}"
+                  class="rounded-circle img-fluid avatar-xxl img-thumbnail float-start"
+                  alt="image profile"
+                />
+                {% endif %}
+                <span class="sil-profile_main-pic-change img-thumbnail">
+                  <i class="mdi mdi-camera text-white"></i>
+                </span>
               </div>
-            </div>
-          </div>
-          <div
-            class="tab-pane fade"
-            id="pills-profile"
-            role="tabpanel"
-            aria-labelledby="pills-profile-tab"
-          >
-            <div class="media d-block d-sm-flex">
-              <img
-                class="me-3 w-25 rounded"
-                src="../../../assets/images/samples/300X300/10.jpg"
-                alt="sample image"
-              />
-              <div class="media-body mt-4 mt-sm-0">
-                <p>
-                  I'm thinking two circus clowns dancing. You? Finding a needle
-                  in a haystack isn't hard when every straw is computerized.
-                  Tell him time is of the essence. Somehow, I doubt that. You
-                  have a good heart, Dexter.
+
+              <div class="overflow-hidden ms-md-4 ms-0">
+                <h4 class="m-0 text-dark fs-20 mt-2 mt-md-0">
+                  {{school.name|upper}}
+                </h4>
+                <p class="my-1 text-muted fs-16">
+                  ~{{school.district.zone|upper}}~{{school.district.zone.region|upper}}
                 </p>
-              </div>
-            </div>
-          </div>
-          <div
-            class="tab-pane fade"
-            id="pills-contact"
-            role="tabpanel"
-            aria-labelledby="pills-contact-tab"
-          >
-            <div class="media d-block d-sm-flex">
-              <img
-                class="me-3 w-25 rounded"
-                src="../../../assets/images/samples/300x300/14.jpg"
-                alt="sample image"
-              />
-              <div class="media-body mt-4 mt-sm-0">
-                <p>
-                  I'm really more an apartment person. This man is a knight in
-                  shining armor. Oh I beg to differ, I think we have a lot to
-                  discuss. After all, you are a client. You all right, Dexter?
-                </p>
-                <p>
-                  I'm generally confused most of the time. Cops, another
-                  community I'm not part of. You're a killer. I catch killers.
-                  Hello, Dexter Morgan.
-                </p>
+                <span class="fs-15"
+                  ><i class="mdi mdi-message me-2 align-middle"></i>
+                  <span
+                    >{{school.center_number}} , {{school.district|upper}}
+                  </span></span
+                >
               </div>
             </div>
           </div>
@@ -136,116 +57,233 @@
       </div>
     </div>
   </div>
-  <div class="dextails">
-    <div class="tabs-section">
-      <div class="tabs-container">
-        <div class="tabs">
-          <button class="tab" aria-selected="true" id="js">Athletes</button>
-          <button class="tab" aria-selected="false" id="ruby">Officials</button>
-        </div>
-        <div class="content">
-          <div class="tabpanel card" aria-labelledby="js">
-            <div class="official-list">
-              <div class="table-responsive">
-                <table id="myTable" class="display">
-                  <thead>
-                    <tr>
-                      <th>Athlete Name</th>
-                      <th>Athlete ID No</th>
-                      <th>Index Number</th>
-                      <th>Gender</th>
-                      <th>Class</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for athlete in athletes %}
-                    <tr>
-                      <td>
-                        <a href="{% url 'athlete' athlete.id%}">
-                          <img
-                            src="{{athlete.photo.url}}"
-                            alt="image"
-                            style="width: 30px; border-radius: 50%"
-                          />
-                          <span class="pl-2"
-                            >{{athlete.fname}} {{athlete.lname}}</span
-                          ></a
-                        >
-                      </td>
-                      <td>{{ athlete.athlete_id }}</td>
-                      <td>{{ athlete.index_number }}</td>
-                      <td>{{ athlete.gender }}</td>
-                      <td>{{ athlete.classroom }}</td>
-                      <td>{{ athlete.status }}</td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body pt-0">
+          <ul
+            class="nav nav-underline border-bottom pt-2"
+            id="pills-tab"
+            role="tablist"
+          >
+            <li class="nav-item" role="presentation">
+              <a
+                class="nav-link active p-2"
+                id="profile_about_tab"
+                data-bs-toggle="tab"
+                href="#profile_about"
+                role="tab"
+              >
+                <span class="d-block d-sm-none"
+                  ><i class="mdi mdi-information"></i
+                ></span>
+                <span class="d-none d-sm-block">Athletes</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link p-2"
+                id="profile_experience_tab"
+                data-bs-toggle="tab"
+                href="#profile_experience"
+                role="tab"
+              >
+                <span class="d-block d-sm-none"
+                  ><i class="mdi mdi-sitemap-outline"></i
+                ></span>
+                <span class="d-none d-sm-block">Officials</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link p-2"
+                id="portfolio_education_tab"
+                data-bs-toggle="tab"
+                href="#profile_education"
+                role="tab"
+              >
+                <span class="d-block d-sm-none"
+                  ><i class="mdi mdi-school"></i
+                ></span>
+                <span class="d-none d-sm-block">Enrollments</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link p-2"
+                id="setting_tab"
+                data-bs-toggle="tab"
+                href="#profile_setting"
+                role="tab"
+              >
+                <span class="d-block d-sm-none"
+                  ><i class="mdi mdi-information"></i
+                ></span>
+                <span class="d-none d-sm-block">Teams</span>
+              </a>
+            </li>
+          </ul>
+
+          <div class="tab-content text-muted">
+            <div
+              class="tab-pane active show pt-4"
+              id="profile_about"
+              role="tabpanel"
+            >
+              <div class="row">
+                <div class="table-responsive">
+                  <table id="myTable" class="display">
+                    <thead>
+                      <tr>
+                        <th>Athlete Name</th>
+                        <th>Index Number</th>
+                        <th>Gender</th>
+                        <th>Class</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for athlete in athletes %}
+                      <tr>
+                        <td>
+                          <a href="{% url 'athlete' athlete.id%}">
+                            <img
+                              src="{{athlete.photo.url}}"
+                              alt="image"
+                              style="width: 30px; border-radius: 50%"
+                            />
+                            <span class="pl-2"
+                              >{{athlete.fname}} {{athlete.lname}}</span
+                            ></a
+                          >
+                        </td>
+                        <td>{{ athlete.index_number }}</td>
+                        <td>{{ athlete.gender }}</td>
+                        <td>{{ athlete.classroom }}</td>
+                        <td>{{ athlete.status }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="tabpanel card" aria-labelledby="ruby" hidden>
-            <div class="official-list">
-              <table id="myaTable" class="display">
-                <thead>
-                  <tr>
-                    <th>Names</th>
-                    <th>Role</th>
-                    <th>Nin</th>
-                    <th>contact</th>
-                    <th>Email</th>
-                    <th>Gender</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for official in officials%}
-                  <tr>
-                    <td>
-                      <a href="{% url 'official' official.id%}"
-                        >{{official.fname}} {{official.lname}}</a
-                      >
-                    </td>
-                    <td>{{official.role}}</td>
-                    <td>{{official.nin}}</td>
-                    <td>{{official.phone_number}}</td>
-                    <td>{{official.email}}</td>
-                    <td>{{official.gender}}</td>
-                    <td>
-                      <a
-                        href="{% url 'deactivate_official' official.id %}"
-                        class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
-                        data-template="trashOne"
-                      >
-                        <i class="fa fa-trash"></i>
-                        <div id="trashOne" class="d-none">
-                          <span>Delete</span>
-                        </div>
-                      </a>
+            <!-- end Experience -->
 
-                      <a
-                        href="{% url 'activate_official' official.id %}"
-                        class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
-                        data-template="eyeOne"
-                      >
-                        <i class="fa fa-eye"></i>
-                        <div id="eyeOne" class="d-none">
-                          <span>Activate</span>
-                        </div>
-                      </a>
-                    </td>
-                  </tr>
+            <div class="tab-pane pt-4" id="profile_experience" role="tabpanel">
+              <div class="row">
+                <div class="table-responsive">
+                  <table id="myaTable" class="display">
+                    <thead>
+                      <tr>
+                        <th>Names</th>
+                        <th>Role</th>
+                        <th>Nin</th>
+                        <th>contact</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        {% if user.is_staff %}
+                        <th>Actions</th>
+                        {% endif %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for official in officials%}
+                      <tr>
+                        <td>
+                          <a href="{% url 'official' official.id%}"
+                            >{{official.fname}} {{official.lname}}</a
+                          >
+                        </td>
+                        <td>{{official.role}}</td>
+                        <td>{{official.nin}}</td>
+                        <td>{{official.phone_number}}</td>
+                        <td>{{official.email}}</td>
+                        <td>{{official.gender}}</td>
+                        {% if user.is_staff %}
+                        <td>
+                          <a
+                            href="{% url 'deactivate_official' official.id %}"
+                            class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                            data-template="trashOne"
+                          >
+                            <i class="fa fa-trash"></i>
+                            <div id="trashOne" class="d-none">
+                              <span>Delete</span>
+                            </div>
+                          </a>
 
-                  {%endfor%}
-                </tbody>
-              </table>
+                          <a
+                            href="{% url 'activate_official' official.id %}"
+                            class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                            data-template="eyeOne"
+                          >
+                            <i class="fa fa-eye"></i>
+                            <div id="eyeOne" class="d-none">
+                              <span>Activate</span>
+                            </div>
+                          </a>
+                        </td>
+                        {% endif %}
+                      </tr>
+
+                      {%endfor%}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
+            <!-- end Experience -->
+
+            <div class="tab-pane pt-4" id="profile_education" role="tabpanel">
+              <div class="row">
+                <div class="table-responsive">
+                  <table id="myqTable" class="display">
+                    <thead>
+                      <tr>
+                        <th>Championship</th>
+                        <th>Sport</th>
+                        <th>Level</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for school_enrollment in enrollments %}
+                      <tr>
+                        <td>
+                          <a
+                            href="{% url 'school_enrollment' school_enrollment.id%}"
+                            style="font: size 10px"
+                          >
+                            {{school_enrollment.school}}</a
+                          >
+                        </td>
+
+                        <td>{{school_enrollment.championship}}</td>
+                        <td>{{school_enrollment.sport}}</td>
+                        <td>{{school_enrollment.level}}</td>
+                        <td>{{official.enrollment_date}}</td>
+                      </tr>
+
+                      {%endfor%}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- end education -->
+
+            <div class="tab-pane pt-4" id="profile_setting" role="tabpanel">
+              <div class="row"></div>
+            </div>
+            <!-- end education -->
           </div>
+          <!-- Tab panes -->
         </div>
       </div>
     </div>
   </div>
 </div>
 
-    {% endblock %}
+{% endblock %}

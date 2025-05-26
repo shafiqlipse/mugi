@@ -1,180 +1,257 @@
 {% extends "dashboard/dashboard.html" %}
 <!---->
-{% load static %} {% block content %}
+{% load static %}
+<!---->
+{% block title %}Add Athlete{% endblock %}
 
-<style>
-  .alert {
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
+<!---->
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/athlete/athlete.css' %}" />
+{% endblock %}
+<!---->
+{% block content %}
 
-  .error-message {
-    background-color: red;
-    color: white;
-  }
-
-  .success-message {
-    background-color: #4caf50;
-    color: white;
-  }
-</style>
-<div class="content-wrapper">
-  <h1>Add Athlete</h1>
-  <p>All fields labeled with <span>*</span> must be filled.</p>
-  <hr />
-   <form
-    action=""
-    method="POST"
-    class="form-ctrl card"
-    enctype="multipart/form-data"
-  >
-    {% csrf_token %}
-    <div class="fields">
-      <div class="left">
-        <h2>Athlete Info</h2>
-        <p>All fields labeled with <span>*</span> must be filled.</p>
-        <hr />
-        {% if messages %}
-        <div class="messages">
-          {% for message in messages %}
-          <div
-            class="alert {% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}"
-          >
-            {{ message }}
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">Add Athlete</h1>
+    </div>
+    <form
+      action="{% url 'add_athlete' %}"
+      method="POST"
+      class="form-ctrl card-body"
+      enctype="multipart/form-data"
+      id="athlete-form"
+    >
+      {% csrf_token %}
+      <div class="fields">
+        <div class="left">
+          <p>All fields labeled with <span>*</span> must be filled.</p>
+          <hr />
+          {% if messages %}
+          <div class="messages">
+            {% for message in messages %}
+            <div
+              class="alert {% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}"
+            >
+              {{ message }}
+            </div>
+            {% endfor %}
           </div>
-          {% endfor %}
-        </div>
-        {% endif %}
-        <div class="left0">
-          <div class="imgbox">
-            <div class="field">
-              <label>{{form.photo.label}} </label>
-              <div id="photos_preview" class="preview-container"></div>
-            </div>
-            <div class="field">
-              <input type="file" name="photo" accept="image/*" id="id_photo" />
-            </div>
-          </div>
+          {% endif %}
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">{{form.photo.label}}</h5>
+                </div>
+                <!-- end card header -->
 
-          <div class="lefty">
-            <div class="field-grid grid3">
-              <div class="field"><label>First Name</label>{{form.fname}}</div>
-              <div class="field"><label>Middle Name</label>{{form.mname}}</div>
-              <div class="field"><label>Last Name</label>{{form.lname}}</div>
-            </div>
-
-            <div class="field-grid grid3">
-              <div class="field">
-                <label>Nationality</label>{{form.nationality}}
-              </div>
-              <div class="field"><label>Class</label>{{form.classroom}}</div>
-              <div class="field-container" id="lin_container">
-                <label>Learner's Identification Number</label>{{form.lin}}
-              </div>
-              <div class="field-container" id="index_number_container">
-                <label>Index Number</label>{{form.index_number}}
-              </div>
-              <div class="field-container" id="sponsorship_container">
-                <label>Sponsorship status</label>{{form.sponsorship}}
-              </div>
-              <div class="field-container" id="refugee_status_container">
-                <label for="id_refugee">Is Refugee?</label>
-                {{ form.refugee }}
-              </div>
-              <div class="field-container" id="student_pass_code_container">
-                <label for="id_student_pass_code">Student Pass Code</label>
-                {{ form.student_pass_code }}
-              </div>
-              <div class="field-container" id="uneb_code_container">
-                <label for="id_uneb_code">UNEB Equated Results code</label>
-                {{ form.uneb_code }}
-              </div>
-
-              <div class="field"><label>Physic</label>{{form.physic}}</div>
-
-              <div class="field"><label>Sport</label>{{form.sport}}</div>
-              <div class="field"><label>Gender</label>{{form.gender}}</div>
-
-              <div class="field">
-                <label for="date_of_birth">Date of Birth:</label>
-                {{form.date_of_birth}}
-              </div>
-
-              <div class="field-container" id="ple_certificate_container">
-                <label for="id_ple_certificate">PLE Certificate</label>
-                {{ form.ple_certificate }}
-              </div>
-
-              <div class="field-container" id="uce_certificate_container">
-                <label for="id_uce_certificate">UCE Certificate</label>
-                {{ form.uce_certificate }}
-              </div>
-
-              <div class="field-container" id="student_pass_container">
-                <label for="id_student_pass">Student Pass</label>
-                {{ form.student_pass }}
-              </div>
-
-              <div class="field-container" id="refugee_card_container">
-                <label for="id_refugee_card">Refugee Card</label>
-                {{ form.refugee_card }}
-              </div>
-              <div class="field-container" id="uneb_eq_results_container">
-                <label for="id_uneb_eq_results">UNEB Equated Results</label>
-                {{ form.uneb_eq_results }}
-              </div>
-              <div class="field-container" id="bursary_container">
-                <label for="id_bursary">Bursary</label>
-                {{ form.bursary }}
-              </div>
-              <div class="field-container" id="student_visa_container">
-                <label for="id_student_visa">Student Visa</label>
-                {{ form.student_visa }}
+                <div class="card-body">
+                  <div class="imgbox">
+                    <div class="field">
+                      <div id="photos_preview" class="preview-container"></div>
+                    </div>
+                    <div class="field">
+                      <input
+                        type="file"
+                        name="photo"
+                        accept="image/*"
+                        id="id_photo"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <h2>Parent/ Guardian Info</h2>
-        <p>
-          Ensure information provided below corresponds to that on official
-          documents.
-        </p>
-        <hr />
-        <div class="left1">
-          <div class="lefte">
-            <div class="field-grid grid2">
-              <div class="field">
-                <label>Parent's First name</label>{{form.Parent_fname}}
-              </div>
-              <div class="field">
-                <label>Parent's Last name</label>{{form.Parent_lname}}
+            <div class="col-lg-8">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">Personal Details</h5>
+                </div>
+                <!-- end card header -->
+
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-12 col-md-4 mb-3">
+                      <span
+                        class="input-label mb-2"
+                        id="inputGroup-sizing-default"
+                        >First Name</span
+                      >
+                      {{form.fname}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <span
+                        class="input-label mb-2"
+                        id="inputGroup-sizing-default"
+                        >Middle Name</span
+                      >
+                      {{form.mname}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <span
+                        class="input-label mb-2"
+                        id="inputGroup-sizing-default"
+                        >Last Name</span
+                      >
+                      {{form.lname}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Nationality</label>{{form.nationality}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Class</label>{{form.classroom}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3" id="lin_container">
+                      <label> Learner's Identification Number</label
+                      >{{form.lin}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="index_number_container"
+                    >
+                      <label>Index Number</label>{{form.index_number}}
+                    </div>
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="sponsorship_container"
+                    >
+                      <label>Sponsorship status</label>{{form.sponsorship}}
+                    </div>
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="refugee_status_container"
+                    >
+                      <label for="id_refugee">Is Refugee?</label>
+                      {{ form.refugee }}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label for="date_of_birth">Date of Birth:</label>
+                      {{form.date_of_birth}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="student_pass_code_container"
+                    >
+                      <label for="id_student_pass_code"
+                        >Student Pass Code</label
+                      >
+                      {{ form.student_pass_code }}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3" id="uneb_code_container">
+                      <label for="id_uneb_code"
+                        >UNEB Equated Results code</label
+                      >
+                      {{ form.uneb_code }}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Physic</label>{{form.physic}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Sport</label>{{form.sport}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Gender</label>{{form.gender}}
+                    </div>
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="ple_certificate_container"
+                    >
+                      <label for="id_ple_certificate">PLE Certificate</label>
+                      {{ form.ple_certificate }}
+                    </div>
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="uce_certificate_container"
+                    >
+                      <label for="id_uce_certificate">UCE Certificate</label>
+                      {{ form.uce_certificate }}
+                    </div>
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="student_pass_container"
+                    >
+                      <label for="id_student_pass">Student Pass</label>
+                      {{ form.student_pass }}
+                    </div>
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="refugee_card_container"
+                    >
+                      <label for="id_refugee_card">Refugee Card</label>
+                      {{ form.refugee_card }}
+                    </div>
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="uneb_eq_results_container"
+                    >
+                      <label for="id_uneb_eq_results"
+                        >UNEB Equated Results</label
+                      >
+                      {{ form.uneb_eq_results }}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3" id="bursary_container">
+                      <label for="id_bursary">Bursary</label>
+                      {{ form.bursary }}
+                    </div>
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="student_visa_container"
+                    >
+                      <label for="id_student_visa">Student Visa</label>
+                      {{ form.student_visa }}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="field-grid grid2">
-              <div class="field">
-                <label>Parent's NIN</label>{{form.parent_nin}}
-              </div>
-              <div class="field">
-                <label>Parent's contact</label>{{form.parent_phone_number}}
-              </div>
-            </div>
-            <div class="field-grid grid2">
-              <div class="field"><label>Address</label>{{form.address}}</div>
 
-              <div class="field">
-                <label>Relationship</label>{{form.relationship}}
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">Guardian's Information</h5>
+                </div>
+                <!-- end card header -->
+
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Parent's First name</label>{{form.Parent_fname}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Parent's Last name</label>{{form.Parent_lname}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Parent's NIN</label>{{form.parent_nin}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Parent's contact</label
+                      >{{form.parent_phone_number}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Address</label>{{form.address}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Relationship</label>{{form.relationship}}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <button type="submit" class="btn-submit">Save athlete</button>
-  </form>
-<!--
+      <button type="submit" class="btn btn-primary">Save athlete</button>
+    </form>
+    <!--
   <div class="card">
     <div class="card-body">
       The system has been closed. Please check back later.
@@ -183,7 +260,98 @@
       </div>
     </div>
   </div>-->
+  </div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("athlete-form");
+      const fileInput = document.getElementById("id_photo");
+      const previewContainer = document.getElementById("photos_preview");
+      let cropper = null;
+      let croppedBlob = null;
+
+      fileInput.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          previewContainer.innerHTML = `<img src="${event.target.result}" id="photo_image">`;
+
+          const image = document.getElementById("photo_image");
+
+          if (cropper) cropper.destroy();
+
+          cropper = new Cropper(image, {
+            aspectRatio: 1,
+            viewMode: 1,
+            autoCropArea: 1,
+            cropend() {
+              const canvas = cropper.getCroppedCanvas({
+                width: 512,
+                height: 512,
+              });
+              canvas.toBlob(
+                (blob) => {
+                  croppedBlob = blob;
+                },
+                "image/jpeg",
+                0.9
+              );
+            },
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        // If user cropped the image, use cropped blob
+        if (croppedBlob) {
+          formData.set("cropped_photo", croppedBlob, "cropped_photo.jpg");
+        } else if (fileInput.files[0]) {
+          // Fallback to original image
+          formData.set("cropped_photo", fileInput.files[0]);
+        } else {
+          alert("Please upload a photo.");
+          return;
+        }
+
+        // Submit via fetch
+        fetch(form.action, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: formData,
+        })
+          .then((res) => {
+            if (res.redirected) {
+              window.location.href = res.url;
+            } else {
+              return res.text().then((html) => {
+                document.body.innerHTML = html;
+              });
+            }
+          })
+          .catch((err) => {
+            console.error("Submission failed", err);
+            alert("Submission failed. Check console.");
+          });
+      });
+
+      // Helper to get CSRF token
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+      }
+    });
+  </script>
+
   <script>
     $(document).ready(function () {
       function toggleFields() {
@@ -288,6 +456,5 @@
       toggleFields(); // Initial check on page load
     });
   </script>
-
-  {% endblock %}
 </div>
+{% endblock %}

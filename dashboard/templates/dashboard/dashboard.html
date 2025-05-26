@@ -2,598 +2,779 @@
 <html lang="en">
   {% load static %}
   <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>USSSA | {% block title %}{% endblock %}</title>
-    <!-- plugins:css -->
-    {% include "variables/css.html" %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Uganda Schools and Sports Association (USSSA) is a non-profit organization that promotes sports and education in Uganda."
+    />
+    <meta name="author" content="Shafiq" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static 'lib/images/logo.png'%}" />
+    {% include "variables/new_css.html" %}
+    <!-- App favicon -->
+    {% block extra_css %} {% endblock %}
   </head>
-  <body>
-    <div class="container-scroller">
-      <!-- partial:partials/_sidebar.html -->
-      <nav class="sidebar sidebar-offcanvas" id="sidebar">
-        <div
-          class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top"
-        >
-          <a class="sidebar-brand brand-logo brand-logo-mini" href="/"
-            ><img src="{% static 'assets/images/logo.png'%}" alt="logo"
-          /></a>
-          <a class="sidebar-brand brand-logo" href="/"><h1>USSSA</h1> </a>
-        </div>
-        <ul class="nav">
-          <li class="nav-item profile">
-            <div class="profile-desc">
-              <div class="profile-pic">
-                <div class="count-indicator">
-                  <img
-                    class="img-xs rounded-circle"
-                    src="{% static 'assets/images/logo.png'%}"
-                    alt=""
-                  />
-                  <span class="count bg-success"></span>
-                </div>
-                <div class="profile-name">
-                  <h5 class="mb-0 font-weight-normal">{{user.first_name}}</h5>
-                  <span>{{user.email}}</span>
-                </div>
-              </div>
-              <a href="#" id="profile-dropdown" data-toggle="dropdown"
-                ><i class="mdi mdi-dots-vertical"></i
-              ></a>
-              <div
-                class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list"
-                aria-labelledby="profile-dropdown"
-              >
-                <a href="#" class="dropdown-item preview-item">
-                  <div class="preview-thumbnail">
-                    <div class="preview-icon bg-dark rounded-circle">
-                      <i class="mdi mdi-settings text-primary"></i>
-                    </div>
-                  </div>
-                  <div class="preview-item-content">
-                    <p class="preview-subject ellipsis mb-1 text-small">
-                      Account settings
-                    </p>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item preview-item">
-                  <div class="preview-thumbnail">
-                    <div class="preview-icon bg-dark rounded-circle">
-                      <i class="mdi mdi-onepassword text-info"></i>
-                    </div>
-                  </div>
-                  <div class="preview-item-content">
-                    <p class="preview-subject ellipsis mb-1 text-small">
-                      Change Password
-                    </p>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item preview-item">
-                  <div class="preview-thumbnail">
-                    <div class="preview-icon bg-dark rounded-circle">
-                      <i class="mdi mdi-calendar-today text-success"></i>
-                    </div>
-                  </div>
-                  <div class="preview-item-content">
-                    <a
-                      href="{% url 'logout' %}"
-                      class="preview-subject ellipsis mb-1 text-small"
-                    >
-                      Logout
-                    </a>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </li>
-          <li class="nav-item nav-category">
-            <span class="nav-link">Navigation</span>
-          </li>
 
-          {% if user.is_staff %}
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'dashboard'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-speedometer"></i>
-              </span>
-              <span class="menu-title">Dashboard</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'users'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-speedometer"></i>
-              </span>
-              <span class="menu-title">Users</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'schools'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-speedometer"></i>
-              </span>
-              <span class="menu-title">Schools</span>
-            </a>
-          </li>
+  <!-- body start -->
 
-          <li class="nav-item menu-items">
-            <a
-              class="nav-link"
-              data-toggle="collapse"
-              href="#ui-basic-3"
-              aria-expanded="false"
-              aria-controls="ui-basic-3"
+  <style>
+    .alert {
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .error-message {
+      background-color: red;
+      color: white;
+    }
+
+    .success-message {
+      background-color: #4caf50;
+      color: white;
+    }
+  </style>
+  <!-- body start -->
+  <body data-menu-color="dark" data-sidebar="default">
+    <!-- Begin page -->
+    <div id="app-layout">
+      <!-- Topbar Start -->
+      <div class="topbar-custom">
+        <div class="container-fluid">
+          <div class="d-flex justify-content-between">
+            <ul
+              class="list-unstyled topnav-menu mb-0 d-flex align-items-center"
             >
-              <span class="menu-icon">
-                <i class="mdi mdi-laptop"></i>
-              </span>
-              <span class="menu-title">Athletes</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="ui-basic-3">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item">
-                  <a class="nav-link" href="{%url 'allathletes'%}"
-                    >All Athletes</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{%url 'archives'%}">Archives</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{%url 'screened' %}"
-                    >Screened out</a
-                  >
-                </li>
-              </ul>
-            </div>
-          </li>
-          {% elif user.is_school %}
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'schooldash'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-speedometer"></i>
-              </span>
-              <span class="menu-title">Dashboard</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a
-              class="nav-link"
-              data-toggle="collapse"
-              href="#ui-basic"
-              aria-expanded="false"
-              aria-controls="ui-basic"
-            >
-              <span class="menu-icon">
-                <i class="mdi mdi-laptop"></i>
-              </span>
-              <span class="menu-title">Athletes</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="ui-basic">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item">
-                  <a class="nav-link" href="{%url 'athletes' %}"
-                    >All Athletes</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{%url 'add_athlete' %}"
-                    >Add Athlete</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'dathletes'%}">Registered</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'officials' %}">
-              <span class="menu-icon">
-                <i class="mdi mdi-playlist-play"></i>
-              </span>
-              <span class="menu-title">Officials</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'registration' %}">
-              <span class="menu-icon">
-                <i class="mdi mdi-playlist-play"></i>
-              </span>
-              <span class="menu-title">Registration</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a
-              class="nav-link"
-              data-toggle="collapse"
-              href="#ui-basic-2"
-              aria-expanded="false"
-              aria-controls="ui-basic-2"
-            >
-              <span class="menu-icon">
-                <i class="mdi mdi-laptop"></i>
-              </span>
-              <span class="menu-title">Transfers</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="ui-basic-2">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'transfers'%}"
-                    >Initiate transfer</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{%url 'myrequests' %}"
-                    >My requests</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'mytransfers'%}"
-                    >My transfers</a
-                  >
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'school_enrollments'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
-              </span>
-              <span class="menu-title">Enrollment</span>
-            </a>
-          </li>
-          {% endif %} {% if user.is_staff %}
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'allofficials' %}">
-              <span class="menu-icon">
-                <i class="mdi mdi-playlist-play"></i>
-              </span>
-              <span class="menu-title">Officials</span>
-            </a>
-          </li>
-
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{% url 'alltransfers'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-speedometer"></i>
-              </span>
-              <span class="menu-title">Transfers</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{% url 'all_transfers'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-speedometer"></i>
-              </span>
-              <span class="menu-title">AllTransfers</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'all_enrollments'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
-              </span>
-              <span class="menu-title">Enrollment</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'delegates'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
-              </span>
-              <span class="menu-title">Delegates</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'sports'%}">
-              <span class="menu-icon">
-                <i class="mdi mdi-chart-bar"></i>
-              </span>
-              <span class="menu-title">Disciplines</span>
-            </a>
-          </li>
-
-          {% endif %} {% if user.is_zone %}
-
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'zonalchair_dashboard' %}">
-              <span class="menu-icon">
-                <i class="mdi mdi-playlist-play"></i>
-              </span>
-              <span class="menu-title">Dashboard</span>
-            </a>
-          </li>
-
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'zonalchair_schools' %}">
-              <span class="menu-icon">
-                <i class="mdi mdi-playlist-play"></i>
-              </span>
-              <span class="menu-title">Schools</span>
-            </a>
-          </li>
-
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'zonalchair_athletes' %}">
-              <span class="menu-icon">
-                <i class="mdi mdi-playlist-play"></i>
-              </span>
-              <span class="menu-title">Athletes</span>
-            </a>
-          </li>
-
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'zonalchair_officials' %}">
-              <span class="menu-icon">
-                <i class="mdi mdi-playlist-play"></i>
-              </span>
-              <span class="menu-title">Officials</span>
-            </a>
-          </li>
-
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'zonalchair_enrollments' %}">
-              <span class="menu-icon">
-                <i class="mdi mdi-playlist-play"></i>
-              </span>
-              <span class="menu-title">Enrollments</span>
-            </a>
-          </li>
-          {% endif %} {% if user.is_accounts %}
-          <li class="nav-item menu-items">
-            <a
-              class="nav-link"
-              data-toggle="collapse"
-              href="#awuth"
-              aria-expanded="false"
-              aria-controls="awuth"
-            >
-              <span class="menu-icon">
-                <i class="mdi mdi-security"></i>
-              </span>
-              <span class="menu-title">Accounts</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="awuth">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'accounts'%}"> Overview </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'payments' %}"> Payments </a>
-                </li>
-                {% if user.is_superuser %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'pending_payments' %}">
-                    Pending
-                  </a>
-                </li>
-                {% endif %}
-              </ul>
-            </div>
-          </li>
-
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{%url 'zonalchair_list' %}">
-              <span class="menu-icon">
-                <i class="mdi mdi-playlist-play"></i>
-              </span>
-              <span class="menu-title">Zonal Chairs</span>
-            </a>
-          </li>
-          {% endif %}
-          <li class="nav-item menu-items">
-            <a
-              class="nav-link"
-              data-toggle="collapse"
-              href="#auth"
-              aria-expanded="false"
-              aria-controls="auth"
-            >
-              <span class="menu-icon">
-                <i class="mdi mdi-security"></i>
-              </span>
-              <span class="menu-title">Settings</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="auth">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'change_password'%}">
-                    Change Password
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'logout' %}"> Logout </a>
-                </li>
-              </ul>
-            </div>
-          </li>
-
-          <li class="nav-item menu-items">
-            <a
-              class="nav-link"
-              data-toggle="collapse"
-              href="#auth2"
-              aria-expanded="false"
-              aria-controls="auth2"
-            >
-              <span class="menu-icon">
-                <i class="mdi mdi-security"></i>
-              </span>
-              <span class="menu-title">Support</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="auth2">
-              <ul class="nav flex-column sub-menu">
-                {% if user.is_staff %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{%url 'announcements'%}">
-                    Announcements
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'support' %}"
-                    >Open Messages
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'answered_tickets' %}"
-                    >Answered Messages
-                  </a>
-                </li>
-                {% elif user.is_school %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'tickets' %}"> Messages </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'ticket_create' %}">
-                    Add Message
-                  </a>
-                </li>
-                {% endif %}
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </nav>
-      <!-- partial -->
-      <div class="container-fluid page-body-wrapper">
-        <!-- partial:partials/_navbar.html -->
-        <nav class="navbar p-0 fixed-top d-flex flex-row">
-          <div
-            class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center"
-          >
-            <a class="navbar-brand brand-logo-mini" href="/"
-              ><img src="{% static 'assets/images/logo.png'%}" alt="logo"
-            /></a>
-          </div>
-          <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
-            <button
-              class="navbar-toggler navbar-toggler align-self-center"
-              type="button"
-              data-toggle="minimize"
-            >
-              <span class="mdi mdi-menu"></span>
-            </button>
-            <ul class="navbar-nav w-100">
-              <li class="nav-item w-70">
-                {% if user.is_school %}
-                <h2>{{user.school}}</h2>
-                {% else %}
-                <h2>{{user.first_name}} {{user.last_name}}</h2>
-                {% endif %}
+              <li>
+                <button class="button-toggle-menu nav-link">
+                  <i data-feather="menu" class="noti-icon"></i>
+                </button>
               </li>
             </ul>
-            <ul class="navbar-nav navbar-nav-right">
-              <li class="nav-item nav-settings d-none d-lg-block">
-                <a class="nav-link" href="#">
-                  <i class="mdi mdi-view-grid"></i>
-                </a>
+
+            <ul
+              class="list-unstyled topnav-menu mb-0 d-flex align-items-center"
+            >
+              <!-- Button Trigger Customizer Offcanvas -->
+              <li class="d-none d-sm-flex">
+                <button
+                  type="button"
+                  class="btn nav-link"
+                  data-toggle="fullscreen"
+                >
+                  <iconify-icon
+                    icon="solar:minimize-square-outline"
+                    class="fs-24 align-middle"
+                  ></iconify-icon>
+                </button>
               </li>
-              <li class="nav-item dropdown border-left">
+
+              <!-- Light/Dark Mode Button Themes -->
+              <li class="d-none d-sm-flex">
+                <button type="button" class="btn nav-link" id="light-dark-mode">
+                  <iconify-icon
+                    icon="solar:moon-outline"
+                    class="fs-24 align-middle dark-mode"
+                  ></iconify-icon>
+                  <iconify-icon
+                    icon="solar:sun-2-outline"
+                    class="fs-24 align-middle light-mode"
+                  ></iconify-icon>
+                </button>
+              </li>
+
+              <li class="dropdown notification-list topbar-dropdown">
                 <a
-                  class="nav-link count-indicator dropdown-toggle"
-                  id="messageDropdown"
+                  class="nav-link dropdown-toggle"
+                  data-bs-toggle="dropdown"
                   href="#"
-                  data-toggle="dropdown"
+                  role="button"
+                  aria-haspopup="false"
                   aria-expanded="false"
                 >
-                  <i class="mdi mdi-email"></i>
-                  <span class="count bg-success"></span>
-                </a>
-              </li>
-              <li class="nav-item dropdown border-left">
-                <a
-                  class="nav-link count-indicator dropdown-toggle"
-                  id="notificationDropdown"
-                  href="#"
-                  data-toggle="dropdown"
-                >
-                  <i class="fa fa-bell"></i>
+                  <iconify-icon
+                    icon="solar:bell-bing-outline"
+                    class="fs-24 align-middle light-mode"
+                  ></iconify-icon>
                   {% if unread_notifications_count > 0 %}
-                  <div class="scount">
-                    <span>{{ unread_notifications_count }}</span>
-                  </div>
-
+                  <span class="badge bg-danger rounded-circle noti-icon-badge"
+                    >{{ unread_notifications_count }}</span
+                  >
                   {% endif %}
                 </a>
-                <div
-                  class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
-                  aria-labelledby="notificationDropdown"
-                >
-                  <h6 class="p-3 mb-0">Notifications</h6>
-                  <div class="dropdown-divider"></div>
+                <div class="dropdown-menu dropdown-menu-end dropdown-lg">
+                  <!-- item-->
+                  <div class="dropdown-item noti-title">
+                    <h5 class="m-0 fs-16 fw-semibold">
+                      <span class="float-end"
+                        ><a href="javascript:void(0);" class="text-dark fs-14"
+                          ><small class="text-primary"
+                            >Make all as read</small
+                          ></a
+                        ></span
+                      >Notification
+                    </h5>
+                  </div>
 
-                  <ul>
+                  <div class="noti-scroll" data-simplebar>
                     {% for notification in notifications %}
-                    <li
-                      class="{% if not notification.is_read %}unread{% endif %}"
+                    <!-- item-->
+                    <a
+                      href="javascript:void(0);"
+                      class="dropdown-item notify-item text-muted link-primary"
                     >
-                      <strong>{{ notification.verb }}</strong>
-                      <small>{{ notification.created_at }}</small>
-                      <p>{{ notification.target }}</p>
-                    </li>
-                    <hr />
-                    {% empty %}
-                    <li>No new notifications.</li>
-                    {% endfor %}
-                  </ul>
+                      <div class="d-flex align-items-center">
+                        <div class="notify-icon">
+                          <img
+                            src="{% static 'lib/images/logo.png'%}"
+                            class="img-fluid rounded-circle"
+                            alt=""
+                          />
+                        </div>
+                        <div class="flex-grow-1">
+                          <div
+                            class="d-flex align-items-center justify-content-between mb-1"
+                          >
+                            <p class="notify-details mb-0">
+                              {{ notification.verb }}
+                            </p>
+                            <iconify-icon
+                              icon="solar:record-bold"
+                              class="fs-12 text-primary align-middle light-mode"
+                            ></iconify-icon>
+                          </div>
+                          <div
+                            class="d-flex align-items-center justify-content-between"
+                          >
+                            <p class="text-muted mb-0">
+                              {{ notification.target }}
+                            </p>
+                            <p class="text-muted mb-0">
+                              {{ notification.created_at }}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
 
-                  <div class="dropdown-divider"></div>
-                  <p class="p-3 mb-0 text-center">See all notifications</p>
+                    {% endfor %}
+                  </div>
+
+                  <!-- All-->
+                  <a
+                    href="javascript:void(0);"
+                    class="dropdown-item text-center text-primary notify-item notify-all fw-bold border-top border-light"
+                    >View all
+                    <i class="fe-arrow-right"></i>
+                  </a>
+                </div>
+              </li>
+
+              <!-- User Dropdown -->
+              <li class="dropdown notification-list topbar-dropdown">
+                <a
+                  class="nav-link dropdown-toggle nav-user me-0"
+                  data-bs-toggle="dropdown"
+                  href="#"
+                  role="button"
+                  aria-haspopup="false"
+                  aria-expanded="false"
+                >
+                  <img
+                    src="{% static 'lib/images/profile.png'%}"
+                    alt="user-image"
+                    class="rounded-circle"
+                  />
+                </a>
+                <div class="dropdown-menu dropdown-menu-end profile-dropdown">
+                  <!-- item-->
+                  {% if user.is_school %}
+                  <div class="dropdown-header noti-title">
+                    <h6 class="text-overflow m-0">{{user.school}}</h6>
+                  </div>
+                  {% else %}
+                  <div class="dropdown-header noti-title">
+                    <h6 class="text-overflow m-0">
+                      {{user.first_name}} {{user.last_name}}
+                    </h6>
+                  </div>
+                  {% endif %}
+                  <!-- item-->
+                  <a
+                    class="dropdown-item notify-item rounded-2"
+                    href="/dusty/html/pages-profile"
+                  >
+                    <iconify-icon
+                      icon="solar:shield-user-outline"
+                      class="fs-18 align-middle"
+                    ></iconify-icon>
+                    <span>Profile</span>
+                  </a>
+
+                  <!-- item-->
+                  <a
+                    class="dropdown-item notify-item rounded-2"
+                    href="/dusty/html/pages-profile"
+                  >
+                    <iconify-icon
+                      icon="solar:settings-linear"
+                      class="fs-18 align-middle"
+                    ></iconify-icon>
+                    <span>Setting</span>
+                  </a>
+
+                  <!-- item-->
+                  <a
+                    class="dropdown-item notify-item rounded-2"
+                    href="{% url 'change_password'%}"
+                  >
+                    <iconify-icon
+                      icon="solar:lock-keyhole-outline"
+                      class="fs-18 align-middle"
+                    ></iconify-icon>
+                    <span>Change Password</span>
+                  </a>
+
+                  <!-- item-->
+                  <a
+                    class="dropdown-item notify-item rounded-2"
+                    href="{% url 'logout' %}"
+                  >
+                    <iconify-icon
+                      icon="solar:login-3-outline"
+                      class="fs-18 align-middle"
+                    ></iconify-icon>
+                    <span>Logout</span>
+                  </a>
                 </div>
               </li>
             </ul>
-            <button
-              class="navbar-toggler navbar-toggler-right d-lg-none align-self-center"
-              type="button"
-              data-toggle="offcanvas"
-            >
-              <span class="mdi mdi-format-line-spacing"></span>
-            </button>
           </div>
-        </nav>
-        <!-- partial -->
-        <div class="main-panel">
-          <!-- content-wrapper ends -->
-          {% block content %}{% endblock %}
-          <!-- partial:partials/_footer.html -->
-
-          <footer class="footer">
-            <div
-              class="d-sm-flex justify-content-center justify-content-sm-between"
-            >
-              <span
-                class="text-muted d-block text-center text-sm-left d-sm-inline-block"
-                >Copyright © usssaonline.com 2025</span
-              >
-              <span
-                class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"
-              >
-                A Product of
-                <a href="https://www.usssaonline.com/" target="_blank"
-                  >UGANDA SECONDARY SCHOOLS SPORTS ASSOCIATION</a
-                >
-              </span>
-            </div>
-          </footer>
-          <!-- partial -->
         </div>
-        <!-- main-panel ends -->
       </div>
+      <!-- end Topbar -->
 
-      <!-- page-body-wrapper ends -->
+      <!-- Left Sidebar Start -->
+      <div class="app-sidebar-menu">
+        <div class="h-100" data-simplebar>
+          <!--- Sidemenu -->
+          <div id="sidebar-menu">
+            <div class="logo-box">
+              <a class="logo logo-light" href="/dusty/html/">
+                <span class="logo-sm">
+                  <img
+                    src="{% static 'lib/images/logo.png'%}"
+                    alt=""
+                    height="22"
+                  />
+                </span>
+                <span class="logo-lg">
+                  <img
+                    src="{% static 'lib/images/logo-light-01.png'%}"
+                    alt=""
+                    height="24"
+                  />
+                </span>
+              </a>
+              <a class="logo logo-dark" href="/dusty/html/">
+                <span class="logo-sm">
+                  <img
+                    src="{% static 'lib/images/logo.png'%}"
+                    alt=""
+                    height="22"
+                  />
+                </span>
+                <span class="logo-lg">
+                  <img
+                    src="{% static 'lib/images/logo-light-01.png'%}"
+                    alt=""
+                    height="24"
+                  />
+                </span>
+              </a>
+            </div>
+
+            <ul id="side-menu">
+              <li class="menu-title">Menu</li>
+              {% if user.is_staff %}
+              <li>
+                <a href="#sidebarDashboards" data-bs-toggle="collapse">
+                  <span class="nav-icon">
+                    <iconify-icon
+                      icon="solar:home-2-bold-duotone"
+                    ></iconify-icon>
+                  </span>
+                  <span> Dashboard </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarDashboards">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="{% url 'dashboard'%}"
+                        >Overview</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{%url 'delegates'%}"
+                        >Delegates</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <li class="menu-title">Clients</li>
+
+              <li>
+                <a class="tp-link" href="{%url 'schools' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Schools</span>
+                </a>
+              </li>
+
+              <li>
+                <a href="#sidebarAuth" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:lock-keyhole-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> People </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarAuth">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="#!">Staff</a>
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{%url 'users'%}">Users</a>
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{%url 'allofficials' %}"
+                        >Officials</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <li>
+                <a href="#sidebarError" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:cpu-bolt-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Athletes </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarError">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="{%url 'allathletes'%}"
+                        >All athletes</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{%url 'archives'%}">Archives</a>
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{%url 'screened' %}"
+                        >Screened_out</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <li class="menu-title mt-2">General</li>
+
+              <li>
+                <a href="#sidebarExpages" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:clipboard-text-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Transfers </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarExpages">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="{% url 'alltransfers'%}"
+                        >Pending Transfers</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{% url 'pending_transfers'%}"
+                        >Accepted transfers</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{% url 'approved_transfers'%}"
+                        >Done deals</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <li>
+                <a href="#sidebarBaseui" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:compass-square-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Enrollments </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarBaseui">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="{% url 'active_enrollments'%}"
+                        >Active enrollments</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{% url 'achive_enrollments'%}"
+                        >Archives</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <li>
+                <a href="#sidebarWidgetsui" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:box-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Support </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarWidgetsui">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="/dusty/html/widget-card"
+                        >Open Messages</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="/dusty/html/widget-chart"
+                        >Answered Messages</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="/dusty/html/widget-chart">CRM</a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              {% elif user.is_school %}
+
+              <li>
+                <a href="#sidebarAdvancedUI" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:quit-full-screen-square-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Dashboard </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarAdvancedUI">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="{%url 'schooldash'%}"
+                        >Overtime</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <li class="menu-title">athletes & Officials</li>
+              <li>
+                <a href="#sidebarIcons" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon icon="solar:wind-bold-duotone"></iconify-icon
+                  ></span>
+                  <span> Athletes </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarIcons">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="{%url 'athletes' %}"
+                        >All Athletes</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{%url 'add_athlete' %}"
+                        >Add athlete</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{% url 'dathletes'%}"
+                        >Registered athletes</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <li>
+                <a href="#sidebarForms" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:document-add-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Officials </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarForms">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="/dusty/html/forms-elements"
+                        >All Officials</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="/dusty/html/forms-validation"
+                        >Add Officials</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <li class="menu-title">General</li>
+              <li>
+                <a class="tp-link" href="{%url 'registration' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Registration </span>
+                </a>
+              </li>
+
+              <li>
+                <a class="tp-link" href="{%url 'school_enrollments'%}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Enrollment </span>
+                </a>
+              </li>
+
+              <li>
+                <a href="#sidebarTables" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:siderbar-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Transfers </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarTables">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="{% url 'transfers'%}"
+                        >Initiate transfer</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{%url 'myrequests' %}"
+                        >My requests</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{% url 'mytransfers'%}"
+                        >My Transfers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <li class="menu-title">Help Desk</li>
+              <li>
+                <a href="#sidebarIcons" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon icon="solar:wind-bold-duotone"></iconify-icon
+                  ></span>
+                  <span> Support </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarIcons">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="{% url 'tickets' %}">Messages</a>
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{% url 'ticket_create' %}"
+                        >Add message</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              {% elif user.is_zone %}
+
+              <li>
+                <a class="tp-link" href="{%url 'zonalchair_dashboard' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Dashboard </span>
+                </a>
+              </li>
+
+              <li>
+                <a class="tp-link" href="{%url 'zonalchair_schools' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Schoola </span>
+                </a>
+              </li>
+
+              <li>
+                <a class="tp-link" href="{%url 'zonalchair_athletes' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Athletes</span>
+                </a>
+              </li>
+
+              <li>
+                <a class="tp-link" href="{%url 'zonalchair_officials' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span>Officials </span>
+                </a>
+              </li>
+              {% endif %}{% if user.is_accounts %}
+              <li class="menu-title">Accounts</li>
+
+              <li>
+                <a href="#sidebarForms" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:document-add-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Payments </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarForms">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="{% url 'accounts'%}"
+                        >Analytics</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{% url 'payments' %}"
+                        >Successful Payments</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{% url 'pending_payments' %}"
+                        >Pending Payments</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <li>
+                <a class="tp-link" href="{%url 'zonalchair_list' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Zonal Accounts </span>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+          <!-- End Sidebar -->
+
+          <div class="clearfix"></div>
+        </div>
+      </div>
+      <!-- Left Sidebar End -->
+
+      <!-- ============================================================== -->
+      <!-- Start Page Content here -->
+      <!-- ============================================================== -->
+
+      <div class="content-page">
+        <div class="content">
+          <!-- Start Content-->
+          {% block content %}{% endblock %}
+          <!-- container-fluid -->
+        </div>
+        <!-- content -->
+
+        <!-- Footer Start -->
+        <footer class="footer bg-danger">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col fs-13 text-muted text-center">
+                &copy;
+                <script>
+                  document.write(new Date().getFullYear());
+                </script>
+                - Made with <span class="mdi mdi-heart text-danger"></span> by
+                <a href="#!" class="text-reset fw-semibold"
+                  >the USSSA IT Team</a
+                >
+              </div>
+            </div>
+          </div>
+        </footer>
+        <!-- end Footer -->
+      </div>
+      <!-- ============================================================== -->
+      <!-- End Page content -->
+      <!-- ============================================================== -->
     </div>
-    <!-- container-scroller -->
-    {% include "variables/js.html" %}
+    <!-- END wrapper -->
+    {% include "variables/new_js.html" %}
   </body>
 </html>

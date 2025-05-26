@@ -5,249 +5,207 @@
 {% block title %}Overview{% endblock %}
 <!--title-->
 {% block content %}
-<div class="content-wrapper">
-  <div class="row">
-    <div class="col-12 grid-margin stretch-card">
-      <div class="car0d">
-        <div class="card-body">
-          <div
-            id="carouselExampleIndicators"
-            class="carousel slide custom-slider"
-            data-ride="carousel"
-          >
-            <ol class="carousel-indicators">
-              {% for announcement in announcements %}
-              <li
-                data-target="#carouselExampleIndicators"
-                data-slide-to="{{ forloop.counter0 }}"
-                class="{% if forloop.first %}active{% endif %}"
-              ></li>
-              {% endfor %}
-            </ol>
-            <div class="carousel-inner">
-              {% for announcement in announcements %}
-              <div
-                class="carousel-item {% if forloop.first %}active{% endif %}"
-              >
-                <a href="{{ announcement.link }}" target="_blank">
-                  <img
-                    src="{{ announcement.banner.url }}"
-                    alt="{{ announcement.title }}"
-                    class="d-block w-100"
-                  />
-                  <div class="carousel-caption d-none d-md-block">
-                    <h5>{{ announcement.title }}</h5>
-                    <p>{{ announcement.content|truncatechars:55 }}</p>
-                  </div>
-                </a>
-              </div>
-              {% endfor %}
-            </div>
-
-            <a
-              class="carousel-control-prev"
-              href="#carouselExampleIndicators"
-              role="button"
-              data-slide="prev"
-            >
-              <span
-                class="carousel-control-prev-icon"
-                aria-hidden="true"
-              ></span>
-              <span class="sr-only">Previous</span>
-            </a>
-            <a
-              class="carousel-control-next"
-              href="#carouselExampleIndicators"
-              role="button"
-              data-slide="next"
-            >
-              <span
-                class="carousel-control-next-icon"
-                aria-hidden="true"
-              ></span>
-              <span class="sr-only">Next</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-9">
-              <div class="d-flex align-items-center align-self-start">
-                <h3 class="mb-0">{{users_count}}</h3>
-                <p class="text-success ml-2 mb-0 font-weight-medium">Staff</p>
-              </div>
-            </div>
-            <div class="col-3">
-              <div class="icon icon-box-success">
-                <span class="mdi mdi-arrow-top-right icon-item"></span>
-              </div>
-            </div>
-          </div>
-          <h6 class="text-muted font-weight-normal">Site Users</h6>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-9">
-              <div class="d-flex align-items-center align-self-start">
-                <h3 class="mb-0">{{schools_count}}</h3>
-                <p class="text-success ml-2 mb-0 font-weight-medium">
-                  +{{schools_today}} today
-                </p>
-              </div>
-            </div>
-            <div class="col-3">
-              <div class="icon icon-box-success">
-                <span class="mdi mdi-arrow-top-right icon-item"></span>
-              </div>
-            </div>
-          </div>
-          <h6 class="text-muted font-weight-normal">Schools</h6>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-9">
-              <div class="d-flex align-items-center align-self-start">
-                <h3 class="mb-0">{{athletes_count}}</h3>
-                <p class="text-success ml-2 mb-0 font-weight-medium">
-                  +{{athletes_today}} today
-                </p>
-              </div>
-            </div>
-            <div class="col-3">
-              <div class="icon icon-box-success">
-                <span class="mdi mdi-arrow-bottom-left icon-item"></span>
-              </div>
-            </div>
-          </div>
-          <h6 class="text-muted font-weight-normal">Athletes</h6>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-9">
-              <div class="d-flex align-items-center align-self-start">
-                <h3 class="mb-0">{{officials_count}}</h3>
-                <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
-              </div>
-            </div>
-            <div class="col-3">
-              <div class="icon icon-box-success">
-                <span class="mdi mdi-arrow-top-right icon-item"></span>
-              </div>
-            </div>
-          </div>
-          <h6 class="text-muted font-weight-normal">Officials</h6>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12 grid-margin stretch-card">
-      <div class="card">
-        <div class="card-body">
-          <div class="d-flex flex-row justify-content-between">
-            <h4 class="card-title mb-1">Recently Added Schools</h4>
-            <p class="text-muted mb-1">Date of creation</p>
-          </div>
-          <div class="row">
-            <div class="col-12">
-              <div class="preview-list">
-                {% for school in schools %}
-                <div class="preview-item border-bottom">
-                  <div class="preview-thumbnail">
-                    <div class="preview-icon bg-primary">
-                      {% if school.badge %}
-                      <img
-                        src="{{school.badge.url}}"
-                        class="mdi mdi-file-document"
-                      />{% endif %}
-                    </div>
-                  </div>
-                  <div class="preview-item-content d-sm-flex flex-grow">
-                    <div class="flex-grow">
-                      <h4 class="preview-subject">{{school.name}}</h4>
-                      <p class="text-muted mb-0">{{school.emis_number}}</p>
-                    </div>
-                  </div>
-                  <div class="preview-item-content d-sm-flex flex-grow">
-                    <div class="flex-grow">
-                      <h5 class="preview-subject">{{school.center_number}}</h5>
-                      <p class="text-muted mb-0">
-                        {{school.region}} | {{school.zone}}
-                      </p>
-                    </div>
-                    <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                      <p class="text-muted">
-                        {{ school.created|timesince }} ago
-                      </p>
-                      <p class="text-muted mb-0">{{ school.created }}</p>
-                    </div>
-                  </div>
-                </div>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<div class="container-fluid">
+  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+    <div class="flex-grow-1">
+      <h4 class="fs-18 fw-semibold m-0">Dashboard</h4>
     </div>
   </div>
 
+  <!-- Start Main Widgets -->
   <div class="row">
-    <div class="col-12 grid-margin">
+    <div class="col-md-6 col-lg-4 col-xl">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Recently added athletes</h4>
-          <div class="table-responsive">
-            <table class="table">
+          <div class="widget-first">
+            <div class="d-flex align-items-center mb-2">
+              <p class="mb-0 text-dark fs-16 fw-medium">Schools</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 class="mb-0 fs-24 text-dark me-4">{{schools_count}}</h3>
+              <div id="total_sales" class="apex-charts"></div>
+            </div>
+
+            <div class="d-flex align-items-center">
+              <span class="text-success fs-14 me-2"
+                >{{schools_today}}<i class="mdi mdi-menu-up fs-16 ms-1"></i
+              ></span>
+              <p class="text-muted fs-13 mb-0">Since last month</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4 col-xl">
+      <div class="card">
+        <div class="card-body">
+          <div class="widget-first">
+            <div class="d-flex align-items-center mb-2">
+              <p class="mb-0 text-dark fs-16 fw-medium">Athletes</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 class="mb-0 fs-24 text-dark me-4">{{athletes_count}}</h3>
+              <div id="total_orders" class="apex-charts"></div>
+            </div>
+
+            <div class="d-flex align-items-center">
+              <span class="text-success fs-14 me-2"
+                >{{athletes_today}}<i class="mdi mdi-menu-up fs-16 ms-1"></i
+              ></span>
+              <p class="text-muted fs-13 mb-0">Added today</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4 col-xl">
+      <div class="card">
+        <div class="card-body">
+          <div class="widget-first">
+            <div class="d-flex align-items-center mb-2">
+              <p class="mb-0 text-dark fs-16 fw-medium">Officials</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 class="mb-0 fs-24 text-dark me-4">{{officials_count}}</h3>
+
+              <div id="new_customers" class="apex-charts"></div>
+            </div>
+
+            <div class="d-flex align-items-center">
+              <span class="text-danger fs-14 me-2"
+                >6.87%<i class="mdi mdi-menu-down fs-16 ms-1"></i
+              ></span>
+              <p class="text-muted fs-13 mb-0">Since last month</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-6 col-xl">
+      <div class="card">
+        <div class="card-body">
+          <div class="widget-first">
+            <div class="d-flex align-items-center mb-2">
+              <p class="mb-0 text-dark fs-16 fw-medium">Enrollments</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 class="mb-0 fs-24 text-dark me-4">{{enrollments_count}}</h3>
+              <div id="total_income" class="apex-charts"></div>
+            </div>
+
+            <div class="d-flex align-items-center">
+              <span class="text-success fs-14 me-2"
+                >9.19%<i class="mdi mdi-menu-up fs-16 ms-1"></i
+              ></span>
+              <p class="text-muted fs-13 mb-0">Since last month</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 col-lg-6 col-xl">
+      <div class="card">
+        <div class="card-body">
+          <div class="widget-first">
+            <div class="d-flex align-items-center mb-2">
+              <p class="mb-0 text-dark fs-16 fw-medium">Transfers</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 class="mb-0 fs-24 text-dark me-4">{{transfers_count}}</h3>
+              <div id="total_returns" class="apex-charts"></div>
+            </div>
+
+            <div class="d-flex align-items-center">
+              <span class="text-success fs-14 me-2"
+                >{{approved_count}}<i class="mdi mdi-menu-down fs-16 ms-1"></i
+              ></span>
+              <p class="text-muted fs-13 mb-0">Approved transfers</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Main Widgets -->
+
+  <!-- Start Row -->
+  <div class="row">
+    <!-- Start Latest Order -->
+    <div class="col-xl-12">
+      <div class="card overflow-hidden">
+        <div class="card-header">
+          <div class="d-flex align-items-center">
+            <h5 class="card-title text-dark mb-0">Latest Athletes</h5>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive table-centered mt-0">
+            <table
+              class="table table-centered table-nowrap table-hover table-stock mb-0"
+            >
               <thead>
                 <tr>
-                  <th>Athlete Name</th>
-                  <th>Athlete ID No</th>
-                  <th>School</th>
-                  <th>Nationality</th>
-                  <th>Gender</th>
-                  <th>Class</th>
-                  <th>Date of Birth</th>
-                  <th>Payment Status</th>
+                  <th scope="col" class="cursor-pointer">Athlete</th>
+                  <th scope="col" class="cursor-pointer">Index Number</th>
+                  <th scope="col" class="cursor-pointer">Status</th>
+                  <th scope="col" class="cursor-pointer">School</th>
+                  <th scope="col" class="cursor-pointer px-3">Date of Birth</th>
                 </tr>
               </thead>
               <tbody>
                 {% for athlete in athletes %}
                 <tr>
+                  <td class="ps-3">
+                    <div class="d-flex align-items-center">
+                      <div>
+                        <img
+                          src="{{athlete.photo.url}}"
+                          class="avatar avatar-sm rounded-2 me-3"
+                        />
+                      </div>
+                      <div>
+                        <h5 class="text-dark fw-normal fs-14 mb-1">
+                          {{athlete.fname}} {{athlete.lname}}
+                        </h5>
+                        <p class="text-muted fw-normal fs-13 mb-0">
+                          #{{athlete.id}}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
                   <td>
-                    <img src="{{athlete.photo.url}}" alt="image" />
-                    <span class="pl-2"
-                      >{{athlete.fname}} {{athlete.lname}}</span
+                    <div>
+                      <h5 class="text-dark fw-normal fs-14 mb-1">
+                        {{athlete.index_number}}
+                      </h5>
+                      <p class="text-muted fw-normal fs-13 mb-0">
+                        {{athlete.lin}}
+                      </p>
+                    </div>
+                  </td>
+                  <td>
+                    <span
+                      class="badge bg-primary-subtle px-3 py-1 text-primary fw-medium fs-13 rounded-4"
+                      >{{athlete.status}}</span
                     >
                   </td>
-                  <td>{{athlete.athlete_id}}</td>
-                  <td>{{athlete.school}}</td>
-                  <td>{{athlete.nationality}}</td>
-                  <td>{{athlete.gender}}</td>
-                  <td>{{athlete.classroom}}</td>
-                  <td>{{athlete.date_of_birth}}</td>
+                  <td class="text-dark">{{athlete.school}}</td>
                   <td>
-                    <div class="badge badge-outline-success">
-                      {{athlete.status}}
+                    <div>
+                      <h5 class="text-dark fw-normal fs-14 mb-1">
+                        {{athlete.date_of_birth|date:"Y-m-d"}}
+                      </h5>
+                      <p class="text-muted fw-normal fs-13 mb-0">{{athlete.created}}</p>
                     </div>
                   </td>
                 </tr>
@@ -258,50 +216,8 @@
         </div>
       </div>
     </div>
+    <!-- End Latest Order -->
   </div>
-
-  <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Schools by Regions</h4>
-          <div class="row">
-            <div class="col-md-5">
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th><h4>ICON</h4></th>
-                      <th><h4>region</h4></th>
-                      <th><h4>schools</h4></th>
-                      <th><h4>athletes</h4></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for region in regions %}
-                    <tr>
-                      <td>
-                        <i class="flag-icon flag-icon-ug"></i>
-                      </td>
-                      <td><h5>{{ region.name }}</h5></td>
-                      <td class="text-right">{{ region.school_count }}</td>
-                      <!-- School count -->
-                      <td class="text-right">{{ region.athlete_count }}</td>
-                      <!-- Athlete count -->
-                      <!-- Example for percentage or other data -->
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="col-md-7">
-              <div id="audience-map" class="vector-map"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- End Row -->
 </div>
 {% endblock %}

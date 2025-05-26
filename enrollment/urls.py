@@ -16,7 +16,8 @@ urlpatterns = [
     path("team_cert/<int:id>", Certificate, name="team_cert"),
     path("team_cort/<int:id>", Cortificate, name="team_cort"),
     path("school_enrollments/", SchoolEnrollments, name="school_enrollments"),
-    path("all_enrollments/", AllEnrollments, name="all_enrollments"),
+    path("achive_enrollments/", AchivesEnrollments, name="achive_enrollments"),
+    path("active_enrollments/", ActiveEnrollments, name="active_enrollments"),
     path(
         "school_enrollment/<int:id>",
         school_enrollment_details,

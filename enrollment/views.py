@@ -65,7 +65,33 @@ def SchoolEnrollments(request):
 
 
 @login_required(login_url="login")
-def AllEnrollments(request):
+def AchivesEnrollments(request):
+    # Get all school_enrolls
+    school_enrolls = SchoolEnrollment.objects.select_related("school").filter(championship__status='Inactive').order_by("id")
+
+
+     # Apply filtering
+    school_enroll_filter = SchoolEnrollmentFilter(request.GET, queryset=school_enrolls)
+    filtered_enrolls = school_enroll_filter.qs  # Get the filtered queryset
+
+    # Paginate filtered results
+    paginator = Paginator(filtered_enrolls, 10)  # Show 10 athletes per page
+    page_number = request.GET.get("page")
+    paginated_enrolls = paginator.get_page(page_number)
+
+    # Pass the filter to the context for rendering the filter form
+    context = {
+        "enrolls": paginated_enrolls,
+        "school_enroll_filter": school_enroll_filter,
+    }
+
+    # Prepare context with athletes data
+
+
+    return render(request, "enrollments/enroll.html", context)
+
+@login_required(login_url="login")
+def ActiveEnrollments(request):
     # Get all school_enrolls
     school_enrolls = SchoolEnrollment.objects.select_related("school").filter(championship__status='Active').order_by("id")
 

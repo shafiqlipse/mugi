@@ -18,7 +18,9 @@ def dashboard(request):
     today = timezone.now().date()  # Assuming timezone is set
 
     # Use a single query to get all counts
-    users_count = User.objects.filter(is_staff=True).count()
+    enrollments_count = SchoolEnrollment.objects.count()
+    transfers_count = TransferRequest.objects.all().count()
+    approved_count = TransferRequest.objects.filter(status='Approved').count()
     schools_count = School.objects.count()
     officials_count = school_official.objects.count()
     athletes_count = Athlete.objects.count()
@@ -35,11 +37,13 @@ def dashboard(request):
 
     # Get the latest 5 schools and 6 athletes with related fields in one query
     schools = School.objects.select_related("district").order_by("-created")[:5]
-    athletes = Athlete.objects.select_related("school").order_by("-created")[:6]
+    athletes = Athlete.objects.select_related("school").order_by("-created")[:5]
 
     context = {
-        "users_count": users_count,
+        "enrollments_count": enrollments_count,
         "schools_count": schools_count,
+        "transfers_count": transfers_count,
+        "approved_count": approved_count,
         "officials_count": officials_count,
         "schools": schools,
         "athletes": athletes,
@@ -53,6 +57,8 @@ def dashboard(request):
 
 
 # championships
+
+
 # @admin_required
 def championships(request):
     championships = Championship.objects.all()
@@ -182,8 +188,14 @@ def AllTransfers(request):
 
 # @transfer_required
 @login_required
-def All_Transfers(request):
-    transfers = TransferRequest.objects.all()
+def Pending_Transfers(request):
+    transfers = TransferRequest.objects.filter(status ='Pending')
+    context = {"transfers": transfers}
+    return render(request, "all/transfer_s.html", context)
+
+@login_required
+def Approved_Transfers(request):
+    transfers = TransferRequest.objects.filter(status ='Approved')
     context = {"transfers": transfers}
     return render(request, "all/transfer_s.html", context)
 

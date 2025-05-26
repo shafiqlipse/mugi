@@ -6,31 +6,24 @@
 {% load static %}
 <!--khfufufu-->
 {% block content %}
-<div class="schools-dew content-wrapper">
-  <div class="head flex">
-    <h1>Athletes</h1>
-    <div class="ass">
-      <a href="{% url 'add_athlete'%}" class="btn-submit">Add Athlete</a>
-    </div>
-  </div>
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="fs-18 fw-semibold m-0">Athletes</h1>
 
-  <div class="filterlist card">
-    <div class="lo">
+      <a href="{% url 'add_athlete'%}" class="btn btn-primary">Add Athlete</a>
+    </div>
+
+    <div class="card-body">
       <div class="table-responsive">
         <table id="myTable" class="display">
           <thead>
             <tr>
               <th>Athlete Name</th>
-
               <th>Index</th>
-
               <th>Gender</th>
               <th>Class</th>
               <th>Date of Birth</th>
-
-              {% if user.is_superuser %}
-              <th>Edit</th>
-              {% endif %}
             </tr>
           </thead>
           <tbody>
@@ -49,13 +42,6 @@
               <td>{{ athlete.gender }}</td>
               <td>S{{ athlete.classroom }}</td>
               <td>{{ athlete.date_of_birth }}</td>
-              {% if user.is_superuser %}
-              <td>
-                <a href="{% url 'updateathlete' athlete.id%}" class="del"
-                  ><i class="fa fa-pencil"></i
-                ></a>
-              </td>
-              {% endif %}
             </tr>
             {% endfor %}
           </tbody>

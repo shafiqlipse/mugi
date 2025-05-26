@@ -5,24 +5,7 @@
 
 {%block content%}
 
-<style>
-  .alert {
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
 
-  .error-message {
-    background-color: red;
-    color: white;
-  }
-
-  .success-message {
-    background-color: #4caf50;
-    color: white;
-  }
-</style>
 <div class="content-wrapper">
   {% if messages %}
   <div class="messages">
@@ -35,13 +18,10 @@
     {% endfor %}
   </div>
   {% endif %}
-    <div class="row">
-      <div class="col-12 grid-margin stretch-card flex">
-        <div class="card corona-gradient-card">
-          <div class="card-body py-0 px-0 px-sm-3">
-            <h1>USERS</h1>
-          </div>
-        </div>
+  <div class="container-fluid">
+    <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+      <div class="flex-grow-1">
+        <h4 class="fs-18 fw-semibold m-0">School Users</h4>
       </div>
     </div>
 
@@ -49,40 +29,39 @@
       <div class="card">
         <div class="card-body">
           <div class="table-responsive">
-            <table id="myTable" class="display">
+            <table id="usersTable" class="display" style="width: 100%">
               <thead>
                 <tr>
                   <th>Username</th>
-                  <th>Names</th>
+                  <th>Email</th>
                   <th>School</th>
                   <th>Edit</th>
                 </tr>
               </thead>
-              <tbody>
-                {% for user in users%}
-                <tr>
-                  <td>
-                    <a href="">{{user.username}}</a>
-                  </td>
-                  <td>{{user.first_name}} {{user.last_name}}</td>
-
-                  <td>{{user.school}}</td>
-
-                  <td>
-                    <a href="{%url 'edit_user' user.id%}" class="del"
-                      ><i class="fa fa-pencil">Edit</i></a
-                    >
-                  </td>
-                </tr>
-
-                {%endfor%}
-              </tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  {% endblock %}
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#usersTable").DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: {
+        url: "{% url 'users_data' %}",
+        type: "GET",
+      },
+      columns: [
+        { data: "username" },
+        { data: "email" },
+        { data: "school_profile" },
+        { data: "actions", orderable: false, searchable: false },
+      ],
+    });
+  });
+</script>
+{% endblock %}
