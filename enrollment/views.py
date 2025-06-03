@@ -457,7 +457,7 @@ def export_ecsv(request):
         "Index Number",
     ])
 
-    for enrollment in SchoolEnrollment.objects.all():
+    for enrollment in SchoolEnrollment.objects.select_related("school").filter(level='National', championship__status='Active'):
         for athlete_enrollment in enrollment.athlete_enrollments.all():
             for athlete in athlete_enrollment.athletes.all():
                 writer.writerow([

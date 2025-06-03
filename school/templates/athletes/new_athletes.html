@@ -249,6 +249,7 @@
           </div>
         </div>
       </div>
+      <div id="form-messages" class="text-danger mt-2"></div>
       <button type="submit" class="btn btn-primary">Save athlete</button>
     </form>
     <!--
@@ -307,20 +308,26 @@
       form.addEventListener("submit", function (e) {
         e.preventDefault();
 
+        const messageBox = document.getElementById("form-messages");
+        messageBox.innerText = ""; // Clear any previous message
+
         const formData = new FormData(form);
 
-        // If user cropped the image, use cropped blob
         if (croppedBlob) {
           formData.set("cropped_photo", croppedBlob, "cropped_photo.jpg");
         } else if (fileInput.files[0]) {
-          // Fallback to original image
           formData.set("cropped_photo", fileInput.files[0]);
         } else {
-          alert("Please upload a photo.");
+          messageBox.innerText = "Please upload a photo.";
           return;
         }
 
-        // Submit via fetch
+        // Optional: Show "Submitting..." state
+        const submitButton = form.querySelector("button[type='submit']");
+        submitButton.disabled = true;
+        const originalBtnText = submitButton.innerText;
+        submitButton.innerText = "Submitting...";
+
         fetch(form.action, {
           method: "POST",
           headers: {
@@ -329,17 +336,28 @@
           body: formData,
         })
           .then((res) => {
-            if (res.redirected) {
-              window.location.href = res.url;
+            if (res.ok) {
+              if (res.redirected) {
+                window.location.href = res.url;
+              } else {
+                return res.text().then((html) => {
+                  document.body.innerHTML = html;
+                });
+              }
             } else {
-              return res.text().then((html) => {
-                document.body.innerHTML = html;
+              return res.text().then((text) => {
+                messageBox.innerText =
+                  "Submission failed. Please review the form.";
               });
             }
           })
           .catch((err) => {
-            console.error("Submission failed", err);
-            alert("Submission failed. Check console.");
+            console.error("Submission error:", err);
+            messageBox.innerText = "An error occurred. Please try again later.";
+          })
+          .finally(() => {
+            submitButton.disabled = false;
+            submitButton.innerText = originalBtnText;
           });
       });
 
