@@ -218,3 +218,5 @@ def custom_503_view(request):
 # if SystemStatus.is_system_closed():
 #     # Disable features
 #     print("System is currently closed")
+def offline_view(request):
+    return render(request, "pages/offline.html")

@@ -11,6 +11,8 @@
     />
     <meta name="author" content="Shafiq" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="manifest" href="{% static 'lib/js/manifest.json' %}" />
+    <meta name="theme-color" content="#000000" />
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="{% static 'lib/images/logo.png'%}" />
@@ -775,7 +777,18 @@
       <!-- ============================================================== -->
     </div>
     <!-- END wrapper -->
-    {% include "variables/new_js.html" %}
-       {% block extra_js %} {% endblock %}
+    {% include "variables/new_js.html" %} {% block extra_js %} {% endblock %}
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/static/lib/js/serviceworker.js")
+          .then((reg) => {
+            console.log("Service Worker registered:", reg);
+          })
+          .catch((err) => {
+            console.error("Service Worker registration failed:", err);
+          });
+      }
+    </script>
   </body>
 </html>

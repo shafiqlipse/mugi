@@ -11,6 +11,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # venues
     path("", user_login, name="login"),
+    path("offline/", offline_view, name="offline"),
     # venues
     path("dashboard/", include("dashboard.urls")),
     path("auth/", include("accounts.urls")),

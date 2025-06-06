@@ -32,9 +32,9 @@
                   <td>{{ ticket.title }}</td>
                   <td class={% if ticket.status == "Open" %}
                   
-                  "btn btn-primary" {% elif ticket.status == "Answered" %}
+                  "badge badge-primary" {% elif ticket.status == "Answered" %}
                   
-                  "btn btn-info" {% else %}"btn btn-warning" {% endif %}>
+                  "badge badge-info" {% else %}"badge badge-warning" {% endif %}>
                  {{ ticket.status }}</td>
                   <td>{{ticket.created_at}}</td>
                 </tr>

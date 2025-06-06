@@ -346,8 +346,9 @@
               }
             } else {
               return res.text().then((text) => {
+                // Attempt to show meaningful error returned from server
                 messageBox.innerText =
-                  "Submission failed. Please review the form.";
+                  text || "Something went wrong. Please try again.";
               });
             }
           })

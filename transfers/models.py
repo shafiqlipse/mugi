@@ -55,6 +55,19 @@ class TransferRequest(models.Model):
     def __str__(self):
         return f"Transfer of {self.athlete}"
 
+    def clean(self):
+        super().clean()
+        current_year = self.requested_at.year if self.requested_at else timezone.now().year
+        existing_transfers = TransferRequest.objects.filter(
+            athlete=self.athlete,
+            requested_at__year=current_year
+        )
+        if self.pk:
+            existing_transfers = existing_transfers.exclude(pk=self.pk)
+
+        if existing_transfers.exists():
+            raise ValidationError("This athlete has already been transferred this year.")
+
     def accept_transfer(self):
         """Mark transfer as accepted and set the timestamp."""
         self.status = "accepted"
