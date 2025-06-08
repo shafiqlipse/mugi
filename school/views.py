@@ -661,30 +661,18 @@ def AthleteUpdate(request, id):
             try:
                 new_athlete = form.save(commit=False)
 
-                cropped_data = request.POST.get("photo_cropped")
-                if cropped_data:
-                    try:
-                        format, imgstr = cropped_data.split(";base64,")
-                        ext = format.split("/")[-1]
-                        data = ContentFile(
-                            base64.b64decode(imgstr), name=f"photo.{ext}"
-                        )
-                        new_athlete.photo = data  # Assign cropped image
-                    except (ValueError, TypeError):
-                        messages.error(request, "Invalid image data.")
-                        return render(request, "trainee_new.html", {"form": form})
+                # Handle cropped photo from blob
+                cropped_file = request.FILES.get("cropped_photo")
+                if cropped_file:
+                    new_athlete.photo = cropped_file
 
                 new_athlete.save()
-                messages.success(
-                    request,
-                    "Updated successfully! ",
-                )
+                messages.success(request, "Updated successfully!")
                 return redirect("allathletes")
 
             except IntegrityError:
                 messages.error(request, "There was an error saving the trainee.")
                 return render(request, "trainee_new.html", {"form": form})
-
     else:
         form = NewAthleteForm(instance=athlete)
 
@@ -693,6 +681,7 @@ def AthleteUpdate(request, id):
         "athlete": athlete,
     }
     return render(request, "athletes/new_athletes.html", context)
+
 
 
 # # Athletes details......................................................

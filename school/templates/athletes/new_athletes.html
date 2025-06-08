@@ -309,57 +309,58 @@
         e.preventDefault();
 
         const messageBox = document.getElementById("form-messages");
-        messageBox.innerText = ""; // Clear any previous message
+        messageBox.innerText = ""; // Clear previous message
 
-        const formData = new FormData(form);
-
-        if (croppedBlob) {
-          formData.set("cropped_photo", croppedBlob, "cropped_photo.jpg");
-        } else if (fileInput.files[0]) {
-          formData.set("cropped_photo", fileInput.files[0]);
-        } else {
-          messageBox.innerText = "Please upload a photo.";
+        if (!cropper) {
+          messageBox.innerText = "Please upload and crop a photo.";
           return;
         }
 
-        // Optional: Show "Submitting..." state
-        const submitButton = form.querySelector("button[type='submit']");
-        submitButton.disabled = true;
-        const originalBtnText = submitButton.innerText;
-        submitButton.innerText = "Submitting...";
+        const canvas = cropper.getCroppedCanvas({ width: 512, height: 512 });
 
-        fetch(form.action, {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": getCookie("csrftoken"),
-          },
-          body: formData,
-        })
-          .then((res) => {
-            if (res.ok) {
-              if (res.redirected) {
-                window.location.href = res.url;
-              } else {
-                return res.text().then((html) => {
-                  document.body.innerHTML = html;
-                });
-              }
-            } else {
-              return res.text().then((text) => {
-                // Attempt to show meaningful error returned from server
-                messageBox.innerText =
-                  text || "Something went wrong. Please try again.";
-              });
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              messageBox.innerText = "Failed to crop image.";
+              return;
             }
-          })
-          .catch((err) => {
-            console.error("Submission error:", err);
-            messageBox.innerText = "An error occurred. Please try again later.";
-          })
-          .finally(() => {
-            submitButton.disabled = false;
-            submitButton.innerText = originalBtnText;
-          });
+
+            const formData = new FormData(form);
+            formData.set("cropped_photo", blob, "cropped_photo.jpg");
+
+            const submitButton = form.querySelector("button[type='submit']");
+            submitButton.disabled = true;
+            const originalBtnText = submitButton.innerText;
+            submitButton.innerText = "Submitting...";
+
+            fetch(form.action, {
+              method: "POST",
+              headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+              },
+              body: formData,
+            })
+              .then((res) => {
+                if (res.ok && res.redirected) {
+                  window.location.href = res.url;
+                } else {
+                  return res.text().then((html) => {
+                    document.body.innerHTML = html;
+                  });
+                }
+              })
+              .catch((err) => {
+                console.error("Submission error:", err);
+                messageBox.innerText = "An error occurred. Please try again.";
+              })
+              .finally(() => {
+                submitButton.disabled = false;
+                submitButton.innerText = originalBtnText;
+              });
+          },
+          "image/jpeg",
+          0.9
+        );
       });
 
       // Helper to get CSRF token

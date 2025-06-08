@@ -1,6 +1,6 @@
 {
-  "name": "My Django PWA",
-  "short_name": "DjangoPWA",
+  "name": "USSSA Mobile",
+  "short_name": "USSSA",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

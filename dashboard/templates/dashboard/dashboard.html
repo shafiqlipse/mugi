@@ -790,5 +790,73 @@
           });
       }
     </script>
+    <div
+      id="install-banner"
+      style="
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgb(171, 1, 1);
+        color: white;
+        padding: 16px;
+        text-align: center;
+        z-index: 1000;
+      "
+    >
+      <span>Install the USSSA App for a better experience</span>
+      <button
+        id="install-btn"
+        style="
+          margin-left: 15px;
+          background: white;
+          color: rgb(210, 25, 25);
+          border: none;
+          padding: 8px 12px;
+          border-radius: 4px;
+          cursor: pointer;
+        "
+      >
+        Install
+      </button>
+    </div>
+    <script>
+      let deferredPrompt;
+      const banner = document.getElementById("install-banner");
+      const installBtn = document.getElementById("install-btn");
+      const closeBtn = document.querySelector("#install-banner .close-btn");
+
+      window.addEventListener("beforeinstallprompt", (e) => {
+        // Prevent automatic prompt
+        e.preventDefault();
+        deferredPrompt = e;
+
+        // Only show if not dismissed
+        if (!localStorage.getItem("install-banner-dismissed")) {
+          banner.style.display = "block";
+        }
+
+        installBtn.addEventListener("click", async () => {
+          banner.style.display = "none";
+          localStorage.setItem("install-banner-dismissed", "true");
+
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log(`Install choice: ${outcome}`);
+          deferredPrompt = null;
+        });
+
+        closeBtn.addEventListener("click", () => {
+          banner.style.display = "none";
+          localStorage.setItem("install-banner-dismissed", "true");
+        });
+      });
+
+      window.addEventListener("appinstalled", () => {
+        console.log("PWA installed");
+        banner.style.display = "none";
+      });
+    </script>
   </body>
 </html>

@@ -1,16 +1,20 @@
-const CACHE_NAME = 'pwa-cache-v1';
+const CACHE_NAME = "pwa-cache-v1";
 const urlsToCache = [
-  '/',                    // homepage
-  '/offline/',            // fallback page
-  '/static/css/styles.css',
-  '/static/js/app.js',
+  "/", // homepage
+  "/offline/", // fallback page
+  "/school/newathlete/", // fallback page
+  "/school/athletes/", // fallback page
+  "/school/allathletes/", // fallback page
+  "/dashboard/school_dash/", // fallback page
+  "/static/css/styles.css",
+  "/static/js/app.js",
   // Add more URLs as needed
 ];
 
 // Install event: cache required assets
-self.addEventListener('install', event => {
+self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
+    caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(urlsToCache);
     })
   );
@@ -18,11 +22,11 @@ self.addEventListener('install', event => {
 });
 
 // Activate event: cleanup old caches
-self.addEventListener('activate', event => {
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
+    caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map(name => {
+        cacheNames.map((name) => {
           if (name !== CACHE_NAME) {
             return caches.delete(name);
           }
@@ -34,13 +38,16 @@ self.addEventListener('activate', event => {
 });
 
 // Fetch event: serve cached content if offline
-self.addEventListener('fetch', event => {
+self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request).catch(() => {
-      return caches.match(event.request).then(response => {
+      return caches.match(event.request).then((response) => {
         // fallback to offline page for HTML requests
-        if (!response && event.request.headers.get('accept')?.includes('text/html')) {
-          return caches.match('/offline/');
+        if (
+          !response &&
+          event.request.headers.get("accept")?.includes("text/html")
+        ) {
+          return caches.match("/offline/");
         }
         return response;
       });
