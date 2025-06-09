@@ -183,6 +183,7 @@ def sport_delete(request, id):
 @login_required
 def AllTransfers(request):
     transfers = TransferRequest.objects.filter(status ='Accepted')
+    
     context = {"transfers": transfers}
     return render(request, "all/transfers.html", context)
 
@@ -190,12 +191,14 @@ def AllTransfers(request):
 @login_required
 def Pending_Transfers(request):
     transfers = TransferRequest.objects.filter(status ='Pending')
+    
     context = {"transfers": transfers}
     return render(request, "all/transfer_s.html", context)
 
 @login_required
 def Approved_Transfers(request):
     transfers = TransferRequest.objects.filter(status ='Approved')
+    
     context = {"transfers": transfers}
     return render(request, "all/transfer_s.html", context)
 

@@ -651,6 +651,12 @@ def school_offs(request):
     return render(request, "officials/officials.html", context)
 
 
+
+import time
+from django.shortcuts import get_object_or_404, render, redirect
+
+
+
 @login_required
 def AthleteUpdate(request, id):
     athlete = get_object_or_404(Athlete, id=id)
@@ -681,8 +687,6 @@ def AthleteUpdate(request, id):
         "athlete": athlete,
     }
     return render(request, "athletes/new_athletes.html", context)
-
-
 
 # # Athletes details......................................................
 @staff_required

@@ -147,9 +147,10 @@ def school_enrollment_details(request, id):
             if already_enrolled:
                 messages.error(request, "Some of the selected athletes are already enrolled in this school enrollment.")
             else:
-                current_total = AthleteEnrollment.objects.filter(
-                    school_enrollment=school_enrollment
-                ).values_list("athletes", flat=True).count()
+                current_total = Athlete.objects.filter(
+                    athleteenrollment__school_enrollment=school_enrollment
+                ).distinct().count()
+
 
                 if current_total + selected_athletes.count() > school_enrollment.sport.entries:
                     messages.error(
