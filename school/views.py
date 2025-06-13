@@ -495,6 +495,8 @@ import logging
 from django.core.cache import cache
 logger = logging.getLogger(__name__)
 
+
+
 @login_required(login_url="login")
 def newAthlete(request):
     if request.method == "POST" and request.FILES.get("cropped_photo"):
@@ -523,7 +525,6 @@ def newAthlete(request):
     # GET request or form errors
     form = NewAthleteForm()
     return render(request, "athletes/new_athletes.html", {"form": form})
-
 
 
 

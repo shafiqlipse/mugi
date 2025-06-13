@@ -17,7 +17,7 @@
       <h1 class="card-title">Add Athlete</h1>
     </div>
     <form
-      action="{% url 'add_athlete' %}"
+      action=""
       method="POST"
       class="form-ctrl card-body"
       enctype="multipart/form-data"
@@ -120,9 +120,21 @@
                     </div>
                     <div
                       class="col-12 col-md-4 mb-3"
+                      id="index_number_container"
+                    >
+                      <label>UCE Index Number</label>{{form.uce_index_number}}
+                    </div>
+                    <div
+                      class="col-12 col-md-4 mb-3"
                       id="sponsorship_container"
                     >
                       <label>Sponsorship status</label>{{form.sponsorship}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Sport</label>{{form.sport}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Gender</label>{{form.gender}}
                     </div>
                     <div
                       class="col-12 col-md-4 mb-3"
@@ -151,30 +163,24 @@
                         >UNEB Equated Results code</label
                       >
                       {{ form.uneb_code }}
-                    </div>
+                    </div><!--
                     <div class="col-12 col-md-4 mb-3">
                       <label>Physic</label>{{form.physic}}
-                    </div>
-                    <div class="col-12 col-md-4 mb-3">
-                      <label>Sport</label>{{form.sport}}
-                    </div>
-                    <div class="col-12 col-md-4 mb-3">
-                      <label>Gender</label>{{form.gender}}
-                    </div>
+                    </div>-->
                     <div
                       class="col-12 col-md-4 mb-3"
                       id="ple_certificate_container"
                     >
                       <label for="id_ple_certificate">PLE Certificate</label>
                       {{ form.ple_certificate }}
-                    </div>
+                    </div><!--
                     <div
                       class="col-12 col-md-4 mb-3"
                       id="uce_certificate_container"
                     >
                       <label for="id_uce_certificate">UCE Certificate</label>
                       {{ form.uce_certificate }}
-                    </div>
+                    </div>-->
                     <div
                       class="col-12 col-md-4 mb-3"
                       id="student_pass_container"
@@ -197,7 +203,7 @@
                         >UNEB Equated Results</label
                       >
                       {{ form.uneb_eq_results }}
-                    </div>
+                    </div><!--
                     <div class="col-12 col-md-4 mb-3" id="bursary_container">
                       <label for="id_bursary">Bursary</label>
                       {{ form.bursary }}
@@ -208,7 +214,7 @@
                     >
                       <label for="id_student_visa">Student Visa</label>
                       {{ form.student_visa }}
-                    </div>
+                    </div>-->
                   </div>
                 </div>
               </div>
@@ -386,7 +392,6 @@
           $("#lin_container").show();
           $("#index_number_container").show();
           $("#ple_certificate_container").show();
-          $("#uce_certificate_container").show();
 
           // Set these fields to be required for nationals
           $("#id_lin").prop("required", true);
@@ -449,10 +454,7 @@
           if (refugee === "Yes") {
             $("#student_pass_container").hide();
             $("#student_pass_code_container").hide();
-            $("#refugee_card_container").show().prop("required", true);
           } else {
-            $("#student_pass_container").show().prop("required", true);
-            $("#student_pass_code_container").show().prop("required", true);
             $("#refugee_card_container").hide().prop("required", false);
           }
         }
@@ -460,7 +462,6 @@
         // Sponsorship case
         if (sponsorship === "School sponsored") {
           $("#bursary_container").show();
-          $("#id_bursary").prop("required", true);
         } else {
           $("#bursary_container").hide();
           $("#id_bursary").prop("required", false);
@@ -470,9 +471,7 @@
       }
 
       // Run the function on page load and when nationality, refugee, or sponsorship changes
-      $("#id_nationality, #id_refugee, #id_sponsorship, #id_classroom").change(
-        toggleFields
-      );
+      $("#id_nationality, #id_refugee, #id_sponsorship").change(toggleFields);
       toggleFields(); // Initial check on page load
     });
   </script>

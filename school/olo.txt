@@ -1,0 +1,11 @@
+athlete_id
+physic
+nationality
+refugee
+student_pass
+student_visa
+student_pass_code
+uneb_code
+uneb_eq_results
+refugee_card
+

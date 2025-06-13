@@ -193,7 +193,7 @@ class Athlete(models.Model):
         School, related_name="athletes", on_delete=models.CASCADE, db_index=True
     )
 
-    athlete_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    athlete_id = models.CharField(max_length=255,  null=True, blank=True)
     fname = models.CharField(max_length=255, db_index=True)
     mname = models.CharField(max_length=255, null=True, blank=True)
     lname = models.CharField(max_length=255)
@@ -203,17 +203,14 @@ class Athlete(models.Model):
     )
     uce_index_number = models.CharField(max_length=255, null=True, blank=True)
     sport = models.ForeignKey(Sport, related_name="sport", on_delete=models.CASCADE, null=True, blank=True)
-
     date_of_birth = models.DateField(db_index=True)
     created = models.DateField(auto_now_add=True, null=True)
     gender = models.CharField(choices=[("Male", "male"), ("Female", "female")], max_length=10)
     classroom = models.ForeignKey(Classroom, related_name="classroom", on_delete=models.CASCADE)
-
     physic = models.CharField(
         max_length=25, choices=[("Normal", "Normal"), ("Special Needs", "Special Needs")],
         default="Normal", blank=True, null=True
     )
-
     nationality = models.CharField(
         max_length=25, choices=[("National", "National"), ("International", "International"), ("Foreigner", "Foreigner")],
         default="National"
@@ -223,9 +220,7 @@ class Athlete(models.Model):
         max_length=25, choices=[("School sponsored", "School sponsored"), ("Parent sponsored", "Parent sponsored")],
         blank=True, null=True
     )
-
     photo = models.ImageField(upload_to="athlete_photos/")
-
     ple_certificate = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
     uce_certificate = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
     student_pass = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
@@ -235,7 +230,6 @@ class Athlete(models.Model):
     uneb_code = models.CharField(max_length=255, null=True, blank=True)
     uneb_eq_results = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
     refugee_card = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
-
     Parent_fname = models.CharField(max_length=100)
     Parent_lname = models.CharField(max_length=100)
     parent_phone_number = models.CharField(max_length=15)
@@ -257,26 +251,8 @@ class Athlete(models.Model):
     def __str__(self):
         return f"{self.fname} {self.lname}"
 
-    def generate_athlete_id(self):
-        # Extract year from date_of_birth
-        year = str(self.date_of_birth.year)[-2:]  # Get last two digits of the year
-
-        # Set gender code (M for male, F for female)
-        gender_code = "M" if self.gender == "Male" else "F"
-
-        # Generate a random 4-digit number and ensure uniqueness
-        while True:
-            random_number = random.randint(1000, 9999)
-            athlete_id = f"000{year}{gender_code}{random_number}"
-            if not Athlete.objects.filter(athlete_id=athlete_id).exists():
-                break
-
-        return athlete_id
 
     def save(self, *args, **kwargs):
-        # Generate athlete_id if not already set
-        if not self.athlete_id:
-            self.athlete_id = self.generate_athlete_id()
 
         super(Athlete, self).save(*args, **kwargs)
         
