@@ -193,7 +193,7 @@ class Athlete(models.Model):
         School, related_name="athletes", on_delete=models.CASCADE, db_index=True
     )
 
-    athlete_id = models.CharField(max_length=255,  null=True, blank=True)
+    # athlete_id = models.CharField(max_length=255,  null=True, blank=True)
     fname = models.CharField(max_length=255, db_index=True)
     mname = models.CharField(max_length=255, null=True, blank=True)
     lname = models.CharField(max_length=255)
@@ -207,15 +207,15 @@ class Athlete(models.Model):
     created = models.DateField(auto_now_add=True, null=True)
     gender = models.CharField(choices=[("Male", "male"), ("Female", "female")], max_length=10)
     classroom = models.ForeignKey(Classroom, related_name="classroom", on_delete=models.CASCADE)
-    physic = models.CharField(
-        max_length=25, choices=[("Normal", "Normal"), ("Special Needs", "Special Needs")],
-        default="Normal", blank=True, null=True
-    )
-    nationality = models.CharField(
-        max_length=25, choices=[("National", "National"), ("International", "International"), ("Foreigner", "Foreigner")],
-        default="National"
-    )
-    refugee = models.CharField(max_length=25, choices=[("Yes", "Yes"), ("No", "No")], blank=True, null=True)
+    # physic = models.CharField(
+    #     max_length=25, choices=[("Normal", "Normal"), ("Special Needs", "Special Needs")],
+    #     default="Normal", blank=True, null=True
+    # )
+    # nationality = models.CharField(
+    #     max_length=25, choices=[("National", "National"), ("International", "International"), ("Foreigner", "Foreigner")],
+    #     default="National"
+    # )
+    # refugee = models.CharField(max_length=25, choices=[("Yes", "Yes"), ("No", "No")], blank=True, null=True)
     sponsorship = models.CharField(
         max_length=25, choices=[("School sponsored", "School sponsored"), ("Parent sponsored", "Parent sponsored")],
         blank=True, null=True
@@ -223,13 +223,13 @@ class Athlete(models.Model):
     photo = models.ImageField(upload_to="athlete_photos/")
     ple_certificate = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
     uce_certificate = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
-    student_pass = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
-    student_visa = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
-    bursary = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
-    student_pass_code = models.CharField(max_length=255, null=True, blank=True)
-    uneb_code = models.CharField(max_length=255, null=True, blank=True)
-    uneb_eq_results = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
-    refugee_card = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
+    # student_pass = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
+    # student_visa = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
+    # bursary = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
+    # student_pass_code = models.CharField(max_length=255, null=True, blank=True)
+    # uneb_code = models.CharField(max_length=255, null=True, blank=True)
+    # uneb_eq_results = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
+    # refugee_card = models.FileField(upload_to="certificates/", validators=[FileExtensionValidator(allowed_extensions=["pdf"])], null=True, blank=True)
     Parent_fname = models.CharField(max_length=100)
     Parent_lname = models.CharField(max_length=100)
     parent_phone_number = models.CharField(max_length=15)
@@ -252,46 +252,46 @@ class Athlete(models.Model):
         return f"{self.fname} {self.lname}"
 
 
-    def save(self, *args, **kwargs):
+    # def save(self, *args, **kwargs):
 
-        super(Athlete, self).save(*args, **kwargs)
+    #     super(Athlete, self).save(*args, **kwargs)
         
-def clean(self):
-    nationality = self.nationality
-    refugee = self.refugee
+# def clean(self):
+#     nationality = self.nationality
+#     refugee = self.refugee
 
-    # Nationality checks
-    if nationality == "National":
-        if refugee:
-            raise ValidationError("Refugee status cannot be set for national athletes.")
-        if not self.index_number:
-            raise ValidationError("Index number is required for nationals.")
-        # No need for student_pass or refugee_card for nationals
-        self.student_pass = None
-        self.refugee_card = None
-    # Nationality checks
-    elif nationality == "International":
-        if refugee:
-            raise ValidationError("Refugee status cannot be set for national athletes.")
-        if not self.lin:
-            raise ValidationError("lin is required for nationals.")
-        # No need for student_pass or refugee_card for nationals
-        self.student_pass = None
-        self.refugee_card = None
-        self.index_number = None
-        self.student_pass_code = None
-        self.student_visa = None
+#     # Nationality checks
+#     if nationality == "National":
+#         if refugee:
+#             raise ValidationError("Refugee status cannot be set for national athletes.")
+#         if not self.index_number:
+#             raise ValidationError("Index number is required for nationals.")
+#         # No need for student_pass or refugee_card for nationals
+#         self.student_pass = None
+#         self.refugee_card = None
+#     # Nationality checks
+#     elif nationality == "International":
+#         if refugee:
+#             raise ValidationError("Refugee status cannot be set for national athletes.")
+#         if not self.lin:
+#             raise ValidationError("lin is required for nationals.")
+#         # No need for student_pass or refugee_card for nationals
+#         self.student_pass = None
+#         self.refugee_card = None
+#         self.index_number = None
+#         self.student_pass_code = None
+#         self.student_visa = None
         
-    elif nationality == "Foreigner":
-        if self.index_number:
-            raise ValidationError("Index number is not applicable for foreigners.")
-        # Handle refugees and non-refugees separately
-        if refugee == "Yes" and not self.refugee_card:
-            raise ValidationError("Refugee card is required for refugees.")
-        if refugee == "No" and not self.student_pass:
-            raise ValidationError("Student pass is required for non-refugees.")
+#     elif nationality == "Foreigner":
+#         if self.index_number:
+#             raise ValidationError("Index number is not applicable for foreigners.")
+#         # Handle refugees and non-refugees separately
+#         if refugee == "Yes" and not self.refugee_card:
+#             raise ValidationError("Refugee card is required for refugees.")
+#         if refugee == "No" and not self.student_pass:
+#             raise ValidationError("Student pass is required for non-refugees.")
 
-    return super().clean()
+#     return super().clean()
 
 
 class Screening(models.Model):

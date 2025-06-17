@@ -98,11 +98,7 @@
                       >
                       {{form.lname}}
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12 col-md-4 mb-3">
-                      <label>Nationality</label>{{form.nationality}}
-                    </div>
+
                     <div class="col-12 col-md-4 mb-3">
                       <label>Class</label>{{form.classroom}}
                     </div>
@@ -110,8 +106,7 @@
                       <label> Learner's Identification Number</label
                       >{{form.lin}}
                     </div>
-                  </div>
-                  <div class="row">
+
                     <div
                       class="col-12 col-md-4 mb-3"
                       id="index_number_container"
@@ -136,85 +131,26 @@
                     <div class="col-12 col-md-4 mb-3">
                       <label>Gender</label>{{form.gender}}
                     </div>
-                    <div
-                      class="col-12 col-md-4 mb-3"
-                      id="refugee_status_container"
-                    >
-                      <label for="id_refugee">Is Refugee?</label>
-                      {{ form.refugee }}
-                    </div>
                     <div class="col-12 col-md-4 mb-3">
                       <label for="date_of_birth">Date of Birth:</label>
                       {{form.date_of_birth}}
                     </div>
-                  </div>
-                  <div class="row">
-                    <div
-                      class="col-12 col-md-4 mb-3"
-                      id="student_pass_code_container"
-                    >
-                      <label for="id_student_pass_code"
-                        >Student Pass Code</label
-                      >
-                      {{ form.student_pass_code }}
-                    </div>
-                    <div class="col-12 col-md-4 mb-3" id="uneb_code_container">
-                      <label for="id_uneb_code"
-                        >UNEB Equated Results code</label
-                      >
-                      {{ form.uneb_code }}
-                    </div><!--
-                    <div class="col-12 col-md-4 mb-3">
-                      <label>Physic</label>{{form.physic}}
-                    </div>-->
+
                     <div
                       class="col-12 col-md-4 mb-3"
                       id="ple_certificate_container"
                     >
                       <label for="id_ple_certificate">PLE Certificate</label>
                       {{ form.ple_certificate }}
-                    </div><!--
+                    </div>
                     <div
                       class="col-12 col-md-4 mb-3"
                       id="uce_certificate_container"
                     >
                       <label for="id_uce_certificate">UCE Certificate</label>
                       {{ form.uce_certificate }}
-                    </div>-->
-                    <div
-                      class="col-12 col-md-4 mb-3"
-                      id="student_pass_container"
-                    >
-                      <label for="id_student_pass">Student Pass</label>
-                      {{ form.student_pass }}
                     </div>
-                    <div
-                      class="col-12 col-md-4 mb-3"
-                      id="refugee_card_container"
-                    >
-                      <label for="id_refugee_card">Refugee Card</label>
-                      {{ form.refugee_card }}
-                    </div>
-                    <div
-                      class="col-12 col-md-4 mb-3"
-                      id="uneb_eq_results_container"
-                    >
-                      <label for="id_uneb_eq_results"
-                        >UNEB Equated Results</label
-                      >
-                      {{ form.uneb_eq_results }}
-                    </div><!--
-                    <div class="col-12 col-md-4 mb-3" id="bursary_container">
-                      <label for="id_bursary">Bursary</label>
-                      {{ form.bursary }}
-                    </div>
-                    <div
-                      class="col-12 col-md-4 mb-3"
-                      id="student_visa_container"
-                    >
-                      <label for="id_student_visa">Student Visa</label>
-                      {{ form.student_visa }}
-                    </div>-->
+
                   </div>
                 </div>
               </div>
@@ -378,102 +314,6 @@
     });
   </script>
 
-  <script>
-    $(document).ready(function () {
-      function toggleFields() {
-        const nationality = $("#id_nationality").val();
-        const refugee = $("#id_refugee").val();
-        const sponsorship = $("#id_sponsorship").val();
-        const classroom = $("#id_classroom").val();
 
-        // National case
-        if (nationality === "National") {
-          // Show LIN, Index Number, PLE/UCE Certificate for nationals
-          $("#lin_container").show();
-          $("#index_number_container").show();
-          $("#ple_certificate_container").show();
-
-          // Set these fields to be required for nationals
-          $("#id_lin").prop("required", true);
-          $("#id_index_number").prop("required", true);
-          $("#id_ple_certificate").prop("required", true);
-          $("#id_uce_certificate").prop("required", false);
-
-          // Hide refugee-related fields
-          $("#refugee_status_container").hide();
-          $("#student_pass_container").hide();
-          $("#student_pass_code_container").hide();
-          $("#refugee_card_container").hide();
-          $("#uneb_eq_results_container").hide();
-          $("#uneb_code_container").hide();
-          $("#student_visa_container").hide();
-        }
-        // National case
-        else if (nationality === "International") {
-          // Show LIN, Index Number, PLE/UCE Certificate for nationals
-          $("#lin_container").show();
-          $("#index_number_container").hide();
-          $("#ple_certificate_container").hide();
-          $("#uce_certificate_container").hide();
-
-          // Set these fields to be required for nationals
-          $("#id_lin").prop("required", true);
-          $("#id_index_number").prop("required", false);
-          $("#id_ple_certificate").prop("required", false);
-          $("#id_uce_certificate").prop("required", false);
-
-          // Hide refugee-related fields
-          $("#refugee_status_container").hide();
-          $("#student_pass_container").hide();
-          $("#student_pass_code_container").hide();
-          $("#refugee_card_container").hide();
-          $("#uneb_eq_results_container").show();
-          $("#uneb_code_container").show();
-          $("#student_visa_container").hide();
-        }
-        // Foreigner case
-        else if (nationality === "Foreigner") {
-          // Hide LIN, Index Number, PLE/UCE Certificate for foreigners
-          $("#lin_container").hide();
-          $("#index_number_container").hide();
-          $("#ple_certificate_container").hide();
-          $("#uce_certificate_container").hide();
-
-          // Remove required attribute for foreigners
-          $("#id_lin").prop("required", false);
-          $("#id_index_number").prop("required", false);
-          $("#id_ple_certificate").prop("required", false);
-          $("#id_uce_certificate").prop("required", false);
-
-          // Show refugee-related fields for foreigners
-          $("#refugee_status_container").show();
-          $("#uneb_eq_results_container").show();
-          $("#uneb_code_container").show();
-          //$("#student_visa_container").show();
-
-          if (refugee === "Yes") {
-            $("#student_pass_container").hide();
-            $("#student_pass_code_container").hide();
-          } else {
-            $("#refugee_card_container").hide().prop("required", false);
-          }
-        }
-
-        // Sponsorship case
-        if (sponsorship === "School sponsored") {
-          $("#bursary_container").show();
-        } else {
-          $("#bursary_container").hide();
-          $("#id_bursary").prop("required", false);
-        }
-
-        // Sponsorship case
-      }
-
-      // Run the function on page load and when nationality, refugee, or sponsorship changes
-      $("#id_nationality, #id_refugee, #id_sponsorship").change(toggleFields);
-      toggleFields(); // Initial check on page load
-    });
-  </script>
 </div>
 {% endblock %}

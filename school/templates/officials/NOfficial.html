@@ -1,93 +1,237 @@
 {% extends "dashboard/dashboard.html" %}
 <!---->
-{% load static %} {% block content %}
-<div class="content-wrapper">
-  <h1>Add official</h1>
-  <p>All fields labeled with <span>*</span> must be filled.</p>
-  <hr />
-  <form
-    action=""
-    method="POST"
-    class="form-ctrl card"
-    enctype="multipart/form-data"
-  >
-    {% csrf_token %}
-    <div class="fields">
-      <div class="left">
-        <h2>official Info</h2>
-        <p>All fields labeled with <span>*</span> must be filled.</p>
-        <hr />
-        {% if messages %}
-        <div class="messages">
-          {% for message in messages %}
-          <div
-            class="alert {% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}"
-          >
-            {{ message }}
-          </div>
-          {% endfor %}
-        </div>
-        {% endif %}
-        <div class="left0">
-          <div class="imgbox">
-            <div class="field">
-              <label>{{form.photo.label}} </label>
-              <div id="photos_preview" class="preview-container"></div>
-            </div>
-            <div class="field">
-              <input type="file" name="photo" accept="image/*" id="id_photo" />
-            </div>
-          </div>
+{% load static %}
 
-          <div class="lefty">
-            <div class="field-grid grid3">
-              <div class="field"><label>First Name</label>{{form.fname}}</div>
-              <div class="field"><label>Last Name</label>{{form.lname}}</div>
-              <div class="field"><label>Email</label>{{form.email}}</div>
-            </div>
 
-            <div class="field-grid grid3">
-              <div class="field"><label>Contact</label>{{form.phone_number}}</div>
-              <div class="field"><label>Role</label>{{form.role}}</div>
-              <div class="field-container" id="lin_container">
-                <label>National Identification Number</label>{{form.nin}}
-              </div>
-
-              <div class="field"><label>Gender</label>{{form.gender}}</div>
-
-              <div class="field">
-                <label for="date_of_birth">Date of Birth:</label>
-                {{form.date_of_birth}}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<link rel="stylesheet" href="{% static 'css/athlete/athlete.css' %}" />
+{% block content %}
+<style>
+ .lefty .field-container .preview-container {
+  background-image: url("https://static.vecteezy.com/system/resources/thumbnails/036/594/092/small_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg");
+  background-position: center center;
+  background-size: cover;
+  height: 300px;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+</style>
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">Add Official</h1>
     </div>
-    <button type="submit" class="btn-submit">Save official</button>
-  </form>
-  <div
-    class="toast-container position-fixed bottom-0 end-0 p-3"
-    id="toast-container"
-  >
-    {% for message in messages %}
-    <div
-      class="toast align-items-center text-bg-{{ message.tags }} border-0"
-      role="alert"
-      aria-live="assertive"
-      aria-atomic="true"
+    <form
+      action=""
+      method="POST"
+      class="form-ctrl card-body"
+      enctype="multipart/form-data"
+      id="official-form"
     >
-      <div class="d-flex">
-        <div class="toast-body">{{ message }}</div>
-        <button
-          type="button"
-          class="btn-close me-2 m-auto"
-          data-bs-dismiss="toast"
-          aria-label="Close"
-        ></button>
+      {% csrf_token %}
+      <div class="fields">
+        <div class="left">
+          <p>All fields labeled with <span>*</span> must be filled.</p>
+          <hr />
+          {% if messages %}
+          <div class="messages">
+            {% for message in messages %}
+            <div
+              class="alert {% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}"
+            >
+              {{ message }}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">{{form.photo.label}}</h5>
+                </div>
+                <!-- end card header -->
+
+                <div class="card-body">
+                          <div class="imgbox">
+                        <div class="field">
+                          <label>{{form.photo.label}} </label>
+                          <div
+                            id="photos_preview"
+                            class="preview-container"
+                          ></div>
+                        </div>
+                        <div class="field">
+                          <input
+                            type="file"
+                            name="photo"
+                            accept="image/*"
+                            id="id_photo"
+                          />
+                        </div>
+                      </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-8">
+              <div class="card">
+
+
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-12 col-md-4 mb-3">
+                      <span
+                        class="input-label mb-2"
+                        id="inputGroup-sizing-default"
+                        >First Name</span
+                      >
+                      {{form.fname}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <span
+                        class="input-label mb-2"
+                        id="inputGroup-sizing-default"
+                        >Last Name</span
+                      >
+                      {{form.lname}}
+                    </div>
+
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Email</label>{{form.email}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3" id="lin_container">
+                      <label> Phone Number</label
+                      >{{form.phone_number}}
+                    </div>
+
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="index_number_container"
+                    >
+                      <label>NationalID Number</label>{{form.nin}}
+                    </div>
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="index_number_container"
+                    >
+                      <label>Residence</label>{{form.residence}}
+                    </div>
+                    <div
+                      class="col-12 col-md-4 mb-3"
+                      id="sponsorship_container"
+                    >
+                      <label>Date of birth</label>{{form.date_of_birth}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Gender</label>{{form.gender}}
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                      <label>Role</label>{{form.role}}
+                    </div>
+
+
+         
+                </div>
+              </div>
+            </div>
+      
+          </div>
+        </div>
       </div>
-    </div>
-    {% endfor %}
-  </div>
+    <button type="submit" class="btn btn-primary">Save official</button>
+  </form>
+
+        </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const imageFields = ["photo"]; // Only keeping "photo"
+  const croppers = {}; // Initialize the croppers object
+
+  imageFields.forEach((field) => {
+    const fileInput = document.getElementById(`id_${field}`);
+    const previewContainer = document.getElementById(`${field}s_preview`);
+    const croppedInput = document.createElement("input");
+    croppedInput.type = "hidden";
+    croppedInput.name = `${field}_cropped`;
+    fileInput.parentNode.insertBefore(croppedInput, fileInput.nextSibling);
+
+    fileInput.addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          if (croppers[field]) {
+            croppers[field].destroy(); // Destroy previous instance if exists
+          }
+          previewContainer.innerHTML = `<img src="${event.target.result}" id="${field}_image">`;
+          const image = document.getElementById(`${field}_image`);
+          croppers[field] = new Cropper(image, {
+            aspectRatio: 1,
+            viewMode: 1,
+            crop: function (event) {
+              const canvas = this.cropper.getCroppedCanvas();
+
+              // Resize and compress the image
+              canvas.toBlob((blob) => {
+                const maxSize = 100 * 1024; // 100 KB
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = function () {
+                  let quality = 0.9; // Initial quality
+
+                  function resizeImage(dataUrl) {
+                    const img = new Image();
+                    img.src = dataUrl;
+                    img.onload = function () {
+                      const resizedCanvas = document.createElement("canvas");
+                      const ctx = resizedCanvas.getContext("2d");
+
+                      // Set dimensions to maintain aspect ratio
+                      let width = img.width;
+                      let height = img.height;
+                      const maxWidth = 1024; // Adjust max size if needed
+                      if (width > maxWidth) {
+                        height = height * (maxWidth / width);
+                        width = maxWidth;
+                      }
+
+                      resizedCanvas.width = width;
+                      resizedCanvas.height = height;
+                      ctx.drawImage(img, 0, 0, width, height);
+
+                      // Compress resized image
+                      let resizedDataUrl = resizedCanvas.toDataURL(
+                        "image/jpeg",
+                        quality
+                      );
+                      if (resizedDataUrl.length > maxSize) {
+                        quality -= 0.1; // Reduce quality to further compress
+                        resizedDataUrl = resizedCanvas.toDataURL(
+                          "image/jpeg",
+                          quality
+                        );
+                      }
+
+                      croppedInput.value = resizedDataUrl; // Set the hidden input value
+                    };
+                  }
+
+                  resizeImage(reader.result);
+                };
+              }, "image/jpeg");
+            },
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  });
+});
+
+  </script>
 </div>
 {% endblock %}
