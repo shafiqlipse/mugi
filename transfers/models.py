@@ -43,7 +43,6 @@ class TransferRequest(models.Model):
     )
     documents = models.FileField(
         upload_to="transfer_documents/",
-        validators=[FileExtensionValidator(allowed_extensions=["pdf"])],
         null=True,
         blank=True,
     )
