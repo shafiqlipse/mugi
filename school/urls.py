@@ -39,6 +39,7 @@ urlpatterns = [
     path("newofficial/", Official, name="add_official"),
     path("officials/", school_offs, name="officials"),
     path("allofficials/", all_officials, name="allofficials"),
+    path('officials/update/<int:id>/', update_official, name='update_official'),
     path("official/<int:id>", OfficialDetail, name="official"),
     path("delete-official/<int:id>", DeleteOfficial, name="del_official"),
     path("activate_official/<int:id>", activate_official, name="activate_official"),

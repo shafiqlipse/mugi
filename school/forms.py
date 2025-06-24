@@ -86,6 +86,7 @@ class OfficialForm(forms.ModelForm):
             "gender",
             "date_of_birth",
             "role",
+            "residence",
         ]
 
         widgets = {
@@ -98,6 +99,7 @@ class OfficialForm(forms.ModelForm):
             "nin": forms.TextInput(attrs={"class": "form-control"}),
             "phone_number": forms.TextInput(attrs={"class": "form-control"}),
             "email": forms.TextInput(attrs={"class": "form-control"}),
+            "residence": forms.TextInput(attrs={"class": "form-control"}),
             "gender": forms.Select(attrs={"class": "form-control"}),
             "role": forms.Select(attrs={"class": "form-control"}),
         }

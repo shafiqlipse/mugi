@@ -651,7 +651,51 @@ def school_offs(request):
 
     return render(request, "officials/officials.html", context)
 
+def update_official(request, id):
+    official = get_object_or_404(school_official, id=id)
+    original_school = official.school # Store the original school for validation
+    if request.method == "POST":
+        form = OfficialForm(request.POST, request.FILES, instance=official)
+        if form.is_valid():
+            try:
+                updated_official = form.save(commit=False)
 
+                # Ensure the school is set to current user's school
+                updated_official.school = original_school
+
+                # Handle cropped image data if present
+                cropped_data = request.POST.get("photo_cropped")
+                if cropped_data:
+                    try:
+                        format, imgstr = cropped_data.split(";base64,")
+                        ext = format.split("/")[-1]
+                        data = ContentFile(
+                            base64.b64decode(imgstr), name=f"photo.{ext}"
+                        )
+                        updated_official.photo = data
+                    except (ValueError, TypeError):
+                        messages.error(request, "Invalid image data.")
+                        return render(request, "officials/NOfficial.html", {"form": form, "update": True})
+
+                updated_official.save()
+                messages.success(request, "Official updated successfully!")
+                return redirect("officials")
+
+            except IntegrityError as e:
+                if "nin" in str(e).lower():
+                    messages.error(request, "An official with this NIN already exists.")
+                else:
+                    messages.error(request, f"Integrity error: {str(e)}")
+            except Exception as e:
+                messages.error(request, f"Error updating official: {str(e)}")
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
+    else:
+        form = OfficialForm(instance=official)
+
+    return render(request, "officials/NOfficial.html", {"form": form, "update": True})
 
 import time
 from django.shortcuts import get_object_or_404, render, redirect

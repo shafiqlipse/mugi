@@ -174,7 +174,7 @@
             <div class="tab-pane pt-4" id="profile_experience" role="tabpanel">
               <div class="row">
                 <div class="table-responsive">
-                  <table id="myaTable" class="display">
+                  <table id="myaTable" class="display table">
                     <thead>
                       <tr>
                         <th>Names</th>
@@ -211,6 +211,16 @@
                             <i class="fa fa-trash"></i>
                             <div id="trashOne" class="d-none">
                               <span>Delete</span>
+                            </div>
+                          </a>
+                          <a
+                            href="{% url 'update_official' official.id %}"
+                            class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                            data-template="trashOne"
+                          >
+                            <i class="fa fa-pencil"></i>
+                            <div id="trashOne" class="d-none">
+                              <span>Edit</span>
                             </div>
                           </a>
 
@@ -256,11 +266,10 @@
                             href="{% url 'school_enrollment' school_enrollment.id%}"
                             style="font: size 10px"
                           >
-                            {{school_enrollment.school}}</a
+                            {{school_enrollment.championship}}</a
                           >
                         </td>
 
-                        <td>{{school_enrollment.championship}}</td>
                         <td>{{school_enrollment.sport}}</td>
                         <td>{{school_enrollment.level}}</td>
                         <td>{{official.enrollment_date}}</td>
