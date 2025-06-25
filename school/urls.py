@@ -32,6 +32,7 @@ urlpatterns = [
     # path('athletes/', all_athletes_page, name='all_athletes_page'),
     path("screens/", Screened, name="screened"),
     # path("export_pdf/", exportp_csv, name="export_pdf"),
+    path('export_pcsv/', export_pcsv, name='export_pcsv'),
     path('export-scsv/', export_scsv, name='export_scsv'),
     path('pay/<int:id>/', initiate_payment, name='payment'),
     path('registration/', payment_view, name='registration'),

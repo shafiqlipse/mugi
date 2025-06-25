@@ -9,7 +9,9 @@
   <div class="card">
     <div class="card-header">
       <h1 class="fs-18 fw-semibold m-0">Payments</h1>
-      <a href=""><i class="fa fa-download" aria-hidden="true"></i> Export </a>
+      <a href="{% url 'export_pcsv' %}"
+        ><i class="fa fa-download" aria-hidden="true"></i> Export
+      </a>
 
       <div method="get" class="formlix flex">
         <form method="get" class="formix">
@@ -20,16 +22,15 @@
                 {{ payment_filter.form.school}}
               </div>
             </div>
-        
+
             <div class="col-md-3">
               <div class="form-group">
                 <label for="championship">Phone number</label>
                 {{ payment_filter.form.phone_number}}
               </div>
             </div>
-        
           </div>
-        
+
           <div class="text-center mt-3">
             <button type="submit" class="btn btn-primary">Filter</button>
             <a href="" class="btn btn-secondary">Reset</a>
@@ -46,8 +47,7 @@
                 <th>Amount</th>
                 <th>Athletes</th>
                 <th>Date</th>
-                 <th>Status</th>
-              
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -63,9 +63,10 @@
                 <td>{{payment.athletes.count}}</td>
                 <td>{{payment.created_at}}</td>
                 <td>
-               <p class="badge badge-outline-success" styles="color:white;">{{payment.status}}</p>
+                  <p class="badge badge-outline-success" styles="color:white;">
+                    {{payment.status}}
+                  </p>
                 </td>
-          
               </tr>
 
               {%endfor%}
@@ -77,30 +78,48 @@
         <nav aria-label="Page navigation">
           <ul class="pagination">
             {% if payments.has_previous %}
-              <li class="page-item"><a class="page-link" href="?page={{ payments.previous_page_number }}">Previous</a></li>
-            {% endif %}
-      
-            {% for page_num in payments.paginator.page_range %}
-              {% if page_num == 1 or page_num == payments.paginator.num_pages %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
-              {% elif page_num >= payments.number|add:"-2" and page_num <= payments.number|add:"2" %}
-                {% if page_num == payments.number %}
-                  <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
-                {% else %}
-                  <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
-                {% endif %}
-              {% elif page_num == payments.number|add:"3" or page_num == payments.number|add:"-3" %}
-                <li class="page-item disabled"><span class="page-link">...</span></li>
-              {% endif %}
-            {% endfor %}
-      
-            {% if payments.has_next %}
-              <li class="page-item"><a class="page-link" href="?page={{ payments.next_page_number }}">Next</a></li>
+            <li class="page-item">
+              <a
+                class="page-link"
+                href="?page={{ payments.previous_page_number }}"
+                >Previous</a
+              >
+            </li>
+            {% endif %} {% for page_num in payments.paginator.page_range %}
+             {%if page_num == 1 or page_num == payments.paginator.num_pages %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_num }}"
+                >{{ page_num }}</a
+              >
+            </li>
+            {% elif page_num >= payments.number|add:"-2" and page_num <= payments.number|add:"2" %}
+            {% if page_num == payments.number %}
+            <li class="page-item active">
+              <span class="page-link">{{ page_num }}</span>
+            </li>
+            {% else %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_num }}"
+                >{{ page_num }}</a
+              >
+            </li>
+            {% endif %} {% elif page_num == payments.number|add:"3" or page_num == payments.number|add:"-3" %}
+           
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+            {% endif %} {% endfor %} {% if payments.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ payments.next_page_number }}"
+                >Next</a
+              >
+            </li>
             {% endif %}
           </ul>
+        </nav>
         </nav>
       </div>
     </div>
   </div>
 </div>
-  {% endblock %}
+{% endblock %}

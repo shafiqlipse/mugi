@@ -1103,3 +1103,32 @@ def payment_success(request, transaction_id):
     })
     
   
+import csv
+from django.http import HttpResponse
+
+def export_pcsv(request):
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="enrollments.csv"'
+
+    writer = csv.writer(response)
+
+    # Header row
+    writer.writerow([
+        "Payment ID",
+        "School",
+        "Athletes",
+        "Phone Number",
+        "Amount",
+    ])
+
+    for payment in Payment.objects.select_related("school").filter(status='COMPLETED'):
+        athletes_count = payment.athletes.all().count()  # <-- Use parentheses to call count()
+        writer.writerow([
+            payment.transaction_id,
+            payment.school.name,
+            athletes_count,
+            payment.phone_number,
+            payment.amount,
+        ])
+
+    return response
