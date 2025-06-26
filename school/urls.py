@@ -34,6 +34,7 @@ urlpatterns = [
     # path("export_pdf/", exportp_csv, name="export_pdf"),
     path('export_pcsv/', export_pcsv, name='export_pcsv'),
     path('export-scsv/', export_scsv, name='export_scsv'),
+    path("payments/<int:payment_id>/receipt/", generate_receipt, name="download_receipt"),
     path('pay/<int:id>/', initiate_payment, name='payment'),
     path('registration/', payment_view, name='registration'),
     # path("export_pdf/", exportp_csv, name="export_pdf"),

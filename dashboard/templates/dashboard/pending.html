@@ -48,6 +48,7 @@
                 <th>Date</th>
                  <th>Status</th>
                  <th>Activete</th>
+                 <th>Receipt</th>
               
               </tr>
             </thead>
@@ -74,6 +75,11 @@
                       >Activate</a
                     >
                   </td>
+                     <td>
+                  <a href='{% url 'download_receipt' payment.id %}' class="badge badge-outline-success" styles="color:white;">
+                    receipt
+                  </p>
+                </td>
               </tr>
 
               {%endfor%}

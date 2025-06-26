@@ -4256,3 +4256,81 @@ Traceback (most recent call last):
     raise self.error(
 django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 111: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
 "GET /dashboard/payments/ HTTP/1.1" 500 219940
+Internal Server Error: /school/payments/4/receipt/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\school\views.py", line 1175, in generate_receipt
+    table_data.append(["1", f"{athlete.full_name}", f"{unit_price:.2f}", f"{unit_price:.2f}"])
+                               ^^^^^^^^^^^^^^^^^
+AttributeError: 'Athlete' object has no attribute 'full_name'
+"GET /school/payments/4/receipt/ HTTP/1.1" 500 75605
+Internal Server Error: /school/payments/4/receipt/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\school\views.py", line 1179, in generate_receipt
+    tax = subtotal * 0.05  # optional tax
+          ~~~~~~~~~^~~~~~
+TypeError: unsupported operand type(s) for *: 'decimal.Decimal' and 'float'
+"GET /school/payments/4/receipt/ HTTP/1.1" 500 76328
+Internal Server Error: /school/payments/2/receipt/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\school\views.py", line 1172, in generate_receipt
+    table_data = [["QTY", "Athlete Name", "Unit Price", "Amount"]]
+                   ^^^^^^^^
+TypeError: 'function' object is not iterable
+"GET /school/payments/2/receipt/ HTTP/1.1" 500 74955
+Internal Server Error: /school/payments/4/receipt/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\school\views.py", line 1218, in generate_receipt
+    line = f"- {athlete.full_name}"  # Adjust if your field is athlete.name or athlete.first_name + " " + athlete.last_name
+                ^^^^^^^^^^^^^^^^^
+AttributeError: 'Athlete' object has no attribute 'full_name'
+"GET /school/payments/4/receipt/ HTTP/1.1" 500 75842
+Internal Server Error: /school/payments/4/receipt/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\school\views.py", line 1218, in generate_receipt
+    line = f"- {athlete.fname}"  # Adjust if your field is athlete.name or athlete.first_name + " " + athlete.last_name
+                ^^^^^^^^^
+AttributeError: 'Athlete' object has no attribute 'f'
+"GET /school/payments/4/receipt/ HTTP/1.1" 500 75786
+Internal Server Error: /school/payments/3/receipt/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\school\views.py", line 1210, in generate_receipt
+    name = f"- {athlete.full_name}"  # Adjust to your athlete name field
+                ^^^^^^^^^^^^^^^^^
+AttributeError: 'Athlete' object has no attribute 'full_name'
+"GET /school/payments/3/receipt/ HTTP/1.1" 500 75706
