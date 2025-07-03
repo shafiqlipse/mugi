@@ -43,4 +43,7 @@ urlpatterns = [
     path("prepare-accred/<int:id>/", prepare_accreditation, name="prepare_accred"),
     path('get-sports/', get_sports, name='get_sports'),
     # Add more URLs as ne
+    # Add more URLs as ne
+    path("athletics_enrollments/", athleticsEnrollments, name="athletics_enrollments"),
+    path("athletics_enrollments/<int:id>/", athletics_enrollment_details, name="athletics_enrollment"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -120,4 +120,14 @@ class TicketMessage(models.Model):
     def __str__(self):
         return self.ticket.title
     
-   
+class Appointment(models.Model):
+    client = models.ForeignKey("school.School", on_delete=models.CASCADE)
+    championship = models.ForeignKey(Championship, on_delete=models.CASCADE)
+    sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
+    date = models.DateField()
+    time = models.TimeField()
+    is_confirmed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.client} - {self.championship} on {self.date} at {self.time}"

@@ -38,4 +38,11 @@ urlpatterns = [
     path('answered_tickets/', answered_tickets, name='answered_tickets'),
     path('support/', support, name='support'),
     path('tickets/create/', open_ticket, name='ticket_create'),
+    
+    # path('book/', book_appointment, name='book_appointment'),
+    # path('book/', book_appointment, name='book_appointment'),
+    path('book/', book_appointment, name='book_appointment'),
+    path('bookings/', appointments, name='appointments'),
+    path('success/', appointment_success, name='appointment_success'),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

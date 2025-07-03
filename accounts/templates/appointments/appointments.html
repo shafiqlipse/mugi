@@ -1,0 +1,85 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}bookings{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="container-fluid">
+  <!-- Datatables  -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Appointments</h5>
+        </div>
+        <!-- end card header -->
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="myTable" class="display">
+              <thead>
+                <tr>
+                  <th>School</th>
+                  <th>Championship</th>
+                  <th>Sport</th>
+                  <th>Day</th>
+                  <th>Time</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for booking in appointments%}
+                <tr>
+                  <td>{{booking.client}}</td>
+                  <td>{{booking.championship}}</td>
+                  <td>{{booking.sport}}</td>
+                  <td>{{booking.date }}</td>
+                  <td>{{booking.time}}</td>
+
+                  <td>
+                    <a
+                      href="#!"
+                      class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                      data-template="eyeOne"
+                    >
+                      <i class="fa fa-eye"></i>
+                      <div id="eyeOne" class="d-none">
+                        <span>View</span>
+                      </div>
+                    </a>
+                    <a
+                      href="#!"
+                      class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                      data-template="editOne"
+                    >
+                      <i class="fa fa-pencil"></i>
+                      <div id="editOne" class="d-none">
+                        <span>Edit</span>
+                      </div>
+                    </a>
+                    <a
+                      href=""
+                      class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                      data-template="trashOne"
+                    >
+                      <i class="fa fa-trash"></i>
+                      <div id="trashOne" class="d-none">
+                        <span>Delete</span>
+                      </div>
+                    </a>
+                  </td>
+                </tr>
+
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

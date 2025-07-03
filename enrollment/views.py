@@ -65,6 +65,34 @@ def SchoolEnrollments(request):
 
 
 @login_required(login_url="login")
+def athleticsEnrollments(request):
+    enrollment0s = AthleticsEnrollment.objects.all()
+
+    if request.method == "POST":
+        form = AthleticsEnrollmentForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            enrollment = form.save(commit=False)
+     
+            try:
+                enrollment.save()
+                messages.success(request, "Enrollment created successfully!")
+                return redirect("school_enrollments")
+            except IntegrityError:
+                messages.error(
+                    request,
+                    "This school is already enrolled in the same championship, sport, and level."
+                )
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = AthleticsEnrollmentForm()
+
+    context = {"form": form, "enrollment0s": enrollment0s}
+    return render(request, "athletics/athletics.html", context)
+
+
+@login_required(login_url="login")
 def AchivesEnrollments(request):
     # Get all school_enrolls
     school_enrolls = SchoolEnrollment.objects.select_related("school").filter(championship__status='Inactive').order_by("id")
@@ -180,6 +208,63 @@ def school_enrollment_details(request, id):
         "all_athletes": all_athletes,
     }
     return render(request, "enrollments/school_enroll.html", context)
+
+
+# @login_required(login_url="login")
+# @login_required(login_url="login")
+# @login_required(login_url="login")
+@login_required(login_url="login")
+def athletics_enrollment_details(request, id):
+    athletics_enrollment = get_object_or_404(AthleticsEnrollment, id=id)
+    zone = athletics_enrollment.zone
+    if request.method == "POST":
+        form = AthleticsAthletesForm(request.POST)
+        if form.is_valid():
+            selected_athletes = form.cleaned_data["athletes"]
+            already_enrolled = AthleticsAthletes.objects.filter(
+                school_enrollment=athletics_enrollment,
+                athletes__in=selected_athletes
+            ).values_list("athletes__id", flat=True).distinct()
+
+            if already_enrolled:
+                messages.error(request, "Some of the selected athletes are already enrolled in this athletics enrollment.")
+            else:
+                current_total = Athlete.objects.filter(
+                    athleticsathletes__school_enrollment=athletics_enrollment
+                ).distinct().count()
+
+                allowed_entries = athletics_enrollment.sport.entries
+
+                if current_total + selected_athletes.count() > allowed_entries:
+                    remaining = allowed_entries - current_total
+                    messages.error(
+                        request,
+                        f"You can only enroll {remaining} more athlete(s) for this sport."
+                    )
+                else:
+                    athlete_enrollment = AthleticsAthletes.objects.create(
+                        school_enrollment=athletics_enrollment,
+                        enrolled_by=request.user
+                    )
+
+                    athlete_enrollment.athletes.set(selected_athletes)
+                    messages.success(request, "Athletes enrolled successfully.")
+                    return HttpResponseRedirect(reverse("athletics_enrollment", args=[id]))
+    else:
+        form = AthleticsAthletesForm()
+
+    athlete_enrollments = AthleticsAthletes.objects.filter(
+       school_enrollment_id=id
+    )
+    all_athletes = Athlete.objects.filter(school__district__zone=zone, status="ACTIVE")
+
+    context = {
+        "athletics_enrollment": athletics_enrollment,
+        "form": form,
+        "athlete_enrollments": athlete_enrollments,
+        "all_athletes": all_athletes,
+    }
+    return render(request, "athletics/athletics_team.html", context)
 
 
 @login_required(login_url="login")

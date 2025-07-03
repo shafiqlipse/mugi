@@ -78,3 +78,16 @@ class TicketResponseForm(forms.ModelForm):
     class Meta:
         model = TicketMessage
         fields = ['message']
+
+
+
+class AppointmentForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = ['championship','sport', 'date', 'time']
+        widgets = {
+            "championship": forms.Select(attrs={"class": "form-control"}),
+            "sport": forms.Select(attrs={"class": "form-control"}),
+            "date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
+        }

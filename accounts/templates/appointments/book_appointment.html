@@ -1,0 +1,139 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}bookings{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="container-fluid">
+  <!-- Datatables  -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Appointments</h5>
+          <button
+            type="button"
+            class="btn btn-primary mb-3"
+            data-toggle="modal"
+            data-target="#exampleModal"
+          >
+           Book Appointment
+          </button>
+        </div>
+        <!-- end card header -->
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="myTable" class="display">
+              <thead>
+                <tr>
+                  <th>Names</th>
+                  <th>NIN</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Gender</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for booking in appointments%}
+                <tr>
+                  <td>{{booking.client}}</td>
+                  <td>{{booking.championship}}</td>
+                  <td>{{booking.sport}}</td>
+                  <td>{{booking.date }}</td>
+                  <td>{{booking.time}}</td>
+
+                  <td>
+                    <a
+                      href="#!"
+                      class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                      data-template="eyeOne"
+                    >
+                      <i class="fa fa-eye"></i>
+                      <div id="eyeOne" class="d-none">
+                        <span>View</span>
+                      </div>
+                    </a>
+                    <a
+                      href="#!"
+                      class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                      data-template="editOne"
+                    >
+                      <i class="fa fa-pencil"></i>
+                      <div id="editOne" class="d-none">
+                        <span>Edit</span>
+                      </div>
+                    </a>
+                    <a
+                      href=""
+                      class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
+                      data-template="trashOne"
+                    >
+                      <i class="fa fa-trash"></i>
+                      <div id="trashOne" class="d-none">
+                        <span>Delete</span>
+                      </div>
+                    </a>
+                  </td>
+                </tr>
+
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div
+          class="modal fade"
+          id="exampleModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Book Appointment
+                </h5>
+
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="school-long">
+                  <form method="post">
+                    {% csrf_token %} {{ form.as_p }}
+                    <button type="submit">Book</button>
+                  </form>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  data-dismiss="modal"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -214,9 +214,38 @@ def custom_503_view(request):
 
 
 
+def offline_view(request):
+    return render(request, "pages/offline.html")
 
 # if SystemStatus.is_system_closed():
 #     # Disable features
 #     print("System is currently closed")
-def offline_view(request):
-    return render(request, "pages/offline.html")
+
+@login_required
+def book_appointment(request):
+    appointments = Appointment.objects.filter(client=request.user.school).select_related('championship')
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+            appointment = form.save(commit=False)
+            appointment.client = request.user.school
+            appointment.save()
+            return redirect('appointment_success')
+    else:
+        form = AppointmentForm()
+        
+    context={
+        'form': form,
+        'appointments': appointments,
+    }
+    return render(request, 'appointments/book_appointment.html', context)
+
+@login_required
+def appointment_success(request):
+    return render(request, 'appointments/appointment_success.html')
+
+
+def appointments(request):
+    appointments = Appointment.objects.all().select_related('championship')
+    context = {"appointments": appointments}
+    return render(request, 'appointments/appointments.html', context)
