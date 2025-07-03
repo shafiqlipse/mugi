@@ -10,7 +10,7 @@
 <div class="container-fluid">
   <div class="card">
     <div class="card-header">
-      <h1 class="card-title">ENROLLMENTS</h1>
+      <h1 class="card-title">ATHLETICS ENROLLMENTS</h1>
 
       <button
         type="button"
@@ -18,7 +18,7 @@
         data-toggle="modal"
         data-target="#exampleModal"
       >
-        Enroll school
+        Create Enrollment
       </button>
     </div>
     <div class="card-body">
@@ -40,7 +40,8 @@
               <th>Names</th>
               <th>Championship</th>
               <th>Sport</th>
-              <th>level</th>
+              <th>Zone</th>
+              <th>Report</th>
             </tr>
           </thead>
           <tbody>
@@ -48,14 +49,55 @@
             <tr>
               <td>
                 <a href="{% url 'athletics_enrollment' athletics.id%}"
-                  >{{athletics.championship}}
-                  {{athletics.sport}}</a
+                  >{{athletics.championship}} {{athletics.sport}}</a
                 >
               </td>
 
               <td>{{athletics.championship}}</td>
               <td>{{athletics.sport}}</td>
               <td>{{athletics.zone}}</td>
+              <td>
+                <div class="dropdown">
+                  <button
+                    class="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Reports
+                  </button>
+                  <div
+                    class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                  >
+                    <a
+                      class="dropdown-item"
+                      href="{% url 'athletics_album' athletics.id %}"
+                      class="btn btn-primary"
+                      >Album</a
+                    >
+                    <a
+                      class="dropdown-item"
+                      href="{% url 'athletics_accred' athletics.id %}"
+                      class="btn btn-info"
+                      >Accreditation</a
+                    >
+                    <a
+                      class="dropdown-item"
+                      href="{% url 'athletics_occred' athletics.id %}"
+                      class="btn btn-success"
+                      >Certificate</a
+                    >
+                    {% if user.is_superuser %}
+                    <a class="dropdown-item" href="" class="btn btn-danger"
+                      >Delete</a
+                    >
+                    {% endif %}
+                  </div>
+                </div>
+              </td>
             </tr>
 
             {%endfor%}
@@ -133,6 +175,5 @@
       </div>
     </div>
   </div>
-
 </div>
 {% endblock %}

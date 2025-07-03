@@ -351,6 +351,7 @@ def Accreditation(request, id):
         return HttpResponse("We had some errors <pre>" + html + "</pre>")
 
     return response
+
 @login_required(login_url="login")
 def Occreditation(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
@@ -573,3 +574,130 @@ def prepare_accreditation(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     officials = school_official.objects.filter(school=team.school).exclude(status="Inactive")
     return render(request, "reports/accreff.html", {"officials": officials, "team": team})
+    # return render(request, "reports/accreff.html", {"officials": officials, "team": team})
+    # return render(request, "reports/accreff.html", {"officials": officials, "team": team})
+    # return render(request, "reports/accreff.html", {"officials": officials, "team": team})
+    
+def Aertificate(request, id):
+    team = get_object_or_404(AthleticsEnrollment, id=id)
+    athlete_enrollments = AthleticsAthletes.objects.filter(school_enrollment=team)
+    athletes = Athlete.objects.filter(
+        athleticsathletes__in=athlete_enrollments
+    )
+
+    # Get template
+    template = get_template("reports/cert.html")
+
+    # Compress and fix rotation for athletes' photos
+
+    # Prepare context
+    context = {
+        "team": team,
+        "athletes": athletes,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    # Render HTML
+    html = template.render(context)
+
+    # Create a PDF
+    filename = f"{team.zone} | {team.sport} .pdf"
+    # Create a PDF
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+    # Generate PDF from HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+
+
+def AAcreditation(request, id):
+    team = get_object_or_404(AthleticsEnrollment, id=id)
+    athlete_enrollments = AthleticsAthletes.objects.filter(school_enrollment=team)
+    athletes = Athlete.objects.filter(
+        athleticsathletes__in=athlete_enrollments
+    )
+
+    # Get template
+    template = get_template("athletics/acred.html")
+
+    # Compress and fix rotation for athletes' photos
+
+    # Prepare context
+    context = {
+        "athletes": athletes,
+        "team": team,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    # Render HTML
+    html = template.render(context)
+    filename = f"{team.zone} | {team.sport} .pdf"
+    # Create a PDF
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+    # Generate PDF from HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+
+
+def AAlbums(request, id):
+    team = get_object_or_404(AthleticsEnrollment, id=id)
+    athlete_enrollments = AthleticsAthletes.objects.filter(school_enrollment=team)
+    today = date.today()
+    athletes = Athlete.objects.filter(
+        athleticsathletes__in=athlete_enrollments
+    ).distinct().annotate(
+        age=ExpressionWrapper(
+            today.year - F('date_of_birth__year') -
+            Case(
+                When(date_of_birth__month__gt=today.month, then=Value(1)),
+                When(
+                    date_of_birth__month=today.month,
+                    date_of_birth__day__gt=today.day,
+                    then=Value(1)
+                ),
+                default=Value(0),
+                output_field=IntegerField()
+            ),
+            output_field=IntegerField()
+        )
+    )
+
+    # Get athlete and official counts
+    athlete_count = athletes.count()
+    # Create a unique filename
+    filename = f"{team.zone} | {team.sport} .pdf"
+
+    # Get template
+    template = get_template("athletics/albums.html")
+
+    # Prepare context
+    context = {
+        "team": team,
+        "athlete_count": athlete_count,
+        "athletes": athletes,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    # Render HTML
+    html = template.render(context)
+
+    # Create a PDF
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+    # Generate PDF from HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+

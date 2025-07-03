@@ -46,4 +46,8 @@ urlpatterns = [
     # Add more URLs as ne
     path("athletics_enrollments/", athleticsEnrollments, name="athletics_enrollments"),
     path("athletics_enrollments/<int:id>/", athletics_enrollment_details, name="athletics_enrollment"),
+    # path("athletics_enrollments/<int:id>/", athletics_enrollment_details, name="athletics_enrollment"),
+    path("athletics_accred/<int:id>", AAcreditation, name="athletics_accred"),
+    path("athletics_cert/<int:id>", Aertificate, name="athletics_occred"),
+    path("athletics_album/<int:id>", AAlbums, name="athletics_album"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

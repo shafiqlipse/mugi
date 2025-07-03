@@ -27,11 +27,15 @@
           Enroll athletes
         </button>
 
-        <a href="" class="btn btn-primary">Album</a>
+        <a
+          href="{% url 'athletics_album' athletics_enrollment.id %}"
+          class="btn btn-primary"
+          >Album</a
+        >
       </div>
 
       <div
-        class="modal fade "
+        class="modal fade"
         id="exampleModal"
         tabindex="-1"
         role="dialog"
