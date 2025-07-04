@@ -77,7 +77,7 @@ def athleticsEnrollments(request):
             try:
                 enrollment.save()
                 messages.success(request, "Enrollment created successfully!")
-                return redirect("school_enrollments")
+                return redirect("athletics_enrollments")
             except IntegrityError:
                 messages.error(
                     request,
@@ -700,4 +700,29 @@ def AAlbums(request, id):
         return HttpResponse("We had some errors <pre>" + html + "</pre>")
 
     return response
+
+
+def athletics_enroll_delete(request, id):
+    stud = AthleticsEnrollment.objects.get(id=id)
+    if request.method == "POST":
+        stud.delete()
+        return redirect("athletics_enrollments")
+
+    return render(request, "athletics/delete_athletics_enroll.html", {"obj": stud})
+
+
+@login_required(login_url="login")
+def remove_athletics(request, enrollment_id, athlete_id):
+    athlete_enrollment = get_object_or_404(AthleticsAthletes, id=enrollment_id)
+    athlete = get_object_or_404(Athlete, id=athlete_id)
+
+    if request.method == "POST":
+        athlete_enrollment.athletes.remove(athlete)
+        return HttpResponseRedirect(
+            reverse("athletics_enrollment", args=[athlete_enrollment.school_enrollment.id])
+        )
+
+    return redirect(
+        "athletics_enrollment", id=athlete_enrollment.school_enrollment.id
+    )
 

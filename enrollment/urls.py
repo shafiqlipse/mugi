@@ -49,5 +49,11 @@ urlpatterns = [
     # path("athletics_enrollments/<int:id>/", athletics_enrollment_details, name="athletics_enrollment"),
     path("athletics_accred/<int:id>", AAcreditation, name="athletics_accred"),
     path("athletics_cert/<int:id>", Aertificate, name="athletics_occred"),
+    path("athletics_enroll_delete/<int:id>", athletics_enroll_delete, name="athletics_enroll_delete"),
     path("athletics_album/<int:id>", AAlbums, name="athletics_album"),
+        path(
+        "remove_athletics/<int:enrollment_id>/<int:athlete_id>/",
+        remove_athletics,
+        name="remove_athletics",
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -91,7 +91,10 @@
                       >Certificate</a
                     >
                     {% if user.is_superuser %}
-                    <a class="dropdown-item" href="" class="btn btn-danger"
+                    <a
+                      class="dropdown-item"
+                      href="{% url 'athletics_enroll_delete' athletics.id %}"
+                      class="btn btn-danger"
                       >Delete</a
                     >
                     {% endif %}
