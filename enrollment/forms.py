@@ -68,3 +68,35 @@ class AthleticsAthletesForm(forms.ModelForm):
     class Meta:
         model = AthleticsAthletes
         fields = ["athletes"]
+
+
+class U14AthleticsEnrollmentForm(forms.ModelForm):
+    class Meta:
+        model = U14thleticsEnrollment
+        fields = [
+            "championship",
+            "sport",
+            "schoool",
+        ]
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            # Filter the championship queryset to only include active championships
+            self.fields['championship'].queryset = Championship.objects.filter(status='Active')
+            
+        widgets = {
+            "championship": forms.Select(attrs={"class": "form-control"}),
+            "sport": forms.Select(attrs={"class": "form-control"}),
+            "schoool": forms.Select(attrs={"class": "form-control js-example-basic-single"}),
+        }
+
+
+class U14AthleticsAthletesForm(forms.ModelForm):
+    athletes = forms.ModelMultipleChoiceField(
+        queryset=Athlete.objects.filter(status="ACTIVE"),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+    )
+
+    class Meta:
+        model = U14thleticsAthletes
+        fields = ["athletes"]

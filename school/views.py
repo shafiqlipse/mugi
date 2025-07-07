@@ -265,7 +265,6 @@ def athlete_data_view(request):
             'fname',
             'lname',
             'index_number',
-           
             'gender',
             'status',
             'classroom',
@@ -316,7 +315,6 @@ def archives_data_view(request):
             'fname',
             'lname',
             'index_number',
-         
             'gender',
             'status',
             'classroom',

@@ -726,3 +726,247 @@ def remove_athletics(request, enrollment_id, athlete_id):
         "athletics_enrollment", id=athlete_enrollment.school_enrollment.id
     )
 
+
+# @login_required(login_url="login")JKHGJFGJFGJFHGJHFJGHJ
+
+@login_required(login_url="login")
+def uthleticsEnrollments(request):
+    enrollment0s = U14thleticsEnrollment.objects.all()
+
+    if request.method == "POST":
+        form = U14AthleticsEnrollmentForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            enrollment = form.save(commit=False)
+     
+            try:
+                enrollment.save()
+                messages.success(request, "Enrollment created successfully!")
+                return redirect("U14athletics_enrollments")
+            except IntegrityError:
+                messages.error(
+                    request,
+                    "This school is already enrolled in the same championship, sport, and level."
+                )
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = U14AthleticsEnrollmentForm()
+
+    context = {"form": form, "enrollment0s": enrollment0s}
+    return render(request, "U14/u14athletics.html", context)
+
+
+# @login_required(login_url="login")
+@login_required(login_url="login")
+def Uthletics_enrollment_details(request, id):
+    athletics_enrollment = get_object_or_404(U14thleticsEnrollment, id=id)
+    if request.method == "POST":
+        athlete_id = request.POST.get("athlete_id")
+
+        if athlete_id and athlete_id.isdigit():
+            athlete_id = int(athlete_id)
+
+            try:
+                athlete = Athlete.objects.get(id=athlete_id)
+            except Athlete.DoesNotExist:
+                messages.error(request, f"Athlete with ID {athlete_id} does not exist.")
+                return redirect("U14athletics_enrollment", id=id)
+
+            # ✅ Check if already enrolled
+            already_enrolled = U14thleticsAthletes.objects.filter(
+                school_enrollment=athletics_enrollment,
+                athletes=athlete
+            ).exists()
+
+            if already_enrolled:
+                messages.error(request, f"Athlete {athlete} is already enrolled in this sport.")
+            else:
+                # ✅ Check entry limit
+                current_total = U14thleticsAthletes.objects.filter(
+                school_enrollment=athletics_enrollment
+            ).values_list("athletes", flat=True).distinct().count()
+
+                allowed_entries = athletics_enrollment.sport.entries
+
+                if current_total >= allowed_entries:
+                    messages.error(request, "You have reached the maximum number of athletes allowed.")
+                else:
+                    # ✅ Create enrollment and add this athlete
+                    enrollment = U14thleticsAthletes.objects.create(
+                        school_enrollment=athletics_enrollment,
+                        enrolled_by=request.user
+                    )
+                    enrollment.athletes.add(athlete)
+                    messages.success(request, f"Athlete {athlete} enrolled successfully.")
+                    return redirect("U14athletics_enrollment", id=id)
+        else:
+            messages.error(request, "Please enter a valid athlete ID.")
+
+    else:
+        form = U14AthleticsEnrollmentForm()
+
+
+
+    athlete_enrollments = U14thleticsAthletes.objects.filter(
+       school_enrollment_id=id
+    )
+    all_athletes = Athlete.objects.filter(status="ACTIVE")
+
+    context = {
+        "athletics_enrollment": athletics_enrollment,
+        "form": form,
+        "athlete_enrollments": athlete_enrollments,
+        "all_athletes": all_athletes,
+    }
+    return render(request, "U14/athletics_team.html", context)
+
+
+def Uertificate(request, id):
+    team = get_object_or_404(AthleticsEnrollment, id=id)
+    athlete_enrollments = AthleticsAthletes.objects.filter(school_enrollment=team)
+    athletes = Athlete.objects.filter(
+        athleticsathletes__in=athlete_enrollments
+    )
+
+    # Get template
+    template = get_template("U14/cert.html")
+
+    # Compress and fix rotation for athletes' photos
+
+    # Prepare context
+    context = {
+        "team": team,
+        "athletes": athletes,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    # Render HTML
+    html = template.render(context)
+
+    # Create a PDF
+    filename = f"{team.zone} | {team.sport} .pdf"
+    # Create a PDF
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+    # Generate PDF from HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+
+
+def UAcreditation(request, id):
+    team = get_object_or_404(AthleticsEnrollment, id=id)
+    athlete_enrollments = AthleticsAthletes.objects.filter(school_enrollment=team)
+    athletes = Athlete.objects.filter(
+        athleticsathletes__in=athlete_enrollments
+    )
+
+    # Get template
+    template = get_template("U14/acred.html")
+
+    # Compress and fix rotation for athletes' photos
+
+    # Prepare context
+    context = {
+        "athletes": athletes,
+        "team": team,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    # Render HTML
+    html = template.render(context)
+    filename = f"{team.zone} | {team.sport} .pdf"
+    # Create a PDF
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+    # Generate PDF from HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+
+
+def UAlbums(request, id):
+    team = get_object_or_404(AthleticsEnrollment, id=id)
+    athlete_enrollments = AthleticsAthletes.objects.filter(school_enrollment=team)
+    today = date.today()
+    athletes = Athlete.objects.filter(
+        athleticsathletes__in=athlete_enrollments
+    ).distinct().annotate(
+        age=ExpressionWrapper(
+            today.year - F('date_of_birth__year') -
+            Case(
+                When(date_of_birth__month__gt=today.month, then=Value(1)),
+                When(
+                    date_of_birth__month=today.month,
+                    date_of_birth__day__gt=today.day,
+                    then=Value(1)
+                ),
+                default=Value(0),
+                output_field=IntegerField()
+            ),
+            output_field=IntegerField()
+        )
+    )
+
+    # Get athlete and official counts
+    athlete_count = athletes.count()
+    # Create a unique filename
+    filename = f"{team.zone} | {team.sport} .pdf"
+
+    # Get template
+    template = get_template("U14/albums.html")
+
+    # Prepare context
+    context = {
+        "team": team,
+        "athlete_count": athlete_count,
+        "athletes": athletes,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    # Render HTML
+    html = template.render(context)
+
+    # Create a PDF
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+    # Generate PDF from HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+
+
+def Uthletics_enroll_delete(request, id):
+    stud = AthleticsEnrollment.objects.get(id=id)
+    if request.method == "POST":
+        stud.delete()
+        return redirect("U14athletics_enrollments")
+
+    return render(request, "U14/delete_athletics_enroll.html", {"obj": stud})
+
+
+@login_required(login_url="login")
+def remove_Uthletics(request, enrollment_id, athlete_id):
+    athlete_enrollment = get_object_or_404(AthleticsAthletes, id=enrollment_id)
+    athlete = get_object_or_404(Athlete, id=athlete_id)
+
+    if request.method == "POST":
+        athlete_enrollment.athletes.remove(athlete)
+        return HttpResponseRedirect(
+            reverse("athletics_enrollment", args=[athlete_enrollment.school_enrollment.id])
+        )
+
+    return redirect(
+        "athletics_enrollment", id=athlete_enrollment.school_enrollment.id
+    )
+

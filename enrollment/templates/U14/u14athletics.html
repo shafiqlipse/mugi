@@ -1,0 +1,178 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Enrollment{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">ATHLETICS ENROLLMENTS</h1>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#exampleModal"
+      >
+        Create Enrollment
+      </button>
+    </div>
+    <div class="card-body">
+      {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+        <div
+          class="alert {% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}"
+        >
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <div class="table-responsive">
+        <table id="myTable" class="display">
+          <thead>
+            <tr>
+              <th>Names</th>
+              <th>Championship</th>
+              <th>Sport</th>
+              <th>School</th>
+              <th>Report</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for athletics in enrollment0s %}
+            <tr>
+              <td>
+                <a href="{% url 'U14athletics_enrollment' athletics.id%}"
+                  >{{athletics.championship}} {{athletics.sport}}</a
+                >
+              </td>
+
+              <td>{{athletics.championship}}</td>
+              <td>{{athletics.sport}}</td>
+              <td>{{athletics.school}}</td>
+              <td>
+                <div class="dropdown">
+                  <button
+                    class="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Reports
+                  </button>
+                  <div
+                    class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                  >
+                    <a
+                      class="dropdown-item"
+                      href="{% url 'athletics_album' athletics.id %}"
+                      class="btn btn-primary"
+                      >Album</a
+                    >
+                    <a
+                      class="dropdown-item"
+                      href="{% url 'athletics_accred' athletics.id %}"
+                      class="btn btn-info"
+                      >Accreditation</a
+                    >
+                    <a
+                      class="dropdown-item"
+                      href="{% url 'athletics_occred' athletics.id %}"
+                      class="btn btn-success"
+                      >Certificate</a
+                    >
+                    {% if user.is_superuser %}
+                    <a
+                      class="dropdown-item"
+                      href="{% url 'athletics_enroll_delete' athletics.id %}"
+                      class="btn btn-danger"
+                      >Delete</a
+                    >
+                    {% endif %}
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            {%endfor%}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Enroll School</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="school-long">
+            <form
+              action=""
+              method="POST"
+              class="form-ctrl"
+              enctype="multipart/form-data"
+            >
+              {% csrf_token %}
+              <div class="field">
+                <label>Championship</label>
+                {{form.championship}}
+              </div>
+
+              <div class="field">
+                <label>Sport</label>
+                {{form.sport}}
+              </div>
+
+              <div class="field">
+                <label>School</label>
+                {{form.schoool}}
+              </div>
+
+              <button type="submit" class="btn btn-success">Enroll</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#id_schoool").select2();
+  });
+</script>
+{% endblock %}
