@@ -256,8 +256,7 @@ def athletics_enrollment_details(request, id):
     athlete_enrollments = AthleticsAthletes.objects.filter(
        school_enrollment_id=id
     )
-    for enrollment in athlete_enrollments:
-        enrolled_by = enrollment.enrolled_by
+
     all_athletes = Athlete.objects.filter(school__district__zone=zone, status="ACTIVE")
 
     context = {
@@ -265,7 +264,7 @@ def athletics_enrollment_details(request, id):
         "form": form,
         "athlete_enrollments": athlete_enrollments,
         "all_athletes": all_athletes,
-        "enrolled_by": enrolled_by,
+        
     }
     return render(request, "athletics/athletics_team.html", context)
 
