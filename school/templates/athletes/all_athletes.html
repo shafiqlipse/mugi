@@ -25,6 +25,7 @@
                   <th>Index No</th>
                   <th>School</th>
                   <th>Gender</th>
+                  <th>ID</th>
                   <th>Class</th>
                   <th>Status</th>
                   {% if user.is_superuser %}
@@ -62,6 +63,7 @@
           { data: 'index_number' },
           { data: 'school_name' },
           { data: 'gender' },
+          { data: 'id' },
           { data: 'classroom' },
           { data: 'status' },
           isSuperuser ? {

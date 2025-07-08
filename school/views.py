@@ -266,6 +266,7 @@ def athlete_data_view(request):
             'lname',
             'index_number',
             'gender',
+            'id',
             'status',
             'classroom',
             school_name=F('school__name'),

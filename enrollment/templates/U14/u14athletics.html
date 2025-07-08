@@ -37,10 +37,10 @@
         <table id="myTable" class="display">
           <thead>
             <tr>
-              <th>Names</th>
+              <th>School</th>
               <th>Championship</th>
               <th>Sport</th>
-              <th>School</th>
+
               <th>Report</th>
             </tr>
           </thead>
@@ -49,13 +49,13 @@
             <tr>
               <td>
                 <a href="{% url 'U14athletics_enrollment' athletics.id%}"
-                  >{{athletics.championship}} {{athletics.sport}}</a
+                  >{{athletics.schoool}}</a
                 >
               </td>
 
               <td>{{athletics.championship}}</td>
               <td>{{athletics.sport}}</td>
-              <td>{{athletics.school}}</td>
+
               <td>
                 <div class="dropdown">
                   <button
