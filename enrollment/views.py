@@ -951,7 +951,7 @@ def UAlbums(request, id):
 
 
 def Uthletics_enroll_delete(request, id):
-    stud = AthleticsEnrollment.objects.get(id=id)
+    stud = U14thleticsEnrollment.objects.get(id=id)
     if request.method == "POST":
         stud.delete()
         return redirect("U14athletics_enrollments")
