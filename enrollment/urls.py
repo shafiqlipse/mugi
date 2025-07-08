@@ -65,9 +65,9 @@ urlpatterns = [
     path("U14athletics_enroll_delete/<int:id>", Uthletics_enroll_delete, name="U14athletics_enroll_delete"),
     path("U14athletics_album/<int:id>", UAlbums, name="U14athletics_album"),
         path(
-        "remove_athletics/<int:enrollment_id>/<int:athlete_id>/",
-        remove_athletics,
-        name="remove_athletics",
+        "remove_u14athletics/<int:enrollment_id>/<int:athlete_id>/",
+        remove_Uthletics,
+        name="remove_u14athletics",
     ),
     # Add more URLs as ne
     # Add more URLs as ne

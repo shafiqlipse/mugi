@@ -958,16 +958,16 @@ def Uthletics_enroll_delete(request, id):
 
 @login_required(login_url="login")
 def remove_Uthletics(request, enrollment_id, athlete_id):
-    athlete_enrollment = get_object_or_404(AthleticsAthletes, id=enrollment_id)
+    athletes_enrollment = get_object_or_404(U14thleticsAthletes, id=enrollment_id)
     athlete = get_object_or_404(Athlete, id=athlete_id)
 
     if request.method == "POST":
-        athlete_enrollment.athletes.remove(athlete)
+        athletes_enrollment.athletes.remove(athlete)
         return HttpResponseRedirect(
-            reverse("athletics_enrollment", args=[athlete_enrollment.school_enrollment.id])
+            reverse("U14athletics_enrollment", args=[athletes_enrollment.school_enrollment.id])
         )
 
     return redirect(
-        "athletics_enrollment", id=athlete_enrollment.school_enrollment.id
+        "U14athletics_enrollment", id=athlete_enrollment.school_enrollment.id
     )
 

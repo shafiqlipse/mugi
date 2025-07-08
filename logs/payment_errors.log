@@ -6048,3 +6048,19 @@ Traceback (most recent call last):
                   ^^^^^^^^^
 AttributeError: 'U14thleticsEnrollment' object has no attribute 'zone'
 "GET /enrollment/U14athletics_album/2 HTTP/1.1" 500 74456
+Internal Server Error: /enrollment/remove_u14athletics/1/100005069/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\enrollment\views.py", line 965, in remove_Uthletics
+    athlete_enrollment.athletes.remove(athlete)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'U14thleticsEnrollment' object has no attribute 'athletes'. Did you mean: 'adelete'?
+"POST /enrollment/remove_u14athletics/1/100005069/ HTTP/1.1" 500 80181

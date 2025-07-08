@@ -116,7 +116,7 @@
                   {% if user.is_staff %}
                   <form
                     method="POST"
-                    action="{% url 'remove_athletics' enrollment.id athlete.id %}"
+                    action="{% url 'remove_u14athletics' enrollment.id athlete.id %}"
                   >
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Remove</button>
