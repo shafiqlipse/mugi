@@ -731,7 +731,7 @@ def remove_athletics(request, enrollment_id, athlete_id):
 
 @login_required(login_url="login")
 def uthleticsEnrollments(request):
-    enrollment0s = U14thleticsEnrollment.objects.all()
+    u14enrollment0s = U14thleticsEnrollment.objects.all()
 
     if request.method == "POST":
         form = U14AthleticsEnrollmentForm(request.POST, request.FILES)
@@ -753,7 +753,7 @@ def uthleticsEnrollments(request):
     else:
         form = U14AthleticsEnrollmentForm()
 
-    context = {"form": form, "enrollment0s": enrollment0s}
+    context = {"form": form, "u14enrollment0s": u14enrollment0s}
     return render(request, "U14/u14athletics.html", context)
 
 
@@ -823,10 +823,10 @@ def Uthletics_enrollment_details(request, id):
 
 
 def Uertificate(request, id):
-    team = get_object_or_404(AthleticsEnrollment, id=id)
-    athlete_enrollments = AthleticsAthletes.objects.filter(school_enrollment=team)
+    team = get_object_or_404(U14thleticsEnrollment, id=id)
+    athlete_enrollments = U14thleticsAthletes.objects.filter(school_enrollment=team)
     athletes = Athlete.objects.filter(
-        athleticsathletes__in=athlete_enrollments
+         u14thleticsathletes__in=athlete_enrollments
     )
 
     # Get template
@@ -845,7 +845,7 @@ def Uertificate(request, id):
     html = template.render(context)
 
     # Create a PDF
-    filename = f"{team.zone} | {team.sport} .pdf"
+    filename = f"{team.schoool} | {team.sport} .pdf"
     # Create a PDF
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
@@ -859,10 +859,10 @@ def Uertificate(request, id):
 
 
 def UAcreditation(request, id):
-    team = get_object_or_404(AthleticsEnrollment, id=id)
-    athlete_enrollments = AthleticsAthletes.objects.filter(school_enrollment=team)
+    team = get_object_or_404(U14thleticsEnrollment, id=id)
+    athlete_enrollments = U14thleticsAthletes.objects.filter(school_enrollment=team)
     athletes = Athlete.objects.filter(
-        athleticsathletes__in=athlete_enrollments
+         u14thleticsathletes__in=athlete_enrollments
     )
 
     # Get template
@@ -879,7 +879,7 @@ def UAcreditation(request, id):
 
     # Render HTML
     html = template.render(context)
-    filename = f"{team.zone} | {team.sport} .pdf"
+    filename = f"{team.schoool} | {team.sport} .pdf"
     # Create a PDF
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
@@ -893,11 +893,12 @@ def UAcreditation(request, id):
 
 
 def UAlbums(request, id):
-    team = get_object_or_404(AthleticsEnrollment, id=id)
-    athlete_enrollments = AthleticsAthletes.objects.filter(school_enrollment=team)
+    team = get_object_or_404(U14thleticsEnrollment, id=id)
+    athlete_enrollments = U14thleticsAthletes.objects.filter(school_enrollment=team)
+
     today = date.today()
     athletes = Athlete.objects.filter(
-        athleticsathletes__in=athlete_enrollments
+        u14thleticsathletes__in=athlete_enrollments
     ).distinct().annotate(
         age=ExpressionWrapper(
             today.year - F('date_of_birth__year') -
@@ -918,7 +919,7 @@ def UAlbums(request, id):
     # Get athlete and official counts
     athlete_count = athletes.count()
     # Create a unique filename
-    filename = f"{team.zone} | {team.sport} .pdf"
+    filename = f"{team.schoool} | {team.sport} .pdf"
 
     # Get template
     template = get_template("U14/albums.html")

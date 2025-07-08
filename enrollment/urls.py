@@ -71,29 +71,4 @@ urlpatterns = [
     ),
     # Add more URLs as ne
     # Add more URLs as ne
-    path("athletics_enrollments/", athleticsEnrollments, name="athletics_enrollments"),
-    path("athletics_enrollments/<int:id>/", athletics_enrollment_details, name="athletics_enrollment"),
-    # path("athletics_enrollments/<int:id>/", athletics_enrollment_details, name="athletics_enrollment"),
-    path("athletics_accred/<int:id>", AAcreditation, name="athletics_accred"),
-    path("athletics_cert/<int:id>", Aertificate, name="athletics_occred"),
-    path("athletics_enroll_delete/<int:id>", athletics_enroll_delete, name="athletics_enroll_delete"),
-    path("athletics_album/<int:id>", AAlbums, name="athletics_album"),
-        path(
-        "remove_athletics/<int:enrollment_id>/<int:athlete_id>/",
-        remove_athletics,
-        name="remove_athletics",
-    ),
-    # Add more URLs as ne
-    path("U14athletics_enrollments/", uthleticsEnrollments, name="U14athletics_enrollments"),
-    path("U14athletics_enrollments/<int:id>/", Uthletics_enrollment_details, name="U14athletics_enrollment"),
-    # path("athletics_enrollments/<int:id>/", athletics_enrollment_details, name="athletics_enrollment"),
-    path("U14athletics_accred/<int:id>", UAcreditation, name="U14athletics_accred"),
-    path("U14athletics_cert/<int:id>", Uertificate, name="U14athletics_occred"),
-    path("U14athletics_enroll_delete/<int:id>", Uthletics_enroll_delete, name="U14athletics_enroll_delete"),
-    path("U14athletics_album/<int:id>", UAlbums, name="U14athletics_album"),
-        path(
-        "remove_athletics/<int:enrollment_id>/<int:athlete_id>/",
-        remove_athletics,
-        name="remove_athletics",
-    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

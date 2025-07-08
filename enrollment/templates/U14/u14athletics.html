@@ -45,7 +45,7 @@
             </tr>
           </thead>
           <tbody>
-            {% for athletics in enrollment0s %}
+            {% for athletics in u14enrollment0s %}
             <tr>
               <td>
                 <a href="{% url 'U14athletics_enrollment' athletics.id%}"
@@ -74,19 +74,19 @@
                   >
                     <a
                       class="dropdown-item"
-                      href="{% url 'athletics_album' athletics.id %}"
+                      href="{% url 'U14athletics_album' athletics.id %}"
                       class="btn btn-primary"
                       >Album</a
                     >
                     <a
                       class="dropdown-item"
-                      href="{% url 'athletics_accred' athletics.id %}"
+                      href="{% url 'U14athletics_accred' athletics.id %}"
                       class="btn btn-info"
                       >Accreditation</a
                     >
                     <a
                       class="dropdown-item"
-                      href="{% url 'athletics_occred' athletics.id %}"
+                      href="{% url 'U14athletics_occred' athletics.id %}"
                       class="btn btn-success"
                       >Certificate</a
                     >
