@@ -158,9 +158,7 @@
       </div>
       {% else %}
       <p>No athletes enrolled yet.</p>
-      {% endif %}
-
-      Enrolled by : {{enrolled_by }}
+      {% endif %} {% if enrolled_by %} Enrolled by : {{enrolled_by }} {% endif %}
     </div>
   </div>
 </div>
