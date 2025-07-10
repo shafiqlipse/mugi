@@ -1,0 +1,103 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Officials{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="schools-dew content-wrapper">
+  <div class="schooler">
+    <form
+      action=""
+      method="POST"
+      class="form-control"
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
+
+      <div class="schooled">
+        <div class="fields">
+          {{ cform.non_field_errors }} {{ cform.errors }}
+          <!---->
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <li
+              class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %}"
+            >
+              {{ message }}
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          <div class="left flex">
+            <div class="imgbox">
+              <div class="field">
+                <label>{{form.photo.label}} </label>
+                <div id="photos_preview" class="preview-container"></div>
+              </div>
+              <div class="field">
+                <input
+                  type="file"
+                  name="photo"
+                  accept="image/*"
+                  id="id_photo"
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div class="fiil grid2">
+              <div class="field">
+                <label>First Name</label>
+                {{form.first_name}}
+              </div>
+              <div class="field">
+                <label>Last Name</label>
+                {{form.last_name}}
+              </div>
+
+              <div class="field">
+                <label>School</label>
+                {{form.school}}
+              </div>
+
+              <div class="field">
+                <label>Phone:</label>
+                {{form.contact}}
+              </div>
+              <div class="field">
+                <label>Email:</label>
+                {{form.email}}
+              </div>
+
+              <div class="field">
+                <label>gender</label>
+                {{form.gender}}
+              </div>
+              <div class="field">
+                <label>Region</label>
+                {{form.region}}
+              </div>
+              <div class="field">
+                <label>Zone</label>
+                {{form.zone}}
+              </div>
+
+              <div class="field">
+                <label>District/ City/ Municipality</label>
+                {{form.district}}
+              </div>
+              <div class="field">
+                <label>Position</label>
+                {{form.position}}
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

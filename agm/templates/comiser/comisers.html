@@ -1,0 +1,80 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Delegates{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="container-fluid">
+  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+    <div class="flex-grow-1">
+      <h4 class="fs-18 fw-semibold m-0">Annual General Meeting</h4>
+    </div>
+
+    <div class="text-end">
+      <ol class="breadcrumb m-0 py-0">
+        <li class="breadcrumb-item">
+          <a href="javascript: void(0);">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active">Delegates</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="head">
+    <div class="others d-flex">
+      <a href="{% url 'teaccred' %}" class="btn btn-primary">Accreditation</a>
+
+      <a href="{% url 'export_csv' %}">Export CSV</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <!-- Datatables  -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <!-- end card header -->
+
+            <div class="card-body table-responsive">
+              <table id="myTable" class="table">
+                <thead>
+                  <tr>
+                    <th>Names</th>
+                    <th>comittee</th>
+                    <th>Role</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for comisers in comisers %}
+                  <tr>
+                    <td>
+                      <a href="{% url 'comiser' comisers.id%}"
+                        >{{comisers.first_name}} {{comisers.last_name}}</a
+                      >
+                    </td>
+                    <td>{{comisers.comittee}}</td>
+
+                    <td>{{comisers.role}}</td>
+
+                    <td>
+                      <a href="{%url 'update_comiser' comisers.id %}">Edit</a>
+                    </td>
+                    <td>
+                      <a href="{%url 'delete_comiser' comisers.id %}">delete</a>
+                    </td>
+                  </tr>
+                  {%endfor%}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </div>
+</div>

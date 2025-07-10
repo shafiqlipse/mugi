@@ -1,0 +1,48 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}{{comiser.fname}} {{comiser.lname}}{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="athlete-dew content-wrapper">
+  <div class="athlete flex">
+    <div class="img-ath">
+      <img src="{{comiser.photo.url}}" alt="" />
+    </div>
+    <div class="line-ath">
+      <h1>{{comiser.first_name}} {{comiser.last_name}}</h1>
+      <p>{{comiser.email}}</p>
+      <hr />
+      <div class="small-details grid2">
+        <span
+          >School:
+          <h3>{{comiser.school}}</h3></span
+        >
+
+        <span
+          >Contact:
+          <h3>{{comiser.contact}}</h3></span
+        >
+        <span
+          >Region
+          <h3>{{comiser.region}}</h3></span
+        >
+        <span
+          >Region
+          <h3>{{comiser.position}}</h3></span
+        >
+        <span
+          >Zone
+          <h3>{{comiser.zone}}</h3></span
+        >
+        <span
+          >District
+          <h3>{{comiser.district}}</h3></span
+        >
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
