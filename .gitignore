@@ -18,6 +18,7 @@ zone/migrations/*
 # Media and uploaded files (one level up)
 athlete_photos/
 agm_photo/
+b2_photos/
 trainee_photo/
 trainee_photos/
 transfer_documents/
