@@ -10,42 +10,31 @@ from .forms import *
 from django.db import IntegrityError
 from django.core.files.base import ContentFile
 import base64
-
+from django.db import transaction
+from django.http import JsonResponse
 
 def delegate_add(request):
     if request.method == "POST":
         form = DelegatesForm(request.POST, request.FILES)
-
         if form.is_valid():
             try:
-                new_delegate = form.save(commit=False)
-
-                cropped_data = request.POST.get("photo_cropped")
-                if cropped_data:
-                    try:
-                        format, imgstr = cropped_data.split(";base64,")
-                        ext = format.split("/")[-1]
-                        data = ContentFile(
-                            base64.b64decode(imgstr), name=f"photo.{ext}"
-                        )
-                        new_delegate.photo = data  # Assign cropped image
-                    except (ValueError, TypeError):
-                        messages.error(request, "Invalid image data.")
-                        return render(request, "delegate_new.html", {"form": form})
-
-                new_delegate.save()
-                messages.success(request, "Delegate added successfully!")
-                return redirect("adddelegate")
-
+                with transaction.atomic():
+                    delegate = form.save(commit=False)
+                    delegate.save()
+                    messages.success(request, "Delegate registered successfully.")
+                    return redirect("adddelegate")  # reload same page
             except IntegrityError:
-                messages.error(request, "There was an error saving the delegate.")
-                return render(request, "delegate_new.html", {"form": form})
-
+                messages.error(request, "A delegate with this index number already exists.")
+            except Exception as e:
+                messages.error(request, f"An error occurred: {str(e)}")
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = DelegatesForm()
 
-    context = {"form": form}
-    return render(request, "delegate_new.html", context)
+    return render(request, "delegate_new.html", {"form": form})
+
+
 
 
 from django.http import HttpResponse
