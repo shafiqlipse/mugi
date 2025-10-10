@@ -31,5 +31,6 @@ urlpatterns = [
     # path("delete_announcement/<int:id>", delete_announcement, name="delete_announcement"),
     path("transactions/", transactions, name="transactions"),
     path("summery/", payment_summery, name="summery"),
+    path("athlete_summary/", athlete_summary, name="athlete_summary"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

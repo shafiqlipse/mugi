@@ -56,6 +56,55 @@ def dashboard(request):
 
 
 
+def athlete_summary(request):
+    all_athletes = Athlete.objects.select_related(
+        'school', 'school__district', 'school__district__zone'
+    )
+
+    overall_total = all_athletes.count()
+
+    def add_percentage(queryset):
+        results = list(queryset)
+        for r in results:
+            if overall_total > 0:
+                r['percentage'] = (r['count'] / overall_total) * 100
+            else:
+                r['percentage'] = 0
+        return results
+
+    # Breakdown by School
+    school_totals = add_percentage(
+        all_athletes
+        .values('school__name')
+        .annotate(count=Count('id'))
+        .order_by('-count')
+    )
+
+    # Breakdown by District
+    district_totals = add_percentage(
+        all_athletes
+        .values('school__district__name')
+        .annotate(count=Count('id'))
+        .order_by('-count')
+    )
+
+    # Breakdown by Zone
+    zone_totals = add_percentage(
+        all_athletes
+        .values('school__district__zone__name')
+        .annotate(count=Count('id'))
+        .order_by('-count')
+    )
+
+    context = {
+        'school_totals': school_totals,
+        'district_totals': district_totals,
+        'zone_totals': zone_totals,
+        'overall_total': overall_total,
+    }
+
+    return render(request, 'athletes/summary.html', context)
+
 # championships
 
 
