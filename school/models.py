@@ -342,3 +342,15 @@ class Payment(models.Model):
         athletes = models.ManyToManyField(Athlete, related_name='payments', db_index=True)
         def __str__(self):
             return f"{self.transaction_id} - {self.amount} {self.school}"
+        
+        def clean(self):
+            """Validate phone number format."""
+            if not re.match(r'^(075|074|070)\d{7}$', self.phone_number):
+                raise ValidationError("Phone number must a valid Airtel money number.")
+
+        def save(self, *args, **kwargs):
+            """Ensure validation before saving."""
+            self.clean()
+            super().save(*args, **kwargs)
+            
+

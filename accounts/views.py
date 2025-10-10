@@ -155,11 +155,18 @@ def open_ticket(request):
     context = {'form': form}  # Fixed dictionary syntax
     return render(request, "support/open_ticket.html", context)
 
+@login_required
 def ticket(request, id):
+    # Get the selected ticket
     ticket = get_object_or_404(Ticket, id=id)
-    alltickets = Ticket.objects.select_related("sender").filter(topic=ticket.topic).exclude(id =id)
-    tickets = Ticket.objects.select_related("sender").filter(sender=request.user).exclude(id =id)
+
+    # Sidebar tickets: all user's tickets ordered by latest update
+    tickets = Ticket.objects.select_related("sender").filter(sender=request.user).order_by('-created_at')
+
+    # Responses for this ticket
     responses = ticket.responses.all().order_by('-created_at')
+
+    # Handle reply form
     if request.method == 'POST':
         form = TicketResponseForm(request.POST)
         if form.is_valid():
@@ -170,15 +177,14 @@ def ticket(request, id):
             return redirect('ticket', id=id)
     else:
         form = TicketResponseForm()
-        
-    context={
-        'ticket': ticket,
-        'tickets': tickets,
-        'alltickets': alltickets,
-        'responses': responses,
-        'form': form,
+
+    context = {
+        'ticket': ticket,       # The currently selected ticket (detail)
+        'tickets': tickets,     # List of all tickets (sidebar)
+        'responses': responses, # All replies to the current ticket
+        'form': form,           # Reply form
     }
-    return render(request, "support/ticket.html",context)
+    return render(request, "support/ticket.html", context)
 
 def tickets(request):
     tickets = Ticket.objects.select_related("sender").filter(sender=request.user)

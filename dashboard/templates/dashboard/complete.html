@@ -1,0 +1,61 @@
+{% extends "dashboard/dashboard.html" %}
+<!---->
+{% load static %}
+<!---->
+{%block title%}Schools{% endblock %}
+<!---->
+{% block content %}
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="fs-18 fw-semibold m-0">Payments</h1>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+          <table class="display" id="myqTable">
+            <thead>
+              <tr>
+                <th>Transaction</th>
+                <th>Phone Number</th>
+                <th>Amount</th>
+                <th>Athletes</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Receipt</th>
+              </tr>
+            </thead>    
+            <tbody>
+              {% for payment in payments%}
+              <tr>
+                <td>
+                  <a href="{% url 'payment_detail' payment.id%}"
+                    >{{payment.transaction_id}}</a
+                  >
+                </td>
+                <td>{{payment.phone_number}}</td>
+                <td>{{payment.amount}}</td>
+                <td>{{payment.athletes.count}}</td>
+                <td>{{payment.created_at}}</td>
+
+                <td class="badge badge-outline-success" styles="color:white;">{{payment.status}}
+               
+                </td>
+            
+                     <td>
+                  <a href='{% url 'download_receipt' payment.id %}' class="badge badge-outline-success" styles="color:white;">
+                   <i class="fa fa-arrow-down"></i> Receipt
+                  </a>
+                </td>
+              </tr>
+
+              {%endfor%}
+            </tbody>
+          </table>
+        </div>
+    </div>
+    
+  </div>
+ 
+</div>
+
+  {% endblock %}

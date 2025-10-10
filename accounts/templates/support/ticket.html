@@ -2,98 +2,127 @@
 <!---->
 {% load static %}
 <!--    hjjhh-->
-{% block title %} | {{ticket.title}}{% endblock title %} {% block content %}
-<div class="ticket-detail content-wrapper">
-  <h2>Ticket {{ticket.ticket_id}} - {{ticket.title}}</h2>
-  <div class="all-ticket">
-    <div class="left-ticket">
-      <div class="form-container">
-        <div class="form-header">
-          <h3>Reply</h3>
+{% block title %} Tickets{% endblock title %} {% block content %}
+<div class="container content-wrapper">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Tickets</h4>
         </div>
-        <div class="form-body">
-          <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-              <textarea
-                class="form-control"
-                name="message"
-                id="message"
-                rows="3"
-              ></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit response</button>
-          </form>
-        </div>
-      </div>
-      <hr />
-      <div class="responses">
-        <div class="ticket-responses">
-          {% for response in ticket.responses.all %}
-          <div class="response">
-            <div class="response-header flex">
-              <h4>
-                {{response.responder.first_name}} {{response.responder.last_name}}
-                <span
-                  >{% if response.responder.is_staff %} STAFF {% else %} SCHOOL
-                  {% endif %}</span
-                >
-              </h4>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="list-group">
+                {% for ticket in tickets %}
+                <div class="card">
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-between align-content-center"
+                    >
+                      <div class="d-flex">
+                        <img
+                          src="{% static 'lib/images/profile.png' %}"
+                          alt="avatar"
+                          class="img-fluid avatar-md img-thumbnail me-2 rounded-circle avatar-border"
+                        />
+                        <h4 class="fs-16 mb-0 align-content-center">
+                          <a href="javascript:void(0);" class="text-dark"
+                            >{{ticket.sender.school}}</a
+                          >
+                        </h4>
+                      </div>
 
-              <p>{{response.created_at}}</p>
+                      <div class="mx-0">
+                        <p class="fs-13 mb-0">{{ticket.created_at}}</p>
+                      </div>
+                    </div>
+
+                    <div class="mt-2 pt-1">
+                      <a
+                        href="{% url 'ticket' ticket.id %}"
+                        class="d-inline-block text-muted"
+                        >{{ticket.title}}</a
+                      >
+                    </div>
+
+                    <div class="mt-2 pt-1 d-flex gap-2">
+                      <span
+                        class="badge bg-light text-muted fw-semibold fs-14 px-3 rounded-5"
+                        >{{ticket.status}}</span
+                      >
+                      <span
+                        class="badge bg-light text-muted fw-semibold fs-14 px-3 rounded-5"
+                        >{{ticket.priority}}</span
+                      >
+                      <span
+                        class="badge bg-light text-muted fw-semibold fs-14 px-3 rounded-5"
+                        >{{ticket.topic}}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
             </div>
-            <hr />
-            <div class="response-body">
-              <p>{{response.message}}</p>
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title">{{ticket.title}}</h5>
+                </div>
+                <div class="card-body">
+                  <div class="left-ticket">
+                    <div class="ticket-body">
+                      {% for response in responses %}
+                      <div class="card bg-body-tertiary">
+                        <div class="card-body">
+                          <small class="card-title mb-2 fs-12"
+                            >{{response.responder.first_name}}</small
+                          >
+                          <p class="card-text text-muted fs-16">
+                            {{response.message}}
+                          </p>
+                        </div>
+                        <div class="card-footer border-top">
+                          <small class="text-body-secondary"
+                            >Updated {{ response.created_at|timesince }} ago
+                          </small>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                    <div class="form-container">
+                      <div class="form-header">
+                        <h3>Reply</h3>
+                      </div>
+                      <div class="form-body">
+                        <form
+                          method="post"
+                          class="p-3 bg-white border-t sticky bottom-0"
+                        >
+                          {% csrf_token %}
+                          <div class="form-group">
+                            <textarea
+                              class="form-control"
+                              name="message"
+                              id="message"
+                              rows="3"
+                            ></textarea>
+                          </div>
+                          <button type="submit" class="btn btn-primary mt-2">
+                            Submit response
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <hr />
-          {% endfor %}
         </div>
       </div>
-      <div class="ticket-body">
-          <p>{{ticket.content}}</p>
-      </div>
-   
     </div>
-    <div class="right-ticket">
-      <h5>Ticket Information.</h5>
-      <ul class="ticket-info">
-        <li><strong>Sender</strong> {{ticket.sender}}</li>
-        <hr />
-        <li><strong>School</strong> {{ticket.sender.school}}</li>
-        <hr />
-        <li><strong>Topic</strong> {{ticket.topic}}</li>
-        <hr />
-        <li ><strong>Status</strong> <span class={% if ticket.status == "Open" %}"btn btn-primary" {% elif ticket.status == "Answered" %}"btn btn-info" {% else %}"btn btn-warning" {% endif %}>{{ticket.status}}</span> </li>
-        <hr />
-        <li><strong>Created At</strong> {{ticket.created_at}}</li>
-        <hr />
-        <li><strong>Last Updated On</strong> {{ticket.updated_at}}</li>
-      </ul>
-      {% if user.is_school %}
-      <h5>My Tickets.</h5>
-      <ul class="ticket-info">
-        {% for ticket in tickets %}
-        <li><strong><a href="{% url 'ticket' ticket.id%}"
-          >{{ ticket.ticket_id }}</a
-        ></strong> {{ticket.title}}</li>
-        <hr />
-      {% endfor %}
-      </ul>
-      {% else %}
-      <h5>Other Tickets.</h5>
-      <ul class="ticket-info">
-        {% for ticket in alltickets %}
-        <li><strong><a href="{% url 'ticket' ticket.id%}"
-          >{{ ticket.ticket_id }}</a
-        ></strong> {{ticket.title}}</li>
-        <hr />
-        
-        {% endfor %}
-      </ul>{% endif %}
-    </div>
-  </div></div>
-  {% endblock %}
-
+  </div>
+</div>
+{% endblock content %}

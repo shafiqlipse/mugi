@@ -880,9 +880,14 @@ def payment_view(request):
                 phone_number = form.cleaned_data['phone_number']
                 athletes = form.cleaned_data['athletes']
 
+# Validate phone number format
+                if not re.match(r'^(075|074|070)\d{7}$', phone_number):
+                    messages.error(request, "Phone number must a valid Airtel money number.")
+                    return render(request, 'payments/payment_form.html', {'form': form})
+
                 if not athletes:
                     messages.error(request, "You must select at least one athlete.")
-                    return render(request, 'emails/payment_form.html', {'form': form})
+                    return render(request, 'payments/payment_form.html', {'form': form})
 
                 # Calculate total amount
                 amount_per_athlete = 3000  # UGX 6,000 per athlete
@@ -1141,6 +1146,15 @@ from reportlab.lib import colors
 import io
 from decimal import Decimal
 
+def add_watermark(p, width, height):
+    p.saveState()
+    p.setFont("Helvetica-Bold", 60)
+    p.setFillColorRGB(0.9, 0.9, 0.9)  # light gray
+    p.translate(width / 2, height / 2)
+    p.rotate(45)
+    p.drawCentredString(0, 0, "USSSA RECEIPT")
+    p.restoreState()
+
 def generate_receipt(request, payment_id):
     payment = get_object_or_404(Payment, id=payment_id)
     athletes = payment.athletes.all()
@@ -1160,6 +1174,9 @@ def generate_receipt(request, payment_id):
     top_margin = height - 0.5 * inch
     line_height = 14
     
+    # watermark
+    add_watermark(p, width, height)
+
     # Logo and Company Info Header
     try:
         # Draw logo (adjust path to your actual logo file)
@@ -1234,7 +1251,21 @@ def generate_receipt(request, payment_id):
     # Calculate width of text to right-align it
     title_width = p.stringWidth(receipt_title, "Helvetica-Bold", 14)
     p.drawString(width - left_margin - title_width, top_margin, receipt_title)
-    top_margin -= line_height
+    top_margin -= line_height * 2
+
+    p.setFont("Helvetica", 10)
+    date_text = f"Transaction Date: {payment.created_at.strftime('%B %d, %Y')}"
+    # Calculate width of date text to right-align it
+    date_width = p.stringWidth(date_text, "Helvetica", 10)
+    p.drawString(width - left_margin - date_width, top_margin, date_text)
+    top_margin -= line_height * 2
+
+    p.setFont("Helvetica", 10)
+    date_text = f"Transaction Date: {payment.created_at.strftime('%B %d, %Y')}"
+    # Calculate width of date text to right-align it
+    date_width = p.stringWidth(date_text, "Helvetica", 10)
+    p.drawString(width - left_margin - date_width, top_margin, date_text)
+    top_margin -= line_height * 2
 
     p.setFont("Helvetica", 10)
     date_text = f"Transaction Date: {payment.created_at.strftime('%B %d, %Y')}"
@@ -1269,9 +1300,16 @@ def generate_receipt(request, payment_id):
         name = f"- {athlete.fname} {athlete.lname}"
         if top_margin < 1 * inch:  # Check if we need a new page
             p.showPage()
-            top_margin = height - 0.5 * inch
+            top_margin = height - 1 * inch
         p.drawString(col_positions[1], top_margin, name)
         top_margin -= line_height
+    
+    
+        # Divider line
+    top_margin -= line_height * 1.5
+    # p.line(left_margin, top_margin, width - left_margin, top_margin)/
+    p.line(left_margin, top_margin, width - left_margin, top_margin)
+    top_margin -= line_height
     
     # Table Row 2: Processing Fee
     if top_margin < 1 * inch:
@@ -1294,10 +1332,13 @@ def generate_receipt(request, payment_id):
 
     
     p.setFont("Helvetica-Bold", 10)
-    p.setFillColorRGB( 0.0, 1.0, 0.502)  # Dark gray for date
+    p.setFillColorRGB( 0.0, 0.0, 0.502)  # Dark gray for date
     p.drawRightString(width - left_margin - 2*inch, top_margin, "Total:")
     p.drawRightString(width - left_margin, top_margin, f"UGX {total:,.2f}")
-    top_margin -= line_height * 2
+    top_margin -= line_height * 3
+    
+    
+    
     
         # Reset to black for subsequent text
     p.setFillColorRGB(0, 0, 0)
@@ -1319,3 +1360,5 @@ def generate_receipt(request, payment_id):
     buffer.seek(0)
 
     return FileResponse(buffer, as_attachment=True, filename=f'receipt_{payment.transaction_id}.pdf')
+
+

@@ -437,3 +437,57 @@ def payment_detail(request, id):
     return render(request, "dashboard/payment_detail.html", context)
    
 #     context = {"payment": payment}
+
+
+@login_required
+def transactions(request):
+    user = request.user
+    school = user.school
+    payments = Payment.objects.select_related("school").filter(status="COMPLETED", school=school).order_by('-created_at')  
+    
+
+    # Pass the filter to the context for rendering the filter form
+    context = {
+        "payments": payments,
+    }
+    # Pass the filter to the context for rendering the filter form
+ 
+
+    return render(request, "dashboard/complete.html", context)
+
+
+
+
+from django.db.models import Sum
+
+
+def payment_summery(request):
+    completed_payments = Payment.objects.filter(status='COMPLETED')
+
+    school_totals = (
+        completed_payments
+        .values('school__name')
+        .annotate(total_amount=Sum('amount'))
+        .order_by('school__name')
+    )
+
+    district_totals = (
+        completed_payments
+        .values('school__district__name')
+        .annotate(total_amount=Sum('amount'))
+        .order_by('school__district__name')
+    )
+
+    zone_totals = (
+        completed_payments
+        .values('school__district__zone__name')
+        .annotate(total_amount=Sum('amount'))
+        .order_by('school__district__zone__name')
+    )
+
+    context = {
+        'school_totals': school_totals,
+        'district_totals': district_totals,
+        'zone_totals': zone_totals,
+    }
+    return render(request, 'dashboard/summery.html', context)

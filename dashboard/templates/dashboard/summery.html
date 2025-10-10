@@ -1,0 +1,73 @@
+{% extends "dashboard/dashboard.html" %}
+<!---->
+{% load static %}
+<!---->
+{%block title%}Schools{% endblock %}
+<!---->
+{% block content %}
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="fs-18 fw-semibold m-0">Payments</h1>
+    </div>
+    <div class="card-body">
+      <h2>Completed Payment Summary</h2>
+
+      <h3>By Zone</h3>
+      <table>
+        <tr>
+          <th>Zone</th>
+          <th>Total Amount</th>
+        </tr>
+        {% for z in zone_totals %}
+        <tr>
+          <td>{{ z.school__district__zone__name }}</td>
+          <td>{{ z.total_amount }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="2">No completed payments.</td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <h3>By District</h3>
+      <table>
+        <tr>
+          <th>District</th>
+          <th>Total Amount</th>
+        </tr>
+        {% for d in district_totals %}
+        <tr>
+          <td>{{ d.school__district__name }}</td>
+          <td>{{ d.total_amount }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="2">No completed payments.</td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <h3>By School</h3>
+      <table>
+        <tr>
+          <th>School</th>
+          <th>Total Amount</th>
+        </tr>
+        {% for s in school_totals %}
+        <tr>
+          <td>{{ s.school__name }}</td>
+          <td>{{ s.total_amount }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="2">No completed payments.</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

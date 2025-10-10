@@ -11,6 +11,18 @@
     <div class="flex-grow-1">
       <h1 class="fs-18 fw-semibold m-0">Payments</h1>
     </div>
+          <!-- templates/payment_form.html -->
+      {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+        <div
+          class="alert {% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}"
+        >
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
   </div>
 <div class="card-body mt-0 p-0">
   <form method="post" id="payment-form">
@@ -30,7 +42,7 @@
       class="form-control mb-2"
       placeholder="Enter Airtel Money phone number"
       required
-    /><button type="submit" class="btn btn-primary  mb-2">Pay</button>
+    /><button type="submit" class="btn btn-primary  mb-2" id="submitButton" onclick="lockButton()">Pay</button>
     <div class="table-responsive">
       <table  class="table">
         <thead class="table-dark">
@@ -114,5 +126,17 @@
         });
       });
   </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.querySelector('#payment-form');
+    const submitButton = document.querySelector('#submitButton');
+
+    form.addEventListener('submit', function() {
+      submitButton.disabled = true;
+      submitButton.textContent = 'Processing...';
+    });
+  });
+</script>
 </div>
 {% endblock %}

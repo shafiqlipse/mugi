@@ -12,7 +12,7 @@
         </div>
         <div class="card-body">
           <div class="table-responsive">
-            <table  id="myTable" class="display">
+            <table id="myTable" class="display">
               <thead class="text-primary">
                 <th>Ticket ID</th>
                 <th>Topic</th>
@@ -30,12 +30,12 @@
                   </td>
                   <td>{{ ticket.topic }}</td>
                   <td>{{ ticket.title }}</td>
-                  <td class={% if ticket.status == "Open" %}
-                  
-                  "btn btn-primary" {% elif ticket.status == "Answered" %}
-                  
-                  "btn btn-info" {% else %}"btn btn-warning" {% endif %}>
-                 {{ ticket.status }}</td>
+
+                  <span
+                    class="{% if ticket.status == 'Open' %}badge badge-primary{% elif ticket.status == 'Answered' %}badge badge-success{% else %}badge badge-danger{% endif %}"
+                  >
+                    {{ ticket.status }}
+                  </span>
                   <td>{{ticket.created_at}}</td>
                 </tr>
                 {% endfor %}

@@ -29,4 +29,7 @@ urlpatterns = [
     path("activate_payment/<int:id>", activate_payment, name="activate_payment"),
     path("payment_detail/<int:id>", payment_detail, name="payment_detail"),
     # path("delete_announcement/<int:id>", delete_announcement, name="delete_announcement"),
+    path("transactions/", transactions, name="transactions"),
+    path("summery/", payment_summery, name="summery"),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
