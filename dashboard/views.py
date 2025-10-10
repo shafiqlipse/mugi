@@ -461,33 +461,50 @@ def transactions(request):
 from django.db.models import Sum
 
 
+
 def payment_summery(request):
+    # Step 1: Filter only completed payments
     completed_payments = Payment.objects.filter(status='COMPLETED')
 
-    school_totals = (
+    # Step 2: Calculate the overall total
+    overall_total = completed_payments.aggregate(total=Sum('amount'))['total'] or 0
+
+    # Helper function to add percentage
+    def add_percentage(queryset):
+        results = list(queryset)
+        for r in results:
+            if overall_total > 0:
+                r['percentage'] = (r['total_amount'] / overall_total) * 100
+            else:
+                r['percentage'] = 0
+        return results
+
+    # Step 3: Aggregations
+    school_totals = add_percentage(
         completed_payments
         .values('school__name')
         .annotate(total_amount=Sum('amount'))
-        .order_by('school__name')
+        .order_by('-total_amount')
     )
 
-    district_totals = (
+    district_totals = add_percentage(
         completed_payments
         .values('school__district__name')
         .annotate(total_amount=Sum('amount'))
-        .order_by('school__district__name')
+        .order_by('-total_amount')
     )
 
-    zone_totals = (
+    zone_totals = add_percentage(
         completed_payments
         .values('school__district__zone__name')
         .annotate(total_amount=Sum('amount'))
-        .order_by('school__district__zone__name')
+        .order_by('-total_amount')
     )
 
     context = {
         'school_totals': school_totals,
         'district_totals': district_totals,
         'zone_totals': zone_totals,
+        'overall_total': overall_total,
     }
     return render(request, 'dashboard/summery.html', context)
