@@ -525,9 +525,82 @@ def newAthlete(request):
     form = NewAthleteForm()
     return render(request, "athletes/new_athletes.html", {"form": form})
 
-
-
 # a confirmation of credentials
+
+@login_required
+def request_athlete_edit(request, athlete_id):
+    athlete = Athlete.objects.get(id=athlete_id)
+
+    if request.method == 'POST':
+        requested_changes = {}
+        original_data = {}
+
+        for field in ['fname', 'lname', 'mname','index_number', 'lin', 'date_of_birth', 'gender', 'photo']:
+            new_value = request.FILES.get(field) or request.POST.get(field)
+            old_value = getattr(athlete, field)
+
+            # Handle file comparisons safely
+            if hasattr(old_value, 'name'):
+                old_value = old_value.name
+
+            if new_value and str(new_value) != str(old_value):
+                requested_changes[field] = str(new_value)
+                original_data[field] = str(old_value)
+
+        AthleteEditRequest.objects.create(
+            athlete=athlete,
+            requested_by=request.user,
+            school = request.user.school,
+            reason=request.POST.get('reason'),
+            supporting_document=request.FILES.get('supporting_document'),
+            requested_changes=requested_changes,
+            original_data=original_data,
+        )
+
+        messages.success(request, "Edit request submitted successfully for review.")
+        return redirect('athlete_detail', athlete_id=athlete.id)
+
+    return render(request, 'athletes/request_edit.html', {'athlete': athlete})
+
+def edit_request_success(request):
+    return render(request, 'athletes/edit_request_success.html')
+
+def edit_requests_list(request):
+    requests = AthleteEditRequest.objects.select_related('athlete', 'requested_by', 'school').all()
+    return render(request, 'athletes/edit_requests_list.html', {'requests': requests})
+
+def edit_request_detail(request, request_id):
+    edit_request = get_object_or_404(AthleteEditRequest, id=request_id)
+    athlete = edit_request.athlete
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'approve':
+            # Apply the changes to the athlete
+            for field, new_value in edit_request.requested_changes.items():
+                if field == 'photo':
+                    # Handle file update
+                    continue  # (Handled manually or through admin)
+                setattr(athlete, field, new_value)
+            athlete.save()
+
+            edit_request.status = 'APPROVED'
+            edit_request.reviewed_by = request.user
+            edit_request.reviewed_at = timezone.now()
+            edit_request.save()
+            messages.success(request, "Edit request approved and changes applied.")
+        else:
+            edit_request.status = 'REJECTED'
+            edit_request.reviewed_by = request.user
+            edit_request.reviewed_at = timezone.now()
+            edit_request.save()
+            messages.info(request, "Edit request rejected.")
+        return redirect('edit_requests_list')
+
+ 
+    return render(request, 'athletes/edit_request_detail.html', {'edit_request': edit_request})
+
+
+
 # @login_required
 def confirmation(request):
     user = request.user

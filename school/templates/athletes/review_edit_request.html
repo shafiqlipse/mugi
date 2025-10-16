@@ -1,0 +1,94 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Athletes{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="fs-18 fw-semibold m-0">
+        Edit {{ athlete.fname }} {{ athlete.lname }}
+      </h1>
+    </div>
+    <div class="card-body">
+      <div class="container mt-4">
+        <h3>Student Edit Request Review</h3>
+        <p><strong>Student:</strong> {{ athlete.fname }} {{ athlete.lname }}</p>
+        <p>
+          <strong>Requested by:</strong> {{ edit_request.requested_by.username }}
+         
+        </p>
+        <p><strong>Reason:</strong> {{ edit_request.reason }}</p>
+        {% if edit_request.supporting_document %}
+        <p>
+          <a href="{{ edit_request.supporting_document.url }}" target="_blank"
+            >View Supporting Document</a
+          >
+        </p>
+        {% endif %}
+
+        <hr />
+
+        <h5>Proposed Changes</h5>
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Field</th>
+              <th>Original Value</th>
+              <th>Requested Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for field, new_value in edit_request.requested_changes.items %}
+            <tr>
+              <td><strong>{{ field|capfirst }}</strong></td>
+              <td>
+                {% if field == "photo" %} {% if edit_request.original_data.photo %}
+                
+                <img
+                  src="/media/{{ edit_request.original_data.photo }}"
+                  width="100"
+                  alt="Old Photo"
+                />
+                {% else %} N/A {% endif %} {% else %} {{
+                edit_request.original_data|get_item:field|default:"—" }} 
+               {% endif %}
+              </td>
+              <td>
+                {% if field == "photo" %}
+                <img src="/media/{{ new_value }}" width="100" alt="New Photo" />
+                {% else %} {{ new_value }} {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <form method="post">
+          {% csrf_token %}
+          <button
+            type="submit"
+            name="action"
+            value="approve"
+            class="btn btn-success"
+          >
+            Approve Changes
+          </button>
+          <button
+            type="submit"
+            name="action"
+            value="reject"
+            class="btn btn-danger"
+          >
+            Reject Request
+          </button>
+        </form>
+      </div>
+
+  </div>
+</div>
+
+    {% endblock %}

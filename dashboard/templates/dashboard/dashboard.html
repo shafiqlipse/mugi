@@ -460,7 +460,9 @@
                       >
                     </li>
                     <li>
-                      <a class="tp-link" href="{% url 'U14athletics_enrollments'%}"
+                      <a
+                        class="tp-link"
+                        href="{% url 'U14athletics_enrollments'%}"
                         >U14</a
                       >
                     </li>
@@ -481,17 +483,24 @@
                 <div class="collapse" id="sidebarWidgetsui">
                   <ul class="nav-second-level">
                     <li>
-                      <a class="tp-link" href="/dusty/html/widget-card"
+                      <a class="tp-link" href="{% url 'support' %}"
                         >Open Messages</a
                       >
                     </li>
                     <li>
-                      <a class="tp-link" href="/dusty/html/widget-chart"
+                      <a class="tp-link" href="{% url 'answered_tickets' %}"
                         >Answered Messages</a
                       >
                     </li>
                     <li>
-                      <a class="tp-link" href="{% url 'appointments' %}">Appointments</a>
+                      <a class="tp-link" href="{% url 'appointments' %}"
+                        >Appointments</a
+                      >
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{% url 'edit_requests_list' %}">
+                        Edit Requests</a
+                      >
                     </li>
                   </ul>
                 </div>
@@ -562,10 +571,7 @@
                 <div class="collapse" id="sidebarForms">
                   <ul class="nav-second-level">
                     <li>
-                      <a
-                        class="tp-link"
-                        href="{% url 'officials' %}"
-                        
+                      <a class="tp-link" href="{% url 'officials' %}"
                         >All Officials</a
                       >
                     </li>
@@ -579,7 +585,6 @@
               </li>
 
               <li class="menu-title">General</li>
-
 
               <li>
                 <a href="#payments" data-bs-toggle="collapse">
@@ -668,8 +673,8 @@
                       >
                     </li>
                     <li>
-                      <a class="tp-link" href="{% url 'ticket_create' %}"
-                        >Request Edit</a
+                      <a class="tp-link" href="{% url 'edit_requests_list' %}">
+                        Edit Requests</a
                       >
                     </li>
                   </ul>

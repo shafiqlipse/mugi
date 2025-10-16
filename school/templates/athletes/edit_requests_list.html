@@ -1,0 +1,51 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Athletes' Edits{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="fs-18 fw-semibold m-0">My Edit Requests</h1>
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive">
+        <table id="myTable" class="display">
+          <thead>
+            <tr>
+              <th>Athlete</th>
+              <th>Requester</th>
+              <th>Request Date</th>
+              <th>Reviewed On</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for request in requests %}
+            <tr>
+              <td>
+                <a href="{% url 'edit_request_detail' request.id %}">
+                  <span class="pl-2"
+                    >{{ request.athlete.fname }} {{ request.athlete.lname }}
+                  </span></a
+                >
+              </td>
+
+              <td>{{ request.requested_by }}</td>
+
+              <td>{{ request.requested_at }}</td>
+              <td>{{ request.reviewed_at }}</td>
+              <td>{{ request.status }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

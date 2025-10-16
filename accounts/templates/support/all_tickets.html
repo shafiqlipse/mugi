@@ -3,22 +3,36 @@
 {% load static %}
 <!--    hjjhh-->
 {% block title %} | Tickets{% endblock title %} {% block content %}
-<div class="container content-wrapper">
+<div class="container-fluid">
+  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+    <div class="flex-grow-1">
+      <h4 class="fs-18 fw-semibold m-0">Tickets</h4>
+    </div>
+
+    <div class="text-end">
+      <ol class="breadcrumb m-0 py-0">
+        <li class="breadcrumb-item">
+          <a href="javascript: void(0);">Support</a>
+        </li>
+        <li class="breadcrumb-item active">Tickets</li>
+      </ol>
+    </div>
+  </div>
+
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-12">
       <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Tickets</h4>
-        </div>
         <div class="card-body">
           <div class="table-responsive">
-            <table id="myTable" class="display">
-              <thead class="text-primary">
-                <th>Ticket ID</th>
-                <th>Topic</th>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Date</th>
+            <table class="table display" id="myTable">
+              <thead>
+                <tr>
+                  <th>Ticket</th>
+                  <th>Topic</th>
+                  <th>Title</th>
+                  <th>Status</th>
+                  <th>Created At</th>
+                </tr>
               </thead>
               <tbody>
                 {% for ticket in tickets %}
@@ -31,11 +45,13 @@
                   <td>{{ ticket.topic }}</td>
                   <td>{{ ticket.title }}</td>
 
-                  <span
-                    class="{% if ticket.status == 'Open' %}badge badge-primary{% elif ticket.status == 'Answered' %}badge badge-success{% else %}badge badge-danger{% endif %}"
-                  >
-                    {{ ticket.status }}
-                  </span>
+                  <td>
+                    <span
+                      class={% if ticket.status == 'Open' %} "badge badge-primary" {% elif ticket.status == 'Answered' %} "badge badge-dark" {% else %} "badge badge-danger" {% endif %}
+                    >
+                      {{ ticket.status }}
+                    </span>
+                  </td>
                   <td>{{ticket.created_at}}</td>
                 </tr>
                 {% endfor %}
@@ -47,4 +63,5 @@
     </div>
   </div>
 </div>
+
 {% endblock content %}

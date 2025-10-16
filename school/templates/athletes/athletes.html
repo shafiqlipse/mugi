@@ -24,6 +24,7 @@
               <th>Gender</th>
               <th>Class</th>
               <th>Date of Birth</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -42,6 +43,9 @@
               <td>{{ athlete.gender }}</td>
               <td>S{{ athlete.classroom }}</td>
               <td>{{ athlete.date_of_birth }}</td>
+              <td>
+                <a href="{% url 'edit_request_athlete' athlete.id %}" class="btn btn-warning btn-sm">Request Edit</a>
+              </td>
             </tr>
             {% endfor %}
           </tbody>

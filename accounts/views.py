@@ -161,7 +161,7 @@ def ticket(request, id):
     ticket = get_object_or_404(Ticket, id=id)
 
     # Sidebar tickets: all user's tickets ordered by latest update
-    tickets = Ticket.objects.select_related("sender").filter(sender=request.user).order_by('-created_at')
+    tickets = Ticket.objects.select_related("sender").filter(sender=request.user, topic=ticket.topic).order_by('-created_at')
 
     # Responses for this ticket
     responses = ticket.responses.all().order_by('-created_at')

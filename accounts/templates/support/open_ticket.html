@@ -3,39 +3,280 @@
 {% load static %}
 <!--    hjjhh-->
 {% block title %} | Open Ticket{% endblock title %} {% block content %}
-<div class="container content-wrapper">
-  <h1>Create Ticket</h1>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="fields-set">
-      <div class="field-group">
-        <label for="subject">Title</label>
-        <input
-          type="text"
-          name="title"
-          id="title"
-          class="form-control"
-          required
-        />
+<div class="content">
+  <!-- Start Content-->
+  <div class="container-fluid">
+    <!-- General Form -->
+    <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+      <div class="flex-grow-1">
+        <h4 class="fs-18 fw-semibold m-0">General Support</h4>
       </div>
-      <div class="field-group grid2">
-        <div class="field">
-          <label for="topic">Topic</label>
-          {{form.topic}}
-        </div>
-        <div class="field">
-          <label for="priority">Priority</label>
-          {{form.priority}}
+
+      <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
+          <li class="breadcrumb-item">
+            <a href="javascript: void(0);">Support</a>
+          </li>
+          <li class="breadcrumb-item active">General Support</li>
+        </ol>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-7">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Create Message</h5>
+          </div>
+          <!-- end card header -->
+          <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="forms-set">
+                <div class="form-group mb-3">
+                  <label for="subject">Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    id="title"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="row">
+                  <div class="col-lg-6 mb-3">
+                    <label for="topic">Topic</label>
+                    {{form.topic}}
+                  </div>
+                  <div class="col-lg-6 mb-3">
+                    <label for="priority">Priority</label>
+                    {{form.priority}}
+                  </div>
+                </div>
+                <div class="form-group mb-3">
+                  <div class="form">
+                    <label for="content">Message</label>
+                    {{form.content}}
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Submit Message
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-      <div class="field-group">
-        <div class="field">
-          <label for="content">Message</label>
-          {{form.content}}
+
+      <div class="col-lg-5">
+        <div class="card">
+          <div class="card-header">
+            <div class="d-flex align-items-center">
+              <h5 class="card-title text-dark mb-0">Support Agents</h5>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="justify-content-center">
+              <ul class="list-group list-group-flush list-group-no-gutters">
+                <!-- List Item -->
+                <li class="list-group-item px-0 pt-0">
+                  <a href="#" class="d-flex align-items-center gap-3">
+                    <div class="flex-shrink-0">
+                      <!-- Avatar -->
+                      <div
+                        class="align-content-center text-center border border-dashed rounded-circle p-1"
+                      >
+                        <img
+                          src="{% static 'lib/images/avatar/ted.png' %}"
+                          class="avatar avatar-sm rounded-circle"
+                        />
+                        <span
+                          class="profile-status rounded-circle online"
+                        ></span>
+                      </div>
+                      <!-- End Avatar -->
+                    </div>
+
+                    <div class="align-content-center">
+                      <h6 class="mb-0 text-dark fs-15">
+                        Awori Teddy Triza ~ <strong>Capacity Building</strong>
+                      </h6>
+                      <div class="d-flex align-items-center">
+                        <span class="fs-14 text-muted fw-medium"
+                          >tawori@usssaonline.com</span
+                        >
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <span class="fs-14 text-muted fw-medium"
+                          >+256 700 000 000</span
+                        >
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <!-- End List Item -->
+
+                <!-- List Item -->
+                <li class="list-group-item px-0 pt-2">
+                  <a href="#" class="d-flex align-items-center gap-3">
+                    <div class="flex-shrink-0">
+                      <!-- Avatar -->
+                      <div
+                        class="align-content-center text-center border border-dashed rounded-circle p-1"
+                      >
+                        <img
+                          src="{% static 'lib/images/avatar/waswa.png' %}"
+                          class="avatar avatar-sm rounded-circle"
+                        />
+                        <span
+                          class="profile-status rounded-circle online"
+                        ></span>
+                      </div>
+                      <!-- End Avatar -->
+                    </div>
+
+                    <div class="align-content-center">
+                      <h6 class="mb-0 text-dark fs-15">
+                        Waswa Kisekka Habiibu ~
+                        <strong>Client Support</strong>
+                      </h6>
+                      <div class="d-flex align-items-center">
+                        <span class="fs-14 text-muted fw-medium"
+                          >waswa.kisekka@gmail.com</span
+                        >
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <span class="fs-14 text-muted fw-medium"
+                          >+256 700 000 000</span
+                        >
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <!-- End List Item -->
+
+                <!-- List Item -->
+                <li class="list-group-item px-0 pt-2">
+                  <a href="#" class="d-flex align-items-center gap-3">
+                    <div class="flex-shrink-0">
+                      <!-- Avatar -->
+                      <div
+                        class="align-content-center text-center border border-dashed rounded-circle p-1"
+                      >
+                        <img
+                          src="{% static 'lib/images/avatar/fifi.jpg' %}"
+                          class="avatar avatar-sm rounded-circle"
+                        />
+                        <span
+                          class="profile-status rounded-circle online"
+                        ></span>
+                      </div>
+                      <!-- End Avatar -->
+                    </div>
+
+                    <div class="align-content-center">
+                      <h6 class="mb-0 text-dark fs-15">
+                        Mukantwari Fiona ~ <strong>General Inquiry</strong>
+                      </h6>
+                      <div class="d-flex align-items-center">
+                        <span class="fs-14 text-muted fw-medium"
+                          >ibrk.emarode@gmail.com</span
+                        >
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <span class="fs-14 text-muted fw-medium"
+                          >+256 700 000 000</span
+                        >
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <!-- End List Item -->
+
+                <!-- List Item -->
+                <li class="list-group-item px-0 pt-2">
+                  <a href="#" class="d-flex align-items-center gap-3">
+                    <div class="flex-shrink-0">
+                      <!-- Avatar -->
+                      <div
+                        class="align-content-center text-center border border-dashed rounded-circle p-1"
+                      >
+                        <img
+                          src="{% static 'lib/images/avatar/marto.jpg' %}"
+                          class="avatar avatar-sm rounded-circle"
+                        />
+                        <span
+                          class="profile-status rounded-circle online"
+                        ></span>
+                      </div>
+                      <!-- End Avatar -->
+                    </div>
+
+                    <div class="align-content-center">
+                      <h6 class="mb-0 text-dark fs-15">
+                        Nsimbi Martin ~ <strong>Transfers/ Disciplinary</strong>
+                      </h6>
+                      <div class="d-flex align-items-center">
+                        <span class="fs-14 text-muted fw-medium"
+                          >mnsimbi@usssaonline.com</span
+                        >
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <span class="fs-14 text-muted fw-medium"
+                          >+256 776 981995</span
+                        >
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <!-- End List Item -->
+
+                <!-- List Item -->
+                <li class="list-group-item px-0 pt-2">
+                  <a href="#" class="d-flex align-items-center gap-3">
+                    <div class="flex-shrink-0">
+                      <!-- Avatar -->
+                      <div
+                        class="align-content-center text-center border border-dashed rounded-circle p-1"
+                      >
+                        <img
+                          src="{% static 'lib/images/avatar/dan.jpg' %}"
+                          class="avatar avatar-sm rounded-circle"
+                        />
+                        <span
+                          class="profile-status rounded-circle online"
+                        ></span>
+                      </div>
+                      <!-- End Avatar -->
+                    </div>
+
+                    <div class="align-content-center">
+                      <h6 class="mb-0 text-dark fs-15">
+                        Amanya Daniel ~ <strong>Registration</strong>
+                      </h6>
+                      <div class="d-flex align-items-center">
+                        <span class="fs-14 text-muted fw-medium"
+                          >ibrk.emarode@gmail.com</span
+                        >
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <span class="fs-14 text-muted fw-medium"
+                          >+256 700 000 000</span
+                        >
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <!-- End List Item -->
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <button type="submit" class="btn btn-primary">Submit Message</button>
-  </form>
+  </div>
+  <!-- container-fluid -->
 </div>
-{% endblock content %}
+<!-- content -->
+
+{% endblock %}

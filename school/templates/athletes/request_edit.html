@@ -1,0 +1,118 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Athletes{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="fs-18 fw-semibold m-0">Edit {{ athlete.fname }} {{ athlete.lname }}</h1>
+
+      
+    </div>
+<div class="card-body">
+  
+  
+  <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+    {% csrf_token %}
+    
+    <div class="row">
+      <!-- First Name -->
+      <div class="col-md-6 mb-3">
+        <label for="fname" class="form-label">First Name</label>
+        <input type="text" class="form-control" id="fname" name="fname" value="{{ athlete.fname }}" required>
+        <div class="invalid-feedback">
+          Please provide a first name.
+        </div>
+      </div>
+      
+      <!-- Last Name -->
+      <div class="col-md-6 mb-3">
+        <label for="lname" class="form-label">Last Name</label>
+        <input type="text" class="form-control" id="lname" name="lname" value="{{ athlete.lname }}" required>
+        <div class="invalid-feedback">
+          Please provide a last name.
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <!-- Index Number -->
+      <div class="col-md-6 mb-3">
+        <label for="index_number" class="form-label">Index Number</label>
+        <input type="text" class="form-control" id="index_number" name="index_number" value="{{ athlete.index_number }}" required>
+        <div class="invalid-feedback">
+          Please provide an index number.
+        </div>
+      </div>
+      
+      <!-- Learners ID Number -->
+      <div class="col-md-6 mb-3">
+        <label for="lin" class="form-label">Learners ID Number</label>
+        <input type="text" class="form-control" id="lin" name="lin" value="{{ athlete.lin }}" required>
+        <div class="invalid-feedback">
+          Please provide a learners ID number.
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <!-- Date of Birth -->
+      <div class="col-md-6 mb-3">
+        <label for="dob" class="form-label">Date of Birth</label>
+        <input type="date" class="form-control" id="dob" name="dob" value="{{ athlete.date_of_birth|date:'Y-m-d' }}" required>
+        <div class="invalid-feedback">
+          Please provide a valid date of birth.
+        </div>
+      </div>
+      
+      <!-- Gender -->
+      <div class="col-md-6 mb-3">
+        <label for="gender" class="form-label">Gender</label>
+        <select class="form-select" id="gender" name="gender" required>
+          <option value="" disabled>Select gender</option>
+          <option value="Male" {% if athlete.gender == "Male" %}selected{% endif %}>Male</option>
+          <option value="Female" {% if athlete.gender == "Female" %}selected{% endif %}>Female</option>
+          <option value="Other" {% if athlete.gender == "Other" %}selected{% endif %}>Other</option>
+        </select>
+        <div class="invalid-feedback">
+          Please select a gender.
+        </div>
+      </div>
+    </div>
+    
+    <!-- Photo Upload -->
+    <div class="mb-3">
+      <label for="photo" class="form-label">Photo</label>
+      <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+      <div class="form-text">Upload a new photo (optional)</div>
+    </div>
+    
+    <!-- Reason for Edit -->
+    <div class="mb-3">
+      <label for="reason" class="form-label">Reason for Edit</label>
+      <textarea class="form-control" id="reason" name="reason" rows="4" required></textarea>
+      <div class="invalid-feedback">
+        Please provide a reason for the edit request.
+      </div>
+    </div>
+    
+    <!-- Supporting Document -->
+    <div class="mb-4">
+      <label for="supporting_document" class="form-label">Supporting Document (optional)</label>
+      <input type="file" class="form-control" id="supporting_document" name="supporting_document">
+      <div class="form-text">Upload any supporting documents for your request</div>
+    </div>
+    
+    <!-- Submit Button -->
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <button type="submit" class="btn btn-primary px-4">Submit Request</button>
+    </div>
+  </form>
+</div>
+  </div>
+</div>
+{% endblock %}

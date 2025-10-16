@@ -186,7 +186,25 @@ class ScreenForm(forms.ModelForm):
             "status": forms.Select(attrs={"class": "form-control"}),
         }
 
+class AthleteEditRequestForm(forms.ModelForm):
+    # Let schools specify the fields they want to change
+    fname = forms.CharField(required=False)
+    lname = forms.CharField(required=False)
+    mname = forms.CharField(required=False)
+    lin = forms.CharField(required=False)
+    index_number = forms.CharField(required=False)
+    date_of_birth = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    gender = forms.CharField(required=False)
+    photo = forms.ImageField(required=False)
+    reason = forms.CharField(widget=forms.Textarea, required=True)
 
+    class Meta:
+        model = AthleteEditRequest
+        fields = ['reason', 'supporting_document']
+    widgets = {
+        "supporting_document": forms.ClearableFileInput(attrs={"class": "form-control"}),
+        "reason": forms.Textarea(attrs={"class": "form-control", "placeholder": "Explain the reason for the edit request"}),
+    }
 
 class PaymentForm(forms.Form):
     phone_number = forms.CharField(

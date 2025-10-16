@@ -1,5 +1,7 @@
 {% extends "dashboard/dashboard.html" %}
 <!---->
+{% load custom_tags %}
+<!---->
 {% load static %}
 <!--    hjjhh-->
 {% block title %} Tickets{% endblock title %} {% block content %}
@@ -8,7 +10,7 @@
     <div class="col-md-4">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Ticket Details</h4>
+          <h4 class="card-title">Request Details</h4>
         </div>
 
         <div class="card-body">
@@ -41,7 +43,7 @@
 
                 <div class="ms-auto align-content-center">
                   <span class="text-dark fw-medium fs-14 me-3"
-                    >{{ticket.sender.school}}</span
+                    >{{edit_request.athlete}}</span
                   >
                 </div>
               </div>
@@ -69,12 +71,12 @@
                 </div>
 
                 <div class="align-content-center">
-                  <h6 class="mb-0 text-dark fs-14">Topic:</h6>
+                  <h6 class="mb-0 text-dark fs-14">School:</h6>
                 </div>
 
                 <div class="ms-auto align-content-center">
                   <span class="text-dark fw-medium fs-14 me-3"
-                    >{{ticket.topic}}</span
+                    >{{edit_request.school}}</span
                   >
                 </div>
               </div>
@@ -102,12 +104,12 @@
                 </div>
 
                 <div class="align-content-center">
-                  <h6 class="mb-0 text-dark fs-14">Priority:</h6>
+                  <h6 class="mb-0 text-dark fs-14">Requested on:</h6>
                 </div>
 
                 <div class="ms-auto align-content-center">
                   <span class="text-dark fw-medium fs-14 me-3"
-                    >{{ticket.priority}}</span
+                    >{{edit_request.requested_at}}</span
                   >
                 </div>
               </div>
@@ -140,7 +142,7 @@
 
                 <div class="ms-auto align-content-center">
                   <span class="text-dark fw-medium fs-14 me-3"
-                    >{{ticket.status}}</span
+                    >{{edit_request.status}}</span
                   >
                 </div>
               </div>
@@ -168,12 +170,12 @@
                 </div>
 
                 <div class="align-content-center">
-                  <h6 class="mb-0 text-dark fs-14">Date:</h6>
+                  <h6 class="mb-0 text-dark fs-14">Reviewed On:</h6>
                 </div>
 
                 <div class="ms-auto align-content-center">
                   <span class="text-dark fw-medium fs-14 me-3"
-                    >{{ticket.created_at}}</span
+                    >{{edit_request.reviewed_at}}</span
                   >
                 </div>
               </div>
@@ -185,52 +187,114 @@
     <div class="col-md-8">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">{{ticket.title}}</h4>
-          <p class="text-muted mb-0">{{ticket.content}}</p>
+          <h4 class="card-title">{{edit_request.id}}</h4>
+          <p class="text-muted mb-0">{{edit_request.content}}</p>
         </div>
         <div class="card-body">
           <div class="left-ticket">
             <div class="ticket-body">
-              {% for response in responses %}
-              <div {% if response.responder.is_staff %} class= "card bg-body-tertiary" {% elif response.responder.is_school %} class= "card .bg-primary" {% else %} class= "card bg-info-subtle" {% endif %} 
-              >
+              <div class="card mb-3 border shadow-none">
                 <div class="card-body">
-                  <small class="card-title mb-2 fs-12"
-                    >{{response.responder.first_name}}</small
-                  >
-                  <p class="card-text text-muted fs-16">{{response.message}}</p>
+                  <h5 class="card-title">Reason for Edit</h5>
+                  <p class="card-text text-muted fs-16">
+                    {{edit_request.reason}}
+                  </p>
+                  <h5 class="card-title">Support Document</h5>
+                  <div class="card-text text-muted fs-16">
+                    {% if edit_request.supporting_document %}
+                    <a
+                      href="{{ edit_request.supporting_document.url }}"
+                      target="_blank"
+                    >
+                    <i class="fa fa-file-pdf" aria-hidden="true"></i> View Supporting Document 
+                    </a>
+                    {% else %} No document uploaded. {% endif %}
+                  </div>
                 </div>
                 <div class="card-footer border-top">
                   <small class="text-body-secondary"
-                    >Updated {{ response.created_at|timesince }} ago
+                    >Updated {{ edit_request.requested_at|timesince }} ago
                   </small>
                 </div>
               </div>
-              {% endfor %}
-            </div>
-            <div class="form-container">
-              <div class="form-header">
-                <h3 class="mb-0 card-title">Reply</h3>
-              </div>
-              <div class="form-body">
-                <form
-                  method="post"
-                  class="p-3 bg-white border-t sticky bottom-0"
-                >
-                  {% csrf_token %}
-                  <div class="form-group">
-                    <textarea
-                      class="form-control"
-                      name="message"
-                      id="message"
-                      rows="3"
-                    ></textarea>
-                  </div>
-                  <button type="submit" class="btn btn-primary mt-2">
-                    Submit response
-                  </button>
-                </form>
-              </div>
+              {% if user.is_admin %}
+              <div class="card mb-3 border shadow-none">
+                <div class="card-body">
+                  <h5 class="card-title">Suggested Changes</h5>
+
+                  <table class="table table-bordered">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Field</th>
+                        <th>Original Value</th>
+                        <th>Requested Change</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for field, new_value in edit_request.requested_changes.items %}
+                      
+                      <tr>
+                        <td><strong>{{ field|capfirst }}</strong></td>
+                        <td>
+                          {% if field == "photo" %}
+                          <!-- Added missing closing tag -->
+                          {% if edit_request.original_data.photo %}
+
+                          <img
+                            src="/media/{{ edit_request.original_data.photo. }}"
+                            width="100"
+                            alt="Old Photo"
+                          />
+                          {% else %} N/A {% endif %}
+                          <!-- Added missing closing tag -->
+                          {% else %}
+                          <!-- Added missing closing tag -->
+                          {{edit_request.original_data|get_item:field|default:"—"}}
+
+                          <!-- Added missing closing tag -->
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if field == "photo" %}
+                          <img
+                            src="/media/{{ new_value }}"
+                            width="100"
+                            alt="New Photo"
+                          />
+                          {% else %} {{ new_value }} {% endif %}
+                        </td>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+                  <form method="post">
+                    {% csrf_token %}
+                    <button
+                      type="submit"
+                      name="action"
+                      value="approve"
+                      class="btn btn-success"
+                    >
+                      Approve Changes
+                    </button>
+                    <button
+                      type="submit"
+                      name="action"
+                      value="reject"
+                      class="btn btn-danger"
+                    >
+                      Reject Request
+                    </button>
+                  </form>
+                </div>
+                <div class="card-footer border-top">
+                  <small class="text-body-secondary"
+                    >Updated {{ edit_request.requested_at|timesince }} ago
+                  </small>
+                </div>
+              </div>{% endif %}
             </div>
           </div>
         </div>

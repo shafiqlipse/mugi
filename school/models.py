@@ -8,6 +8,9 @@ from django.core.files import File
 from PIL import Image, ImageDraw
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+import re
 
 
 class School(models.Model):
@@ -171,10 +174,6 @@ class Classroom(models.Model):
         return self.name
 
 
-from django.core.exceptions import ValidationError
-import re
-
-
 def validate_index_number(value):
     # Define the pattern for validation
     pattern = re.compile(r"^\d{6}/\d{3}/\d{4}$")
@@ -293,7 +292,44 @@ class Athlete(models.Model):
 
 #     return super().clean()
 
+class AthleteEditRequest(models.Model):
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('APPROVED', 'Approved'),
+        ('REJECTED', 'Rejected'),
+    ]
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    athlete = models.ForeignKey(Athlete, on_delete=models.CASCADE, related_name='edit_requests')
+    school = models.ForeignKey('School', on_delete=models.CASCADE)
+    requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    requested_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
+
+    # JSON field to hold all changes (field_name → new_value)
+    requested_changes = models.JSONField()  # e.g. {"fname": "John", "lname": "Doe"}
+    original_data = models.JSONField(default=dict) 
+    
+    reason = models.TextField(blank=True, null=True)
+    supporting_document = models.FileField(upload_to='edit_support_docs/', blank=True, null=True)
+
+    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_edit_requests')
+    reviewed_at = models.DateTimeField(blank=True, null=True)
+    admin_comment = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.athlete} Edit Request ({self.status})"
+
+    def apply_changes(self):
+        """Apply approved changes to the athlete record."""
+        for field, value in self.requested_changes.items():
+            setattr(self.athlete, field, value)
+        self.athlete.save()
+        self.status = 'APPROVED'
+        self.reviewed_at = timezone.now()
+        self.save()
+        
+        
 class Screening(models.Model):
 
     athlete = models.ForeignKey(
