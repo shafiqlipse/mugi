@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from accounts.models import *
 import random
 from django.core.validators import FileExtensionValidator
@@ -329,7 +330,10 @@ class AthleteEditRequest(models.Model):
         self.reviewed_at = timezone.now()
         self.save()
         
-        
+    def get_absolute_url(self):
+        return reverse('request_detail', args=[str(self.id)])   
+    
+     
 class Screening(models.Model):
 
     athlete = models.ForeignKey(

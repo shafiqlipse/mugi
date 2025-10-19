@@ -127,7 +127,7 @@
                     {% for notification in notifications %}
                     <!-- item-->
                     <a
-                      href="javascript:void(0);"
+                      href="{{ notification.get_absolute_url }}"
                       class="dropdown-item notify-item text-muted link-primary"
                     >
                       <div class="d-flex align-items-center">
@@ -143,7 +143,7 @@
                             class="d-flex align-items-center justify-content-between mb-1"
                           >
                             <p class="notify-details mb-0">
-                              {{ notification.verb }}
+                              {{ notification.title }}
                             </p>
                             <iconify-icon
                               icon="solar:record-bold"
@@ -154,10 +154,10 @@
                             class="d-flex align-items-center justify-content-between"
                           >
                             <p class="text-muted mb-0">
-                              {{ notification.target }}
+                              Click to view details
                             </p>
                             <p class="text-muted mb-0">
-                              {{ notification.created_at }}
+                              {{ notification.created_at|timesince }} ago
                             </p>
                           </div>
                         </div>

@@ -1,18 +1,26 @@
 from accounts.models import User
-from school.models import School
-from django.db import models
 from django.utils.timezone import now
+from django.db import models
+from django.urls import reverse
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.utils import timezone
 
 class Notification(models.Model):
-    recipients = models.ManyToManyField(School, related_name='notifications', db_index=True)
-    sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sent_notifications', db_index=True)
-    verb = models.CharField(max_length=255)  # e.g., "updated your ticket"
-    target = models.CharField(max_length=255, null=True, blank=True, db_index=True)  # e.g., "Ticket #123"
-    created_at = models.DateTimeField(default=now)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
+    title = models.CharField(max_length=255)
+    message = models.TextField()
     is_read = models.BooleanField(default=False)
-    
+    created_at = models.DateTimeField(default=timezone.now)
+
+    # Generic relation to link to *any* model (e.g. Request, Payment, Ticket)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    object_id = models.CharField(max_length=36, null=True, blank=True)  # ✅ allows UUIDs 
+    content_object = GenericForeignKey('content_type', 'object_id')
+
     def __str__(self):
-        return f"Notification: {self.verb}"
+        return f"{self.title} → {self.user.username}"
+
 
 
 

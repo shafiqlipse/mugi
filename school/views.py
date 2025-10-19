@@ -558,7 +558,7 @@ def request_athlete_edit(request, athlete_id):
         )
 
         messages.success(request, "Edit request submitted successfully for review.")
-        return redirect('athlete_detail', athlete_id=athlete.id)
+        return redirect('athlete', athlete_id=athlete.id)
 
     return render(request, 'athletes/request_edit.html', {'athlete': athlete})
 

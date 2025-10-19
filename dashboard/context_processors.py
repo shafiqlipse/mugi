@@ -6,14 +6,22 @@ def announce(request):
     announcements = Announcement.objects.filter(is_active=True)
     return  {'announcements': announcements}
 
-def notifications(request):
-    if request.user.is_authenticated and request.user.school:
-        school = request.user.school
-        notifications = Notification.objects.filter(recipients=school).order_by('-created_at')
-        unread_count = notifications.filter(is_read=False).count()
-        return {
-            'notifications': notifications,
-            'unread_notifications_count': unread_count,
-        }
-    return {'notifications': [], 'unread_notifications_count': 0}
+
+
+
+def notifications_context(request):
+    if request.user.is_authenticated:
+        base_qs = Notification.objects.filter(user=request.user)
+        unread_count = base_qs.filter(is_read=False).count()
+        notifications = base_qs.order_by('-created_at')[:10]
+    else:
+        notifications = []
+        unread_count = 0
+
+    return {
+        'notifications': notifications,
+        'unread_count': unread_count,
+    }
+
+ 
 

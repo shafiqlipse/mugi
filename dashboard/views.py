@@ -557,3 +557,8 @@ def payment_summery(request):
         'overall_total': overall_total,
     }
     return render(request, 'dashboard/summery.html', context)
+
+
+def notifications_list(request):
+    notifications = request.user.notifications.order_by('-created_at')
+    return render(request, 'notifications/notifications.html', {'notifications': notifications})

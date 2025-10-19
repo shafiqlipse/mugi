@@ -13,6 +13,30 @@
     <title>USSSA | lOGIN</title>
     <!-- plugins:css -->
     {% include "variables/new_css.html" %}
+    <!-- End layout styles -->
+    <style>
+      .timer-box {
+        background-color: #560000ff;
+        padding: 10px;
+        border-radius: 1rem;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      }
+      h2{
+        color: #ffffffff;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        text-transform: uppercase;
+      }
+      .time {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #ffffffff;
+      }
+      .label {
+        font-size: 0.9rem;
+        color: #ffffffff;
+      }
+    </style>
   </head>
   <body>
     <div
@@ -21,7 +45,7 @@
     >
       <div class="container-fluid p-0">
         <div class="row align-items-center g-0 px-3 py-3 vh-100">
-          <div class="col-xl-5">
+          <div class="col-xl-7">
             <div class="row">
               <div class="col-md-8 mx-auto">
                 <div class="card">
@@ -51,7 +75,7 @@
                           </div>
                         </div>
 
-                        <div class="auth-title-section mb-4 text-center">
+                        <!--<div class="auth-title-section mb-4 text-center">
                           <h3 class="text-danger fw-semibold mb-1">
                             Welcome Back !
                           </h3>
@@ -59,8 +83,36 @@
                             Hey, Enter your details to get sign in to your
                             account.
                           </p>
-                        </div>
+                        </div>-->
 
+                        <div class="alert alert-danger">
+                          <h3>System closed</h3>
+                          <p>
+                            The system is currently closed for the Year. Please
+                            try again later after official reopening.
+                          </p>
+                          <div class="timer-box">
+                            <h2 class="mb-4">Countdown to Reopening</h2>
+                            <div class="row">
+                              <div class="col">
+                                <div class="time" id="days">00</div>
+                                <div class="label">Days</div>
+                              </div>
+                              <div class="col">
+                                <div class="time" id="hours">00</div>
+                                <div class="label">Hours</div>
+                              </div>
+                              <div class="col">
+                                <div class="time" id="minutes">00</div>
+                                <div class="label">Minutes</div>
+                              </div>
+                              <div class="col">
+                                <div class="time" id="seconds">00</div>
+                                <div class="label">Seconds</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                         <div class="pt-0">
                           <form action="" class="my-4" method="post">
                             {% csrf_token %}
@@ -163,7 +215,7 @@
             </div>
           </div>
 
-          <div class="col-xl-7 d-none d-xl-inline-block">
+          <div class="col-xl-5 d-none d-xl-inline-block">
             <div class="account-page-bg rounded-4">
               <div class="text-center">
                 <div class="auth-image">
@@ -210,6 +262,46 @@
             console.error("Service Worker registration failed:", err);
           });
       }
+    </script>
+    <script>
+      // 🕒 Set your target date here:
+      const countdownDate = new Date("Nov 15, 2025 23:59:59").getTime();
+
+      const timer = setInterval(function () {
+        const now = new Date().getTime();
+        const distance = countdownDate - now;
+
+        // Time calculations
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Display values
+        document.getElementById("days").textContent = String(days).padStart(
+          2,
+          "0"
+        );
+        document.getElementById("hours").textContent = String(hours).padStart(
+          2,
+          "0"
+        );
+        document.getElementById("minutes").textContent = String(
+          minutes
+        ).padStart(2, "0");
+        document.getElementById("seconds").textContent = String(
+          seconds
+        ).padStart(2, "0");
+
+        // When time is up
+        if (distance < 0) {
+          clearInterval(timer);
+          document.querySelector(".timer-box").innerHTML =
+            "<h2>🎉 The event has started!</h2>";
+        }
+      }, 1000);
     </script>
   </body>
 </html>
