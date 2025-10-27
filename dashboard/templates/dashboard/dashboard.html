@@ -153,9 +153,7 @@
                           <div
                             class="d-flex align-items-center justify-content-between"
                           >
-                            <p class="text-muted mb-0">
-                              Click to view details
-                            </p>
+                            <p class="text-muted mb-0">Click to view details</p>
                             <p class="text-muted mb-0">
                               {{ notification.created_at|timesince }} ago
                             </p>
@@ -477,7 +475,12 @@
                       icon="solar:box-minimalistic-bold-duotone"
                     ></iconify-icon
                   ></span>
-                  <span> Support </span>
+                  <span>
+                    Support
+                    <span class="badge text-bg-secondary">
+                      {{tickets_count }}</span>
+                    </span
+                  >
                   <span class="menu-arrow"></span>
                 </a>
                 <div class="collapse" id="sidebarWidgetsui">

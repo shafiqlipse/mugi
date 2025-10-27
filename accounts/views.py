@@ -201,7 +201,7 @@ def answered_tickets(request):
     return render(request, "support/all_tickets.html", context)
 
 def support(request):
-    tickets = Ticket.objects.select_related("sender").filter(status="Open")
+    tickets = Ticket.objects.select_related("sender").all().exclude(status="Answered")
     context={
         'tickets': tickets,
     }

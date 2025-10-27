@@ -529,36 +529,106 @@ def newAthlete(request):
 
 @login_required
 def request_athlete_edit(request, athlete_id):
-    athlete = Athlete.objects.get(id=athlete_id)
+    athlete = get_object_or_404(Athlete, id=athlete_id)
+    school = request.user.school
 
     if request.method == 'POST':
-        requested_changes = {}
-        original_data = {}
+        try:
+            # Collect the proposed changes
+            requested_changes = {}
+            original_data = {}
+            for field in ['fname', 'lname', 'mname', 'index_number', 'lin', 'date_of_birth', 'gender', 'photo']:
+                new_value = request.FILES.get(field) or request.POST.get(field)
+                old_value = getattr(athlete, field)
 
-        for field in ['fname', 'lname', 'mname','index_number', 'lin', 'date_of_birth', 'gender', 'photo']:
-            new_value = request.FILES.get(field) or request.POST.get(field)
-            old_value = getattr(athlete, field)
+                if hasattr(old_value, 'name'):
+                    old_value = old_value.name
 
-            # Handle file comparisons safely
-            if hasattr(old_value, 'name'):
-                old_value = old_value.name
+                if new_value and str(new_value) != str(old_value):
+                    requested_changes[field] = str(new_value)
+                    original_data[field] = str(old_value)
 
-            if new_value and str(new_value) != str(old_value):
-                requested_changes[field] = str(new_value)
-                original_data[field] = str(old_value)
+            phone_number = request.POST.get('phone_number')
+            reason = request.POST.get('reason')
+            supporting_doc = request.FILES.get('supporting_document')
 
-        AthleteEditRequest.objects.create(
-            athlete=athlete,
-            requested_by=request.user,
-            school = request.user.school,
-            reason=request.POST.get('reason'),
-            supporting_document=request.FILES.get('supporting_document'),
-            requested_changes=requested_changes,
-            original_data=original_data,
-        )
+            # Validate phone number
+            if not re.match(r'^(075|074|070)\d{7}$', phone_number):
+                messages.error(request, "Phone number must be a valid Airtel number (070, 074, or 075).")
+                return render(request, 'athletes/request_edit.html', {'athlete': athlete})
 
-        messages.success(request, "Edit request submitted successfully for review.")
-        return redirect('athlete', athlete_id=athlete.id)
+            # Calculate fee (you can adjust this)
+            amount = 1000  
+
+            with transaction.atomic():
+                edit_request = AthleteEditRequest.objects.create(
+                    athlete=athlete,
+                    school=school,
+                    requested_by=request.user,
+                    reason=reason,
+                    supporting_document=supporting_doc,
+                    requested_changes=requested_changes,
+                    original_data=original_data,
+                    phone_number=phone_number,
+                    amount=amount,
+                    transaction_id=str(random.randint(10**11, 10**12 - 1)),
+                    status='PENDING',
+                )
+
+            # Get Airtel token
+            token = get_airtel_token()
+            if not token:
+                messages.error(request, "Failed to connect to Airtel. Please try again later.")
+                return render(request, 'athletes/request_edit.html', {'athlete': athlete})
+
+            # Prepare Airtel API request
+            payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
+            msisdn = re.sub(r"\D", "", str(phone_number)).lstrip('0')
+
+            headers = {
+                "Accept": "*/*",
+                "Content-Type": "application/json",
+                "X-Country": "UG",
+                "X-Currency": "UGX",
+                "Authorization": f"Bearer {token}",
+                "x-signature": settings.AIRTEL_API_SIGNATURE,
+                "x-key": settings.AIRTEL_API_KEY,
+            }
+
+            payload = {
+                "reference": str(edit_request.transaction_id),
+                "subscriber": {
+                    "country": "UG",
+                    "currency": "UGX",
+                    "msisdn": msisdn,
+                },
+                "transaction": {
+                    "amount": float(amount),
+                    "country": "UG",
+                    "currency": "UGX",
+                    "id": edit_request.transaction_id,
+                },
+            }
+
+            # Send payment request
+            response = requests.post(payment_url, json=payload, headers=headers)
+            logger.info(f"Airtel Payment Response ({response.status_code}): {response.text}")
+
+            if response.status_code == 200:
+                messages.success(
+                    request,
+                    f"Edit request submitted successfully! Please confirm Airtel payment of UGX {amount}."
+                )
+                return redirect('edit_request_detail', request_id=edit_request.id)
+            else:
+                edit_request.status = "FAILED"
+                edit_request.save()
+                messages.error(request, "Payment initiation failed. Please try again.")
+                return render(request, 'athletes/request_edit.html', {'athlete': athlete})
+
+        except Exception as e:
+            logger.error(f"❌ Error processing athlete edit request: {str(e)}", exc_info=True)
+            messages.error(request, "An error occurred while submitting your request. Please try again.")
 
     return render(request, 'athletes/request_edit.html', {'athlete': athlete})
 
@@ -569,17 +639,21 @@ def edit_requests_list(request):
     requests = AthleteEditRequest.objects.select_related('athlete', 'requested_by', 'school').all()
     return render(request, 'athletes/edit_requests_list.html', {'requests': requests})
 
+
+
 def edit_request_detail(request, request_id):
     edit_request = get_object_or_404(AthleteEditRequest, id=request_id)
     athlete = edit_request.athlete
+
     if request.method == 'POST':
         action = request.POST.get('action')
+
         if action == 'approve':
-            # Apply the changes to the athlete
+            # Apply approved changes
             for field, new_value in edit_request.requested_changes.items():
                 if field == 'photo':
-                    # Handle file update
-                    continue  # (Handled manually or through admin)
+                    # Skip photo updates (can be handled manually)
+                    continue
                 setattr(athlete, field, new_value)
             athlete.save()
 
@@ -587,18 +661,89 @@ def edit_request_detail(request, request_id):
             edit_request.reviewed_by = request.user
             edit_request.reviewed_at = timezone.now()
             edit_request.save()
+
             messages.success(request, "Edit request approved and changes applied.")
-        else:
+            return redirect('edit_requests_list')
+
+        elif action == 'reject':
             edit_request.status = 'REJECTED'
             edit_request.reviewed_by = request.user
             edit_request.reviewed_at = timezone.now()
             edit_request.save()
+
             messages.info(request, "Edit request rejected.")
-        return redirect('edit_requests_list')
+            return redirect('edit_requests_list')
 
- 
+        elif action == 'pay':
+            # Handle payment initiation for edit requests
+            phone_number = edit_request.phone_number
+            if not phone_number:
+                messages.error(request, "Phone number missing for this request.")
+                return redirect('edit_request_detail', request_id=edit_request.id)
+
+            try:
+                # 💰 Payment details
+                amount = 5000  # e.g., edit request fee
+                edit_request.amount = amount
+                edit_request.transaction_id = str(random.randint(10**11, 10**12 - 1))
+                edit_request.status = "PENDING"
+                edit_request.save()
+
+                # 🔐 Get Airtel token
+                token = get_airtel_token()
+                if not token:
+                    messages.error(request, "Failed to connect to Airtel. Try again later.")
+                    return redirect('edit_request_detail', request_id=edit_request.id)
+
+                # 🌍 Airtel API setup
+                payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
+                msisdn = re.sub(r"\D", "", str(phone_number)).lstrip('0')
+
+                headers = {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "X-Country": "UG",
+                    "X-Currency": "UGX",
+                    "Authorization": f"Bearer {token}",
+                    "x-signature": settings.AIRTEL_API_SIGNATURE,
+                    "x-key": settings.AIRTEL_API_KEY,
+                }
+
+                payload = {
+                    "reference": str(edit_request.transaction_id),
+                    "subscriber": {
+                        "country": "UG",
+                        "currency": "UGX",
+                        "msisdn": msisdn,
+                    },
+                    "transaction": {
+                        "amount": float(amount),
+                        "country": "UG",
+                        "currency": "UGX",
+                        "id": edit_request.transaction_id,
+                    },
+                }
+
+                response = requests.post(payment_url, json=payload, headers=headers)
+                logger.info(f"Airtel Payment Response ({response.status_code}): {response.text}")
+
+                if response.status_code == 200:
+                    messages.success(
+                        request,
+                        f"Payment initiated successfully! Please confirm UGX {amount} on your Airtel line."
+                    )
+                else:
+                    messages.error(request, "Payment initiation failed. Please try again.")
+
+                return redirect('edit_request_detail', request_id=edit_request.id)
+
+            except Exception as e:
+                logger.error(f"❌ Error during edit request payment: {str(e)}", exc_info=True)
+                messages.error(request, "An error occurred while processing your payment.")
+                return redirect('edit_request_detail', request_id=edit_request.id)
+
+    # Default GET request
     return render(request, 'athletes/edit_request_detail.html', {'edit_request': edit_request})
-
 
 
 # @login_required

@@ -5,90 +5,57 @@
 {% block title %} | Tickets{% endblock title %} {% block content %}
 <div class="container content-wrapper">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Tickets</h4>
+          <h5 class="card-title mb-0">Tickets</h5>
         </div>
+        <!-- end card header -->
+
         <div class="card-body">
           <div class="row">
-            <div class="col-md-4">
-              <div class="list-group">
-                {% for ticket in tickets %}
-                <div class="card">
-                  <div class="card-body">
-                    <div
-                      class="d-flex justify-content-between align-content-center"
-                    >
-                      <div class="d-flex">
-                        <img
-                          src="{% static 'lib/images/profile.png' %}"
-                          alt="avatar"
-                          class="img-fluid avatar-md img-thumbnail me-2 rounded-circle avatar-border"
-                        />
-                        <h4 class="fs-16 mb-0 align-content-center">
-                          <a href="javascript:void(0);" class="text-dark"
-                            >{{ticket.sender.school}}</a
-                          >
-                        </h4>
-                      </div>
-
-                      <div class="mx-0">
-                        <p class="fs-13 mb-0">{{ticket.created_at}}</p>
-                      </div>
-                    </div>
-
-                    <div class="mt-2 pt-1">
-                      <a
-                        href="{% url 'ticket' ticket.id %}"
-                        class="d-inline-block text-muted"
-                        >{{ticket.title}}</a
+            <div class="col-sm-12 table-responsive">
+              <table id="myaTable" class="display">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>Title</th>
+                    <th>Topic</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for ticket in tickets %}
+                  <tr>
+                    <td>
+                      <a href="{% url 'ticket' ticket.id %}"
+                        >{{ ticket.ticket_id }}</a
                       >
-                    </div>
-
-                    <div class="mt-2 pt-1 d-flex gap-2">
-                      <span
-                        class="badge bg-light text-muted fw-semibold fs-14 px-3 rounded-5"
-                        >{{ticket.status}}</span
+                    </td>
+                    <td>{{ ticket.title }}</td>
+                    <td>{{ ticket.topic }}</td>
+                    <td>
+                      {% if ticket.status == 'Open' %}
+                      <span class="badge text-bg-primary"
+                        >{{ ticket.status }}</span
+                      >{% elif ticket.status == 'Answered' %}
+                      <span class="badge text-bg-secondary"
+                        >{{ ticket.status }}</span
                       >
-                      <span
-                        class="badge bg-light text-muted fw-semibold fs-14 px-3 rounded-5"
-                        >{{ticket.priority}}</span
+                      {% elif ticket.status == 'Picked up' %}
+                      <span class="badge text-bg-warning"
+                        >{{ ticket.status }}</span
                       >
-                      <span
-                        class="badge bg-light text-muted fw-semibold fs-14 px-3 rounded-5"
-                        >{{ticket.topic}}</span
+                      {% elif ticket.status == 'School Response' %}
+                      <span class="badge text-bg-success"
+                        >{{ ticket.status }}</span
                       >
-                    </div>
-                  </div>
-                </div>
-                {% endfor %}
-                <a href="#" class="list-group-item list-group-item-action"
-                  >Ticket 2</a
-                >
-                <a href="#" class="list-group-item list-group-item-action"
-                  >Ticket 3</a
-                >
-                <a href="#" class="list-group-item list-group-item-action"
-                  >Ticket 4</a
-                >
-                <a href="#" class="list-group-item list-group-item-action"
-                  >Ticket 5</a
-                >
-              </div>
-            </div>
-            <div class="col-md-8">
-              <div class="card">
-                <div class="card-header">
-                  <h5 class="card-title">Ticket Details</h5>
-                </div>
-                <div class="card-body">
-                  <p class="card-text">
-                    Here you can view and manage the details of the selected
-                    ticket.
-                  </p>
-                </div>
-              </div>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

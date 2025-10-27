@@ -2,66 +2,65 @@
 <!---->
 {% load static %}
 <!--    hjjhh-->
-{% block title %} | Tickets{% endblock title %} {% block content %}
-<div class="container-fluid">
-  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-    <div class="flex-grow-1">
-      <h4 class="fs-18 fw-semibold m-0">Tickets</h4>
-    </div>
-
-    <div class="text-end">
-      <ol class="breadcrumb m-0 py-0">
-        <li class="breadcrumb-item">
-          <a href="javascript: void(0);">Support</a>
-        </li>
-        <li class="breadcrumb-item active">Tickets</li>
-      </ol>
-    </div>
-  </div>
-
+{% block title %} Tickets{% endblock title %} {% block content %}
+<div class="container content-wrapper">
   <div class="row">
     <div class="col-12">
       <div class="card">
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table display" id="myTable">
-              <thead>
-                <tr>
-                  <th>Ticket</th>
-                  <th>Topic</th>
-                  <th>Title</th>
-                  <th>Status</th>
-                  <th>Created At</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for ticket in tickets %}
-                <tr>
-                  <td>
-                    <a href="{% url 'ticket' ticket.id%}"
-                      >{{ ticket.ticket_id }}</a
-                    >
-                  </td>
-                  <td>{{ ticket.topic }}</td>
-                  <td>{{ ticket.title }}</td>
+        <div class="card-header">
+          <h5 class="card-title mb-0">Tickets</h5>
+        </div>
+        <!-- end card header -->
 
-                  <td>
-                    <span
-                      class={% if ticket.status == 'Open' %} "badge badge-primary" {% elif ticket.status == 'Answered' %} "badge badge-dark" {% else %} "badge badge-danger" {% endif %}
-                    >
-                      {{ ticket.status }}
-                    </span>
-                  </td>
-                  <td>{{ticket.created_at}}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12 table-responsive">
+              <table id="myaTable" class="display">
+                <thead>
+                  <tr>
+                    <th>Ticket ID</th>
+                    <th>Title</th>
+                    <th>Topic</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for ticket in tickets %}
+                  <tr>
+                    <td>
+                      <a href="{% url 'ticket' ticket.id %}"
+                        >{{ ticket.ticket_id }}</a
+                      >
+                    </td>
+                    <td>{{ ticket.title }}</td>
+                    <td>{{ ticket.topic }}</td>
+                    <td>
+                      {% if ticket.status == 'Open' %}
+                      <span class="badge text-bg-primary"
+                        >{{ ticket.status }}</span
+                      >{% elif ticket.status == 'Answered' %}
+                      <span class="badge text-bg-secondary"
+                        >{{ ticket.status }}</span
+                      >
+                      {% elif ticket.status == 'Picked up' %}
+                      <span class="badge text-bg-warning"
+                        >{{ ticket.status }}</span
+                      >
+                      {% elif ticket.status == 'School Response' %}
+                      <span class="badge text-bg-success"
+                        >{{ ticket.status }}</span
+                      >
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 {% endblock content %}

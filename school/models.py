@@ -317,6 +317,12 @@ class AthleteEditRequest(models.Model):
     reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_edit_requests')
     reviewed_at = models.DateTimeField(blank=True, null=True)
     admin_comment = models.TextField(blank=True, null=True)
+    
+    transaction_id = models.CharField(max_length=100,null=True, blank=True)
+    
+    amount = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
+     
+    phone_number = models.CharField(max_length=15)
 
     def __str__(self):
         return f"{self.athlete} Edit Request ({self.status})"

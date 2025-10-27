@@ -191,6 +191,12 @@ class AthleteEditRequestForm(forms.ModelForm):
     fname = forms.CharField(required=False)
     lname = forms.CharField(required=False)
     mname = forms.CharField(required=False)
+    phone_number = forms.CharField(
+        label="Phone Number",
+        max_length=15,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': 'Enter phone number'})
+    )
     lin = forms.CharField(required=False)
     index_number = forms.CharField(required=False)
     date_of_birth = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))

@@ -1,10 +1,16 @@
 from django.shortcuts import render
 from .models import Announcement
 from .models import Notification
+from accounts.models import Ticket
 
 def announce(request):
     announcements = Announcement.objects.filter(is_active=True)
     return  {'announcements': announcements}
+
+def tickets(request):
+    
+    tickets_count = Ticket.objects.all().exclude(status = 'Answered').count()
+    return  {'tickets_count': tickets_count}
 
 
 

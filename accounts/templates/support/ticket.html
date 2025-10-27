@@ -139,9 +139,17 @@
                 </div>
 
                 <div class="ms-auto align-content-center">
-                  <span class="text-dark fw-medium fs-14 me-3"
-                    >{{ticket.status}}</span
+                  {% if ticket.status == 'Open' %}
+                  <span class="badge text-bg-primary">{{ ticket.status }}</span
+                  >{% elif ticket.status == 'Answered' %}
+                  <span class="badge text-bg-secondary"
+                    >{{ ticket.status }}</span
                   >
+                  {% elif ticket.status == 'Picked up' %}
+                  <span class="badge text-bg-warning">{{ ticket.status }}</span>
+                  {% elif ticket.status == 'School Response' %}
+                  <span class="badge text-bg-success">{{ ticket.status }}</span>
+                  {% endif %}
                 </div>
               </div>
             </li>
@@ -192,19 +200,21 @@
           <div class="left-ticket">
             <div class="ticket-body">
               {% for response in responses %}
-              <div {% if response.responder.is_staff %} class= "card bg-body-tertiary" {% elif response.responder.is_school %} class= "card .bg-primary" {% else %} class= "card bg-info-subtle" {% endif %} 
-              >
-                <div class="card-body">
-                  <small class="card-title mb-2 fs-12"
-                    >{{response.responder.first_name}}</small
-                  >
-                  <p class="card-text text-muted fs-16">{{response.message}}</p>
-                </div>
-                <div class="card-footer border-top">
-                  <small class="text-body-secondary"
-                    >Updated {{ response.created_at|timesince }} ago
-                  </small>
-                </div>
+          <div
+  {% if response.responder.is_staff %}
+    class="alert alert-secondary"
+  {% elif response.responder.is_school %}
+    class="alert alert-primary"
+  {% else %}
+    class="alert alert-target"
+  {% endif %}
+  role="alert"
+>
+           
+                <small class="badge text-bg-primary"
+                  >{{response.responder.first_name}}</small
+                >
+                <p>{{response.message}}</p>
               </div>
               {% endfor %}
             </div>

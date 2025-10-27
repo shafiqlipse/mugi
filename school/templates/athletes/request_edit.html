@@ -102,15 +102,86 @@
     
     <!-- Supporting Document -->
     <div class="mb-4">
-      <label for="supporting_document" class="form-label">Supporting Document (optional)</label>
-      <input type="file" class="form-control" id="supporting_document" name="supporting_document">
+      <label for="supporting_document" class="form-label">Supporting Document (Required)</label>
+      <input type="file" class="form-control" id="supporting_document" name="supporting_document" accept=".pdf,.doc,.docx,image/*" required>
       <div class="form-text">Upload any supporting documents for your request</div>
     </div>
     
     <!-- Submit Button -->
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-      <button type="submit" class="btn btn-primary px-4">Submit Request</button>
+        <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        data-toggle="modal"
+                                        data-target="#exampleModal"
+                                      >
+                                        Continue to Payment
+                                      </button>
     </div>
+
+
+                              <!-- Button trigger modal -->
+
+                          <!-- Modal -->
+                          <div
+                            class="modal fade"
+                            id="exampleModal"
+                            tabindex="-1"
+                            role="dialog"
+                            aria-labelledby="exampleModalLabel"
+                            aria-hidden="true"
+                          >
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5
+                                    class="modal-title"
+                                    id="exampleModalLabel"
+                                  >
+                                    Complete Payment
+                                  </h5>
+                                  <button
+                                    type="button"
+                                    class="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close"
+                                  >
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <div class="col-md-12">
+                                    <p>
+                                      To complete your Request, please pay
+                                      the mandatory fee of
+                                      <strong>{{ amount }}/=</strong> 
+                                    <div class="field">
+                                      <label
+                                        >Input your Airtel Money Number</label
+                                      >
+                                      <input type="text" class="form-control" id="phone_number" name="phone_number"  required>
+                                    </div>
+                                  </div>  {% if messages %}
+                                  <div class="messages">
+                                    {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }}">
+                                      {{ message }}
+                                    </div>
+                                    {% endfor %}
+                                  </div>
+                                  {% endif %}
+                                 </div>
+                            
+                                <div class="modal-footer">
+                                  <button type="submit" class="btn btn-success">
+                                    Submit and Pay
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        
+                       
   </form>
 </div>
   </div>
