@@ -1577,6 +1577,8 @@ def generate_receipt(request, payment_id):
     p.save()
     buffer.seek(0)
 
-    return FileResponse(buffer, as_attachment=True, filename=f'receipt_{payment.transaction_id}.pdf')
+    response = HttpResponse(buffer.getvalue(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="receipt_{payment.transaction_id}.pdf"'
+    return response
 
 
