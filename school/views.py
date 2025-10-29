@@ -1300,11 +1300,11 @@ def airtel_payment_callback(request):
         if edit_request:
             # Only apply changes if the transaction succeeded
             if new_status == "COMPLETED":
-                edit_request.status = "APPROVED"
+                edit_request.status = "PAID"
                 edit_request.reviewed_at = timezone.now()
                 edit_request.apply_changes()
             else:
-                edit_request.status = "REJECTED"
+                edit_request.status = "PENDING"
             edit_request.save()
 
             airtel_logger.info(f"✅ Athlete Edit Request updated: {transaction_id} ({new_status})")
