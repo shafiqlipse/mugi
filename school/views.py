@@ -1278,26 +1278,41 @@ def airtel_payment_callback(request):
         transaction_id = transaction.get("id")
         status_code = transaction.get("status_code")
         airtel_money_id = transaction.get("airtel_money_id")
-        
-        
-        # Find the Payment record using transaction_id
-        payment = get_object_or_404(Payment, transaction_id=transaction_id)
 
-        # Map Airtel status to our system status
+        # Map Airtel status to your system's internal status
         status_mapping = {
             "TS": "COMPLETED",  # Transaction Successful
-            "TF": "FAILED",      # Transaction Failed
-            "TP": "PENDING",     # Transaction Pending
+            "TF": "FAILED",     # Transaction Failed
+            "TP": "PENDING",    # Transaction Pending
         }
+        new_status = status_mapping.get(status_code, "FAILED")
 
-        # Update payment status
-        new_status = status_mapping.get(status_code, "FAILED")  # Default to FAILED if unknown status
-        payment.status = new_status
-        payment.save()
+        # Try to find a matching Payment record first
+        payment = Payment.objects.filter(transaction_id=transaction_id).first()
+        if payment:
+            payment.status = new_status
+            payment.save()
+            airtel_logger.info(f"✅ Payment matched and updated: {transaction_id} ({new_status})")
+            return JsonResponse({"message": "Payment callback processed"}, status=200)
 
-        airtel_logger.info(f"📌 Transaction ID: {transaction_id}, Status Code: {status_code}, Airtel Money ID: {airtel_money_id}")
+        # If not found, try AthleteEditRequest
+        edit_request = AthleteEditRequest.objects.filter(transaction_id=transaction_id).first()
+        if edit_request:
+            # Only apply changes if the transaction succeeded
+            if new_status == "COMPLETED":
+                edit_request.status = "APPROVED"
+                edit_request.reviewed_at = timezone.now()
+                edit_request.apply_changes()
+            else:
+                edit_request.status = "REJECTED"
+            edit_request.save()
 
-        return JsonResponse({"message": "Callback received successfully"}, status=200)
+            airtel_logger.info(f"✅ Athlete Edit Request updated: {transaction_id} ({new_status})")
+            return JsonResponse({"message": "Athlete edit payment callback processed"}, status=200)
+
+        # If neither model matched
+        airtel_logger.warning(f"⚠️ No record found for Transaction ID: {transaction_id}")
+        return JsonResponse({"error": "Transaction not found"}, status=404)
 
     except json.JSONDecodeError:
         airtel_logger.error("❌ Invalid JSON received in callback")
@@ -1306,6 +1321,53 @@ def airtel_payment_callback(request):
     except Exception as e:
         airtel_logger.error(f"❌ Error processing callback: {str(e)}")
         return JsonResponse({"error": "Internal Server Error"}, status=500)
+    
+# def airtel_payment_callback(request):
+#     if request.method != 'POST':
+#         return HttpResponse("Method Not Allowed", status=405)
+
+#     try:
+#         # Log raw request body
+#         raw_body = request.body.decode('utf-8')
+#         airtel_logger.info(f"🔔 Airtel Callback Received: {raw_body}")
+
+#         # Parse JSON payload
+#         payload = json.loads(raw_body)
+#         airtel_logger.info(f"📜 Parsed JSON Payload:\n{json.dumps(payload, indent=2)}")
+
+#         # Extract transaction details
+#         transaction = payload.get("transaction", {})
+#         transaction_id = transaction.get("id")
+#         status_code = transaction.get("status_code")
+#         airtel_money_id = transaction.get("airtel_money_id")
+        
+        
+#         # Find the Payment record using transaction_id
+#         payment = get_object_or_404(Payment, transaction_id=transaction_id)
+
+#         # Map Airtel status to our system status
+#         status_mapping = {
+#             "TS": "COMPLETED",  # Transaction Successful
+#             "TF": "FAILED",      # Transaction Failed
+#             "TP": "PENDING",     # Transaction Pending
+#         }
+
+#         # Update payment status
+#         new_status = status_mapping.get(status_code, "FAILED")  # Default to FAILED if unknown status
+#         payment.status = new_status
+#         payment.save()
+
+#         airtel_logger.info(f"📌 Transaction ID: {transaction_id}, Status Code: {status_code}, Airtel Money ID: {airtel_money_id}")
+
+#         return JsonResponse({"message": "Callback received successfully"}, status=200)
+
+#     except json.JSONDecodeError:
+#         airtel_logger.error("❌ Invalid JSON received in callback")
+#         return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+#     except Exception as e:
+#         airtel_logger.error(f"❌ Error processing callback: {str(e)}")
+#         return JsonResponse({"error": "Internal Server Error"}, status=500)
     
     
 

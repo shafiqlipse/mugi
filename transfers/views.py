@@ -19,7 +19,9 @@ from school.filters import AthleteFilter
 def transfers(request):
     user = request.user
     school = user.school
-    athletes_list = Athlete.objects.select_related("school").all().exclude(school=school,status ="COMPLETED").order_by("id")
+    athletes_list = Athlete.objects.select_related("school").exclude(
+    Q(school=school) | Q(status="COMPLETED")
+).order_by("id")
     athlete_filter = AthleteFilter(request.GET, queryset=athletes_list)
     filtered_athletes = athlete_filter.qs  # Get the filtered queryset
 

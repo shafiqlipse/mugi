@@ -298,6 +298,7 @@ class AthleteEditRequest(models.Model):
         ('PENDING', 'Pending'),
         ('APPROVED', 'Approved'),
         ('REJECTED', 'Rejected'),
+        ('PAID', 'Paid'),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
