@@ -127,7 +127,7 @@ def initiate_transfer(request, id):
                 requester=school,
                 athlete=athlete,
                 owner=athlete.school,
-                status="paid",  # mark as paid after success
+                status="pending",  # mark as pending after success
                 requested_at=timezone.now(),
             )
 
@@ -136,7 +136,7 @@ def initiate_transfer(request, id):
                 transfer=transfer_request,
                 amount=amount,
                 phone_number=phone_number,
-                status="COMPLETED",
+                status="PENDING",
                 reference=payload["reference"],
                 transaction_id=transaction_id,
                 paid_at=timezone.now(),

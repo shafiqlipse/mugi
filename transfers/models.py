@@ -125,8 +125,7 @@ class TransferPayment(models.Model):
         choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
         default='PENDING'
     )
-    reference = models.CharField(max_length=100, unique=True, db_index=True)
-    method = models.CharField(max_length=50, blank=True, null=True)  # e.g., M-Pesa, Stripe, Bank
+
     transaction_id = models.CharField(max_length=100, blank=True, null=True)
     paid_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
