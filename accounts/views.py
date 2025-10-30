@@ -210,18 +210,18 @@ def support(request):
 
 # Error pages
 def custom_404_view(request, exception=None):
-    return render(request, 'pages/404.html', status=404)
+    return render(request, 'Pages/404.html', status=404)
 
 def custom_500_view(request):
-    return render(request, 'pages/500.html', status=500)
+    return render(request, 'Pages/500.html', status=500)
 
 def custom_503_view(request):
-    return render(request, 'pages/503.html', status=503)
+    return render(request, 'Pages/503.html', status=503)
 
 
 
 def offline_view(request):
-    return render(request, "pages/offline.html")
+    return render(request, "Pages/offline.html")
 
 # if SystemStatus.is_system_closed():
 #     # Disable features

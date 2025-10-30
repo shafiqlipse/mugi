@@ -94,8 +94,9 @@ def initiate_transfer(request, id):
 
             # Step 2: Prepare the Airtel payment request
             payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
-            transaction_id = generate_unique_transaction_id()
-            amount = 1000  # Example transfer fee — change as needed
+            transaction_id = generate_unique_transaction_id()  
+            amount = 10000  # Transfer fee amount
+
 
             headers = {
                 "Accept": "*/*",
@@ -108,11 +109,11 @@ def initiate_transfer(request, id):
             }
 
             payload = {
-                "reference": f"TRF-{uuid.uuid4().hex[:10].upper()}",
+                "reference": str(transaction_id),
                 "subscriber": {
                     "country": "UG",
                     "currency": "UGX",
-                    "msisdn": re.sub(r"\D", "", str(phone_number)).lstrip('0'),   # Remove non-numeric characters
+                    "msisdn": re.sub(r"\D", "", str(phone_number)).lstrip('0'),
                 },
                 "transaction": {
                     "amount": float(amount),
@@ -123,8 +124,7 @@ def initiate_transfer(request, id):
             }
 
             response = requests.post(payment_url, json=payload, headers=headers)
-            logger.info(f"Airtel Payment Response: {response.status_code} - {response.text}")
-
+            logger.info(f"Payment Response: {response.status_code}, {response.text}")
             # Step 3: Check payment result
             if response.status_code != 200:
                 messages.error(request, "Payment could not be initiated. Please check your Airtel number or try again later.")
@@ -157,6 +157,21 @@ def initiate_transfer(request, id):
         logger.error(f"Transfer payment error: {str(e)}")
         messages.error(request, f"An unexpected error occurred: {str(e)}")
         return redirect("mytransfers")
+
+def myTransfers(request):
+    user = request.user
+    school = user.school
+    mytransfers = TransferRequest.objects.select_related("owner").filter(requester=school)
+
+    trans_messages = TransferMessage.objects.filter(
+        transfer__requester=school
+    ) | TransferMessage.objects.filter(
+        transfer__owner=school
+    )
+    context = {"mytransfers": mytransfers, "trans_messages": trans_messages}
+    return render(request, "transfers/my_transfers.html", context)
+
+
         
 def myTransfers(request):
     user = request.user
