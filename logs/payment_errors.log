@@ -8808,3 +8808,5 @@ django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 115: '
 "GET /transfers/transfers/ HTTP/1.1" 500 222326
 Internal Server Error: /transfers/initiate_transfer/100000005
 "POST /transfers/initiate_transfer/100000005 HTTP/1.1" 500 44
+Internal Server Error: /school/pay/9/
+"GET /school/pay/9/ HTTP/1.1" 500 47

@@ -29,7 +29,11 @@ from django.db.models import F
 from enrollment.models import SchoolEnrollment
 from django.contrib.auth import get_user_model
 import io
-
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+import logging
+from .models import Payment  # Use the Payment model
 import random
 from django.db import transaction as db_transaction
 
@@ -1039,13 +1043,7 @@ def deactivate_official(request, id):
     messages.error(request, f"Official {official.fname} has been deleted successfully.")
     return redirect("officials")
 #     context = {"payment": payment}
-
-
-
-
-
-
-
+#     context = {"payment": payment}
 def export_scsv(request):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type="text/csv")
@@ -1078,6 +1076,11 @@ def export_scsv(request):
         )  # Replace with your model's fields
 
     return response
+
+#     context = {"payment": payment}
+#     context = {"payment": payment}
+#     context = {"payment": payment}
+#     context = {"payment": payment}
 def generate_unique_transaction_id():
     while True:
         transaction_id = str(random.randint(10**11, 10**12 - 1))
@@ -1246,13 +1249,8 @@ def initiate_payment(request, id):
 
     except Exception as e:
         logger.error(f"Payment error: {str(e)}")
-        return JsonResponse({"error": str(e)}, status=500)
-   
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-import logging
-from .models import Payment  # Use the Payment model
+        return JsonResponse({"error": str(e)}, status=500) 
+
 
 airtel_logger = logging.getLogger('airtel_callback')  # Use the specific logger
 
@@ -1476,19 +1474,7 @@ def generate_receipt(request, payment_id):
     p.drawString(width - left_margin - date_width, top_margin, date_text)
     top_margin -= line_height * 2
 
-    p.setFont("Helvetica", 10)
-    date_text = f"Transaction Date: {payment.created_at.strftime('%B %d, %Y')}"
-    # Calculate width of date text to right-align it
-    date_width = p.stringWidth(date_text, "Helvetica", 10)
-    p.drawString(width - left_margin - date_width, top_margin, date_text)
-    top_margin -= line_height * 2
 
-    p.setFont("Helvetica", 10)
-    date_text = f"Transaction Date: {payment.created_at.strftime('%B %d, %Y')}"
-    # Calculate width of date text to right-align it
-    date_width = p.stringWidth(date_text, "Helvetica", 10)
-    p.drawString(width - left_margin - date_width, top_margin, date_text)
-    top_margin -= line_height * 2
     
     # Table Header
     p.setFont("Helvetica-Bold", 10)
