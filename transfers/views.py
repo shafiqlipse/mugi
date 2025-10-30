@@ -112,7 +112,7 @@ def initiate_transfer(request, id):
                 "subscriber": {
                     "country": "UG",
                     "currency": "UGX",
-                    "msisdn": re.sub(r"\D", "", phone_number).lstrip('0'),
+                    "msisdn": f"256{re.sub(r'\\D', '', phone_number).lstrip('0')}",
                 },
                 "transaction": {
                     "amount": float(amount),
