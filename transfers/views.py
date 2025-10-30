@@ -27,6 +27,15 @@ logger = logging.getLogger(__name__)
 # from accounts.decorators import transfer_required
 
 
+def generate_unique_transaction_id():
+    """Generate a unique 12-digit transaction ID."""
+    while True:
+        transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
+        if not Payment.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
+            return transaction_id
+
+
+
 # @transfer_required
 # Assume you create a form for transfer request
 
@@ -137,12 +146,11 @@ def initiate_transfer(request, id):
                 amount=amount,
                 phone_number=phone_number,
                 status="PENDING",
-                reference=payload["reference"],
                 transaction_id=transaction_id,
                 paid_at=timezone.now(),
             )
 
-            messages.success(request, f"Payment successful! Transfer request for {athlete.fname} {athlete.lname} has been submitted.")
+            messages.success(request, f"Payment of {amount} successful! Transfer request for {athlete.fname} {athlete.lname} has been submitted.")
             return redirect("mytransfers")
 
     except Exception as e:
@@ -428,69 +436,3 @@ def export_tcsv(request):
 
     return response
 
-import random
-from django.db import transaction as db_transaction
-
-def generate_unique_transaction_id():
-    """Generate a unique 12-digit transaction ID."""
-    while True:
-        transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
-        if not Payment.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
-            return transaction_id
-
-
-def initiate_payment(request, id):
-    payment = get_object_or_404(TransferPayment, id=id)
-    
-    try:
-        token = get_airtel_token()  
-        if not token:
-            return JsonResponse({"error": "Failed to get authentication token"}, status=500)
-
-        payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
-        transaction_id = generate_unique_transaction_id()  
-
-
-        headers = {
-            "Accept": "*/*",
-            "Content-Type": "application/json",
-            "X-Country": "UG",
-            "X-Currency": "UGX",
-            "Authorization": f"Bearer {token}",
-            "x-signature": settings.AIRTEL_API_SIGNATURE,  # Ensure this is set in settings.py
-            "x-key": settings.AIRTEL_API_KEY,  # Ensure this is set in settings.py
-        }
-
-        payload = {
-            "reference": str(payment.transaction_id),  # Use the Payment ID as the reference
-            "subscriber": {
-                "country": "UG",
-                "currency": "UGX",
-                "msisdn": re.sub(r"\D", "", str(payment.phone_number)).lstrip('0'),   # Remove non-numeric characters
-            },
-            "transaction": {
-                "amount": float(payment.amount),  # Convert DecimalField to float
-                "country": "UG",
-                "currency": "UGX",
-                "id": transaction_id,  # Use the generated transaction ID
-            }
-        }
-
-        response = requests.post(payment_url, json=payload, headers=headers)
-        logger.info(f"Payment Response: {response.status_code}, {response.text}")
-
-       # Update payment record with transaction ID and set status to PENDING
-        with db_transaction.atomic():
-            payment.transaction_id = transaction_id
-            payment.status = "PENDING"  # Set status to pending until confirmed
-            payment.save()
-
-        if response.status_code == 200:
-            return redirect(reverse('payment_success', args=[payment.transaction_id]))  # ✅ Redirect to success page
-        else:
-            return JsonResponse({"error": "Failed to initiate payment", "details": response.text}, status=400)
-
-    except Exception as e:
-        logger.error(f"Payment error: {str(e)}")
-        return JsonResponse({"error": str(e)}, status=500)
-   
