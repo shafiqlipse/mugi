@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from accounts.models import *
 from accounts.forms import *
+from transfers.models import TransferPayment
 from .forms import *
 from .filters import *
 from django.contrib import messages
@@ -1257,58 +1258,47 @@ airtel_logger = logging.getLogger('airtel_callback')  # Use the specific logger
 
 @csrf_exempt
 def airtel_payment_callback(request):
-    if request.method != 'POST':
+    if request.method != "POST":
         return HttpResponse("Method Not Allowed", status=405)
 
     try:
-        # Log raw request body
-        raw_body = request.body.decode('utf-8')
+        raw_body = request.body.decode("utf-8")
         airtel_logger.info(f"🔔 Airtel Callback Received: {raw_body}")
-
-        # Parse JSON payload
         payload = json.loads(raw_body)
-        airtel_logger.info(f"📜 Parsed JSON Payload:\n{json.dumps(payload, indent=2)}")
 
-        # Extract transaction details
         transaction = payload.get("transaction", {})
         transaction_id = transaction.get("id")
         status_code = transaction.get("status_code")
         airtel_money_id = transaction.get("airtel_money_id")
 
-        # Map Airtel status to your system's internal status
-        status_mapping = {
-            "TS": "COMPLETED",  # Transaction Successful
-            "TF": "FAILED",     # Transaction Failed
-            "TP": "PENDING",    # Transaction Pending
-        }
+        status_mapping = {"TS": "COMPLETED", "TF": "FAILED", "TP": "PENDING"}
         new_status = status_mapping.get(status_code, "FAILED")
 
-        # Try to find a matching Payment record first
+        # --- Update Payment ---
         payment = Payment.objects.filter(transaction_id=transaction_id).first()
         if payment:
             payment.status = new_status
             payment.save()
-            airtel_logger.info(f"✅ Payment matched and updated: {transaction_id} ({new_status})")
-            return JsonResponse({"message": "Payment callback processed"}, status=200)
 
-        # If not found, try AthleteEditRequest
+        # --- Update TransferPayment and related TransferRequest ---
+        transfer_payment = TransferPayment.objects.filter(transaction_id=transaction_id).first()
+        if transfer_payment:
+            transfer_payment.status = new_status
+            if new_status == "COMPLETED":
+                transfer_payment.paid_at = timezone.now()
+                if transfer_payment.transfer:
+                    transfer_payment.transfer.status = "paid"
+                    transfer_payment.transfer.save()
+            transfer_payment.save()
+
+        # --- Update AthleteEditRequest if exists ---
         edit_request = AthleteEditRequest.objects.filter(transaction_id=transaction_id).first()
         if edit_request:
-            # Only apply changes if the transaction succeeded
-            if new_status == "COMPLETED":
-                edit_request.status = "PAID"
-                edit_request.reviewed_at = timezone.now()
-                edit_request.apply_changes()
-            else:
-                edit_request.status = "PENDING"
+            edit_request.status = new_status
             edit_request.save()
 
-            airtel_logger.info(f"✅ Athlete Edit Request updated: {transaction_id} ({new_status})")
-            return JsonResponse({"message": "Athlete edit payment callback processed"}, status=200)
-
-        # If neither model matched
-        airtel_logger.warning(f"⚠️ No record found for Transaction ID: {transaction_id}")
-        return JsonResponse({"error": "Transaction not found"}, status=404)
+        airtel_logger.info(f"📌 Transaction ID: {transaction_id}, Status Code: {status_code}, Airtel Money ID: {airtel_money_id}")
+        return JsonResponse({"message": "Callback processed"}, status=200)
 
     except json.JSONDecodeError:
         airtel_logger.error("❌ Invalid JSON received in callback")
@@ -1317,57 +1307,7 @@ def airtel_payment_callback(request):
     except Exception as e:
         airtel_logger.error(f"❌ Error processing callback: {str(e)}")
         return JsonResponse({"error": "Internal Server Error"}, status=500)
-    
-# def airtel_payment_callback(request):
-#     if request.method != 'POST':
-#         return HttpResponse("Method Not Allowed", status=405)
 
-#     try:
-#         # Log raw request body
-#         raw_body = request.body.decode('utf-8')
-#         airtel_logger.info(f"🔔 Airtel Callback Received: {raw_body}")
-
-#         # Parse JSON payload
-#         payload = json.loads(raw_body)
-#         airtel_logger.info(f"📜 Parsed JSON Payload:\n{json.dumps(payload, indent=2)}")
-
-#         # Extract transaction details
-#         transaction = payload.get("transaction", {})
-#         transaction_id = transaction.get("id")
-#         status_code = transaction.get("status_code")
-#         airtel_money_id = transaction.get("airtel_money_id")
-        
-        
-#         # Find the Payment record using transaction_id
-#         payment = get_object_or_404(Payment, transaction_id=transaction_id)
-
-#         # Map Airtel status to our system status
-#         status_mapping = {
-#             "TS": "COMPLETED",  # Transaction Successful
-#             "TF": "FAILED",      # Transaction Failed
-#             "TP": "PENDING",     # Transaction Pending
-#         }
-
-#         # Update payment status
-#         new_status = status_mapping.get(status_code, "FAILED")  # Default to FAILED if unknown status
-#         payment.status = new_status
-#         payment.save()
-
-#         airtel_logger.info(f"📌 Transaction ID: {transaction_id}, Status Code: {status_code}, Airtel Money ID: {airtel_money_id}")
-
-#         return JsonResponse({"message": "Callback received successfully"}, status=200)
-
-#     except json.JSONDecodeError:
-#         airtel_logger.error("❌ Invalid JSON received in callback")
-#         return JsonResponse({"error": "Invalid JSON"}, status=400)
-
-#     except Exception as e:
-#         airtel_logger.error(f"❌ Error processing callback: {str(e)}")
-#         return JsonResponse({"error": "Internal Server Error"}, status=500)
-    
-    
-
-    
     
     
 def payment_success(request, transaction_id):
