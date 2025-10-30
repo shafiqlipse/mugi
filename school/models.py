@@ -185,7 +185,7 @@ def validate_index_number(value):
     parts = value.split("/")
     year = int(parts[2])
     if year < 2005:
-        raise ValidationError("Year cannot be below 2005.")
+        raise ValidationError("Year cannot be below 2006.")
 
 
 class Athlete(models.Model):

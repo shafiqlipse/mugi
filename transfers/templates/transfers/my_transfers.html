@@ -15,7 +15,13 @@
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {% for trans_message in trans_messages %}
         <div class="message">{{trans_message.message}}</div>
-        {% endfor %}
+        {% endfor %} {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
         <button
           type="button"
           class="close"

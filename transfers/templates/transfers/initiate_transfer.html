@@ -10,115 +10,173 @@
   <div class="card">
     <div class="card-header">
       <h1>My Transfers</h1>
-    
 
-  <div class="filter flex">
-    <form method="get" class="formiex flex">
+      <div class="filter flex">
+        <form method="get" class="formiex flex">
+          <div class="row mb-2">
+            <div class="form-group col-12 col-md-4">
+              <label for="school">School</label>
+              {{ athlete_filter.form.school }}
+            </div>
+            <div class="form-group col-12 col-md-4">
+              <label for="school">Names</label>
+              {{ athlete_filter.form.search }}
+            </div>
+            <div class="form-group col-12 col-md-4">
+              <label for="school">Index_Number</label>
+              {{ athlete_filter.form.index_number }}
+            </div>
+          </div>
 
-<div class="row mb-2">
-          <div class="form-group col-12 col-md-4">
-            <label for="school">School</label>
-            {{ athlete_filter.form.school }}
-          </div>
-          <div class="form-group col-12 col-md-4">
-            <label for="school">Names</label>
-            {{ athlete_filter.form.search }}
-          </div>
-          <div class="form-group col-12 col-md-4">
-            <label for="school">Index_Number</label>
-            {{ athlete_filter.form.index_number }}
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Athlete Name</th>
+
+              <th>School</th>
+              <th>Index_Number</th>
+              <th>Gender</th>
+              <th>Class</th>
+              <th>Date of Birth</th>
+
+              <th>Transfer</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for athlete in athletes %}
+            <tr>
+              <td>
+                <a href="">
+                  <span class="pl-2"
+                    >{{athlete.fname}} {{athlete.lname}}</span
+                  ></a
+                >
+              </td>
+
+              <td>{{ athlete.school }}</td>
+              <td>{{ athlete.index_number }}</td>
+              <td>{{ athlete.gender }}</td>
+              <td>{{ athlete.classroom }}</td>
+              <td>{{ athlete.date_of_birth }}</td>
+              <td>
+                <button
+                  class="btn btn-outline-primary request-transfer"
+                  data-athlete-id="{{ athlete.id }}"
+                  data-athlete-name="{{ athlete.fname }} {{ athlete.lname }}"
+                >
+                  <i class="fa fa-plus"></i> Request transfer
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <nav aria-label="Page navigation">
+            <ul class="pagination">
+              {% if athletes.has_previous %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="?page={{ athletes.previous_page_number }}"
+                  >Previous</a
+                >
+              </li>
+              {% endif %} {% for page_num in athletes.paginator.page_range %} 
+              {%if page_num == 1 or page_num == athletes.paginator.num_pages %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_num }}"
+                  >{{ page_num }}</a
+                >
+              </li>
+              {% elif page_num >= athletes.number|add:"-2" and page_num <= athletes.number|add:"2" %}
+              {% if page_num == athletes.number %}
+              <li class="page-item active">
+                <span class="page-link">{{ page_num }}</span>
+              </li>
+              {% else %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_num }}"
+                  >{{ page_num }}</a
+                >
+              </li>
+              {% endif %} {% elif page_num == athletes.number|add:"3" or  page_num == athletes.number|add:"-3" %}
+            
+              <li class="page-item disabled">
+                <span class="page-link">...</span>
+              </li>
+              {% endif %} {% endfor %} {% if athletes.has_next %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="?page={{ athletes.next_page_number }}"
+                  >Next</a
+                >
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="paymentModal"
+        tabindex="-1"
+        aria-labelledby="paymentModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form
+              id="paymentForm"
+              method="POST"
+              action="{% url 'initiate_transfer' 0 %}"
+            >
+              {% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">
+                  Enter Airtel Number
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <p id="athleteName"></p>
+                <input type="hidden" id="athleteIdInput" name="athlete_id" />
+                <div class="form-group mb-3">
+                  <label for="phone_number">Airtel Number</label>
+                  <input
+                    type="text"
+                    id="phone_number"
+                    name="phone_number"
+                    class="form-control"
+                    required
+                    placeholder="e.g. 075XXXXXXX"
+                  />
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">
+                  Pay & Request Transfer
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-
-        <button type="submit" class='btn btn-primary'>Search</button>
-
-    </form>
-  </div>
-  </div>
-  <div class="card-body">
-
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Athlete Name</th>
-
-            <th>School</th>
-            <th>Index_Number</th>
-            <th>Gender</th>
-            <th>Class</th>
-            <th>Date of Birth</th>
-
-            <th>Transfer</th>
-          
-           
-          </tr>
-        </thead>
-        <tbody>
-          {% for athlete in athletes %}
-          <tr>
-            <td>
-              <a href="">
-                <span class="pl-2">{{athlete.fname}} {{athlete.lname}}</span></a
-              >
-            </td>
-        
-            <td>{{ athlete.school }}</td>
-            <td>{{ athlete.index_number }}</td>
-            <td>{{ athlete.gender }}</td>
-            <td>{{ athlete.classroom }}</td>
-            <td>{{ athlete.date_of_birth }}</td>
-            <td>
-
-              <a
-                href="{% url 'initiate_transfer' athlete.id %}"
-                class="btn btn-outline-primary request-transfer"
-                data-athlete="{{ athlete.fname }} {{ athlete.lname }}"
-              >
-                <i class="fa fa-plus"></i> Request transfer
-              </a>
-       
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    
-
-    <div class="pagination">
-      <nav aria-label="Page navigation">
-        <ul class="pagination">
-          {% if athletes.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{ athletes.previous_page_number }}">Previous</a></li>
-          {% endif %}
-    
-          {% for page_num in athletes.paginator.page_range %}
-            {% if page_num == 1 or page_num == athletes.paginator.num_pages %}
-              <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
-            {% elif page_num >= athletes.number|add:"-2" and page_num <= athletes.number|add:"2" %}
-              {% if page_num == athletes.number %}
-                <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
-              {% else %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
-              {% endif %}
-            {% elif page_num == athletes.number|add:"3" or page_num == athletes.number|add:"-3" %}
-              <li class="page-item disabled"><span class="page-link">...</span></li>
-            {% endif %}
-          {% endfor %}
-    
-          {% if athletes.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ athletes.next_page_number }}">Next</a></li>
-          {% endif %}
-        </ul>
-      </nav>
+      </div>
     </div>
-    
-    </div>
-    
-    
-    </div>
-  </div>
-    <script>
+    {% comment %} <script>
       // Wait until the DOM is fully loaded
       document.addEventListener("DOMContentLoaded", function () {
         // Get all the transfer request buttons
@@ -147,8 +205,33 @@
           });
         });
       });
-    </script>
+    </script> {% endcomment %}
   </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const modal = new bootstrap.Modal(document.getElementById("paymentModal"));
+  const form = document.getElementById("paymentForm");
+  const athleteInput = document.getElementById("athleteIdInput");
+  const athleteName = document.getElementById("athleteName");
 
-  {% endblock %}
+  document.querySelectorAll(".request-transfer").forEach(button => {
+    button.addEventListener("click", function() {
+      const athleteId = this.getAttribute("data-athlete-id");
+      const athleteFullName = this.getAttribute("data-athlete-name");
+
+      athleteInput.value = athleteId;
+      athleteName.innerText = "Transfer request for: " + athleteFullName;
+
+      // Update form action dynamically
+      form.action = "{% url 'initiate_transfer' 0 %}".replace("0", athleteId);
+
+      modal.show();
+    });
+  });
+});
+</script>
+
+</div>
+
+{% endblock %}

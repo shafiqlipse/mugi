@@ -108,3 +108,37 @@ class TransferMessage(models.Model):
 
     def __str__(self):
         return f"Message from Transfers department about transfer of {self.transfer.athlete}"
+    
+    
+    
+class TransferPayment(models.Model):
+    transfer = models.OneToOneField(
+        TransferRequest,
+        related_name="payment",
+        on_delete=models.CASCADE,
+        db_index=True
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    phone_number = models.CharField(max_length=15)
+    status = models.CharField(
+        max_length=20, 
+        choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
+        default='PENDING'
+    )
+    reference = models.CharField(max_length=100, unique=True, db_index=True)
+    method = models.CharField(max_length=50, blank=True, null=True)  # e.g., M-Pesa, Stripe, Bank
+    transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    paid_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+            return f"{self.transaction_id} - {self.amount} {self.transfer}"
+        
+    def clean(self):
+            """Validate phone number format."""
+            if not re.match(r'^(075|074|070)\d{7}$', self.phone_number):
+                raise ValidationError("Phone number must a valid Airtel money number.")
+
+    def save(self, *args, **kwargs):
+            """Ensure validation before saving."""
+            self.clean()
+            super().save(*args, **kwargs)

@@ -1,5 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
+
+from school.views import get_airtel_token
 from .models import TransferRequest
 from school.models import *
 from dashboard.models import *
@@ -9,6 +11,19 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from school.filters import AthleteFilter
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.db.models import Q
+from django.core.paginator import Paginator
+import requests
+from django.conf import settings
+from django.http import JsonResponse
+import logging
+from django.urls import reverse
+import random
+from django.db import transaction
+
+logger = logging.getLogger(__name__)
 # from accounts.decorators import transfer_required
 
 
@@ -37,47 +52,104 @@ def transfers(request):
     }
     return render(request, "transfers/initiate_transfer.html", context)
 
+# @require_POST
 def initiate_transfer(request, id):
     try:
         user = request.user
-        school = user.school  # The requesting school
+        school = user.school
         athlete = get_object_or_404(Athlete, id=id)
+        phone_number = request.POST.get("phone_number")
 
-        # Prevent transfer request if athlete is already in requested school
-        if athlete.school == school:
-            messages.error(
-                request, "Cannot request transfer for athlete already in your school."
-            )
+        # ✅ Require a phone number before proceeding
+        if not phone_number:
+            messages.error(request, "You must provide a valid Airtel number to pay for this transfer.")
             return redirect("athletes_list")
 
-        # Check if there's already a pending transfer request from the same school
-        existing_request_from_same_school = TransferRequest.objects.filter(
-            athlete=athlete, requester=school, status="pending"
-        ).exists()
+        # ✅ Prevent same-school requests
+        if athlete.school == school:
+            messages.error(request, "You cannot request a transfer for an athlete already in your school.")
+            return redirect("athletes_list")
 
-        if existing_request_from_same_school:
-            messages.error(
-                request, "Your school has already initiated a transfer request for this athlete."
-            )
+        # ✅ Prevent duplicate pending requests
+        if TransferRequest.objects.filter(athlete=athlete, requester=school, status="pending").exists():
+            messages.warning(request, "You already have a pending transfer request for this athlete.")
             return redirect("mytransfers")
 
-        # Create the transfer request
-        transfer_request = TransferRequest.objects.create(
-            requester=school,
-            athlete=athlete,
-            owner=athlete.school,
-            status="pending",
-            requested_at=timezone.now(),
-        )
+        # ✅ Everything inside one atomic transaction
+        with transaction.atomic():
+            # Step 1: Get Airtel token
+            token = get_airtel_token()
+            if not token:
+                messages.error(request, "Failed to authenticate with Airtel. Please try again later.")
+                return redirect("mytransfers")
 
-        messages.success(request, "Transfer request initiated successfully.")
-        return redirect("mytransfers")
+            # Step 2: Prepare the Airtel payment request
+            payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
+            transaction_id = generate_unique_transaction_id()
+            amount = 1000  # Example transfer fee — change as needed
+
+            headers = {
+                "Accept": "*/*",
+                "Content-Type": "application/json",
+                "X-Country": "UG",
+                "X-Currency": "UGX",
+                "Authorization": f"Bearer {token}",
+                "x-signature": settings.AIRTEL_API_SIGNATURE,
+                "x-key": settings.AIRTEL_API_KEY,
+            }
+
+            payload = {
+                "reference": f"TRF-{uuid.uuid4().hex[:10].upper()}",
+                "subscriber": {
+                    "country": "UG",
+                    "currency": "UGX",
+                    "msisdn": re.sub(r"\D", "", phone_number).lstrip('0'),
+                },
+                "transaction": {
+                    "amount": float(amount),
+                    "country": "UG",
+                    "currency": "UGX",
+                    "id": transaction_id,
+                }
+            }
+
+            response = requests.post(payment_url, json=payload, headers=headers)
+            logger.info(f"Airtel Payment Response: {response.status_code} - {response.text}")
+
+            # Step 3: Check payment result
+            if response.status_code != 200:
+                messages.error(request, "Payment could not be initiated. Please check your Airtel number or try again later.")
+                # rollback automatically since atomic()
+                return redirect("mytransfers")
+
+            # Step 4: Create TransferRequest only after successful payment initiation
+            transfer_request = TransferRequest.objects.create(
+                requester=school,
+                athlete=athlete,
+                owner=athlete.school,
+                status="paid",  # mark as paid after success
+                requested_at=timezone.now(),
+            )
+
+            # Step 5: Record payment info
+            TransferPayment.objects.create(
+                transfer=transfer_request,
+                amount=amount,
+                phone_number=phone_number,
+                status="COMPLETED",
+                reference=payload["reference"],
+                transaction_id=transaction_id,
+                paid_at=timezone.now(),
+            )
+
+            messages.success(request, f"Payment successful! Transfer request for {athlete.fname} {athlete.lname} has been submitted.")
+            return redirect("mytransfers")
 
     except Exception as e:
-        messages.error(request, f"An error occurred: {str(e)}")
-        return redirect("transfers")
-    
-    
+        logger.error(f"Transfer payment error: {str(e)}")
+        messages.error(request, f"An unexpected error occurred: {str(e)}")
+        return redirect("mytransfers")
+        
 def myTransfers(request):
     user = request.user
     school = user.school
@@ -117,10 +189,7 @@ def myRequests(request):
     return render(request, "transfers/my_requests.html", context)
 
 
-from django.http import JsonResponse
-from django.template.loader import render_to_string
 
-from django.db.models import Q
 
 def accept_transfer(request, id):
     try:
@@ -359,3 +428,69 @@ def export_tcsv(request):
 
     return response
 
+import random
+from django.db import transaction as db_transaction
+
+def generate_unique_transaction_id():
+    """Generate a unique 12-digit transaction ID."""
+    while True:
+        transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
+        if not Payment.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
+            return transaction_id
+
+
+def initiate_payment(request, id):
+    payment = get_object_or_404(TransferPayment, id=id)
+    
+    try:
+        token = get_airtel_token()  
+        if not token:
+            return JsonResponse({"error": "Failed to get authentication token"}, status=500)
+
+        payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
+        transaction_id = generate_unique_transaction_id()  
+
+
+        headers = {
+            "Accept": "*/*",
+            "Content-Type": "application/json",
+            "X-Country": "UG",
+            "X-Currency": "UGX",
+            "Authorization": f"Bearer {token}",
+            "x-signature": settings.AIRTEL_API_SIGNATURE,  # Ensure this is set in settings.py
+            "x-key": settings.AIRTEL_API_KEY,  # Ensure this is set in settings.py
+        }
+
+        payload = {
+            "reference": str(payment.transaction_id),  # Use the Payment ID as the reference
+            "subscriber": {
+                "country": "UG",
+                "currency": "UGX",
+                "msisdn": re.sub(r"\D", "", str(payment.phone_number)).lstrip('0'),   # Remove non-numeric characters
+            },
+            "transaction": {
+                "amount": float(payment.amount),  # Convert DecimalField to float
+                "country": "UG",
+                "currency": "UGX",
+                "id": transaction_id,  # Use the generated transaction ID
+            }
+        }
+
+        response = requests.post(payment_url, json=payload, headers=headers)
+        logger.info(f"Payment Response: {response.status_code}, {response.text}")
+
+       # Update payment record with transaction ID and set status to PENDING
+        with db_transaction.atomic():
+            payment.transaction_id = transaction_id
+            payment.status = "PENDING"  # Set status to pending until confirmed
+            payment.save()
+
+        if response.status_code == 200:
+            return redirect(reverse('payment_success', args=[payment.transaction_id]))  # ✅ Redirect to success page
+        else:
+            return JsonResponse({"error": "Failed to initiate payment", "details": response.text}, status=400)
+
+    except Exception as e:
+        logger.error(f"Payment error: {str(e)}")
+        return JsonResponse({"error": str(e)}, status=500)
+   

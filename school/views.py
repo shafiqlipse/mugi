@@ -12,7 +12,6 @@ from django.core.files.base import ContentFile
 import base64
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
-from django.shortcuts import render
 from .models import Athlete, school_official
 from django.core.cache import cache
 import json
@@ -28,7 +27,12 @@ from django.db import transaction
 from django.db.models import F
 from enrollment.models import SchoolEnrollment
 from django.contrib.auth import get_user_model
+import io
 
+import random
+from django.db import transaction as db_transaction
+
+logger = logging.getLogger(__name__)
 User = get_user_model()
 
 @school_required
@@ -489,10 +493,6 @@ def Official(request):
     return render(request, "officials/NOfficial.html", context)
 
 
-import io
-import logging
-from django.core.cache import cache
-logger = logging.getLogger(__name__)
 
 
 
@@ -816,11 +816,18 @@ def athletes(request):
     if not school_profile:
         return render(request, "athletes/athletes.html", {"athletes": []})
 
+    # Get athlete IDs that have pending or paid edit requests
+    # requested_athletes = AthleteEditRequest.objects.filter(
+    #     school=school_profile,
+    #     status__in=["APPROVED", "PAID"]
+    # ).values_list("athlete_id", flat=True)
+
+    # Exclude those athletes from the queryset
     athletes = (
         Athlete.objects
         .filter(school=school_profile)
         .exclude(status="COMPLETED")
-        .values("id", "fname", "lname", "index_number","date_of_birth", "gender","classroom")  # Fetch only id and name
+        .values("id", "fname", "lname", "index_number", "date_of_birth", "gender", "classroom")
     )
 
     return render(request, "athletes/athletes.html", {"athletes": athletes})
@@ -913,9 +920,6 @@ def update_official(request, id):
         form = OfficialForm(instance=official)
 
     return render(request, "officials/NOfficial.html", {"form": form, "update": True})
-
-import time
-from django.shortcuts import get_object_or_404, render, redirect
 
 
 
@@ -1041,8 +1045,6 @@ def deactivate_official(request, id):
 
 
 
-logger = logging.getLogger(__name__)
-
 def export_scsv(request):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type="text/csv")
@@ -1081,10 +1083,6 @@ def generate_unique_transaction_id():
         if not Payment.objects.filter(transaction_id=transaction_id).exists():
             return transaction_id
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.db import transaction
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -1185,8 +1183,6 @@ def get_airtel_token():
         logger.error(f"Unknown error: {str(e)}")
         return None
 
-import random
-from django.db import transaction as db_transaction
 
 def generate_unique_transaction_id():
     """Generate a unique 12-digit transaction ID."""
