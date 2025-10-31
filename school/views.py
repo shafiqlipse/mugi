@@ -563,7 +563,7 @@ def request_athlete_edit(request, athlete_id):
                 return render(request, 'athletes/request_edit.html', {'athlete': athlete})
 
             # Calculate fee (you can adjust this)
-            amount = 1000  
+            amount = 50000  
 
             with transaction.atomic():
                 edit_request = AthleteEditRequest.objects.create(

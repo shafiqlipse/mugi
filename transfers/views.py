@@ -236,7 +236,7 @@ def accept_transfer(request, id):
             if form.is_valid():
                 # Reject all other pending transfers for the same athlete
                 TransferRequest.objects.filter(
-                    Q(athlete=transfer_request.athlete) & Q(status="pending")
+                    Q(athlete=transfer_request.athlete) & Q(status="paid")
                 ).exclude(id=transfer_request.id).update(status="rejected")
 
                 # Accept the current transfer

@@ -6,184 +6,303 @@
 {% load static %}
 <!--khfufufu-->
 {% block content %}
+
+<!-- Start Content-->
 <div class="container-fluid">
-  <div class="card">
-    <div class="card-header">
-      <h1 class="fs-18 fw-semibold m-0">Edit {{ athlete.fname }} {{ athlete.lname }}</h1>
-
-      
-    </div>
-<div class="card-body">
-  
-  
-  <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-    {% csrf_token %}
-    
-    <div class="row">
-      <!-- First Name -->
-      <div class="col-md-6 mb-3">
-        <label for="fname" class="form-label">First Name</label>
-        <input type="text" class="form-control" id="fname" name="fname" value="{{ athlete.fname }}" required>
-        <div class="invalid-feedback">
-          Please provide a first name.
-        </div>
-      </div>
-      
-      <!-- Last Name -->
-      <div class="col-md-6 mb-3">
-        <label for="lname" class="form-label">Last Name</label>
-        <input type="text" class="form-control" id="lname" name="lname" value="{{ athlete.lname }}" required>
-        <div class="invalid-feedback">
-          Please provide a last name.
-        </div>
-      </div>
-    </div>
-    
-    <div class="row">
-      <!-- Index Number -->
-      <div class="col-md-6 mb-3">
-        <label for="index_number" class="form-label">Index Number</label>
-        <input type="text" class="form-control" id="index_number" name="index_number" value="{{ athlete.index_number }}" required>
-        <div class="invalid-feedback">
-          Please provide an index number.
-        </div>
-      </div>
-      
-      <!-- Learners ID Number -->
-      <div class="col-md-6 mb-3">
-        <label for="lin" class="form-label">Learners ID Number</label>
-        <input type="text" class="form-control" id="lin" name="lin" value="{{ athlete.lin }}" required>
-        <div class="invalid-feedback">
-          Please provide a learners ID number.
-        </div>
-      </div>
-    </div>
-    
-    <div class="row">
-      <!-- Date of Birth -->
-      <div class="col-md-6 mb-3">
-        <label for="dob" class="form-label">Date of Birth</label>
-        <input type="date" class="form-control" id="dob" name="dob" value="{{ athlete.date_of_birth|date:'Y-m-d' }}" required>
-        <div class="invalid-feedback">
-          Please provide a valid date of birth.
-        </div>
-      </div>
-      
-      <!-- Gender -->
-      <div class="col-md-6 mb-3">
-        <label for="gender" class="form-label">Gender</label>
-        <select class="form-select" id="gender" name="gender" required>
-          <option value="" disabled>Select gender</option>
-          <option value="Male" {% if athlete.gender == "Male" %}selected{% endif %}>Male</option>
-          <option value="Female" {% if athlete.gender == "Female" %}selected{% endif %}>Female</option>
-          <option value="Other" {% if athlete.gender == "Other" %}selected{% endif %}>Other</option>
-        </select>
-        <div class="invalid-feedback">
-          Please select a gender.
-        </div>
-      </div>
-    </div>
-    
-    <!-- Photo Upload -->
-    <div class="mb-3">
-      <label for="photo" class="form-label">Photo</label>
-      <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
-      <div class="form-text">Upload a new photo (optional)</div>
-    </div>
-    
-    <!-- Reason for Edit -->
-    <div class="mb-3">
-      <label for="reason" class="form-label">Reason for Edit</label>
-      <textarea class="form-control" id="reason" name="reason" rows="4" required></textarea>
-      <div class="invalid-feedback">
-        Please provide a reason for the edit request.
-      </div>
-    </div>
-    
-    <!-- Supporting Document -->
-    <div class="mb-4">
-      <label for="supporting_document" class="form-label">Supporting Document (Required)</label>
-      <input type="file" class="form-control" id="supporting_document" name="supporting_document" accept=".pdf,.doc,.docx,image/*" required>
-      <div class="form-text">Upload any supporting documents for your request</div>
-    </div>
-    
-    <!-- Submit Button -->
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <button
-                                        type="button"
-                                        class="btn btn-primary"
-                                        data-toggle="modal"
-                                        data-target="#exampleModal"
-                                      >
-                                        Continue to Payment
-                                      </button>
+  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+    <div class="flex-grow-1">
+      <h4 class="fs-18 fw-semibold m-0">Dashboard</h4>
     </div>
 
+    <div class="text-end">
+      <ol class="breadcrumb m-0 py-0">
+        <li class="breadcrumb-item">
+          <a href="javascript: void(0);" class="text-primary">Dusty</a>
+        </li>
+        <li class="breadcrumb-item"><a href="javascript: void(0);">Apps</a></li>
+        <li class="breadcrumb-item active">Dashboard</li>
+      </ol>
+    </div>
+  </div>
 
-                              <!-- Button trigger modal -->
+  <!-- Start Main Widgets -->
+  <div class="row">
+    <div class="col-md-6 col-lg-4 col-xl">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Guidelines for Editing Athlete Data</h4>
+   
+        </div>
+        <!--end card header-->
 
-                          <!-- Modal -->
-                          <div
-                            class="modal fade"
-                            id="exampleModal"
-                            tabindex="-1"
-                            role="dialog"
-                            aria-labelledby="exampleModalLabel"
-                            aria-hidden="true"
-                          >
-                            <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5
-                                    class="modal-title"
-                                    id="exampleModalLabel"
-                                  >
-                                    Complete Payment
-                                  </h5>
-                                  <button
-                                    type="button"
-                                    class="close"
-                                    data-dismiss="modal"
-                                    aria-label="Close"
-                                  >
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                                <div class="modal-body">
-                                  <div class="col-md-12">
-                                    <p>
-                                      To complete your Request, please pay
-                                      the mandatory fee of
-                                      <strong>{{ amount }}/=</strong> 
-                                    <div class="field">
-                                      <label
-                                        >Input your Airtel Money Number</label
-                                      >
-                                      <input type="text" class="form-control" id="phone_number" name="phone_number"  required>
+        <div class="card-body">
+          <p class="text-muted mb-4">
+            Please follow the steps below to request edits to an athlete’s profile. All changes are subject to review and approval by the USSSA administration team.
+          </p>
+
+          <div class="accordion" id="editGuidelinesAccordion">
+
+            <!-- Step 1 -->
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#stepOne" aria-expanded="true" aria-controls="stepOne">
+                  <span class="fw-bold">Step 1:</span> Fill in the fields you want to edit
+                </button>
+              </h2>
+              <div id="stepOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#editGuidelinesAccordion">
+                <div class="accordion-body">
+                  Navigate to the athlete’s profile, click <strong>“Edit Athlete”</strong>, and fill in only the fields you wish to change 
+                  (e.g., name, age, school, or discipline). Ensure the new details are accurate and valid before submission.
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#stepTwo" aria-expanded="false" aria-controls="stepTwo">
+                  <span class="fw-bold">Step 2:</span> Confirm and Pay for the Edit Request
+                </button>
+              </h2>
+              <div id="stepTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#editGuidelinesAccordion">
+                <div class="accordion-body">
+                  Once you submit the changes, a pop-up will appear requesting payment for the edit.  
+                  <ul class="mb-0">
+                    <li>Enter your <strong>Airtel number</strong> to authorize the payment.</li>
+                    <li>Ensure your Airtel Money wallet has sufficient balance.</li>
+                    <li>After successful payment, your request will be logged for review.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#stepThree" aria-expanded="false" aria-controls="stepThree">
+                  <span class="fw-bold">Step 3:</span> Wait for Admin Review
+                </button>
+              </h2>
+              <div id="stepThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#editGuidelinesAccordion">
+                <div class="accordion-body">
+                  After payment, your request will be reviewed by an administrator. The admin may:
+                  <ul>
+                    <li><span class="badge bg-success">Approve</span> the request — your edits will be applied immediately.</li>
+                    <li><span class="badge bg-danger">Reject</span> the request — you will receive a reason for the rejection.</li>
+                  </ul>
+                  You can monitor the status of your request under the <strong>“Edit Requests”</strong> section.
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#stepFour" aria-expanded="false" aria-controls="stepFour">
+                  <span class="fw-bold">Step 4:</span> Notifications & Follow-Up
+                </button>
+              </h2>
+              <div id="stepFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#editGuidelinesAccordion">
+                <div class="accordion-body">
+                  You will be notified once a decision is made.  
+                  <ul class="mb-0">
+                    <li>Approved edits will automatically reflect in the athlete’s record.</li>
+                    <li>Rejected edits can be resubmitted with corrected information if necessary.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          </div>
+        </div>
+            <div class="alert alert-info mt-4 mb-0">
+        <i class="bi bi-info-circle me-2"></i>
+        <strong>Note:</strong> False information or repeated edit requests without justification may lead to account suspension.
+      </div>
+        </div>
+    <div class="col-md-6 col-lg-4 col-xl">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="fs-18 fw-semibold m-0">
+            Edit {{ athlete.fname }} {{ athlete.lname }}
+          </h1>
+        </div>
+        <!--end card header-->
+
+        <div class="card-body">
+          <form
+            method="POST"
+            enctype="multipart/form-data"
+            class="needs-validation"
+            novalidate
+          >
+            {% csrf_token %}
+
+                                  <div class="row">
+                                    <!-- First Name -->
+                                    <div class="col-md-6 mb-3">
+                                      <label for="fname" class="form-label">First Name</label>
+                                      <input type="text" class="form-control" id="fname" name="fname" value="{{ athlete.fname }}" required>
+                                      <div class="invalid-feedback">
+                                        Please provide a first name.
+                                      </div>
                                     </div>
-                                  </div>  {% if messages %}
-                                  <div class="messages">
-                                    {% for message in messages %}
-                                    <div class="alert alert-{{ message.tags }}">
-                                      {{ message }}
+                                    
+                                    <!-- Last Name -->
+                                    <div class="col-md-6 mb-3">
+                                      <label for="lname" class="form-label">Last Name</label>
+                                      <input type="text" class="form-control" id="lname" name="lname" value="{{ athlete.lname }}" required>
+                                      <div class="invalid-feedback">
+                                        Please provide a last name.
+                                      </div>
                                     </div>
-                                    {% endfor %}
                                   </div>
-                                  {% endif %}
-                                 </div>
-                            
-                                <div class="modal-footer">
-                                  <button type="submit" class="btn btn-success">
-                                    Submit and Pay
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        
-                       
-  </form>
-</div>
+                                  
+                                  <div class="row">
+                                    <!-- Index Number -->
+                                    <div class="col-md-6 mb-3">
+                                      <label for="index_number" class="form-label">Index Number</label>
+                                      <input type="text" class="form-control" id="index_number" name="index_number" value="{{ athlete.index_number }}" required>
+                                      <div class="invalid-feedback">
+                                        Please provide an index number.
+                                      </div>
+                                    </div>
+                                    
+                                    <!-- Learners ID Number -->
+                                    <div class="col-md-6 mb-3">
+                                      <label for="lin" class="form-label">Learners ID Number</label>
+                                      <input type="text" class="form-control" id="lin" name="lin" value="{{ athlete.lin }}" required>
+                                      <div class="invalid-feedback">
+                                        Please provide a learners ID number.
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="row">
+                                    <!-- Date of Birth -->
+                                    <div class="col-md-6 mb-3">
+                                      <label for="dob" class="form-label">Date of Birth</label>
+                                      <input type="date" class="form-control" id="dob" name="dob" value="{{ athlete.date_of_birth|date:'Y-m-d' }}" required>
+                                      <div class="invalid-feedback">
+                                        Please provide a valid date of birth.
+                                      </div>
+                                    </div>
+                                    
+                                    <!-- Gender -->
+                                    <div class="col-md-6 mb-3">
+                                      <label for="gender" class="form-label">Gender</label>
+                                      <select class="form-select" id="gender" name="gender" required>
+                                        <option value="" disabled>Select gender</option>
+                                        <option value="Male" {% if athlete.gender == "Male" %}selected{% endif %}>Male</option>
+                                        <option value="Female" {% if athlete.gender == "Female" %}selected{% endif %}>Female</option>
+                                        <option value="Other" {% if athlete.gender == "Other" %}selected{% endif %}>Other</option>
+                                      </select>
+                                      <div class="invalid-feedback">
+                                        Please select a gender.
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  <!-- Photo Upload -->
+                                  <div class="mb-3">
+                                    <label for="photo" class="form-label">Photo</label>
+                                    <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                                    <div class="form-text">Upload a new photo (optional)</div>
+                                  </div>
+                                  
+                                  <!-- Reason for Edit -->
+                                  <div class="mb-3">
+                                    <label for="reason" class="form-label">Reason for Edit</label>
+                                    <textarea class="form-control" id="reason" name="reason" rows="4" required></textarea>
+                                    <div class="invalid-feedback">
+                                      Please provide a reason for the edit request.
+                                    </div>
+                                  </div>
+                                  
+                                  <!-- Supporting Document -->
+                                  <div class="mb-4">
+                                    <label for="supporting_document" class="form-label">Supporting Document (Required)</label>
+                                    <input type="file" class="form-control" id="supporting_document" name="supporting_document" accept=".pdf,.doc,.docx,image/*" required>
+                                    <div class="form-text">Upload any supporting documents for your request</div>
+                                  </div>
+                                  
+                                  <!-- Submit Button -->
+                                  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                      <button
+                                                                      type="button"
+                                                                      class="btn btn-primary"
+                                                                      data-toggle="modal"
+                                                                      data-target="#exampleModal"
+                                                                    >
+                                                                      Continue to Payment
+                                                                    </button>
+                                  </div>                       
+                                                      
+                                  <div
+                                    class="modal fade"
+                                    id="exampleModal"
+                                    tabindex="-1"
+                                    role="dialog"
+                                    aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true"
+                                  >
+                                                          <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                              <div class="modal-header">
+                                                                <h5
+                                                                  class="modal-title"
+                                                                  id="exampleModalLabel"
+                                                                >
+                                                                  Complete Payment
+                                                                </h5>
+                                                                <button
+                                                                  type="button"
+                                                                  class="close"
+                                                                  data-dismiss="modal"
+                                                                  aria-label="Close"
+                                                                >
+                                                                  <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                              </div>
+                                                              <div class="modal-body">
+                                                                <div class="col-md-12">
+                                                                  <p>
+                                                                    To complete your Request, please pay
+                                                                    the mandatory fee of
+                                                                    <strong>50,000/=</strong> 
+                                                                  <div class="field">
+                                                                    <label
+                                                                      >Input your Airtel Money Number</label
+                                                                    >
+                                                                    <input type="text" class="form-control" id="phone_number" name="phone_number"  required>
+                                                                  </div>
+                                                                </div>  {% if messages %}
+                                                                <div class="messages">
+                                                                  {% for message in messages %}
+                                                                  <div class="alert alert-{{ message.tags }}">
+                                                                    {{ message }}
+                                                                  </div>
+                                                                  {% endfor %}
+                                                                </div>
+                                                                {% endif %}
+                                                              </div>
+                                                           
+
+                                                              <div class="modal-footer">
+                                                                <button type="submit" class="btn btn-success">
+                                                                  Submit and Pay
+                                                                </button>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                  </div>
+                  
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
