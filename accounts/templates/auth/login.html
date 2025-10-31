@@ -13,7 +13,7 @@
     <title>USSSA | lOGIN</title>
     <!-- plugins:css -->
     {% include "variables/new_css.html" %}
-    <!-- End layout styles -->
+    <!-- End layout styles 
     <style>
       .timer-box {
         background-color: #560000ff;
@@ -36,7 +36,7 @@
         font-size: 0.9rem;
         color: #ffffffff;
       }
-    </style>
+    </style>-->
   </head>
   <body>
     <div
@@ -45,7 +45,7 @@
     >
       <div class="container-fluid p-0">
         <div class="row align-items-center g-0 px-3 py-3 vh-100">
-          <div class="col-xl-7">
+          <div class="col-xl-5">
             <div class="row">
               <div class="col-md-8 mx-auto">
                 <div class="card">
@@ -75,7 +75,7 @@
                           </div>
                         </div>
 
-                        <!--<div class="auth-title-section mb-4 text-center">
+                        <div class="auth-title-section mb-4 text-center">
                           <h3 class="text-danger fw-semibold mb-1">
                             Welcome Back !
                           </h3>
@@ -83,8 +83,8 @@
                             Hey, Enter your details to get sign in to your
                             account.
                           </p>
-                        </div>-->
-
+                        </div>
+                        <!--
                         <div class="alert alert-danger">
                           <h3>System closed</h3>
                           <p>
@@ -112,7 +112,7 @@
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </div>-->
                         <div class="pt-0">
                           <form action="" class="my-4" method="post">
                             {% csrf_token %}
@@ -177,7 +177,7 @@
                               <div class="col-sm-6 text-end">
                                 <a
                                   class="text-muted fs-14"
-                                  href="/dusty/html/auth-recoverpw"
+                                  href="{% url 'password_reset' %}"
                                   >Forgot password?</a
                                 >
                               </div>
@@ -215,7 +215,7 @@
             </div>
           </div>
 
-          <div class="col-xl-5 d-none d-xl-inline-block">
+          <div class="col-xl-7 d-none d-xl-inline-block">
             <div class="account-page-bg rounded-4">
               <div class="text-center">
                 <div class="auth-image">
