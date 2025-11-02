@@ -37,7 +37,7 @@ def dashboard(request):
 
     # Get the latest 5 schools and 6 athletes with related fields in one query
     schools = School.objects.select_related("district").order_by("-created")[:5]
-    athletes = Athlete.objects.select_related("school").order_by("-created")[:5]
+    athletes = Athlete.objects.select_related("school").exclude(status='COMPLETED').order_by("-created")[:5]
 
     context = {
         "enrollments_count": enrollments_count,
