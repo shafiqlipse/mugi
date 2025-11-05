@@ -22,7 +22,7 @@ class TransferPaymentFilter(django_filters.FilterSet):
 
     class Meta:
         model = TransferPayment
-        fields = ["transfer",  "phone_number"]
+        fields = ["transfer",  "phone_number", "status"]
 
     def __init__(self, *args, **kwargs):
         super(TransferPaymentFilter, self).__init__(*args, **kwargs)

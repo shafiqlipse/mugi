@@ -453,15 +453,14 @@ def export_tcsv(request):
     return response
 
 def transfer_payments(request):
+    payments = TransferPayment.objects.select_related("transfer").all().order_by('id')  # Order by a unique field, like 'id'
 
-    payments = TransferPayment.objects.select_related("transfer").filter(status='COMPLETED')
-
-        # Apply filtering
+    # Apply filtering
     payments_filter = TransferPaymentFilter(request.GET, queryset=payments)
     filtered_payments = payments_filter.qs  # Get the filtered queryset
 
     # Paginate filtered results
-    paginator = Paginator(filtered_payments, 10)  # Show 10 athletes per page
+    paginator = Paginator(filtered_payments, 10)  # Show 10 payments per page
     page_number = request.GET.get("page")
     paginated_payments = paginator.get_page(page_number)
 
