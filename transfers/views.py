@@ -454,7 +454,7 @@ def export_tcsv(request):
 
 def transfer_payments(request):
 
-    payments = TransferPayment.objects.select_related("transfer").filter(status='paid')
+    payments = TransferPayment.objects.select_related("transfer").filter(status='COMPLETED')
 
         # Apply filtering
     payments_filter = TransferPaymentFilter(request.GET, queryset=payments)
