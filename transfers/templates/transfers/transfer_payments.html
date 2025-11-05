@@ -53,7 +53,7 @@
               {% for payment in payments%}
               <tr>
                 <td>
-                  <a href="{% url 'transfer_detail' payment.transfer.id %}"
+                  <a href="{% url 'transfer_details' payment.transfer.id %}"
                     >{{payment.transfer}}</a
                   >
                 </td>
