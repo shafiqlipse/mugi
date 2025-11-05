@@ -20,6 +20,7 @@ from django.conf import settings
 from django.http import JsonResponse
 import logging
 from django.urls import reverse
+from .filters import TransferPaymentFilter
 import random
 from django.db import transaction
 
@@ -451,3 +452,22 @@ def export_tcsv(request):
 
     return response
 
+def transfer_payments(request):
+
+    payments = TransferPayment.objects.select_related("transfer").filter(status='paid')
+
+        # Apply filtering
+    payments_filter = TransferPaymentFilter(request.GET, queryset=payments)
+    filtered_payments = payments_filter.qs  # Get the filtered queryset
+
+    # Paginate filtered results
+    paginator = Paginator(filtered_payments, 10)  # Show 10 athletes per page
+    page_number = request.GET.get("page")
+    paginated_payments = paginator.get_page(page_number)
+
+    # Pass the filter to the context for rendering the filter form
+    context = {
+        "payments": paginated_payments,
+        "payment_filter": payments_filter,
+    }
+    return render(request, "transfers/transfer_payments.html", context)

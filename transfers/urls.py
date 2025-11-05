@@ -16,4 +16,5 @@ urlpatterns = [
     path("transfers/reject/<int:id>/", reject_transfer, name="reject_transfer"),   
     path("transfers/reject/request/<int:id>/", reject_request, name="reject_request"),   
     path("export_tcsv/", export_tcsv, name="export_tcsv"),
+    path("transfer_payments/", transfer_payments, name="transfer_payments"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
