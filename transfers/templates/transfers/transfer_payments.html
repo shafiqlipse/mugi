@@ -44,8 +44,8 @@
                 <th>School</th>
                 <th>Phone Number</th>
                 <th>Amount</th>
-                <th>Athletes</th>
                 <th>Date</th>
+                <th>Paid At</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -53,24 +53,20 @@
               {% for payment in payments%}
               <tr>
                 <td>
-                  <a href=""
-                    >{{payment.school}}</a
+                  <a href="{% url 'transfer_detail' payment.transfer.id %}"
+                    >{{payment.transfer}}</a
                   >
                 </td>
                 <td>{{payment.phone_number}}</td>
                 <td>{{payment.amount}}</td>
-                <td>{{payment.athletes.count}}</td>
                 <td>{{payment.created_at}}</td>
+                <td>{{payment.paid_at}}</td>
                 <td>
                   <p class="badge badge-outline-success" styles="color:white;">
                     {{payment.status}}
                   </p>
                 </td>
-                <td>
-                  <a href='{% url 'download_receipt' payment.id %}' class="badge badge-outline-success" styles="color:white;">
-                    receipt
-                  </p>
-                </td>
+    
               </tr>
 
               {%endfor%}
