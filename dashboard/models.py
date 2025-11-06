@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.utils import timezone
+from accounts.models import User
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
@@ -41,3 +42,11 @@ class Announcement(models.Model):
 
     def is_visible(self):
         return self.is_active and (not self.end_date or self.end_date > now())
+    
+    
+    
+
+
+
+
+

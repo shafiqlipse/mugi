@@ -38,7 +38,9 @@ admin.site.register(School, SchoolAdmin)
 admin.site.register(Payment, PaymentAdmin) 
 
 admin.site.register(User, UserAdmin)
-admin.site.register(Discipline)
+admin.site.register(Season)
+admin.site.register(Course)
+admin.site.register(Level)
 admin.site.register(Venue)
 admin.site.register(Trainee)
 

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Register | Dusty - Responsive Admin Dashboard Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A fully featured admin theme which can be used to build CRM, CMS, etc."
+    />
+    <meta name="author" content="Zoyothemes" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static 'img/logos.png' %}" />
+    <!-- App css -->
+    <link rel="stylesheet" href="{% static 'lib/css/newdel.css' %}" />
+
+    {% include "variables/new_css.html" %}
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.min.css"
+    />
+  </head>
+
+  <body>
+    <!-- Begin page -->
+    <div
+      class="account-page"
+      style="
+        background-image: url({% static 'img/login.jpg' %});
+        background-attachment: fixed;
+      "
+    >
+      <div class="container-fluid p-0">
+        <div
+          class="row align-items-center justify-content-center g-0 px-3 py-3"
+        >
+          <div class="col-xl-10 col-lg-10 col-md-12">
+            <div class="row">
+              <div class="col-md-10 mx-auto">
+                <div class="card">
+                  <div class="card-header">
+                    <div class="mb-3 p-0 text-center">
+                      <div class="auth-brand">
+                        <a class="logo logo-light" href="/">
+                          <span class="logo-lg">
+                            <img
+                              src="{% static 'img/logo-lg.png' %}"
+                              alt=""
+                              height="24"
+                            />
+                          </span>
+                        </a>
+                        <a class="logo logo-dark" href="/">
+                          <span class="logo-lg">
+                            <img
+                              src="{% static 'img/logo-lg.png' %}"
+                              alt=""
+                              height="54"
+                            />
+                          </span>
+                        </a>
+                      </div>
+                      <div class="auth-title-section mb-4 text-center">
+                        <h3 class="text-primary fw-semibold mb-1">
+                          Welcome to Capacity Building Program
+                        </h3>
+                        <p class="text-muted fs-14 mb-0">
+                          Register now for the Capacity Building Program.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="mb-0 p-0 p-lg-3">
+                      <div class="mb-0 border-0 p-md-4 p-lg-0">
+                        <form
+                          action=""
+                          method="POST"
+                          class="form-control fomin"
+                          enctype="multipart/form-data"
+                        >
+                          {% csrf_token %}
+                          <div class="schoolt">
+                            <h2>Personal Info</h2>
+
+                            <div class="row fields">
+                              <div class="col-xl-4 col-lg-4 col-md-12">
+                                <div class="imgbox">
+                                  <div class="field">
+                                    <label>{{form.photo.label}} </label>
+                                    <div
+                                      id="photos_preview"
+                                      class="preview-container mb-2"
+                                      style="
+                                        background-image: url({% static 'img/profile.png' %}); background-size: cover;
+                                      "
+                                    ></div>
+                                  </div>
+                                  
+                                  <div class="field">
+                                    <input
+                                      type="file"
+                                      name="photo"
+                                      accept="image/*"
+                                      id="id_photo"
+                                      class="form-control"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-xl-8 col-lg-8 col-md-12">
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.first_name.label}}</label>
+                                      {{form.first_name}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.last_name.label}}</label>
+                                      {{form.last_name}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.contact.label}}</label>
+                                      {{form.contact}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.email.label}}</label>
+                                      {{form.email}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>Work Place/ School</label>
+                                      {{form.place}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.district.label}}</label>
+                                      {{form.district}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.gender.label}}</label>
+                                      {{form.gender}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label
+                                        >{{ form.date_of_birth.label}}</label
+                                      >
+                                      {{form.date_of_birth}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.designation.label}}</label>
+                                      {{form.designation}}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div></div>
+                          <div class="schoolt mb-4">
+                            <h2>Course Info</h2>
+
+                            <div class="row fields">
+                              <div class="col-md-12">
+                                <div class="row">
+                                  <div class="col-md-4 mb-4">
+                                    <div class="field">
+                                      <label>{{ form.season.label}}</label>
+                                      {{form.season}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4 mb-4">
+                                    <div class="field">
+                                      <label>{{ form.venue.label}}</label>
+                                      {{form.venue}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4 mb-4">
+                                    <div class="field">
+                                      <label>{{ form.course.label}}</label>
+                                      {{form.course}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4 mb-4">
+                                    <div class="field">
+                                      <label>{{ form.level.label}}</label>
+                                      {{form.level}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4 mb-4">
+                                    <div class="field">
+                                      <label
+                                        >{{ form.residence_type.label}}</label
+                                      >
+                                      {{form.residence_type}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <div class="field">
+                                      <label>.</label>
+                                      <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        data-toggle="modal"
+                                        data-target="#exampleModal"
+                                      >
+                                        Continue to Payment
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- Button trigger modal -->
+
+                          <!-- Modal -->
+                          <div
+                            class="modal fade"
+                            id="exampleModal"
+                            tabindex="-1"
+                            role="dialog"
+                            aria-labelledby="exampleModalLabel"
+                            aria-hidden="true"
+                          >
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5
+                                    class="modal-title"
+                                    id="exampleModalLabel"
+                                  >
+                                    Complete Payment
+                                  </h5>
+                                  <button
+                                    type="button"
+                                    class="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close"
+                                  >
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <div class="col-md-12">
+                                    <p>
+                                      To complete your registration, please pay
+                                      the course fee of
+                                      <strong>{{ amount }}/=</strong> 
+                                    <div class="field">
+                                      <label
+                                        >Input your Airtel Money Number</label
+                                      >
+                                      {{form.phone_number}}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="submit" class="btn btn-success">
+                                    Submit and Pay
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {% if messages %}
+                          <div class="messages">
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                              {{ message }}
+                            </div>
+                            {% endfor %}
+                          </div>
+                          {% endif %}
+                        </form>
+
+                        <div class="text-center text-muted mt-4">
+                          <p class="mb-0">
+                            Not what you were looking for?
+                            <a class="text-primary ms-2 fw-medium" href="/"
+                              >Home</a
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END wrapper -->
+
+    <!-- Vendor -->
+    {% include "variables/new_js.html" %}
+    <script src="{% static 'js/opper.js'%}"></script>
+    <script>
+      $(document).ready(function () {
+        $("#id_season").change(function () {
+          var seasonId = $(this).val();
+          if (seasonId) {
+            $.ajax({
+              url: "/training/get-venues/", // Use the URL for the updated view
+              data: {
+                season_id: seasonId,
+              },
+              success: function (data) {
+                var venueDropdown = $("#id_venue");
+                venueDropdown.empty();
+                venueDropdown.append(
+                  '<option value="">Select a venue</option>'
+                );
+                data.forEach(function (venue) {
+                  venueDropdown.append(
+                    `<option value="${venue.id}">${venue.name}</option>`
+                  );
+                });
+              },
+            });
+          } else {
+            $("#id_venue").empty();
+            $("#id_venue").append('<option value="">Select a venue</option>');
+          }
+        });
+      });
+    </script>
+    <script>
+      $(document).ready(function () {
+        $("#id_venue").change(function () {
+          var venueId = $(this).val();
+          if (venueId) {
+            $.ajax({
+              url: "/training/get-courses/", // Use the URL for the updated view
+              data: {
+                venue_id: venueId,
+              },
+              success: function (data) {
+                var courseDropdown = $("#id_course");
+                courseDropdown.empty();
+                courseDropdown.append(
+                  '<option value="">Select a course</option>'
+                );
+                data.forEach(function (course) {
+                  courseDropdown.append(
+                    `<option value="${course.id}">${course.name}</option>`
+                  );
+                });
+              },
+            });
+          } else {
+            $("#id_course").empty();
+            $("#id_course").append('<option value="">Select a course</option>');
+          }
+        });
+      });
+    </script>
+    <script>
+      $(document).ready(function () {
+          $("#id_course").change(function () {
+              var courseId = $(this).val();
+
+              if (courseId) {
+                  $.ajax({
+                      url: "/training/get-level/",  // URL for your Django view
+                      data: { course_id: courseId },
+                      success: function (data) {
+                          var levelDropdown = $("#id_level");
+                          levelDropdown.empty();
+
+                          if (data.error) {
+                              alert(data.error);
+                              levelDropdown.append('<option value="">Select a level</option>');
+                              return;
+                          }
+
+                          if (data.id && data.name) {
+                              // Single level returned
+                              levelDropdown.append('<option value="">Select a level</option>');
+                              levelDropdown.append(
+                                  `<option value="${data.id}">${data.name}</option>`
+                              );
+                          } else {
+                              // No level assigned
+                              levelDropdown.append('<option value="">No level available</option>');
+                          }
+                      },
+                      error: function () {
+                          alert("Error fetching level. Please try again.");
+                      },
+                  });
+              } else {
+                  $("#id_level").empty();
+                  $("#id_level").append('<option value="">Select a level</option>');
+              }
+          });
+      });
+</script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <!--Datatable scripts-->
+  </body>
+</html>

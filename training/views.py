@@ -3,18 +3,29 @@ from xhtml2pdf import pisa
 from django.template.loader import get_template
 from django.http import HttpResponse
 from django.contrib import messages
-from xhtml2pdf import pisa
 from io import BytesIO
 from .models import *
 from .forms import *
 from django.db import IntegrityError
 from django.core.files.base import ContentFile
 import base64
-
+from django.contrib.auth.decorators import login_required
+from .filters import TraineeFilter 
+from django.views.decorators.csrf import csrf_exempt
+import json
+import logging
+import random
+from django.db import transaction
+from django.db import transaction as db_transaction
+from django.conf import settings
+import requests
+import re
+from school.views import get_airtel_token
+from django.urls import reverse
 from django.http import JsonResponse
+logger = logging.getLogger(__name__)
 
-def redirection(request):
-    return render(request,'redirection.html')
+airtel_logger = logging.getLogger('airtel_callback')  # Use the specific logger
 
 def get_venues(request):
     season_id = request.GET.get("season_id")  # Get the selected season ID from the request
@@ -29,72 +40,174 @@ def get_venues(request):
             return JsonResponse({"error": "Season not found"}, status=404)
     return JsonResponse([], safe=False)
 
-def get_disciplines(request):
+def get_courses(request):
     venue_id = request.GET.get("venue_id")  # Get the selected venue ID from the request
     if venue_id:
         try:
             venue = Venue.objects.get(id=venue_id)  # Retrieve the venue instance
-            disciplines = venue.discipline_set.values(
+            courses = venue.courses.values("id", "name")
+  # Get related courses
+            return JsonResponse(list(courses), safe=False)
+        except Venue.DoesNotExist:
+            return JsonResponse({"error": "COurse not found"}, status=404)
+    return JsonResponse([], safe=False)
+
+def get_levels(request):
+    course_id = request.GET.get("course_id")
+
+    if not course_id:
+        return JsonResponse({"error": "Missing course_id parameter"}, status=400)
+
+    try:
+        course = Course.objects.select_related("level").get(id=course_id)
+    except Course.DoesNotExist:
+        return JsonResponse({"error": "Course not found"}, status=404)
+
+    if course.level:
+        level_data = {
+            "id": course.level.id,
+            "name": course.level.name,
+        }
+        return JsonResponse(level_data)
+    else:
+        return JsonResponse({"message": "This course has no level assigned"})
+
+def get_level(request):
+    course_id = request.GET.get("course_id")  # Get the selected course ID from the request
+    if course_id:
+        try:
+            courses = Course.objects.get(id=course_id)  # Retrieve the course instance
+            levels = courses.level_set.values(
                 "id", "name"
             )  # Get related disciplines
-            return JsonResponse(list(disciplines), safe=False)
+            return JsonResponse(list(levels), safe=False)
         except Venue.DoesNotExist:
-            return JsonResponse({"error": "Venue not found"}, status=404)
+            return JsonResponse({"error": "Level not found"}, status=404)
     return JsonResponse([], safe=False)
 
 
-def trainee_add(request):
-    if request.method == "POST":
-        form = TraineesForm(request.POST, request.FILES)
 
+
+def generate_unique_transaction_id():
+    """Generate a unique 12-digit transaction ID."""
+    while True:
+        transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
+        if not Trainee.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
+            return transaction_id
+
+
+
+
+def trainee_add(request):
+    if request.method == 'POST':
+        form = TraineesForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                new_trainee = form.save(commit=False)
+                phone_number = form.cleaned_data.get('phone_number')
 
-                cropped_data = request.POST.get("photo_cropped")
-                if cropped_data:
-                    try:
-                        format, imgstr = cropped_data.split(";base64,")
-                        ext = format.split("/")[-1]
-                        data = ContentFile(
-                            base64.b64decode(imgstr), name=f"photo.{ext}"
+                if not phone_number:
+                    messages.error(request, "You must provide a phone number.")
+                    return render(request, 'trainees/add_trainee.html', {'form': form})
+
+                # 💰 Calculate total payment
+                amount_per_trainee = 10000  # Base fee (UGX)
+                extra_fee = 500  # Processing fee
+                amount = amount_per_trainee + extra_fee
+
+                with transaction.atomic():
+                    trainee = form.save(commit=False)
+                    trainee.amount = amount
+                    trainee.payment_status = "Pending"  # Wait for Airtel to confirm
+                    trainee.transaction_id = str(random.randint(10**11, 10**12 - 1)) 
+                    trainee.save()
+
+                # 🔐 Get Airtel API Token
+                token = get_airtel_token()
+                if not token:
+                    messages.error(request, "Failed to connect to Airtel. Please try again later.")
+                    return render(request, 'trainees/add_trainee.html', {'form': form})
+
+                # 🌍 Airtel API endpoint
+                payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
+
+                # 💳 Clean phone number and prepare payload
+                msisdn = re.sub(r"\D", "", str(phone_number)).lstrip('0')
+                headers = {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "X-Country": "UG",
+                    "X-Currency": "UGX",
+                    "Authorization": f"Bearer {token}",
+                    "x-signature": settings.AIRTEL_API_SIGNATURE,
+                    "x-key": settings.AIRTEL_API_KEY,
+                }
+
+                payload = {
+                    "reference": str(trainee.transaction_id),
+                    "subscriber": {
+                        "country": "UG",
+                        "currency": "UGX",
+                        "msisdn": msisdn,
+                    },
+                    "transaction": {
+                        "amount": float(amount),
+                        "country": "UG",
+                        "currency": "UGX",
+                        "id": trainee.transaction_id,
+                    },
+                }
+
+                # 🚀 Send request to Airtel
+                response = requests.post(payment_url, json=payload, headers=headers)
+                logger.info(f"Airtel Payment Response ({response.status_code}): {response.text}")
+
+                # 🧾 Update trainee record with payment info
+                with transaction.atomic():
+                    if response.status_code == 200:
+                        trainee.payment_status = "Pending"
+                        trainee.save()
+                        messages.success(
+                            request,
+                            f"Registration initiated successfully! Please confirm payment of UGX {amount} on your Airtel line."
                         )
-                        new_trainee.photo = data  # Assign cropped image
-                    except (ValueError, TypeError):
-                        messages.error(request, "Invalid image data.")
-                        return render(request, "trainee_new.html", {"form": form})
+                        return redirect(reverse('payment_pending', args=[trainee.transaction_id]))
+                    else:
+                        trainee.payment_status = "Failed"
+                        trainee.save()
+                        messages.error(request, "Payment initiation failed. Please try again.")
+                        return render(request, 'trainees/add_trainee.html', {'form': form})
 
-                new_trainee.save()
-                messages.success(
-                    request,
-                    "Registered successfully! PAY TO SECURE YOUR PLACE",
-                )
-                return redirect("addtrainee")
-
-            except IntegrityError:
-                messages.error(request, "There was an error saving the trainee.")
-                return render(request, "trainee_new.html", {"form": form})
+            except Exception as e:
+                logger.error(f"❌ Error during trainee registration/payment: {str(e)}", exc_info=True)
+                messages.error(request, "An error occurred while processing your payment. Please try again.")
 
     else:
         form = TraineesForm()
 
-    context = {"form": form}
-    return render(request, "trainee_new.html", context)
+    return render(request, 'trainees/add_trainee.html', {'form': form, 'amount': 10500 })  # Pass the amount to the template
+  
+    
+    
+def payment_success(request, transaction_id):
+    payment = Trainee.objects.filter(transaction_id=transaction_id).first()
+    
+    if not payment:
+        return render(request, 'payment_failed.html', {'error': 'Transaction not found'})
 
+    return render(request, 'emails/payment_success.html', {
+        'amount': payment.amount,
+        'transaction_id': payment.transaction_id,
+        'timestamp': payment.created_at,  # Make sure your Trainee model has `created_at`
+    })
+    
 
-from django.http import HttpResponse
-from django.template.loader import get_template
-from xhtml2pdf import pisa
-from io import BytesIO
-from django.contrib.auth.decorators import login_required
-
-from .filters import TraineeFilter  # Assume you have created this filter
+ # Assume you have created this filter
 
 
 @login_required(login_url="login")
 def trainees(request):
     # Get all trainees
-    trainees = Trainee.objects.all().order_by("-entry_date")
+    trainees = Trainee.objects.filter(payment_status = 'Completed').order_by("-created_at")
 
     # Apply the filter
     trainee_filter = TraineeFilter(request.GET, queryset=trainees)
@@ -135,7 +248,7 @@ def trainees(request):
         # Render the filter form
         return render(
             request,
-            "trainees.html",
+            "trainees/trainees.html",
             {"trainee_filter": trainee_filter},
         )
 
@@ -144,7 +257,7 @@ def trainee_details(request, id):
     trainee = Trainee.objects.get(id=id)
 
     context = {"trainee": trainee}
-    return render(request, "trainee.html", context)
+    return render(request, "trainees/trainee.html", context)
 
 
 def trainee_update(request, id):
@@ -203,7 +316,7 @@ import csv
 from django.http import HttpResponse
 
 
-def export_csv(request):
+def export_tcsv(request):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="data.csv"'
@@ -221,8 +334,8 @@ def export_csv(request):
             "contract",
             "district",
             "venue",
-            "discipline",
             "course",
+            "level",
         ]
     )  # Replace with your model's fields
 
@@ -237,8 +350,8 @@ def export_csv(request):
                 obj.contact,
                 obj.district,
                 obj.venue,
-                obj.discipline,
                 obj.course,
+                obj.level,
             ]
         )  # Replace with your model's fields
 
@@ -252,3 +365,26 @@ def activate_trainee(request, id):
     trainee.save()
     messages.success(request, "Trainee activated successfully.")
     return redirect("trainees") 
+
+
+def archived_trainees(request):
+    archived_trainees = Trainee.objects.filter(venue__status="Inactive").order_by("-created_at")
+    trainee_filter = TraineeFilter(request.GET, queryset=archived_trainees)
+    archived_trainees = trainee_filter.qs
+
+    return render(
+        request,
+        "trainees/archived_trainees.html",
+        {"trainee_filter": trainee_filter, "archived_trainees": archived_trainees},
+    )
+
+def unpaid_trainees(request):
+    unpaid_trainees = Trainee.objects.filter(venue__status="Active",payment_status="Pending").order_by("-created_at")
+    trainee_filter = TraineeFilter(request.GET, queryset=unpaid_trainees)
+    unpaid_trainees = trainee_filter.qs
+
+    return render(
+        request,
+        "trainees/archived_trainees.html",
+        {"trainee_filter": trainee_filter, "unpaid_trainees": unpaid_trainees},
+    )
