@@ -109,7 +109,7 @@ def trainee_add(request):
                     return render(request, 'trainees/add_trainee.html', {'form': form})
 
                 # 💰 Payment details
-                amount = 110500  # Total amount (UGX 110,000 + 500 fee)
+                amount = 1000  # Total amount (UGX 110,000 + 500 fee)
 
                 # 🎯 Save trainee record first (pending payment)
                 with transaction.atomic():
@@ -212,11 +212,11 @@ def trainees(request):
     if request.method == "POST":
         # Check which form was submitted
         if "Accreditation" in request.POST:
-            template = get_template("acrred.html")
+            template = get_template("reports/acrred.html")
             filename = "Trainee_Accreditation.pdf"
         elif "Certificate" in request.POST:
             template = get_template(
-                "certficate_temaplate.html"
+                "reports/certficate_temaplate.html"
             )  # Your certificate template
             filename = "Trainee_Certificate.pdf"
         else:
