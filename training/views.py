@@ -97,7 +97,6 @@ def generate_unique_transaction_id():
 
 
 
-
 def trainee_add(request):
     if request.method == 'POST':
         form = TraineesForm(request.POST, request.FILES)
@@ -106,32 +105,30 @@ def trainee_add(request):
                 phone_number = form.cleaned_data.get('phone_number')
 
                 if not phone_number:
-                    messages.error(request, "You must provide a phone number.")
+                    messages.error(request, "Phone number is required.")
                     return render(request, 'trainees/add_trainee.html', {'form': form})
 
-                # 💰 Calculate total payment
-                amount_per_trainee = 10000  # Base fee (UGX)
-                extra_fee = 500  # Processing fee
-                amount = amount_per_trainee + extra_fee
+                # 💰 Payment details
+                amount = 10500  # Total amount (UGX 10,000 + 500 fee)
 
+                # 🎯 Save trainee record first (pending payment)
                 with transaction.atomic():
                     trainee = form.save(commit=False)
                     trainee.amount = amount
-                    trainee.payment_status = "Pending"  # Wait for Airtel to confirm
-                    trainee.transaction_id = str(random.randint(10**11, 10**12 - 1)) 
+                    trainee.payment_status = "Pending"
+                    trainee.transaction_id = str(random.randint(10**11, 10**12 - 1))
                     trainee.save()
 
-                # 🔐 Get Airtel API Token
+                # 🔐 Get Airtel token
                 token = get_airtel_token()
                 if not token:
-                    messages.error(request, "Failed to connect to Airtel. Please try again later.")
+                    messages.error(request, "Failed to connect to Airtel. Try again later.")
                     return render(request, 'trainees/add_trainee.html', {'form': form})
 
-                # 🌍 Airtel API endpoint
+                # 🌍 Airtel API setup
                 payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
-
-                # 💳 Clean phone number and prepare payload
                 msisdn = re.sub(r"\D", "", str(phone_number)).lstrip('0')
+
                 headers = {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
@@ -157,35 +154,34 @@ def trainee_add(request):
                     },
                 }
 
-                # 🚀 Send request to Airtel
+                # 🚀 Send payment request
                 response = requests.post(payment_url, json=payload, headers=headers)
                 logger.info(f"Airtel Payment Response ({response.status_code}): {response.text}")
 
-                # 🧾 Update trainee record with payment info
-                with transaction.atomic():
-                    if response.status_code == 200:
-                        trainee.payment_status = "Pending"
-                        trainee.save()
-                        messages.success(
-                            request,
-                            f"Registration initiated successfully! Please confirm payment of UGX {amount} on your Airtel line."
-                        )
-                        return redirect(reverse('payment_pending', args=[trainee.transaction_id]))
-                    else:
-                        trainee.payment_status = "Failed"
-                        trainee.save()
-                        messages.error(request, "Payment initiation failed. Please try again.")
-                        return render(request, 'trainees/add_trainee.html', {'form': form})
+                # 🧾 Handle response
+                if response.status_code == 200:
+                    messages.success(
+                        request,
+                        f"Payment initiated successfully! Please confirm UGX {amount} on your Airtel line."
+                    )
+                    return redirect(reverse('payment_pending', args=[trainee.transaction_id]))
+                else:
+                    trainee.payment_status = "Failed"
+                    trainee.save()
+                    messages.error(request, "Payment initiation failed. Please try again.")
+                    return render(request, 'trainees/add_trainee.html', {'form': form})
 
             except Exception as e:
-                logger.error(f"❌ Error during trainee registration/payment: {str(e)}", exc_info=True)
-                messages.error(request, "An error occurred while processing your payment. Please try again.")
+                logger.error(f"❌ Error during trainee payment: {str(e)}", exc_info=True)
+                messages.error(request, "An error occurred while processing your payment.")
+                return render(request, 'trainees/add_trainee.html', {'form': form})
 
     else:
         form = TraineesForm()
 
-    return render(request, 'trainees/add_trainee.html', {'form': form, 'amount': 10500 })  # Pass the amount to the template
-  
+    # Default GET request
+    return render(request, 'trainees/add_trainee.html', {'form': form, 'amount': 10500})
+ 
     
     
 def payment_success(request, transaction_id):
