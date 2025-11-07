@@ -164,7 +164,7 @@ def trainee_add(request):
                         request,
                         f"Payment initiated successfully! Please confirm UGX {amount} on your Airtel line."
                     )
-                    return redirect(reverse('payment_pending', args=[trainee.transaction_id]))
+                    return redirect('payment_success')
                 else:
                     trainee.payment_status = "Failed"
                     trainee.save()
@@ -184,16 +184,11 @@ def trainee_add(request):
  
     
     
-def payment_success(request, transaction_id):
-    payment = Trainee.objects.filter(transaction_id=transaction_id).first()
+def payment_success(request):
     
-    if not payment:
-        return render(request, 'payment_failed.html', {'error': 'Transaction not found'})
 
-    return render(request, 'emails/payment_success.html', {
-        'amount': payment.amount,
-        'transaction_id': payment.transaction_id,
-        'timestamp': payment.created_at,  # Make sure your Trainee model has `created_at`
+    return render(request, 'trainees/successpage.html', {
+        
     })
     
 
