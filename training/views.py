@@ -109,7 +109,7 @@ def trainee_add(request):
                     return render(request, 'trainees/add_trainee.html', {'form': form})
 
                 # 💰 Payment details
-                amount = 1000  # Total amount (UGX 110,000 + 500 fee)
+                amount = 110500  # Total amount (UGX 110,000 + 500 fee)
 
                 # 🎯 Save trainee record first (pending payment)
                 with transaction.atomic():
@@ -305,7 +305,7 @@ def trainee_delete(request, id):
         stud.delete()
         return redirect("trainees")
 
-    return render(request, "delete_trainee.html", {"obj": stud})
+    return render(request, "trainees/delete_trainee.html", {"obj": stud})
 
 
 import csv
