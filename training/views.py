@@ -109,7 +109,7 @@ def trainee_add(request):
                     return render(request, 'trainees/add_trainee.html', {'form': form})
 
                 # 💰 Payment details
-                amount = 110500  # Total amount (UGX 10,000 + 500 fee)
+                amount = 110500  # Total amount (UGX 110,000 + 500 fee)
 
                 # 🎯 Save trainee record first (pending payment)
                 with transaction.atomic():
@@ -203,7 +203,7 @@ def payment_success(request, transaction_id):
 @login_required(login_url="login")
 def trainees(request):
     # Get all trainees
-    trainees = Trainee.objects.filter(payment_status = 'Completed').order_by("-created_at")
+    trainees = Trainee.objects.all().order_by("-created_at")
 
     # Apply the filter
     trainee_filter = TraineeFilter(request.GET, queryset=trainees)

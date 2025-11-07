@@ -16,11 +16,14 @@ class TraineeFilter(django_filters.FilterSet):
         widget=forms.Select(attrs={"class": "form-control"})
     )
 
-    level = django_filters.ModelChoiceFilter(
-        queryset=Level.objects.all(),
-        label="Level",
+
+    payment_status = django_filters.ChoiceFilter(
+        choices=[("Pending", "Pending"), ("Completed", "Completed"), ("Failed", "Failed")],
+        label="Payment Status",
         widget=forms.Select(attrs={"class": "form-control"})
     )
+
+
 
     venue = django_filters.ModelChoiceFilter(
         queryset=Venue.objects.all(),
@@ -44,4 +47,4 @@ class TraineeFilter(django_filters.FilterSet):
 
     class Meta:
         model = Trainee
-        fields = ["gender", "venue", "course", "level", "created_at"]
+        fields = ["gender", "venue", "course", "payment_status", "created_at"]
