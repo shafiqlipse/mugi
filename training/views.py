@@ -109,7 +109,7 @@ def trainee_add(request):
                     return render(request, 'trainees/add_trainee.html', {'form': form})
 
                 # 💰 Payment details
-                amount = 10500  # Total amount (UGX 10,000 + 500 fee)
+                amount = 110500  # Total amount (UGX 10,000 + 500 fee)
 
                 # 🎯 Save trainee record first (pending payment)
                 with transaction.atomic():
@@ -180,7 +180,7 @@ def trainee_add(request):
         form = TraineesForm()
 
     # Default GET request
-    return render(request, 'trainees/add_trainee.html', {'form': form, 'amount': 10500})
+    return render(request, 'trainees/add_trainee.html', {'form': form, 'amount': '110,500'})
  
     
     
