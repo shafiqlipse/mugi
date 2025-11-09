@@ -2,7 +2,7 @@ import django_filters
 from django import forms
 from django_filters import DateFromToRangeFilter
 from django_filters.widgets import RangeWidget
-from .models import Trainee, Level, Venue, Course  # adjust as necessary
+from .models import *
 
 
 class DateInput(forms.DateInput):
@@ -48,3 +48,30 @@ class TraineeFilter(django_filters.FilterSet):
     class Meta:
         model = Trainee
         fields = ["gender", "venue", "course", "payment_status", "created_at"]
+
+class ITTFTraineeFilter(django_filters.FilterSet):
+    gender = django_filters.ChoiceFilter(
+        choices=[("Male", "Male"), ("Female", "Female")],
+        label="Gender",
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+
+
+    payment_status = django_filters.ChoiceFilter(
+        choices=[("Pending", "Pending"), ("Completed", "Completed"), ("Failed", "Failed")],
+        label="Payment Status",
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+
+
+    created_at = DateFromToRangeFilter(
+        field_name="created_at",
+        label="Created At (Range)",
+        widget=RangeWidget(
+            attrs={"type": "date", "class": "form-control"}
+        ),
+    )
+
+    class Meta:
+        model = ITTFTrainee
+        fields = ["gender","payment_status", "created_at"]

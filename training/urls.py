@@ -10,6 +10,8 @@ from .views import *
 urlpatterns = [
     # venues
     path("addtrainee/", trainee_add, name="addtrainee"),
+    # path("addtrainee/", trainee_add, name="addtrainee"),
+    path("ittf_trainee_add/", ittf_trainee_add, name="ittf_trainee_add"),
     # path("teccred/", teccreditation, name="teccred"),
     path('export_tcsv/', export_tcsv, name='export_tcsv'),
     path("trainees/", trainees, name="trainees"),
@@ -23,6 +25,7 @@ urlpatterns = [
     path("update_trainee/<int:id>", trainee_update, name="update_trainee"),
     path("activate_trainee/<int:id>", activate_trainee, name="activate_trainee"),
     path("payment_success/", payment_success, name="payment_success"),  # Add this line
+    path("ittfpayment_success/", ittfpayment_success, name="ittfpayment_success"),  # Add this line
     
     # path('airtel/payment/callback/', airtel_payment_callback, name='airtel_payment_callback'),
     # Add more URLs as needed

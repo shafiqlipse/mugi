@@ -51,3 +51,45 @@ class TraineesForm(forms.ModelForm):
                 attrs={"type": "date", "class": "form-control"}
             ),
         }
+
+class ITTFTraineesForm(forms.ModelForm):
+    class Meta:
+        model = ITTFTrainee
+        fields = [
+            "first_name",
+            "last_name",
+            
+            "photo",
+            "contact",
+            "recommendation_letter",
+         
+            "email",
+            "district",
+            "gender",
+            "date_of_birth",
+            "place",
+           
+            "phone_number",
+           
+        ]
+
+            
+        widgets = {
+            "first_name": forms.TextInput(attrs={"class": "form-control"}),
+            "last_name": forms.TextInput(attrs={"class": "form-control"}),
+            "place": forms.TextInput(attrs={"class": "form-control"}),
+            "contact": forms.TextInput(attrs={"class": "form-control"}),
+            "email": forms.TextInput(attrs={"class": "form-control"}),
+
+           
+            "district": forms.Select(attrs={"class": "form-control js-example-basic-single"}),
+         
+            "photo": forms.FileInput(attrs={"class": "form-control"}),
+            "recommendation_letter": forms.FileInput(attrs={"class": "form-control"}),
+            "gender": forms.Select(attrs={"class": "form-control"}),
+        
+            "phone_number": forms.TextInput(attrs={"class": "form-control"}),
+            "date_of_birth": forms.DateInput(
+                attrs={"type": "date", "class": "form-control"}
+            ),
+        }

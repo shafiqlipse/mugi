@@ -182,12 +182,110 @@ def trainee_add(request):
     # Default GET request
     return render(request, 'trainees/add_trainee.html', {'form': form, 'amount': '110,500'})
  
+
+def ittf_trainee_add(request):
+    if request.method == 'POST':
+        form = ITTFTraineesForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                phone_number = form.cleaned_data.get('phone_number')
+
+                if not phone_number:
+                    messages.error(request, "Phone number is required.")
+                    return render(request, 'trainees/add_trainee.html', {'form': form})
+
+                # 💰 Payment details
+                amount = 20500  # Total amount (UGX 110,000 + 500 fee)
+
+                # 🎯 Save trainee record first (pending payment)
+                with transaction.atomic():
+                    ittftrainee = form.save(commit=False)
+                    ittftrainee.amount = amount
+                    ittftrainee.payment_status = "Pending"
+                    ittftrainee.transaction_id = str(random.randint(10**11, 10**12 - 1))
+                    ittftrainee.save()
+
+                # 🔐 Get Airtel token
+                token = get_airtel_token()
+                if not token:
+                    messages.error(request, "Failed to connect to Airtel. Try again later.")
+                    return render(request, 'trainees/add_trainee.html', {'form': form})
+
+                # 🌍 Airtel API setup
+                payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
+                msisdn = re.sub(r"\D", "", str(phone_number)).lstrip('0')
+
+                headers = {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "X-Country": "UG",
+                    "X-Currency": "UGX",
+                    "Authorization": f"Bearer {token}",
+                    "x-signature": settings.AIRTEL_API_SIGNATURE,
+                    "x-key": settings.AIRTEL_API_KEY,
+                }
+
+                payload = {
+                    "reference": str(ittftrainee.transaction_id),
+                    "subscriber": {
+                        "country": "UG",
+                        "currency": "UGX",
+                        "msisdn": msisdn,
+                    },
+                    "transaction": {
+                        "amount": float(amount),
+                        "country": "UG",
+                        "currency": "UGX",
+                        "id": ittftrainee.transaction_id,
+                    },
+                }
+
+                # 🚀 Send payment request
+                response = requests.post(payment_url, json=payload, headers=headers)
+                logger.info(f"Airtel Payment Response ({response.status_code}): {response.text}")
+
+                # 🧾 Handle response
+                if response.status_code == 200:
+                    messages.success(
+                        request,
+                        f"Payment initiated successfully! Please confirm UGX {amount} on your Airtel line."
+                    )
+                    return redirect('payment_success')
+                else:
+                    ittftrainee.payment_status = "Failed"
+                    ittftrainee.save()
+                    messages.error(request, "Payment initiation failed. Please try again.")
+                    return render(request, 'ittf/add_trainee.html', {'form': form})
+
+            except Exception as e:
+                logger.error(f"❌ Error during trainee payment: {str(e)}", exc_info=True)
+                messages.error(request, "An error occurred while processing your payment.")
+                return render(request, 'ittf/add_trainee.html', {'form': form})
+
+    else:
+        form = ITTFTraineesForm()
+
+    # Default GET request
+    return render(request, 'ittf/add_trainee.html', {'form': form, 'amount': '110,500'})
+ 
     
     
 def payment_success(request):
     
 
     return render(request, 'trainees/successpage.html', {
+        
+    })
+    
+
+ # Assume you have created this filter
+
+    
+    
+def ittfpayment_success(request):
+    
+
+    return render(request, 'ittf/successpage.html', {
         
     })
     
