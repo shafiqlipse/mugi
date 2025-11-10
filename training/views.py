@@ -266,7 +266,7 @@ def ittf_trainee_add(request):
         form = ITTFTraineesForm()
 
     # Default GET request
-    return render(request, 'ittf/add_trainee.html', {'form': form, 'amount': '110,500'})
+    return render(request, 'ittf/add_trainee.html', {'form': form, 'amount': '10,500'})
  
     
     
