@@ -26,6 +26,7 @@ urlpatterns = [
     path("activate_trainee/<int:id>", activate_trainee, name="activate_trainee"),
     path("payment_success/", payment_success, name="payment_success"),  # Add this line
     path("ittfpayment_success/", ittfpayment_success, name="ittfpayment_success"),  # Add this line
+    path("ittf_trainees/", ittf_trainees, name="ittf_trainees"),  # Add this line
     
     # path('airtel/payment/callback/', airtel_payment_callback, name='airtel_payment_callback'),
     # Add more URLs as needed

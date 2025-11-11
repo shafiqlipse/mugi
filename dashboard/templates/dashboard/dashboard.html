@@ -478,9 +478,9 @@
                   <span>
                     Support
                     <span class="badge text-bg-secondary">
-                      {{tickets_count }}</span>
-                    </span
-                  >
+                      {{tickets_count }}</span
+                    >
+                  </span>
                   <span class="menu-arrow"></span>
                 </a>
                 <div class="collapse" id="sidebarWidgetsui">
@@ -508,7 +508,7 @@
                   </ul>
                 </div>
               </li>
-                           <li class="menu-title">Capacity Building</li>
+              <li class="menu-title">Capacity Building</li>
 
               <li>
                 <a href="#training" data-bs-toggle="collapse">
@@ -523,12 +523,10 @@
                 <div class="collapse" id="training">
                   <ul class="nav-second-level">
                     <li>
-                      <a class="tp-link" href="{% url 'trainees'%}"
-                        >Trainees</a
-                      >
+                      <a class="tp-link" href="{% url 'trainees'%}">Trainees</a>
                     </li>
                     <li>
-                      <a class="tp-link" href="{% url 'payments' %}"
+                      <a class="tp-link" href="{% url 'ittf_trainees' %}"
                         >ITTF</a
                       >
                     </li>
@@ -706,11 +704,6 @@
                     <li>
                       <a class="tp-link" href="{% url 'ticket_create' %}"
                         >Add message</a
-                      >
-                    </li>
-                    <li>
-                      <a class="tp-link" href="{% url 'edit_requests_list' %}">
-                        Edit Requests</a
                       >
                     </li>
                   </ul>

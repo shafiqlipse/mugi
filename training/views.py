@@ -271,8 +271,6 @@ def ittf_trainee_add(request):
     
     
 def payment_success(request):
-    
-
     return render(request, 'trainees/successpage.html', {
         
     })
@@ -339,6 +337,57 @@ def trainees(request):
             request,
             "trainees/trainees.html",
             {"trainee_filter": trainee_filter},
+        )
+
+
+ # Assume you have created this filter
+
+
+@login_required(login_url="login")
+def ittf_trainees(request):
+    # Get all trainees
+    trainees = ITTFTrainee.objects.all().order_by("-created_at")
+
+    # Apply the filter
+
+
+    if request.method == "POST":
+        # Check which form was submitted
+        if "Accreditation" in request.POST:
+            template = get_template("reports/acrred.html")
+            filename = "Trainee_Accreditation.pdf"
+        elif "Certificate" in request.POST:
+            template = get_template(
+                "reports/certficate_temaplate.html"
+            )  # Your certificate template
+            filename = "Trainee_Certificate.pdf"
+        else:
+            return HttpResponse("Invalid form submission")
+
+        # Generate PDF
+        context = {"trainees": trainees}
+        html = template.render(context)
+
+        # Create a PDF
+        pdf_buffer = BytesIO()
+        pisa_status = pisa.CreatePDF(html, dest=pdf_buffer)
+
+        if pisa_status.err:
+            return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+        pdf_buffer.seek(0)
+
+        # Return the PDF as a response
+        response = HttpResponse(content_type="application/pdf")
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        response.write(pdf_buffer.getvalue())
+        return response
+    else:
+        # Render the filter form
+        return render(
+            request,
+            "ittf/trainees.html",
+            {"trainees": trainees},
         )
 
 
