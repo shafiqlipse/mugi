@@ -354,11 +354,11 @@ def ittf_trainees(request):
     if request.method == "POST":
         # Check which form was submitted
         if "Accreditation" in request.POST:
-            template = get_template("reports/acrred.html")
+            template = get_template("ittf/reports/acrred.html")
             filename = "Trainee_Accreditation.pdf"
         elif "Certificate" in request.POST:
             template = get_template(
-                "reports/certficate_temaplate.html"
+                "ittf/reports/certficate_temaplate.html"
             )  # Your certificate template
             filename = "Trainee_Certificate.pdf"
         else:

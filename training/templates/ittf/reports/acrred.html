@@ -1,0 +1,108 @@
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINEES</title>
+  </head>
+
+  <body>
+    <style>
+      @media print {
+        @page {
+          size: A4 portrait;
+          margin: 1cm; /* Add some margin to prevent content clipping */
+        }
+
+        body {
+          margin: 0; /* Remove default body margin */
+          padding: 0; /* Remove default body padding */
+        }
+
+        .athletes table {
+          display: grid;
+          grid-template-rows: repeat(2, 1fr); /* Two rows */
+          grid-template-columns: repeat(2, 1fr); /* Two columns */
+          gap: 10px; /* Adjust the gap between grid items */
+        }
+      }
+      .header .athletes table tbody tr td table tr .td {
+        padding-top: 105px;
+        padding-bottom: 40px;
+        padding-left: 50px;
+        padding-right: 40px;
+        margin: 0;
+      }
+      .header .athletes table tbody tr td table tr .td .inner {
+        width: 350px;
+        text-align: center;
+        text-transform: uppercase;
+      }
+      .header .athletes table tbody tr td table tr .td .inner img {
+        width: 140px;
+        height: 140px;
+        image-orientation: from-image;
+        transform: rotate(0deg);
+      }
+      .header .athletes table tbody tr td table tr .td .inner span {
+      }
+    </style>
+    <div class="header">
+      <div class="athletes">
+        <table>
+          <tbody>
+            {% for trainee in trainees %}
+            <!---->
+            {% if forloop.counter0|divisibleby:2 %}
+            <!-- Start a new row for every even-numbered trainee -->
+            <tr>
+              {% endif %}
+              <td>
+                <table>
+                  <tr>
+                    <td class="td">
+                      <div class="inner">
+                        <span
+                          >{{ trainee.contact|upper}}
+                          ({{trainee.gender|upper}})</span
+                        >
+                        <br />
+                        {% if trainee.photo %}
+                        <img
+                          src="{{ trainee.photo.path }}"
+                          alt="{{ trainee.first_name }}"
+                        />
+                        {% else %}
+                        <img
+                          src="{% static 'images/profile.png' %}"
+                          alt="{{ trainee.last_name }}"
+                        />
+                        {% endif %}
+                        <br />
+                        <span
+                          >{{ trainee.first_name|upper }}
+                          {{trainee.last_name|upper }}
+                        </span>
+                        <br />
+                        <span>{{ trainee.place|upper|slice:":15" }} </span
+                        ><br />
+                        <span
+                          >{{ trainee.discipline|upper }} |
+                          {{trainee.course|upper }}</span
+                        ><br />
+                        <span></span><br />
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              {% if forloop.last or forloop.counter0|add:1|divisibleby:2 %}
+              <!-- End the row for the last or odd-numbered trainee -->
+            </tr>
+            {% endif %} {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
