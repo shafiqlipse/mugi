@@ -391,6 +391,12 @@ def ittf_trainees(request):
         )
 
 
+def ittf_trainee_details(request, id):
+    trainee = ITTFTrainee.objects.get(id=id)
+
+    context = {"trainee": trainee}
+    return render(request, "ittf/trainee.html", context)
+
 def trainee_details(request, id):
     trainee = Trainee.objects.get(id=id)
 

@@ -21,6 +21,7 @@ urlpatterns = [
     path('get-venues/', get_venues, name='get_venues'),
     path('get-level/', get_levels, name='get_levels'),
     path("trainee/<int:id>", trainee_details, name="trainee"),
+    path("ittf_trainee/<int:id>", ittf_trainee_details, name="ittf_trainee"),
     path("delete_trainee/<int:id>", trainee_delete, name="delete_trainee"),
     path("update_trainee/<int:id>", trainee_update, name="update_trainee"),
     path("activate_trainee/<int:id>", activate_trainee, name="activate_trainee"),

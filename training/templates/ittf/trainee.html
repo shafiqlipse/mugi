@@ -1,0 +1,81 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}{{trainee.fname}} {{trainee.lname}}{% endblock %}
+<!--static-->
+{% block head %}
+<title>{{ trainee.fname }} {{ trainee.lname }}</title>
+<meta property="og:title" content="{{ trainee.fname }} {{ trainee.lname }}" />
+<meta
+  property="og:description"
+  content="{{ trainee.fname }} {{ trainee.lname }}"
+/>
+<meta property="og:image" content="{{ trainee.photo.url }}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:type" content="website" />
+{% endblock %}
+
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="athlete-dew content-wrapper">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title mb-0">Photo</h4>
+        </div>
+        <div class="card-body">
+          <img
+            src="{{trainee.photo.url}}"
+            alt=""
+            style="width: 100%; height: auto"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h1>{{trainee.first_name}} {{trainee.last_name}}</h1>
+          <p>{{trainee.email}}</p>
+        </div>
+        <div class="card-body">
+          <div class="small-details row">
+            <span class="col-6 mb-2"
+              >Phone
+              <h3>{{trainee.contact}}</h3></span
+            >
+            <span class="col-6 mb-2"
+              >Gender
+              <h3>{{trainee.gender}}</h3></span
+            >
+            <span class="col-6 mb-2"
+              >Date of birth
+              <h3>{{trainee.date_of_birth}}</h3></span
+            >
+            <span class="col-6 mb-2"
+              >School/ place of work
+              <h3>{{trainee.place}}</h3></span
+            >
+    
+
+            <span class="col-6 mb-2"
+              >Trainee Payment Status:
+              <h3 class="bg-success p-2 text-white">
+                {{trainee.payment_status}}
+              </h3></span
+            >
+  
+            <span class="col-6 mb-2"
+              >District
+              <h3>{{trainee.district}}</h3></span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+</div>
