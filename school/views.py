@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from accounts.models import *
 from accounts.forms import *
 from transfers.models import TransferPayment
-from training.models import Trainee
+from training.models import Trainee, ITTFTrainee
 from .forms import *
 from .filters import *
 from django.contrib import messages
@@ -1291,6 +1291,20 @@ def airtel_payment_callback(request):
                 airtel_logger.warning(f"⚠️ Payment not completed: {new_status} for {trainee.transaction_id}")
 
             trainee.save()
+
+        # --- Update TransferPayment and related TransferRequest ---
+        # --- Update Trainee and related TransferRequest ---
+        ittftrainee = get_object_or_404(ITTFTrainee, transaction_id=transaction_id)
+        if ittftrainee:
+            ittftrainee.payment_status = new_status
+            if new_status == "COMPLETED":
+                ittftrainee.payment_status = 'Completed'  # ✅ Mark as paid
+                airtel_logger.info(f"✅ Payment successful for {ittftrainee.first_name} {ittftrainee.last_name}")
+            else:
+                ittftrainee.payment_status = 'Failed'
+                airtel_logger.warning(f"⚠️ Payment not completed: {new_status} for {ittftrainee.transaction_id}")
+
+            ittftrainee.save()
 
         # --- Update TransferPayment and related TransferRequest ---
         transfer_payment = TransferPayment.objects.filter(transaction_id=transaction_id).first()
