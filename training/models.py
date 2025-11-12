@@ -93,12 +93,17 @@ class Trainee(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.transaction_id})"
 
-
+class ITTFSchool(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+    
+    
 class ITTFTrainee(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     contact = models.CharField(max_length=50)
-    place = models.CharField(max_length=50)
+    school = models.ForeignKey(ITTFSchool, on_delete=models.CASCADE, related_name="ittf_trainee_school")
     email = models.EmailField(max_length=50, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.CASCADE,related_name=
                                  "ittf_trainee_district",)

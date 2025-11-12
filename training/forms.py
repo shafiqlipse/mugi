@@ -67,8 +67,8 @@ class ITTFTraineesForm(forms.ModelForm):
             "district",
             "gender",
             "date_of_birth",
-            "place",
-           
+            "school",
+
             "phone_number",
            
         ]
@@ -77,13 +77,12 @@ class ITTFTraineesForm(forms.ModelForm):
         widgets = {
             "first_name": forms.TextInput(attrs={"class": "form-control"}),
             "last_name": forms.TextInput(attrs={"class": "form-control"}),
-            "place": forms.TextInput(attrs={"class": "form-control"}),
             "contact": forms.TextInput(attrs={"class": "form-control"}),
             "email": forms.TextInput(attrs={"class": "form-control"}),
 
            
             "district": forms.Select(attrs={"class": "form-control js-example-basic-single"}),
-         
+            "school": forms.Select(attrs={"class": "form-control js-example-basic-single"}),
             "photo": forms.FileInput(attrs={"class": "form-control"}),
             "recommendation_letter": forms.FileInput(attrs={"class": "form-control"}),
             "gender": forms.Select(attrs={"class": "form-control"}),

@@ -12,6 +12,9 @@
         @page {
           size: A4 portrait;
           margin: 0;
+          background-image: url("https://upssaonline.com/agm.png");
+          background-repeat: no-repeat;
+          background-size: cover;
         }
 
         header {
@@ -19,8 +22,8 @@
           padding: 0;
         }
       }
-      .header .athletes table tbody tr td table tr .td {
-        padding-top: 100px;
+      {% comment %} .header .athletes table tbody tr td table tr .td {
+        padding-top: 80px;
         padding-bottom: 110px;
         margin-left: 60px;
         margin-right: 30px;
@@ -34,6 +37,24 @@
       }
       .header .athletes table tbody tr td table tr .td .pos {
         color: blue;
+      } {% endcomment %}
+      .header .athletes table tbody tr td table tr .td {
+        padding-top: 105px;
+        padding-bottom: 40px;
+        left: 20px;
+        padding-right: 40px;
+        margin: 0;
+      }
+      .header .athletes table tbody tr td table tr .td .inner {
+
+      }
+      .header .athletes table tbody tr td table tr .atd img {
+        width: 120px;
+        height: 120px;
+      }
+      .header .athletes table tbody tr td table tr .td span strong {
+        font-size: 18px;
+        font-weight: bold;
       }
     </style>
     <div class="header">
