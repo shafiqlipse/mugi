@@ -10,103 +10,112 @@
     <style>
       @media print {
         @page {
-          size: A4 portrait;
-          margin: 0;
-          background-image: url("https://upssaonline.com/agm.png");
-          background-repeat: no-repeat;
-          background-size: cover;
+          size: A4 portrait; /* Set the size of the page to A4 in portrait orientation */
+          margin: 0; /* Remove default margin */
         }
 
-        header {
-          margin: 0;
-          padding: 0;
+        body {
+          margin: 0; /* Remove default body margin */
+          padding: 0; /* Remove default body padding */
         }
+
       }
-      {% comment %} .header .athletes table tbody tr td table tr .td {
-        padding-top: 80px;
-        padding-bottom: 110px;
-        margin-left: 60px;
-        margin-right: 30px;
-      }
-      .header .athletes table tbody tr td table tr td img {
-        width: 110px;
-        margin-right: -30px;
-      }
-      .header .athletes table tbody tr td table tr .td .deas {
-        font-size: 15px;
-      }
-      .header .athletes table tbody tr td table tr .td .pos {
-        color: blue;
-      } {% endcomment %}
-      .header .athletes table tbody tr td table tr .td {
-        padding-top: 105px;
-        padding-bottom: 90px;
-        padding-left: 30px;
-        padding-right: 30px;
+      .header .athletes table tbody tr td {
+        padding-top: 70px;
+        padding-bottom: 40px;
+        padding-left: 50px;
+        padding-right: 40px;
         margin: 0;
       }
       .header .athletes table tbody tr td table tr .td .inner {
-
+ 
+        text-align: center;
+        text-transform: uppercase;
       }
-      .header .athletes table tbody tr td table tr .atd img {
-        width: 100px;
-        height: 110px;
-        display: block;
-        text-align: right;
-        margin-right: 60px;
+      .header.athletes table  tbody tr td table tr.td.inner.text {
+        size: 12px;
+        text-transform: uppercase;
+        margin: 0px;
       }
-      .header .athletes table tbody tr td table tr .td span{
-        font-size: 13px;
-        {% comment %} width: 250px; {% endcomment %}
+      .header .athletes table tbody tr td table tr .td .inner img {
+        width: 120px;
+        height: 120px;
       }
-      .header .athletes table tbody tr td table tr .td span strong{
-        font-size: 14px;
-        font-weight: bold;
+      .header .athletes table tbody tr td table tr .td .inner .text span strong {
+        margin-top: 20px;
+        text-align: left;
+        font-size: 11px;
+        width: 100%;
+      }
+      .header .athletes table tbody tr td table tr .td .inner .text school {
+        font-size: 10px;
+    
+      }
+      .header .athletes table tbody tr td table tr .td .inner {
+        width: 300px;
       }
     </style>
     <div class="header">
       <div class="athletes">
         <table>
           <tbody>
-            {% for athlete in alldelegates %}
-            <!---->
-            {% if forloop.counter0|divisibleby:2 %}
-            <!-- Start a new row for every even-numbered athlete -->
+            {% for athlete in alldelegates %} {% if forloop.counter0|divisibleby:2%}
+
             <tr>
               {% endif %}
               <td>
                 <table>
                   <tr>
                     <td class="td">
-                      <span class="deas"
-                        ><strong
-                          >{{ athlete.first_name|upper }}
-                          {{athlete.last_name|upper }}</strong
-                        >
+                      <div class="inner">
+       
+                        <br />
+                        {% if athlete.photo %}
+                        <img
+                          src="{{ athlete.photo.path }}"
+                          alt="{{ athlete.fname }}"
+                        />
+                        {% else %}
+                        <img
+                          src="{% static 'images/profile.png' %}"
+                          alt="{{ athlete.lname }}"
+                        />
+                        {% endif %}
+          
+                        <img
+                          src="https://usssaonline.com/qr.png"
+                          alt="{{ athlete.lname }}"
+                        />
+                      
+        
+                
+      
+                      <span class="text">      
+                            <span
+                            ><strong
+                              >{{ athlete.fname|upper }} {{athlete.mname|upper}}
+                              {{athlete.lname|upper}}</strong
+                            ></span
+                          >
+                          <br />
+                        <span
+                          >{{ athlete.position|upper}}
                       </span>
-                      <br />
-
-                      <span class="des">{{ athlete.zone|upper }}</span><br />
-                      <span class="pos">{{ athlete.position|upper }}</span>
-                    </td>
-                    <td class="atd">
-                      {% if athlete.photo %}
-                      <img
-                        src="{{ athlete.photo.path }}"
-                        alt="{{ athlete.first_name }}"
-                      />
-                      {% else %}
-                      <img
-                        src="{% static 'images/profile.png' %}"
-                        alt="{{ athlete.last_name }}"
-                      />
-                      {% endif %}
+                          </span
+                        >
+                          <br />
+                          <span class='school'>{{ athlete.school|upper }}</span><br />
+                          <span><strong>{{ athlete.zone|upper }} ZONE</strong></span><br />
+                        </span>
+                      
+                   
+                    
+                      
                     </td>
                   </tr>
                 </table>
               </td>
               {% if forloop.last or forloop.counter0|add:1|divisibleby:2 %}
-              <!-- End the row for the last or odd-numbered athlete -->
             </tr>
             {% endif %} {% endfor %}
           </tbody>
