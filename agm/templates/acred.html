@@ -40,20 +40,27 @@
       } {% endcomment %}
       .header .athletes table tbody tr td table tr .td {
         padding-top: 105px;
-        padding-bottom: 40px;
-        left: 20px;
-        padding-right: 40px;
+        padding-bottom: 90px;
+        padding-left: 30px;
+        padding-right: 30px;
         margin: 0;
       }
       .header .athletes table tbody tr td table tr .td .inner {
 
       }
       .header .athletes table tbody tr td table tr .atd img {
-        width: 120px;
-        height: 120px;
+        width: 100px;
+        height: 110px;
+        display: block;
+        text-align: right;
+        margin-right: 60px;
       }
-      .header .athletes table tbody tr td table tr .td span strong {
-        font-size: 18px;
+      .header .athletes table tbody tr td table tr .td span{
+        font-size: 13px;
+        {% comment %} width: 250px; {% endcomment %}
+      }
+      .header .athletes table tbody tr td table tr .td span strong{
+        font-size: 14px;
         font-weight: bold;
       }
     </style>
@@ -79,13 +86,8 @@
                       </span>
                       <br />
 
-                      <span class="des"
-                        >{{ athlete.zone|upper }} |
-                        {{athlete.district|upper}}</span
-                      ><br />
-                      <span class="pos"
-                        ><strong>{{ athlete.position|upper }}</strong></span
-                      >
+                      <span class="des">{{ athlete.zone|upper }}</span><br />
+                      <span class="pos">{{ athlete.position|upper }}</span>
                     </td>
                     <td class="atd">
                       {% if athlete.photo %}
