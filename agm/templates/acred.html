@@ -11,7 +11,8 @@
       @media print {
         @page {
           size: A4 portrait; /* Set the size of the page to A4 in portrait orientation */
-          margin: 0; /* Remove default margin */
+          margin: 0; /* Remove default margin 
+          background-image: url('https://upssaonline.com/AGM-01.png');*/
         }
 
         body {
@@ -93,8 +94,8 @@
                       <span class="text">      
                             <span
                             ><strong
-                              >{{ athlete.fname|upper }} {{athlete.mname|upper}}
-                              {{athlete.lname|upper}}</strong
+                              >{{ athlete.first_name|upper }}
+                              {{athlete.last_name|upper}}</strong
                             ></span
                           >
                           <br />
