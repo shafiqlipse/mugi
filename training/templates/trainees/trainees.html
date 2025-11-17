@@ -128,10 +128,23 @@
                   <td>{{trainee.created_at}}</td>
                   <td>{{trainee.payment_status}}</td>
                   <td>
+                    <a
+                      href="{% url 'update_trainee' trainee.id %}"
+                      class="btn btn-warning"
+                      >Edit</a
+                    >
                     {% if trainee.payment_status == 'Completed' %}{% else %}
-                    <a href="{% url 'activate_trainee' trainee.id %}" class="btn btn-warning">Activate</a>{% endif %}
-                    <a href="{% url 'update_trainee' trainee.id %}" class="btn btn-warning">Edit</a>
-                    <a href="{% url 'delete_trainee' trainee.id %}" class="btn btn-danger">Delete</a>
+                    <a
+                      href="{% url 'activate_trainee' trainee.id %}"
+                      class="btn btn-success"
+                      >Activate</a
+                    >
+
+                    <a
+                      href="{% url 'delete_trainee' trainee.id %}"
+                      class="btn btn-danger"
+                      >Delete</a
+                    >{% endif %}
                   </td>
                 </tr>
                 {%endfor%}
