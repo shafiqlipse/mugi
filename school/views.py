@@ -1270,71 +1270,71 @@ def airtel_payment_callback(request):
         status_code = transaction.get("status_code")
         airtel_money_id = transaction.get("airtel_money_id")
 
-        status_mapping = {"TS": "COMPLETED", "TF": "FAILED", "TP": "PENDING"}
+        status_mapping = {
+            "TS": "COMPLETED",
+            "TF": "FAILED",
+            "TP": "PENDING"
+        }
         new_status = status_mapping.get(status_code, "FAILED")
 
-        # --- Update Payment ---
+        # -----------------------------------------------------
+        # 1️⃣ Update PAYMENT (uses .filter().first() = NO CRASH)
+        # -----------------------------------------------------
         payment = Payment.objects.filter(transaction_id=transaction_id).first()
         if payment:
             payment.status = new_status
             payment.save()
 
-        # --- Update Trainee and related TransferRequest ---
-        trainee = get_object_or_404(Trainee, transaction_id=transaction_id)
+        # -----------------------------------------------------
+        # 2️⃣ Update Trainee (SAFE lookup)
+        # -----------------------------------------------------
+        trainee = Trainee.objects.filter(transaction_id=transaction_id).first()
         if trainee:
-            trainee.payment_status = new_status
-            if new_status == "COMPLETED":
-                trainee.payment_status = 'Completed'  # ✅ Mark as paid
-                airtel_logger.info(f"✅ Payment successful for {trainee.first_name} {trainee.last_name}")
-            else:
-                trainee.payment_status = 'Failed'
-                airtel_logger.warning(f"⚠️ Payment not completed: {new_status} for {trainee.transaction_id}")
-
+            trainee.payment_status = "Completed" if new_status == "COMPLETED" else "Failed"
             trainee.save()
 
-        # --- Update TransferPayment and related TransferRequest ---
-        # --- Update Trainee and related TransferRequest ---
-        ittftrainee = get_object_or_404(ITTFTrainee, transaction_id=transaction_id)
+        # -----------------------------------------------------
+        # 3️⃣ Update ITTFTrainee (SAFE lookup)
+        # -----------------------------------------------------
+        ittftrainee = ITTFTrainee.objects.filter(transaction_id=transaction_id).first()
         if ittftrainee:
-            ittftrainee.payment_status = new_status
-            if new_status == "COMPLETED":
-                ittftrainee.payment_status = 'Completed'  # ✅ Mark as paid
-                airtel_logger.info(f"✅ Payment successful for {ittftrainee.first_name} {ittftrainee.last_name}")
-            else:
-                ittftrainee.payment_status = 'Failed'
-                airtel_logger.warning(f"⚠️ Payment not completed: {new_status} for {ittftrainee.transaction_id}")
-
+            ittftrainee.payment_status = "Completed" if new_status == "COMPLETED" else "Failed"
             ittftrainee.save()
 
-        # --- Update TransferPayment and related TransferRequest ---
+        # -----------------------------------------------------
+        # 4️⃣ Update TransferPayment (SAFE lookup)
+        # -----------------------------------------------------
         transfer_payment = TransferPayment.objects.filter(transaction_id=transaction_id).first()
         if transfer_payment:
             transfer_payment.status = new_status
+
             if new_status == "COMPLETED":
                 transfer_payment.paid_at = timezone.now()
+
+                # Only adjust TransferRequest status to PAID
                 if transfer_payment.transfer:
                     transfer_payment.transfer.status = "paid"
                     transfer_payment.transfer.save()
+
             transfer_payment.save()
 
-        # --- Update AthleteEditRequest if exists ---
+        # -----------------------------------------------------
+        # 5️⃣ Athlete Edit Request
+        # -----------------------------------------------------
         edit_request = AthleteEditRequest.objects.filter(transaction_id=transaction_id).first()
         if edit_request:
             edit_request.status = new_status
             edit_request.save()
 
-        airtel_logger.info(f"📌 Transaction ID: {transaction_id}, Status Code: {status_code}, Airtel Money ID: {airtel_money_id}")
+        airtel_logger.info(
+            f"📌 Processed Callback: transaction={transaction_id}, status={new_status}"
+        )
         return JsonResponse({"message": "Callback processed"}, status=200)
 
-    except json.JSONDecodeError:
-        airtel_logger.error("❌ Invalid JSON received in callback")
-        return JsonResponse({"error": "Invalid JSON"}, status=400)
-
     except Exception as e:
-        airtel_logger.error(f"❌ Error processing callback: {str(e)}")
-        return JsonResponse({"error": "Internal Server Error"}, status=500)
-
-    
+        airtel_logger.error(f"❌ Callback error: {str(e)}")
+        return JsonResponse({"error": "Internal Error"}, status=500)
+ 
     
 def payment_success(request, transaction_id):
     payment = Payment.objects.filter(transaction_id=transaction_id).first()
