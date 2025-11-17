@@ -505,7 +505,7 @@ def export_tcsv(request):
 
 def activate_trainee(request, id):
     trainee = get_object_or_404(Trainee, id=id)
-    trainee.status = "Active"
+    trainee.payment_status = "Completed"
     trainee.save()
     messages.success(request, "Trainee activated successfully.")
     return redirect("trainees") 

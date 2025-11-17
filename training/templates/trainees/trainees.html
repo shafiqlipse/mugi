@@ -107,7 +107,7 @@
                   <th>Names</th>
                   <th>Venue</th>
                   <th>Course</th>
-                  <th>Level</th>
+                  <th>Phone Number</th>
                   <th>Date</th>
                   <th>Status</th>
                   <th>Actions</th>
@@ -124,10 +124,11 @@
 
                   <td>{{trainee.venue}}</td>
                   <td>{{trainee.course}}</td>
-                  <td>{{trainee.level}}</td>
+                  <td>{{trainee.phone_number}}</td>
                   <td>{{trainee.created_at}}</td>
                   <td>{{trainee.payment_status}}</td>
                   <td>
+                    <a href="{% url 'activate_trainee' trainee.id %}" class="btn btn-warning">Activate</a>
                     <a href="{% url 'update_trainee' trainee.id %}" class="btn btn-warning">Edit</a>
                     <a href="{% url 'delete_trainee' trainee.id %}" class="btn btn-danger">Delete</a>
                   </td>
