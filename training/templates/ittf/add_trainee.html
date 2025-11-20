@@ -80,6 +80,7 @@
                           method="POST"
                           class="form-control fomin"
                           enctype="multipart/form-data"
+                          id="fominx"
                         >
                           {% csrf_token %}
                           <div class="schoolt">
@@ -245,7 +246,7 @@
                                   </div>
                                 </div>
                                 <div class="modal-footer">
-                                  <button type="submit" class="btn btn-success">
+                                  <button type="submit" class="btn btn-success" id="submitBttonx">
                                     Submit and Pay
                                   </button>
                                 </div>
@@ -294,106 +295,16 @@
 <!-- Croppie JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script> 
     <script src="{% static 'script/photo.js' %}"></script>
-    <script>
-      $(document).ready(function () {
-        $("#id_season").change(function () {
-          var seasonId = $(this).val();
-          if (seasonId) {
-            $.ajax({
-              url: "/training/get-venues/", // Use the URL for the updated view
-              data: {
-                season_id: seasonId,
-              },
-              success: function (data) {
-                var venueDropdown = $("#id_venue");
-                venueDropdown.empty();
-                venueDropdown.append(
-                  '<option value="">Select a venue</option>'
-                );
-                data.forEach(function (venue) {
-                  venueDropdown.append(
-                    `<option value="${venue.id}">${venue.name}</option>`
-                  );
-                });
-              },
-            });
-          } else {
-            $("#id_venue").empty();
-            $("#id_venue").append('<option value="">Select a venue</option>');
-          }
-        });
-      });
-    </script>
-    <script>
-      $(document).ready(function () {
-        $("#id_venue").change(function () {
-          var venueId = $(this).val();
-          if (venueId) {
-            $.ajax({
-              url: "/training/get-courses/", // Use the URL for the updated view
-              data: {
-                venue_id: venueId,
-              },
-              success: function (data) {
-                var courseDropdown = $("#id_course");
-                courseDropdown.empty();
-                courseDropdown.append(
-                  '<option value="">Select a course</option>'
-                );
-                data.forEach(function (course) {
-                  courseDropdown.append(
-                    `<option value="${course.id}">${course.name}</option>`
-                  );
-                });
-              },
-            });
-          } else {
-            $("#id_course").empty();
-            $("#id_course").append('<option value="">Select a course</option>');
-          }
-        });
-      });
-    </script>
-    <script>
-      $(document).ready(function () {
-          $("#id_course").change(function () {
-              var courseId = $(this).val();
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.querySelector('#fominx');
+    const submitButton = document.querySelector('#submitBttonx');
 
-              if (courseId) {
-                  $.ajax({
-                      url: "/training/get-level/",  // URL for your Django view
-                      data: { course_id: courseId },
-                      success: function (data) {
-                          var levelDropdown = $("#id_level");
-                          levelDropdown.empty();
-
-                          if (data.error) {
-                              alert(data.error);
-                              levelDropdown.append('<option value="">Select a level</option>');
-                              return;
-                          }
-
-                          if (data.id && data.name) {
-                              // Single level returned
-                              levelDropdown.append('<option value="">Select a level</option>');
-                              levelDropdown.append(
-                                  `<option value="${data.id}">${data.name}</option>`
-                              );
-                          } else {
-                              // No level assigned
-                              levelDropdown.append('<option value="">No level available</option>');
-                          }
-                      },
-                      error: function () {
-                          alert("Error fetching level. Please try again.");
-                      },
-                  });
-              } else {
-                  $("#id_level").empty();
-                  $("#id_level").append('<option value="">Select a level</option>');
-              }
-          });
-      });
+    form.addEventListener('submit', function() {
+      submitButton.disabled = true;
+      submitButton.textContent = 'Processing...';
+    });
+  });
 </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>

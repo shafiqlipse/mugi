@@ -96,12 +96,17 @@
                   <td>{{trainee.payment_status}}</td>
                   <td>
                     <a
-                      href="{% url 'update_trainee' trainee.id %}"
+                      href="{% url 'activate_itrainee' trainee.id %}"
                       class="btn btn-warning"
+                      >Activate</a
+                    >
+                    <a
+                      href="{% url 'update_trainee' trainee.id %}"
+                      class="btn btn-secondary"
                       >Edit</a
                     >
                     <a
-                      href="{% url 'delete_trainee' trainee.id %}"
+                      href="{% url 'delete_itrainee' trainee.id %}"
                       class="btn btn-danger"
                       >Delete</a
                     >

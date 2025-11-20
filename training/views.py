@@ -87,7 +87,6 @@ def get_level(request):
 
 
 
-
 def generate_unique_transaction_id():
     """Generate a unique 12-digit transaction ID."""
     while True:
@@ -269,7 +268,6 @@ def ittf_trainee_add(request):
     return render(request, 'ittf/add_trainee.html', {'form': form, 'amount': '10,500'})
  
     
-    
 def payment_success(request):
     return render(request, 'trainees/successpage.html', {
         
@@ -278,7 +276,6 @@ def payment_success(request):
 
  # Assume you have created this filter
 
-    
     
 def ittfpayment_success(request):
     
@@ -456,6 +453,58 @@ def trainee_delete(request, id):
     return render(request, "trainees/delete_trainee.html", {"obj": stud})
 
 
+
+def itrainee_update(request, id):
+    trainee = get_object_or_404(ITTFTrainee, id=id)
+
+    if request.method == "POST":
+        form = ITTFTraineesForm(request.POST, request.FILES, instance=trainee)
+        if form.is_valid():
+            try:
+                new_trainee = form.save(commit=False)
+
+                cropped_data = request.POST.get("photo_cropped")
+                if cropped_data:
+                    try:
+                        format, imgstr = cropped_data.split(";base64,")
+                        ext = format.split("/")[-1]
+                        data = ContentFile(
+                            base64.b64decode(imgstr), name=f"photo.{ext}"
+                        )
+                        new_trainee.photo = data  # Assign cropped image
+                    except (ValueError, TypeError):
+                        messages.error(request, "Invalid image data.")
+                        return render(request, "ittf/add_trainee.html", {"form": form})
+
+                new_trainee.save()
+                messages.success(
+                    request,
+                    "Updated successfully! ",
+                )
+                return redirect("ittf_trainees")
+
+            except IntegrityError:
+                messages.error(request, "There was an error saving the trainee.")
+                return render(request, "ittf/add_trainee.html", {"form": form})
+
+    else:
+        form = TraineesForm(instance=trainee)
+
+    context = {
+        "form": form,
+        "trainee": trainee,
+    }
+    return render(request, "update_trainee.html", context)
+
+
+def itrainee_delete(request, id):
+    stud = ITTFTrainee.objects.get(id=id)
+    if request.method == "POST":
+        stud.delete()
+        return redirect("ittf_trainees")
+    return render(request, "trainees/delete_trainee.html", {"obj": stud})
+
+
 import csv
 from django.http import HttpResponse
 
@@ -502,13 +551,20 @@ def export_tcsv(request):
     return response
 
 
-
 def activate_trainee(request, id):
     trainee = get_object_or_404(Trainee, id=id)
     trainee.payment_status = "Completed"
     trainee.save()
     messages.success(request, "Trainee activated successfully.")
     return redirect("trainees") 
+
+
+def activate_itrainee(request, id):
+    trainee = get_object_or_404(ITTFTrainee, id=id)
+    trainee.payment_status = "Completed"
+    trainee.save()
+    messages.success(request, "Trainee activated successfully.")
+    return redirect("ittf_trainees") 
 
 
 def archived_trainees(request):

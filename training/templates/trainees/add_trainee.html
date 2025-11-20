@@ -80,6 +80,7 @@
                           method="POST"
                           class="form-control fomin"
                           enctype="multipart/form-data"
+                          id="fomin"
                         >
                           {% csrf_token %}
                           <div class="schoolt">
@@ -271,7 +272,7 @@
                                   </div>
                                 </div>
                                 <div class="modal-footer">
-                                  <button type="submit" class="btn btn-success">
+                                  <button type="submit" class="btn btn-success" id="submitBtton">
                                     Submit and Pay
                                   </button>
                                 </div>
@@ -421,7 +422,17 @@
           });
       });
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.querySelector('#fomin');
+    const submitButton = document.querySelector('#submitBtton');
 
+    form.addEventListener('submit', function() {
+      submitButton.disabled = true;
+      submitButton.textContent = 'Processing...';
+    });
+  });
+</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <!--Datatable scripts-->
   </body>
