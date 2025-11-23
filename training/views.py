@@ -115,7 +115,7 @@ def trainee_add(request):
                     trainee = form.save(commit=False)
                     trainee.amount = amount
                     trainee.payment_status = "Pending"
-                    trainee.transaction_id = str(random.randint(10**11, 10**12 - 1))
+                    trainee.transaction_id = generate_unique_transaction_id()
                     trainee.save()
 
                 # 🔐 Get Airtel token
@@ -201,7 +201,7 @@ def ittf_trainee_add(request):
                     ittftrainee = form.save(commit=False)
                     ittftrainee.amount = amount
                     ittftrainee.payment_status = "Pending"
-                    ittftrainee.transaction_id = str(random.randint(10**11, 10**12 - 1))
+                    ittftrainee.transaction_id = generate_unique_transaction_id()
                     ittftrainee.save()
 
                 # 🔐 Get Airtel token
