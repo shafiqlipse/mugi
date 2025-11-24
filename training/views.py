@@ -335,7 +335,7 @@ def trainees(request):
         return render(
             request,
             "trainees/trainees.html",
-            {"trainee_filter": trainee_filter},
+            {"trainee_filter": trainee_filter,total_collected:'total_collected'},
         )
 
 
