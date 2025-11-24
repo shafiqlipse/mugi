@@ -14,6 +14,7 @@ urlpatterns = [
     path("ittf_trainee_add/", ittf_trainee_add, name="ittf_trainee_add"),
     # path("teccred/", teccreditation, name="teccred"),
     path('export_tcsv/', export_tcsv, name='export_tcsv'),
+    path('export_itcsv/', export_itcsv, name='export_itcsv'),
     path("trainees/", trainees, name="trainees"),
     path("archived-trainees/", archived_trainees, name="archived_trainees"),
     path("unpaid-trainees/", unpaid_trainees, name="unpaid_trainees"),

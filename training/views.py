@@ -556,6 +556,48 @@ def export_tcsv(request):
     return response
 
 
+def export_itcsv(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="data.csv"'
+
+    # Create a CSV writer object using the HttpResponse as the file.
+    writer = csv.writer(response)
+
+    # Write the header row
+    writer.writerow(
+        [
+            "id",
+            "first_name",
+            "last_name",
+            "place",
+            "contract",
+            "district",
+            "venue",
+            "course",
+            "level",
+        ]
+    )  # Replace with your model's fields
+
+    # Write data rows
+    for obj in ITTFTrainee.objects.filter(payment_status="Completed"):
+        writer.writerow(
+            [
+                obj.id,
+                obj.first_name,
+                obj.last_name,
+                obj.place,
+                obj.contact,
+                obj.district,
+                obj.venue,
+                obj.course,
+                obj.level,
+            ]
+        )  # Replace with your model's fields
+
+    return response
+
+
 def activate_trainee(request, id):
     trainee = get_object_or_404(Trainee, id=id)
     trainee.payment_status = "Completed"
