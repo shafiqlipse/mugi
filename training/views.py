@@ -570,12 +570,10 @@ def export_itcsv(request):
             "id",
             "first_name",
             "last_name",
-            "place",
+            "school",
             "contract",
             "district",
-            "venue",
-            "course",
-            "level",
+
         ]
     )  # Replace with your model's fields
 
@@ -586,12 +584,10 @@ def export_itcsv(request):
                 obj.id,
                 obj.first_name,
                 obj.last_name,
-                obj.place,
+                obj.school,
                 obj.contact,
                 obj.district,
-                obj.venue,
-                obj.course,
-                obj.level,
+ 
             ]
         )  # Replace with your model's fields
 

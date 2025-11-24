@@ -11054,3 +11054,16 @@ Traceback (most recent call last):
     raise TemplateDoesNotExist(template_name, chain=chain)
 django.template.exceptions.TemplateDoesNotExist: acrred.html
 "POST /training/trainees/?gender=&venue=&course=&payment_status=Pending&created_at_min=&created_at_max= HTTP/1.1" 500 90496
+Internal Server Error: /training/export_itcsv/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\training\views.py", line 589, in export_itcsv
+    obj.place,
+    ^^^^^^^^^
+AttributeError: 'ITTFTrainee' object has no attribute 'place'
+"GET /training/export_itcsv/ HTTP/1.1" 500 73929
