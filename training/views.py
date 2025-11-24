@@ -292,6 +292,8 @@ def ittfpayment_success(request):
 def trainees(request):
     # Get all trainees
     trainees = Trainee.objects.all().order_by("-created_at")
+    completed_transactions = trainees.filter(payment_status="Completed")
+    total_collected = completed_transactions.aggregate(total_amount=models.Sum('amount'))['total_amount'] or 0
 
     # Apply the filter
     trainee_filter = TraineeFilter(request.GET, queryset=trainees)
@@ -344,6 +346,9 @@ def trainees(request):
 def ittf_trainees(request):
     # Get all trainees
     trainees = ITTFTrainee.objects.all().order_by("-created_at")
+    completed_transactions = trainees.filter(payment_status="Completed")
+    total_collected = completed_transactions.aggregate(total_amount=models.Sum('amount'))['total_amount'] or 0
+    
 
     # Apply the filter
 
@@ -384,7 +389,7 @@ def ittf_trainees(request):
         return render(
             request,
             "ittf/trainees.html",
-            {"trainees": trainees},
+            {"trainees": trainees, "total_collected": total_collected},
         )
 
 

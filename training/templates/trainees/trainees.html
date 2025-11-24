@@ -34,6 +34,8 @@
                 <div class="col-md-10">
                   <form method="get" class="form-control p-2">
                     <h2 class="card-title mb-0">Filter trainees</h2>
+                    {% if user.is_superuser %}
+              <h2 class="card-title mb-3">Total Collected: {{ total_collected }}</h2>{% endif %}
                     <div method="get" class="formlix flex">
                       <div method="get" class="row">
                         <div class="col-md-4">
