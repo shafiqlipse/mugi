@@ -96,6 +96,15 @@ def generate_unique_transaction_id():
 
 
 
+def generate_unique_itransaction_id():
+    """Generate a unique 12-digit transaction ID."""
+    while True:
+        transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
+        if not ITTFTrainee.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
+            return transaction_id
+
+
+
 def trainee_add(request):
     if request.method == 'POST':
         form = TraineesForm(request.POST, request.FILES)
@@ -201,7 +210,7 @@ def ittf_trainee_add(request):
                     ittftrainee = form.save(commit=False)
                     ittftrainee.amount = amount
                     ittftrainee.payment_status = "Pending"
-                    ittftrainee.transaction_id = generate_unique_transaction_id()
+                    ittftrainee.transaction_id = generate_unique_itransaction_id()
                     ittftrainee.save()
 
                 # 🔐 Get Airtel token
