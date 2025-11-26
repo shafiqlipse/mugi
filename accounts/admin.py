@@ -43,6 +43,8 @@ admin.site.register(Course)
 admin.site.register(Level)
 admin.site.register(Venue)
 admin.site.register(Trainee)
+admin.site.register(ITTFTrainee)
+admin.site.register(ITTFSchool)
 
 admin.site.register(Sport)
 admin.site.register(Championship)
