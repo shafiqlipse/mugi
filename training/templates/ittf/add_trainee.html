@@ -19,12 +19,77 @@
 
     {% include "variables/new_css.html" %}
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
-
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css"
+    />
   </head>
 
   <body>
-    <!-- Begin page -->
+    <div class="maintenance-pages">
+      <div class="bg-overlay"></div>
+      <div class="container-fluid p-0">
+        <div class="row">
+          <div class="col-xl-12 align-self-center">
+            <div class="row">
+              <div class="col-md-4 mx-auto">
+                <div class="card overflow-hidden text-center">
+                  <div class="card-body">
+                    <div class="mb-4 p-0 text-center">
+                      <div class="auth-brand">
+                        <a class="logo logo-light" href="/dusty/html/">
+                          <span class="logo-lg">
+                            <img
+                              src="assets/images/logo-light.png"
+                              alt=""
+                              height="24"
+                            />
+                          </span>
+                        </a>
+                        <a class="logo logo-dark" href="/dusty/html/">
+                          <span class="logo-lg">
+                            <img
+                              src="assets/images/logo-dark.png"
+                              alt=""
+                              height="24"
+                            />
+                          </span>
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="text-center">
+                      <h3 class="fw-semibold text-primary lh-base">
+                        You are too late
+                      </h3>
+                      <h4 class="fw-semibold mt-2 text-dark lh-base fs-18">
+                        OOPS.....! Service Expired
+                      </h4>
+                      <p class="text-muted text-center mb-0">
+                        The registration period for this ITTF Capacity Building
+                        Program has ended. Please contact the administration for
+                        further assistance.
+                      </p>
+
+                      <div class="error-page my-4">
+                        <img
+                          src="{% static 'img/offline.svg' %}"
+                          class="img-fluid"
+                          alt="coming-soon"
+                        />
+                      </div>
+
+       
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Begin page 
     <div
       class="account-page"
       style="
@@ -80,7 +145,7 @@
                           method="POST"
                           class="form-control fomin"
                           enctype="multipart/form-data"
-                          id="fominx"
+                          id="fomin"
                         >
                           {% csrf_token %}
                           <div class="schoolt">
@@ -202,9 +267,7 @@
                               </div>
                             </div>
                           </div>
-                          <!-- Button trigger modal -->
-
-                          <!-- Modal -->
+             
                           <div
                             class="modal fade"
                             id="exampleModal"
@@ -287,25 +350,25 @@
     <!-- Vendor -->
     {% include "variables/new_js.html" %}
     <script
-  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-  integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-></script>
-<!-- Croppie JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script> 
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <!-- Croppie JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
     <script src="{% static 'script/photo.js' %}"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const form = document.querySelector('#fominx');
-    const submitButton = document.querySelector('#submitBttonx');
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("#fominx");
+        const submitButton = document.querySelector("#submitBttonx");
 
-    form.addEventListener('submit', function() {
-      submitButton.disabled = true;
-      submitButton.textContent = 'Processing...';
-    });
-  });
-</script>
+        form.addEventListener("submit", function () {
+          submitButton.disabled = true;
+          submitButton.textContent = "Processing...";
+        });
+      });
+    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <!--Datatable scripts-->
