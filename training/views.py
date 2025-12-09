@@ -424,18 +424,6 @@ def trainee_update(request, id):
             try:
                 new_trainee = form.save(commit=False)
 
-                cropped_data = request.POST.get("photo_cropped")
-                if cropped_data:
-                    try:
-                        format, imgstr = cropped_data.split(";base64,")
-                        ext = format.split("/")[-1]
-                        data = ContentFile(
-                            base64.b64decode(imgstr), name=f"photo.{ext}"
-                        )
-                        new_trainee.photo = data  # Assign cropped image
-                    except (ValueError, TypeError):
-                        messages.error(request, "Invalid image data.")
-                        return render(request, "trainee_new.html", {"form": form})
 
                 new_trainee.save()
                 messages.success(
@@ -455,7 +443,7 @@ def trainee_update(request, id):
         "form": form,
         "trainee": trainee,
     }
-    return render(request, "update_trainee.html", context)
+    return render(request, "trainees/update_trainee.html", context)
 
 
 def trainee_delete(request, id):

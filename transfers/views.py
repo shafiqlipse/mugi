@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 # from accounts.decorators import transfer_required
 
 
-def generate_unique_transaction_id():
+def generate_unique_ttransaction_id():
     """Generate a unique 12-digit transaction ID."""
     while True:
         transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
@@ -95,7 +95,7 @@ def initiate_transfer(request, id):
 
             # Step 2: Prepare the Airtel payment request
             payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
-            transaction_id = generate_unique_transaction_id()  
+            transaction_id = generate_unique_ttransaction_id()  
             amount = 10000  # Transfer fee amount
 
 

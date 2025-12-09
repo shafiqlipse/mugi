@@ -7,114 +7,184 @@
 <!--khfufufu-->
 {% block content %}
 <div class="schools-dew content-wrapper">
-  <div class="schooler">
-    <form
-      action=""
-      method="POST"
-      class="form-control"
-      enctype="multipart/form-data"
-    >
-      {% csrf_token %}
+  
+                  <div class="card-body">
+                    <div class="mb-0 p-0 p-lg-3">
+                      <div class="mb-0 border-0 p-md-4 p-lg-0">
+                        <form
+                          action=""
+                          method="POST"
+                          class="form-control fomin"
+                          enctype="multipart/form-data"
+                          id="fomin"
+                        >
+                          {% csrf_token %}
+                          <div class="schoolt">
+                            <h2>Personal Info</h2>
 
-      <div class="schooled">
-        <div class="fields">
-          {{ cform.non_field_errors }} {{ cform.errors }}
-          <!---->
-          {% if messages %}
-          <ul class="messages">
-            {% for message in messages %}
-            <li
-              class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %}"
-            >
-              {{ message }}
-            </li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-          <div class="left flex">
-            <div class="imgbox">
-              <div class="field">
-                <label>{{form.photo.label}} </label>
-                <div id="photos_preview" class="preview-container"></div>
-              </div>
-              <div class="field">
-                <input
-                  type="file"
-                  name="photo"
-                  accept="image/*"
-                  id="id_photo"
-                  class="form-control"
-                />
-              </div>
-            </div>
-            <div class="fiil grid2">
-              <div class="field">
-                <label>First Name</label>
-                {{form.first_name}}
-              </div>
-              <div class="field">
-                <label>Last Name</label>
-                {{form.last_name}}
-              </div>
+                            <div class="row fields">
+                              <div class="col-xl-4 col-lg-4 col-md-12">
+                                <div class="imgbox">
+                                  <div class="field">
+                                    <label>{{form.photo.label}} </label>
+                                    <div
+                                      id="photos_preview"
+                                      class="preview-container mb-2"
+                                      style="
+                                        background-image: url({% static 'img/profile.png' %}); background-size: cover;
+                                      "
+                                    ></div>
+                                  </div>
+                                  
+                                  <div class="field">
+                                    <input
+                                      type="file"
+                                      name="photo"
+                                      accept="image/*"
+                                      id="id_photo"
+                                      class="form-control"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-xl-8 col-lg-8 col-md-12">
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.first_name.label}}</label>
+                                      {{form.first_name}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.last_name.label}}</label>
+                                      {{form.last_name}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.contact.label}}</label>
+                                      {{form.contact}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.email.label}}</label>
+                                      {{form.email}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>Work Place/ School</label>
+                                      {{form.place}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.district.label}}</label>
+                                      {{form.district}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.gender.label}}</label>
+                                      {{form.gender}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label
+                                        >{{ form.date_of_birth.label}}</label
+                                      >
+                                      {{form.date_of_birth}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="field">
+                                      <label>{{ form.designation.label}}</label>
+                                      {{form.designation}}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div></div>
+                          <div class="schoolt mb-4">
+                            <h2>Course Info</h2>
 
-              <div class="field">
-                <label>School</label>
-                {{form.place}}
-              </div>
+                            <div class="row fields">
+                              <div class="col-md-12">
+                                <div class="row">
+                                  <div class="col-md-4 mb-4">
+                                    <div class="field">
+                                      <label>{{ form.season.label}}</label>
+                                      {{form.season}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4 mb-4">
+                                    <div class="field">
+                                      <label>{{ form.venue.label}}</label>
+                                      {{form.venue}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4 mb-4">
+                                    <div class="field">
+                                      <label>{{ form.course.label}}</label>
+                                      {{form.course}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4 mb-4">
+                                    <div class="field">
+                                      <label>{{ form.level.label}}</label>
+                                      {{form.level}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4 mb-4">
+                                    <div class="field">
+                                      <label
+                                        >{{ form.residence_type.label}}</label
+                                      >
+                                      {{form.residence_type}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4 mb-4">
+                                    <div class="field">
+                                      <label
+                                        >{{ form.phone_number.label}}</label
+                                      >
+                                       {{form.phone_number}}
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <div class="field">
+                                      <label>.</label>
+                                    <button type="submit" class="btn btn-success" id="submitBtton">
+                                    Submit and Pay
+                                  </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- Button trigger modal -->
 
-              <div class="field">
-                <label>Phone:</label>
-                {{form.contact}}
-              </div>
-              <div class="field">
-                <label>Email:</label>
-                {{form.email}}
-              </div>
+                          <!-- Modal -->
+                   
+                          {% if messages %}
+                          <div class="messages">
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                              {{ message }}
+                            </div>
+                            {% endfor %}
+                          </div>
+                          {% endif %}
+                        </form>
 
-              <div class="field">
-                <label>gender</label>
-                {{form.gender}}
-              </div>
-              <div class="field">
-                <label>Region</label>
-                {{form.discipline}}
-              </div>
-
-              <div class="field">
-                <label>Course</label>
-                {{form.course}}
-              </div>
-              <div class="field">
-                <label>Region</label>
-                {{form.discipline}}
-              </div>
-              <div class="field">
-                <label>Date of birth</label><br />
-                {{form.date_of_birth}}
-              </div>
-              <div class="field">
-                <label>Designation</label><br />
-                {{form.designation}}
-              </div>
-
-              <div class="field">
-                <label>District/ City/ Municipality</label>
-                {{form.district}}
-              </div>
-              <div class="field">
-                <label>Venue</label>
-                {{form.venue}}
-              </div>
-              <div class="field">
-                <label>Level</label>
-                {{form.level}}
-              </div>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-success">Submit</button>
-        </div>
-      </div>
-    </form>
-  </div>
+                     
+                      </div>
+                    </div>
+                  </div>
 </div>
 {% endblock %}
