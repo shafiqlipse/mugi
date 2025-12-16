@@ -989,6 +989,7 @@ def export_enrollment_csv(request):
         "Championship",
         "Sport",
         "Level",
+        "District",
     ])
 
     for enrollment in SchoolEnrollment.objects.select_related("school").all():
@@ -998,6 +999,7 @@ def export_enrollment_csv(request):
             enrollment.championship,
             enrollment.sport,
             enrollment.level,
+            enrollment.school.district,
         ])
 
     return response
