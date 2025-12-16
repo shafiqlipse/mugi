@@ -973,3 +973,32 @@ def remove_Uthletics(request, enrollment_id, athlete_id):
         "U14athletics_enrollment", id=athlete_enrollment.school_enrollment.id
     )
 
+
+import csv
+from django.http import HttpResponse
+
+def export_enrollment_csv(request):
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="enrollments.csv"'
+
+    writer = csv.writer(response)
+
+    # Header row
+    writer.writerow([
+        "School",
+        "Championship",
+        "Sport",
+        "Level",
+    ])
+
+    for enrollment in SchoolEnrollment.objects.select_related("school").all():
+       
+        writer.writerow([
+            enrollment.school,
+            enrollment.championship,
+            enrollment.sport,
+            enrollment.level,
+        ])
+
+    return response
+

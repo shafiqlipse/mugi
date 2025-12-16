@@ -70,5 +70,6 @@ urlpatterns = [
         name="remove_u14athletics",
     ),
     # Add more URLs as ne
+    path("export_enrollment_csv/", export_enrollment_csv, name="export_enrollment_csv"),
     # Add more URLs as ne
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
