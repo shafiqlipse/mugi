@@ -80,7 +80,7 @@
                           method="POST"
                           class="form-control fomin"
                           enctype="multipart/form-data"
-                          id="fomin"
+                          id="trainee_form"
                         >
                           {% csrf_token %}
                           <div class="schoolt">
@@ -433,7 +433,7 @@
     });
   });
 </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="{% static 'js/cbj.js'%}"></script>
     <!--Datatable scripts-->
   </body>
 </html>
