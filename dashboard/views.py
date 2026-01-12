@@ -239,7 +239,7 @@ def AllTransfers(request):
 # @transfer_required
 @login_required
 def Pending_Transfers(request):
-    transfers = TransferRequest.objects.filter(status ='Pending')
+    transfers = TransferRequest.objects.filter(status ='paid')
     
     context = {"transfers": transfers}
     return render(request, "all/transfer_s.html", context)

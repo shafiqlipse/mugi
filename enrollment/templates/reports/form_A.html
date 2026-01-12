@@ -1,0 +1,146 @@
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form A</title>
+  </head>
+
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <title>REGISTRATION FORM A</title>
+      <style>
+        @page {
+          size: letter portrait;
+          width: 512pt;
+          height: 692pt;
+          margin: 30pt;
+          background-image: url("https://upssaonline.com/watermark.png");
+        }
+        body {
+          font-family: Times New Roman, sans-serif;
+        }
+
+        h2,
+        h3 {
+          text-align: center;
+          margin: 2px 0;
+          font-size: 16px;
+          font-weight: bold;
+        }
+        .info-table {
+          width: 100%;
+          margin-bottom: 20px;
+          border-collapse: collapse;
+          border: 1px solid #000;
+        }
+        .info-table td {
+          padding: 3px;
+          border: 1px solid #353535ff;
+          font-size: 12px;
+        }
+        .footer-table {
+          margin-top: 40px;
+          padding: 5px;
+          text-align: center;
+          border: 1px solid #2a2a2aff;
+        }
+        .footer-table thead tr th {
+          font-size: 12px;
+          padding: 5px;
+          border: 1px solid #700000ff;
+          background-color: #fa5b5bff;
+        }
+        .players-table {
+          border: 1px solid #bababaff;
+          padding: 2px 5px;
+          text-align: left;
+        }
+        .players-table th,
+        td {
+          vertical-align: bottom;
+        }
+      </style>
+    </head>
+    <body>
+      <h3>MINISTRY OF EDUCATION AND SPORTS (MoES)</h3>
+      <h3>UGANDA SECONDARY SCHOOLS SPORTS ASSOCIATION (USSSA)</h3>
+      <h2>REGISTRATION FORM A - <span>{{team.sport}}</span></h2>
+
+      <!-- School Information -->
+      <table class="info-table">
+        <tr>
+          <td><strong>School:</strong> {{team.school}}</td>
+          <td><strong>Discipline:</strong> {{team.sport}}</td>
+        </tr>
+      </table>
+      <!-- School Information -->
+      <table class="info-table">
+        <tr>
+          <td><strong>District:</strong> {{team.school.district}}</td>
+          <td><strong>Zone:</strong> {{team.school.district.zone}}</td>
+          <td><strong>Region:</strong> {{team.school.district.zone.region}}</td>
+        </tr>
+      </table>
+
+      <!-- Players Table -->
+      <table class="players-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th class="classroom">Class</th>
+            <th>DOB</th>
+            <th>Index Number</th>
+            <th>Federation License</th>
+            <th>Signature</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Generate 22 rows -->
+          <!-- You can generate dynamically in Django later -->
+          <!-- Sample rows -->
+          <!-- Copy/paste as needed -->
+          <!-- Row 1 -->
+          {% for athlete in athletes %}
+          <tr>
+            <td>{{athlete.fname}} {{athlete.lname}}</td>
+            <td>{{athlete.classroom}}</td>
+            <td>{{athlete.date_of_birth}}</td>
+
+            <td>{{athlete.index_number}}</td>
+            <td>_________________</td>
+            <td>_________________</td>
+
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Signatures -->
+      <table class="footer-table">
+        <thead>
+          <tr>
+            <th>Names</th>
+            <th>Role</th>
+            <th>Contact</th>
+            <th>Signature</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for official in officials %}
+          <tr>
+            <td>{{official.fname}} {{official.lname}}</td>
+            <td>{{official.role}}</td>
+
+            <td>{{official.phone_number}}</td>
+
+            <td>_________________</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </body>
+  </html>
+</html>

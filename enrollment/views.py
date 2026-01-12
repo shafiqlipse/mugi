@@ -483,6 +483,50 @@ def Certificate(request, id):
 
     return response
 
+
+
+@login_required(login_url="login")
+def form_A(request, id):
+    team = get_object_or_404(SchoolEnrollment, id=id)
+    athlete_enrollments = AthleteEnrollment.objects.filter(school_enrollment=team)
+    athletes = Athlete.objects.filter(athleteenrollment__in=athlete_enrollments)
+
+    # Get template
+    template = get_template("reports/form_A.html")
+
+    # Compress and fix rotation for athletes' photos
+    school = team.school
+    officials = school_official.objects.filter(school=school).exclude(status="Inactive")
+    # today = datetime.date.today()
+    # age = (
+    #     today.year
+    #     - athlete.date_of_birth.year
+    #     - ((today.month, today.day) < (athlete.date_of_birth.month, athlete.date_of_birth.day))
+    # )
+    # Compress and fix rotation for athletes' photos
+
+    # Prepare context
+    context = {
+        "team": team,
+        "athletes": athletes,
+        "officials": officials,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    # Render HTML
+    html = template.render(context)
+
+    # Create a PDF
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="FormA.pdf"'
+
+    # Generate PDF from HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+
 @login_required(login_url="login")
 def Cortificate(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)

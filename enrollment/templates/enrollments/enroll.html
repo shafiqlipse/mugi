@@ -112,12 +112,20 @@
                         class="btn btn-info"
                         >Accreditation</a
                       >
+                      {% if school_enrollment.level == "National" %}
+                      <a
+                        class="dropdown-item"
+                        href="{% url 'team_formA' school_enrollment.id%}"
+                        class="btn btn-info"
+                        >Form A</a
+                      >
+                      
                       <a
                         class="dropdown-item"
                         href="{% url 'team_cert' school_enrollment.id%}"
                         class="btn btn-success"
                         >Certificate</a
-                      >
+                      >{% endif %}
                       {% if user.is_superuser %}
                       <a
                         class="dropdown-item"

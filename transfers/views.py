@@ -173,20 +173,6 @@ def myTransfers(request):
     return render(request, "transfers/my_transfers.html", context)
 
 
-        
-def myTransfers(request):
-    user = request.user
-    school = user.school
-    mytransfers = TransferRequest.objects.select_related("owner").filter(requester=school)
-    
-    trans_messages = TransferMessage.objects.filter(
-        transfer__requester=school
-    ) | TransferMessage.objects.filter(
-        transfer__owner=school
-    )
-    context = {"mytransfers": mytransfers, "trans_messages":trans_messages}
-    return render(request, "transfers/my_transfers.html", context)
-
 
 # @transfer_required
 def transfer_details(request, id):
@@ -208,7 +194,7 @@ def transfer_details(request, id):
 def myRequests(request):
     user = request.user
     school = user.school
-    mytransfers = TransferRequest.objects.select_related("owner").filter(owner=school, status="pending")
+    mytransfers = TransferRequest.objects.select_related("owner").filter(owner=school, status="paid")
     context = {"mytransfers": mytransfers}
     return render(request, "transfers/my_requests.html", context)
 
