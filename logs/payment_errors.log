@@ -11148,3 +11148,19 @@ Traceback (most recent call last):
     raise self.error(
 django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 93: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
 "GET /enrollment/team_formA/16 HTTP/1.1" 500 182399
+Internal Server Error: /transfers/mytransfers/
+Traceback (most recent call last):
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\django\usssa\usssa\transfers\views.py", line 164, in myTransfers
+    school = user.school
+             ^^^^^^^^^^^
+  File "E:\django\usssa\venv\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AnonymousUser' object has no attribute 'school'
+"GET /transfers/mytransfers/ HTTP/1.1" 500 76352
