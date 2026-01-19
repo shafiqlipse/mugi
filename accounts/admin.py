@@ -4,6 +4,7 @@ from accounts.models import *
 from school.models import *
 from zone.models import *
 from training.models import *
+from transfers.models import *
 
 
 class UserAdmin(BaseUserAdmin):
@@ -31,11 +32,17 @@ class SchoolAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
 
 class PaymentAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
     list_display = ("school", "phone_number",  "status", "amount")
-    search_fields =( "school__name", "phone_number",  "status",)  # Use school__name instead of school
+    search_fields =( "school__name", "phone_number",  "status",)  # Use school__name instead of school 
+    # Use school__name instead of school
+
+class TransferAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
+    list_display = ("requester", "owner",  "status", "athlete")
+    search_fields =( "requester", "owner", "athlete")  # Use school__name instead of school
 
 # Register your models here.
 admin.site.register(School, SchoolAdmin) 
 admin.site.register(Payment, PaymentAdmin) 
+admin.site.register(TransferRequest, TransferAdmin) 
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Season)
