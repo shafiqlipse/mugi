@@ -109,7 +109,10 @@ class School(models.Model):
     def __str__(self):
         return self.name
 
-
+    class Meta:
+        ordering = ['name']
+        
+        
 class school_official(models.Model):
     added_by = models.ForeignKey(
         User,

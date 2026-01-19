@@ -59,7 +59,7 @@
 
               <td>{{ mytransfer.requested_at }}</td>
               <td>{{ mytransfer.status }}</td>
-              {% if mytransfer.status|default:"" == "pending" %}
+              {% if mytransfer.status|default:"" == "paid" %}
               <td>
                 <a
                   href="{% url 'cancel_transfer' mytransfer.id %}"
