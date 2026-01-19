@@ -212,7 +212,7 @@ def accept_transfer(request, id):
                 "message": "You are not authorized to accept this transfer."
             })
 
-        if transfer_request.status != "pending":
+        if transfer_request.status != "paid":
             return JsonResponse({
                 "status": "error",
                 "message": "This transfer request is no longer pending."
