@@ -456,3 +456,21 @@ def transfer_payments(request):
         "payment_filter": payments_filter,
     }
     return render(request, "transfers/transfer_payments.html", context)
+
+
+
+from django.utils import timezone
+
+def archived_transfers(request):
+
+    current_year = timezone.now().year
+
+    archived_transfers = (
+        TransferRequest.objects
+        .filter(requested_at__year__lt=current_year)
+        .order_by("-requested_at")
+    )
+
+    context = {"archived_transfers": archived_transfers}
+    return render(request, "transfers/archived_transfers.html", context)
+

@@ -69,6 +69,16 @@
                 </a>
               </td>
 
+              {% elif mytransfer.status == "pending" %}
+              <td>
+                  <a
+                  href="{% url 'cancel_transfer' mytransfer.id %}"
+                  class="btn btn-outline-primary"
+                >
+                  <i class="fas fa-times"></i> Cancel Request
+                </a>
+              </td>
+
               {% elif mytransfer.status == "accepted" %}
               <td>
                 <span class="badge bg-warning text-dark">Pending Approval</span>
