@@ -100,7 +100,6 @@
           line-height: 1.5;
           margin-top: 10px;
           width: 100%;
-          text-decoration: underline;
         }
         .athlete-name {
           text-transform: uppercase;
@@ -204,7 +203,7 @@
         <h2>Screening exercise report</h2>
         <div class="a4-page">
           <p class="lines">{{report.report}}</p>
-          <p class="lines">Screened by: {{report.screened_by}}</p>
+          <p class="lines">Screened by: {{report.screened_by.first_name}} {{report.screened_by.last_name}}</p>
         </div>
       </div>
     </body>
