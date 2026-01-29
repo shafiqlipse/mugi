@@ -6,7 +6,7 @@
     <title>Form A</title>
   </head>
 
-  <!DOCTYPE html>
+  <!doctype html>
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
@@ -20,7 +20,9 @@
           background-image: url("https://upssaonline.com/watermark.png");
         }
         body {
-          font-family: Times New Roman, sans-serif;
+          font-family:
+            Times New Roman,
+            sans-serif;
         }
 
         h2,
@@ -41,39 +43,94 @@
           border: 1px solid #353535ff;
           font-size: 12px;
         }
+        
         .footer-table {
           margin-top: 40px;
           padding: 5px;
           text-align: center;
-          border: 1px solid #2a2a2aff;
+          border: 1px solid rgb(0, 0, 0);
         }
         .footer-table thead tr th {
           font-size: 12px;
           padding: 5px;
-          border: 1px solid #700000ff;
-          background-color: #fa5b5bff;
+          font-weight: bold;
+          border: 1px solid rgb(0, 0, 0);
+          background-color: rgb(148, 148, 148);
         }
         .players-table {
           border: 1px solid #bababaff;
           padding: 2px 5px;
           text-align: left;
         }
-        .players-table th,
+        .players-table thead tr th {
+          font-size: 15px;
+          padding: 5px;
+          font-weight: bold;
+          border: 1px solid #000;
+          color: white;
+          background-color: rgb(148, 148, 148);
+        }
         td {
           vertical-align: bottom;
+        }
+        .footer .lines {
+          line-height: 2.5;
+          font-size: 14px;
+          margin-top: 10px;
+          width: 100%;
+        }
+        .footer .a4-page {
+          width: 100%;
+          padding: 10px;
+          box-sizing: border-box;
+        }
+        .footer h2 {
+          margin-top: 20px;
+          text-align: center;
+          font-size: 16px;
+          font-weight: bold;
+          text-transform: uppercase;
+        }
+        .lines {
+          text-align: justify;
+          text-justify: inter-word;
+          white-space: pre-wrap;
+          font-family: Arial, sans-serif;
+          font-size: 14px;
+          line-height: 1.5;
+          margin-top: 10px;
+          width: 100%;
+          text-decoration: underline;
+        }
+        .athlete-name {
+          text-transform: uppercase;
+          font-weight: bold;
+          font-size: 16px;
+        }
+        .classroom {
+          text-align: left;
+          width: 50px;
+        }
+        .larges {
+          text-align: left;
+          width: 120px;
+        }
+        .largzs {
+          text-align: left;
+          width: 120px;
+          color: white;
         }
       </style>
     </head>
     <body>
-      <h3>MINISTRY OF EDUCATION AND SPORTS (MoES)</h3>
-      <h3>UGANDA SECONDARY SCHOOLS SPORTS ASSOCIATION (USSSA)</h3>
-      <h2>REGISTRATION FORM A - <span>{{team.sport}}</span></h2>
+      <img src="https://usssaonline.com/forma.png" alt="" />
 
       <!-- School Information -->
       <table class="info-table">
         <tr>
           <td><strong>School:</strong> {{team.school}}</td>
           <td><strong>Discipline:</strong> {{team.sport}}</td>
+          <td><strong>Championship:</strong> {{team.championship}}</td>
         </tr>
       </table>
       <!-- School Information -->
@@ -82,6 +139,7 @@
           <td><strong>District:</strong> {{team.school.district}}</td>
           <td><strong>Zone:</strong> {{team.school.district.zone}}</td>
           <td><strong>Region:</strong> {{team.school.district.zone.region}}</td>
+          <td><strong>Generated on:</strong> {{today}}</td>
         </tr>
       </table>
 
@@ -89,12 +147,12 @@
       <table class="players-table">
         <thead>
           <tr>
+            <th class="classroom">#NO</th>
             <th>Name</th>
             <th class="classroom">Class</th>
-            <th>DOB</th>
-            <th>Index Number</th>
-            <th>Federation License</th>
-            <th>Signature</th>
+            <th class="larges">DOB</th>
+            <th class="larges">Index Number</th>
+            <th class="larges">Signature</th>
           </tr>
         </thead>
         <tbody>
@@ -105,13 +163,14 @@
           <!-- Row 1 -->
           {% for athlete in athletes %}
           <tr>
-            <td>{{athlete.fname}} {{athlete.lname}}</td>
+            <td>{{forloop.counter}}</td>
+            <td class="athlete-name">{{athlete.fname}} {{athlete.lname}}</td>
             <td>{{athlete.classroom}}</td>
             <td>{{athlete.date_of_birth}}</td>
 
             <td>{{athlete.index_number}}</td>
-            <td>_________________</td>
-            <td>_________________</td>
+
+            <td class="largzs">_________________</td>
 
             {% endfor %}
           </tr>
@@ -136,11 +195,18 @@
 
             <td>{{official.phone_number}}</td>
 
-            <td>_________________</td>
+            <td class="largzs">_________________</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+      <div class="footer">
+        <h2>Screening exercise report</h2>
+        <div class="a4-page">
+          <p class="lines">{{report.report}}</p>
+          <p class="lines">Screened by: {{report.screened_by}}</p>
+        </div>
+      </div>
     </body>
   </html>
 </html>

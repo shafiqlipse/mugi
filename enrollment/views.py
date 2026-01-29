@@ -59,6 +59,7 @@ def SchoolEnrollments(request):
             messages.error(request, "Please correct the errors below.")
     else:
         form = SchoolEnrollmentForm()
+      
 
     context = {"form": form, "enrollments": enrollments}
     return render(request, "enrollments/school_enrolls.html", context)
@@ -163,27 +164,33 @@ def remove_athlete(request, enrollment_id, athlete_id):
 def school_enrollment_details(request, id):
     school_enrollment = get_object_or_404(SchoolEnrollment, id=id)
     school = school_enrollment.school
-    if request.method == "POST":
+
+    # default (unbound) forms
+    form = AthleteEnrollmentForm()
+    Screenform = ScreeningReportForm()
+
+    if request.method == "POST" and "enroll_submit" in request.POST:
         form = AthleteEnrollmentForm(request.POST)
+
         if form.is_valid():
             selected_athletes = form.cleaned_data["athletes"]
+
             already_enrolled = AthleteEnrollment.objects.filter(
                 school_enrollment=school_enrollment,
                 athletes__in=selected_athletes
             ).values_list("athletes__id", flat=True).distinct()
 
             if already_enrolled:
-                messages.error(request, "Some of the selected athletes are already enrolled in this school enrollment.")
+                messages.error(request, "Some of the selected athletes are already enrolled.")
             else:
                 current_total = Athlete.objects.filter(
                     athleteenrollment__school_enrollment=school_enrollment
                 ).distinct().count()
 
-
                 if current_total + selected_athletes.count() > school_enrollment.sport.entries:
                     messages.error(
                         request,
-                        f"You can only enroll {school_enrollment.sport.entries - current_total} more athlete(s) for this sport."
+                        f"You can only enroll {school_enrollment.sport.entries - current_total} more athlete(s)."
                     )
                 else:
                     athlete_enrollment = AthleteEnrollment.objects.create(
@@ -192,23 +199,35 @@ def school_enrollment_details(request, id):
                     )
                     athlete_enrollment.athletes.set(selected_athletes)
                     messages.success(request, "Athletes enrolled successfully.")
-                    return HttpResponseRedirect(reverse("school_enrollment", args=[id]))
-    else:
-        form = AthleteEnrollmentForm()
+                    return redirect("school_enrollment", id=id)
+
+    elif request.method == "POST" and "screen_submit" in request.POST:
+        Screenform = ScreeningReportForm(request.POST, request.FILES)
+
+        if Screenform.is_valid():
+            screening = Screenform.save(commit=False)
+            screening.enrollment = school_enrollment
+            screening.screened_by = request.user
+            screening.save()
+            messages.success(request, "Screening report submitted.")
+            return redirect("school_enrollment", id=id)
+        else:
+            messages.error(request, "Please correct the errors below.")
 
     athlete_enrollments = AthleteEnrollment.objects.filter(
         school_enrollment=school_enrollment
     )
     all_athletes = Athlete.objects.filter(school=school, status="ACTIVE")
-
+    screening_reports = screening_report.objects.filter(enrollment=school_enrollment)
     context = {
         "school_enrollment": school_enrollment,
         "form": form,
+        "Screenform": Screenform,
         "athlete_enrollments": athlete_enrollments,
         "all_athletes": all_athletes,
+            "screening_reports": screening_reports,
     }
     return render(request, "enrollments/school_enroll.html", context)
-
 
 # @login_required(login_url="login")
 # @login_required(login_url="login")
@@ -394,6 +413,8 @@ def Occreditation(request, id):
 
 from django.db.models import F, ExpressionWrapper, IntegerField, Case, When, Value
 from datetime import date
+import datetime
+
 @login_required(login_url="login")
 def Albums(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
@@ -497,8 +518,9 @@ def form_A(request, id):
     # Compress and fix rotation for athletes' photos
     school = team.school
     officials = school_official.objects.filter(school=school).exclude(status="Inactive")
-    # today = datetime.date.today()
+    today = datetime.datetime.now()
     # age = (
+    report = screening_report.objects.filter(enrollment=team).first()
     #     today.year
     #     - athlete.date_of_birth.year
     #     - ((today.month, today.day) < (athlete.date_of_birth.month, athlete.date_of_birth.day))
@@ -507,7 +529,9 @@ def form_A(request, id):
 
     # Prepare context
     context = {
+        "today": today,
         "team": team,
+        "report": report,
         "athletes": athletes,
         "officials": officials,
         "MEDIA_URL": settings.MEDIA_URL,

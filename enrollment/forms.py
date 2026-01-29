@@ -58,6 +58,16 @@ class AthleticsEnrollmentForm(forms.ModelForm):
         }
 
 
+class ScreeningReportForm(forms.ModelForm):
+    
+    class Meta:
+        model = screening_report
+        fields = ["report"]
+            
+        widgets = {
+                "report": forms.Textarea(attrs={"class": "form-control", "rows": 5}),
+            }
+
 class AthleticsAthletesForm(forms.ModelForm):
     athletes = forms.ModelMultipleChoiceField(
         queryset=Athlete.objects.filter(status="ACTIVE"),

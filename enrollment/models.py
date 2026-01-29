@@ -142,3 +142,19 @@ class U14thleticsAthletes(models.Model):
     def __str__(self):
         return f"{self.school_enrollment.schoool.name} - {self.school_enrollment.sport.name}"  # Fixed to use school_enrollment.sport
 
+class screening_report(models.Model):
+    enrollment = models.ForeignKey(
+        SchoolEnrollment,
+        related_name="screening_reports",  # Changed from "school_enrollments"
+        on_delete=models.CASCADE, db_index=True
+    )
+    report = models.TextField()
+    screened_by = models.ForeignKey(
+        User, related_name="screenings", on_delete=models.CASCADE, blank=True, null=True
+    )
+    screened_at = models.DateTimeField(auto_now_add=True)
+
+
+        
+    def __str__(self):
+        return f"{self.enrollment.school} - {self.enrollment.sport}"
