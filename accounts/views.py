@@ -236,7 +236,7 @@ def book_appointment(request):
             appointment = form.save(commit=False)
             appointment.client = request.user.school
             appointment.save()
-            return redirect('appointment_success')
+            return redirect('book_appointment')
     else:
         form = AppointmentForm()
         

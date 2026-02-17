@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   {% load static %}
   <head>
@@ -320,6 +320,11 @@
                       >
                     </li>
                     <li>
+                      <a class="tp-link" href="{%url 'appointments'%}"
+                        >Appointments</a
+                      >
+                    </li>
+                    <li>
                       <a class="tp-link" href="{%url 'delegates'%}"
                         >Delegates</a
                       >
@@ -558,6 +563,11 @@
                         >Overtime</a
                       >
                     </li>
+                    {% comment %} <li>
+                      <a class="tp-link" href="{%url 'book_appointment'%}"
+                        >Appointments</a
+                      >
+                    </li> {% endcomment %}
                   </ul>
                 </div>
               </li>

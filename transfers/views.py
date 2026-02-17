@@ -1,3 +1,4 @@
+from urllib import response
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 
@@ -124,8 +125,19 @@ def initiate_transfer(request, id):
                 }
             }
 
-            response = requests.post(payment_url, json=payload, headers=headers)
+            headers["Connection"] = "close"  # prevent stale pooled connections
+
+            with requests.Session() as session:
+                session.headers.update(headers)
+                response = session.post(
+                    payment_url,
+                    json=payload,
+                    timeout=(5, 30)  # connect timeout, read timeout
+                )
+
             logger.info(f"Payment Response: {response.status_code}, {response.text}")
+
+
             # Step 3: Check payment result
             if response.status_code != 200:
                 messages.error(request, "Payment could not be initiated. Please check your Airtel number or try again later.")
@@ -474,3 +486,35 @@ def archived_transfers(request):
     context = {"archived_transfers": archived_transfers}
     return render(request, "transfers/archived_transfers.html", context)
 
+
+
+
+def activate_transfer(request, id):
+    try:
+        transfer_request = get_object_or_404(TransferRequest, id=id)
+
+        # Validate if user is a technical user
+        if not getattr(request.user, "is_tech", False):
+            messages.error(request, "You must be a technical user to activate transfers.")
+            return redirect("alltransfers")
+
+        # Check if transfer is in rejected state
+        if transfer_request.status != "rejected":
+            messages.error(request, "Only rejected transfers can be activated.")
+            return redirect("alltransfers")
+
+        # Activate the transfer
+        transfer_request.status = "paid"
+        transfer_request.save()
+        messages.success(
+            request,
+            f"Transfer activated successfully. {transfer_request.athlete} transfer request is now pending.",
+        )
+
+        return redirect("alltransfers")
+
+    except Exception as e:
+        messages.error(
+            request, f"An error occurred while activating the transfer: {str(e)}"
+        )
+        return redirect("alltransfers")
