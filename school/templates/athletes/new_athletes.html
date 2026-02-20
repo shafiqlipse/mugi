@@ -11,7 +11,7 @@
 <!---->
 {% block content %}
 
-<div class="container-fluid">   
+<div class="container-fluid">
   <div class="card">
     <div class="card-header">
       <h1 class="card-title">Add Athlete</h1>
@@ -28,11 +28,11 @@
         <div class="left">
           <p>All fields labeled with <span>*</span> must be filled.</p>
           <hr />
-          {% if messagets %}
+          {% if messages %}
           <div class="messages">
-            {% for message in messagets %}
+            {% for message in messages %}
             <div
-              class="alert {% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}"
+              class="alert {% if message.tags == 'error' %}error-message {% elif message.tags == 'success' %}success-message {% endif %}"
             >
               {{ message }}
             </div>
@@ -45,7 +45,6 @@
                 <div class="card-header">
                   <h5 class="card-title mb-0">{{form.photo.label}}</h5>
                 </div>
-                
 
                 <div class="card-body">
                   <div class="imgbox">
@@ -70,7 +69,6 @@
                 <div class="card-header">
                   <h5 class="card-title mb-0">Personal Details</h5>
                 </div>
-               
 
                 <div class="card-body">
                   <div class="row">
@@ -150,7 +148,6 @@
                       <label for="id_uce_certificate">UCE Certificate</label>
                       {{ form.uce_certificate }}
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -161,7 +158,6 @@
                 <div class="card-header">
                   <h5 class="card-title mb-0">Guardian's Information</h5>
                 </div>
-              
 
                 <div class="card-body">
                   <div class="row">
@@ -195,7 +191,7 @@
       <button type="submit" class="btn btn-primary">Save athlete</button>
     </form>
 
- <!-- <div class="card">
+    <!-- <div class="card">
     <div class="card-body">
       The system has been closed. Please check back later.
       <div class="alert alert-danger" role="alert">
@@ -204,116 +200,115 @@
     </div>
   </div>
   </div> -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const form = document.getElementById("athlete-form");
-      const fileInput = document.getElementById("id_photo");
-      const previewContainer = document.getElementById("photos_preview");
-      let cropper = null;
-      let croppedBlob = null;
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("athlete-form");
+        const fileInput = document.getElementById("id_photo");
+        const previewContainer = document.getElementById("photos_preview");
+        let cropper = null;
+        let croppedBlob = null;
 
-      fileInput.addEventListener("change", function (e) {
-        const file = e.target.files[0];
-        if (!file) return;
+        fileInput.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          previewContainer.innerHTML = `<img src="${event.target.result}" id="photo_image">`;
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            previewContainer.innerHTML = `<img src="${event.target.result}" id="photo_image">`;
 
-          const image = document.getElementById("photo_image");
+            const image = document.getElementById("photo_image");
 
-          if (cropper) cropper.destroy();
+            if (cropper) cropper.destroy();
 
-          cropper = new Cropper(image, {
-            aspectRatio: 1,
-            viewMode: 1,
-            autoCropArea: 1,
-            cropend() {
-              const canvas = cropper.getCroppedCanvas({
-                width: 512,
-                height: 512,
-              });
-              canvas.toBlob(
-                (blob) => {
-                  croppedBlob = blob;
-                },
-                "image/jpeg",
-                0.9
-              );
-            },
-          });
-        };
-        reader.readAsDataURL(file);
-      });
-
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const messageBox = document.getElementById("form-messages");
-        messageBox.innerText = ""; // Clear previous message
-
-        if (!cropper) {
-          messageBox.innerText = "Please upload and crop a photo.";
-          return;
-        }
-
-        const canvas = cropper.getCroppedCanvas({ width: 512, height: 512 });
-
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              messageBox.innerText = "Failed to crop image.";
-              return;
-            }
-
-            const formData = new FormData(form);
-            formData.set("cropped_photo", blob, "cropped_photo.jpg");
-
-            const submitButton = form.querySelector("button[type='submit']");
-            submitButton.disabled = true;
-            const originalBtnText = submitButton.innerText;
-            submitButton.innerText = "Submitting...";
-
-            fetch(form.action, {
-              method: "POST",
-              headers: {
-                "X-CSRFToken": getCookie("csrftoken"),
+            cropper = new Cropper(image, {
+              aspectRatio: 1,
+              viewMode: 1,
+              autoCropArea: 1,
+              cropend() {
+                const canvas = cropper.getCroppedCanvas({
+                  width: 512,
+                  height: 512,
+                });
+                canvas.toBlob(
+                  (blob) => {
+                    croppedBlob = blob;
+                  },
+                  "image/jpeg",
+                  0.9,
+                );
               },
-              body: formData,
-            })
-              .then((res) => {
-                if (res.ok && res.redirected) {
-                  window.location.href = res.url;
-                } else {
-                  return res.text().then((html) => {
-                    document.body.innerHTML = html;
-                  });
-                }
+            });
+          };
+          reader.readAsDataURL(file);
+        });
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const messageBox = document.getElementById("form-messages");
+          messageBox.innerText = ""; // Clear previous message
+
+          if (!cropper) {
+            messageBox.innerText = "Please upload and crop a photo.";
+            return;
+          }
+
+          const canvas = cropper.getCroppedCanvas({ width: 512, height: 512 });
+
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                messageBox.innerText = "Failed to crop image.";
+                return;
+              }
+
+              const formData = new FormData(form);
+              formData.set("cropped_photo", blob, "cropped_photo.jpg");
+
+              const submitButton = form.querySelector("button[type='submit']");
+              submitButton.disabled = true;
+              const originalBtnText = submitButton.innerText;
+              submitButton.innerText = "Submitting...";
+
+              fetch(form.action, {
+                method: "POST",
+                headers: {
+                  "X-CSRFToken": getCookie("csrftoken"),
+                },
+                body: formData,
               })
-              .catch((err) => {
-                console.error("Submission error:", err);
-                messageBox.innerText = "An error occurred. Please try again.";
-              })
-              .finally(() => {
-                submitButton.disabled = false;
-                submitButton.innerText = originalBtnText;
-              });
-          },
-          "image/jpeg",
-          0.9
-        );
+                .then((res) => {
+                  if (res.ok && res.redirected) {
+                    window.location.href = res.url;
+                  } else {
+                    return res.text().then((html) => {
+                      document.body.innerHTML = html;
+                    });
+                  }
+                })
+                .catch((err) => {
+                  console.error("Submission error:", err);
+                  messageBox.innerText = "An error occurred. Please try again.";
+                })
+                .finally(() => {
+                  submitButton.disabled = false;
+                  submitButton.innerText = originalBtnText;
+                });
+            },
+            "image/jpeg",
+            0.9,
+          );
+        });
+
+        // Helper to get CSRF token
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(";").shift();
+        }
       });
-
-      // Helper to get CSRF token
-      function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(";").shift();
-      }
-    });
-  </script>
-
-
+    </script>
+  </div>
+  {% endblock %}
 </div>
-{% endblock %}
