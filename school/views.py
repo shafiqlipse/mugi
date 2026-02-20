@@ -311,7 +311,7 @@ def archives_data_view(request):
     length = int(request.GET.get('length', 10))
     search_value = request.GET.get('search[value]', '')
 
-    queryset = Athlete.objects.select_related("school").filter(status="COMPLETED")
+    queryset = Athlete.objects.select_related("school").filter(status__iexact="completed")
 
     total = queryset.count()
 
@@ -343,7 +343,7 @@ def archives_data_view(request):
 @staff_required
 def archives(request):
 
-    archives_list = Athlete.objects.select_related("school").filter(status="COMPLETED")
+    archives_list = Athlete.objects.select_related("school").filter(status__iexact="completed")
     # Apply filtering
 
 
