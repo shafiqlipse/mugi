@@ -1079,15 +1079,20 @@ def export_scsv(request):
     return response
 
 #     context = {"payment": payment}
+import time
+import random
 #     context = {"payment": payment}
-#     context = {"payment": payment}
-#     context = {"payment": payment}
-def generate_unique_transaction_id():
-    while True:
-        transaction_id = str(random.randint(10**11, 10**12 - 1))
-        if not Payment.objects.filter(transaction_id=transaction_id).exists():
-            return transaction_id
 
+def generate_transaction_id():
+    """
+    Generates a globally unique 12-digit numeric ID.
+    Format:
+    7 digits timestamp + 5 digits random
+    """
+    timestamp_part = int(time.time() * 1000) % 10_000_000  # last 7 digits of ms timestamp
+    random_part = random.randint(10_000, 99_999)           # 5 random digits
+
+    return f"{timestamp_part:07d}{random_part}"
 
 logger = logging.getLogger( "airtel")
 

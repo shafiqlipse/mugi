@@ -95,13 +95,18 @@ def generate_unique_transaction_id():
             return transaction_id
 
 
+import time
 
-def generate_unique_itransaction_id():
-    """Generate a unique 12-digit transaction ID."""
-    while True:
-        transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
-        if not ITTFTrainee.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
-            return transaction_id
+def generate_transaction_id():
+    """
+    Generates a globally unique 12-digit numeric ID.
+    Format:
+    7 digits timestamp + 5 digits random
+    """
+    timestamp_part = int(time.time() * 1000) % 10_000_000  # last 7 digits of ms timestamp
+    random_part = random.randint(10_000, 99_999)           # 5 random digits
+
+    return f"{timestamp_part:07d}{random_part}"
 
 
 
