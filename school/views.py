@@ -1194,12 +1194,12 @@ def get_airtel_token():
         return None
 
 
-def generate_unique_transaction_id():
-    """Generate a unique 12-digit transaction ID."""
-    while True:
-        transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
-        if not Payment.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
-            return transaction_id
+# def generate_unique_transaction_id():
+#     """Generate a unique 12-digit transaction ID."""
+#     while True:
+#         transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
+#         if not Payment.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
+#             return transaction_id
 
 
 def initiate_payment(request, id):
@@ -1211,7 +1211,7 @@ def initiate_payment(request, id):
             return JsonResponse({"error": "Failed to get authentication token"}, status=500)
 
         payment_url = "https://openapi.airtel.ug/merchant/v2/payments/"
-        transaction_id = generate_unique_transaction_id()  
+        transaction_id = generate_transaction_id()  
 
 
         headers = {
@@ -1258,7 +1258,7 @@ def initiate_payment(request, id):
         return JsonResponse({"error": str(e)}, status=500) 
 
 
-airtel_logger = logging.getLogger('airtel_callback')  # Use the specific logger
+airtel_logger = logging.getLogger("airtel")  # Use the specific logger
 
 @csrf_exempt
 def airtel_payment_callback(request):
