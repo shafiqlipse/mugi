@@ -124,7 +124,7 @@ def initiate_transfer(request, id):
         # STEP 2: Prepare payment request
         # ===============================
         payment_url = "https://openapi.airtel.ug/merchant/v2/payments/"
-        transaction_id = generate_unique_ttransaction_id()
+        transaction_id = generate_ttransaction_id()
         amount = 10000
 
         headers = {
