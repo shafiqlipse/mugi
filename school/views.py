@@ -588,7 +588,7 @@ def request_athlete_edit(request, athlete_id):
                 return render(request, 'athletes/request_edit.html', {'athlete': athlete})
 
             # Prepare Airtel API request
-            payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
+            payment_url = "https://openapi.airtel.ug/merchant/v2/payments/"
             msisdn = re.sub(r"\D", "", str(phone_number)).lstrip('0')
 
             headers = {
@@ -1089,7 +1089,7 @@ def generate_unique_transaction_id():
             return transaction_id
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger( "airtel")
 
 def payment_view(request):
     school = request.user.school  # Get the logged-in user's school
@@ -1141,7 +1141,7 @@ def get_airtel_token():
     Retrieve Airtel Money OAuth token.
     """
     try:
-        url = "https://openapi.airtel.africa/auth/oauth2/token"
+        url = "https://openapi.airtel.ug/auth/oauth2/token"
         headers = {"Content-Type": "application/json", "Accept": "*/*" }
         payload = {
             "client_id": settings.AIRTEL_MONEY_CLIENT_ID,
@@ -1205,7 +1205,7 @@ def initiate_payment(request, id):
         if not token:
             return JsonResponse({"error": "Failed to get authentication token"}, status=500)
 
-        payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
+        payment_url = "https://openapi.airtel.ug/merchant/v2/payments/"
         transaction_id = generate_unique_transaction_id()  
 
 
@@ -1262,7 +1262,7 @@ def airtel_payment_callback(request):
 
     try:
         raw_body = request.body.decode("utf-8")
-        airtel_logger.info(f"🔔 Airtel Callback Received: {raw_body}")
+        airtel_logger.info(f" Airtel Callback Received: {raw_body}")
         payload = json.loads(raw_body)
 
         transaction = payload.get("transaction", {})
@@ -1278,7 +1278,7 @@ def airtel_payment_callback(request):
         new_status = status_mapping.get(status_code, "FAILED")
 
         # -----------------------------------------------------
-        # 1️⃣ Update PAYMENT (uses .filter().first() = NO CRASH)
+        # 1️ Update PAYMENT (uses .filter().first() = NO CRASH)
         # -----------------------------------------------------
         payment = Payment.objects.filter(transaction_id=transaction_id).first()
         if payment:
@@ -1286,7 +1286,7 @@ def airtel_payment_callback(request):
             payment.save()
 
         # -----------------------------------------------------
-        # 2️⃣ Update Trainee (SAFE lookup)
+        # 2️ Update Trainee (SAFE lookup)
         # -----------------------------------------------------
         trainee = Trainee.objects.filter(transaction_id=transaction_id).first()
         if trainee:
@@ -1294,7 +1294,7 @@ def airtel_payment_callback(request):
             trainee.save()
 
         # -----------------------------------------------------
-        # 3️⃣ Update ITTFTrainee (SAFE lookup)
+        # 3️ Update ITTFTrainee (SAFE lookup)
         # -----------------------------------------------------
         ittftrainee = ITTFTrainee.objects.filter(transaction_id=transaction_id).first()
         if ittftrainee:
@@ -1302,7 +1302,7 @@ def airtel_payment_callback(request):
             ittftrainee.save()
 
         # -----------------------------------------------------
-        # 4️⃣ Update TransferPayment (SAFE lookup)
+        # 4️ Update TransferPayment (SAFE lookup)
         # -----------------------------------------------------
         transfer_payment = TransferPayment.objects.filter(transaction_id=transaction_id).first()
         if transfer_payment:
@@ -1319,7 +1319,7 @@ def airtel_payment_callback(request):
             transfer_payment.save()
 
         # -----------------------------------------------------
-        # 5️⃣ Athlete Edit Request
+        # 5️ Athlete Edit Request
         # -----------------------------------------------------
         edit_request = AthleteEditRequest.objects.filter(transaction_id=transaction_id).first()
         if edit_request:
@@ -1327,12 +1327,12 @@ def airtel_payment_callback(request):
             edit_request.save()
 
         airtel_logger.info(
-            f"📌 Processed Callback: transaction={transaction_id}, status={new_status}"
+            f" Processed Callback: transaction={transaction_id}, status={new_status}"
         )
         return JsonResponse({"message": "Callback processed"}, status=200)
 
     except Exception as e:
-        airtel_logger.error(f"❌ Callback error: {str(e)}")
+        airtel_logger.error(f" Callback error: {str(e)}")
         return JsonResponse({"error": "Internal Error"}, status=500)
  
     

@@ -1,0 +1,2 @@
+INFO | 2026-02-21 12:39:21,861 | airtel | Token Response: 400, {"error":"invalid_client","error_description":"Invalid client authentication"}
+ERROR | 2026-02-21 12:39:21,861 | airtel | Invalid request format. Check parameters.

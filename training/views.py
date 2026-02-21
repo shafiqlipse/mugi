@@ -134,7 +134,7 @@ def trainee_add(request):
                     return render(request, 'trainees/add_trainee.html', {'form': form})
 
                 # 🌍 Airtel API setup
-                payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
+                payment_url = "https://openapi.airtel.ug/merchant/v2/payments/"
                 msisdn = re.sub(r"\D", "", str(phone_number)).lstrip('0')
 
                 headers = {

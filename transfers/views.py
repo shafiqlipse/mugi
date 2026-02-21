@@ -25,7 +25,7 @@ from .filters import TransferPaymentFilter
 import random
 from django.db import transaction
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("airtel")
 # from accounts.decorators import transfer_required
 
 
@@ -119,7 +119,7 @@ def initiate_transfer(request, id):
         # ===============================
         # STEP 2: Prepare payment request
         # ===============================
-        payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
+        payment_url = "https://openapi.airtel.ug/merchant/v2/payments/"
         transaction_id = generate_unique_ttransaction_id()
         amount = 10000
 
@@ -345,7 +345,7 @@ def transfer_details(request, id):
     return render(request, "transfers/transfer.html", context)
 
 
-
+@login_required(login_url="login")
 def myRequests(request):
     user = request.user
     school = user.school
