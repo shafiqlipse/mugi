@@ -11,7 +11,8 @@
       @media print {
         @page {
           size: A4 portrait; /* Set the size of the page to A4 in portrait orientation */
-          margin: 0; /* Remove default margin */
+          margin: 0; /* Remove default margin 
+          background-image: url("https://upssaonline.com/bombo.jpeg");*/
         }
 
         body {
@@ -27,7 +28,7 @@
         }
       }
       .header .athletes table tbody tr td {
-        padding-top: 105px;
+        padding-top: 65px;
         padding-bottom: 40px;
         padding-left: 50px;
         padding-right: 40px;
@@ -78,7 +79,8 @@
                         {% endif %}
                         <br />
                         <span
-                          >{{ athlete.fname|upper }} {{ athlete.mname|upper }}
+                          >{{ athlete.fname|upper }} {% if athlete.mname %}
+                          {{athlete.mname|upper }}{% endif %}
                           {{athlete.lname|upper}}</span
                         >
                         <br />
