@@ -4,76 +4,71 @@
 <!---->
 
 {%block content%}
-<div class="content-wrapper">
-  <div class="row">
-    <div class="col-xl-12 col-sm-12 grid-margin stretch-card">
-      <div class="card">
-        <div class="card-body">
-          <div class="table-responsive">
-            <table id="myTable" class="display">
-              <thead>
-                <tr>
-                  <th>Athlete</th>
-                  <th>Status</th>
-                  <th>Screener</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for screen in screens%}
-                <tr>
-                  <td>
-                    <a href="{% url 'athlete' screen.athlete.id%}"
-                      >{{screen.athlete.fname}} {{screen.athlete.lname}}</a
-                    >
-                  </td>
-                  <td>{{screen.status}}</td>
-                  <td>{{screen.screener}}</td>
-                  <td>{{screen.created}}</td>
-                </tr>
-
-                {%endfor%}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+<div class="container-fluid">
+  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+    <div class="flex-grow-1">
+      <h4 class="fs-18 fw-semibold m-0">Ineligible Athletes</h4>
     </div>
   </div>
-  <div
-    class="modal fade"
-    id="exampleModal"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Championship</h5>
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action="" method="post" class="form-control">
-            {% csrf_token %} {{sform.as_p}}
-            <button type="submit" class="btn btn-primary">Save changes</button>
-          </form>
-        </div>
+  <nav class="card">
+    <div class="container-fluid">
+      <form class="d-flex" method="GET">
+        {{ screens_filter.form.search }}
+        <button class="btn btn-outline-success" type="submit">Search for Athletes</button>
+      </form>
+    </div>
+  </nav>
+  <div class="tab-pane pt-4" id="friends_setting" role="tabpanel">
+    <div class="row">
+      {% for screen in screens %}
+      <!---->
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">
-            Cancel
-          </button>
+      <div class="col-12 col-md-3">
+        <div class="card border">
+          <div class="card-body">
+            <div class="text-center">
+              <img
+                src="{{screen.athlete.photo.url}}"
+                class="rounded-circle avatar-xl img-thumbnail"
+                alt="image profile"
+              />
+
+              <div class="mt-2 mb-3">
+                <span
+                  class="badge bg-primary-subtle rounded-2 text-primary mb-2 fw-normal"
+                  >{{screen.athlete.index_number}} |
+                  {{screen.athlete.gender}}</span
+                >
+                <h5 class="m-0 fw-medium text-dark fs-16">
+                  {{screen.athlete.fname}} {{screen.athlete.lname}}
+                </h5>
+                <p class="mt-1 mb-0">{{screen.created}}</p>
+
+                <h5 class="m-0 fw-medium text-dark fs-16">
+                  Reason: {{screen.status}}
+                </h5>
+                <p class="mt-1 mb-0">{{screen.description}}</p>
+              </div>
+            </div>
+          </div>
+
+          <!--end card-body-->
         </div>
       </div>
+      {% endfor %}
+    </div>
+    <div class="pagination">
+      {% if screens.has_previous %}
+      <a href="?page={{ screens.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      <span
+        >Page {{ screens.number }} of {{ screens.paginator.num_pages }}</span
+      >
+
+      {% if screens.has_next %}
+      <a href="?page={{ screens.next_page_number }}">Next</a>
+      {% endif %}
     </div>
   </div>
 </div>

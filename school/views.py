@@ -961,13 +961,26 @@ def AthleteUpdate(request, id):
     return render(request, "athletes/new_athletes.html", context)
 
 # # Athletes details......................................................
-@staff_required
+@login_required
 def Screened(request):
     screens = Screening.objects.select_related("athlete").all()
-    context = {"screens": screens}
+    screens_filter = ScreenFilter(request.GET, queryset=screens)
+    filtered_screens = screens_filter.qs  # Get the filtered queryset
+
+    # Paginate filtered results
+    paginator = Paginator(filtered_screens, 10)  # Show 10 athletes per page
+    page_number = request.GET.get("page")
+    paginated_screens = paginator.get_page(page_number)
+
+    # Pass the filter to the context for rendering the filter form
+    context = {
+        "screens": paginated_screens,
+        "screens_filter": screens_filter,
+    }
+    # Pass the filter to the context for rendering the filter form
+ 
+
     return render(request, "athletes/screens.html", context)
-
-
 # # Athletes details......................................................
 @admin_required(login_url="login")
 def DeleteAthlete(request, id):

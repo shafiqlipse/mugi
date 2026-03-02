@@ -84,3 +84,28 @@ class PaymentFilter(django_filters.FilterSet):
         super(PaymentFilter, self).__init__(*args, **kwargs)
         for field_name, field in self.form.fields.items():
             field.widget.attrs.update({"class": "form-control"})
+            
+            
+       
+
+class ScreenFilter(django_filters.FilterSet):
+
+    search = django_filters.CharFilter(
+        method="filter_search",
+        label="Search Athlete",
+        widget=forms.TextInput(attrs={
+            "class": "form-control me-2",
+            "placeholder": "Search by index number, first or last name"
+        })
+    )
+
+    class Meta:
+        model = Screening
+        fields = []
+
+    def filter_search(self, queryset, name, value):
+        return queryset.filter(
+            Q(athlete__index_number__icontains=value) |
+            Q(athlete__fname__icontains=value) |
+            Q(athlete__lname__icontains=value)
+        )

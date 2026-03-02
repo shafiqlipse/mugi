@@ -357,6 +357,8 @@ class Screening(models.Model):
             ("Impersonation", "Impersonation"),
             ("Overage", "Overage"),
             ("Underage", "Underage"),
+            ("Repeater", "Repeater"),
+            ("Resitter", "Resitter"),
             ("Misconduct", "Misconduct"),
             ("No UCE Results", "No UCE Results"),
             ("Two Passports", "Two Passports"),

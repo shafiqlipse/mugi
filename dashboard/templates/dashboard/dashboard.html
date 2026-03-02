@@ -393,11 +393,6 @@
                     <li>
                       <a class="tp-link" href="{%url 'archives'%}">Archives</a>
                     </li>
-                    <li>
-                      <a class="tp-link" href="{%url 'screened' %}"
-                        >Screened_out</a
-                      >
-                    </li>
                   </ul>
                 </div>
               </li>
@@ -563,11 +558,13 @@
                         >Overtime</a
                       >
                     </li>
-                    {% comment %} <li>
+                    {% comment %}
+                    <li>
                       <a class="tp-link" href="{%url 'book_appointment'%}"
                         >Appointments</a
                       >
-                    </li> {% endcomment %}
+                    </li>
+                    {% endcomment %}
                   </ul>
                 </div>
               </li>
@@ -821,6 +818,17 @@
                 </a>
               </li>
               {% endif %}
+
+              <li>
+                <a class="tp-link" href="{%url 'screened' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Ineligible Athletes </span>
+                </a>
+              </li>
             </ul>
           </div>
           <!-- End Sidebar -->
