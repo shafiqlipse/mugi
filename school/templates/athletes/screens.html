@@ -14,7 +14,9 @@
     <div class="container-fluid">
       <form class="d-flex" method="GET">
         {{ screens_filter.form.search }}
-        <button class="btn btn-outline-success" type="submit">Search for Athletes</button>
+        <button class="btn btn-outline-success" type="submit">
+          Search for Athletes
+        </button>
       </form>
     </div>
   </nav>
@@ -57,19 +59,58 @@
       </div>
       {% endfor %}
     </div>
-    <div class="pagination">
-      {% if screens.has_previous %}
-      <a href="?page={{ screens.previous_page_number }}">Previous</a>
-      {% endif %}
+    <nav aria-label="Screen pagination">
+      <ul class="pagination justify-content-center">
+        <!-- PREVIOUS -->
+        {% if screens.has_previous %}
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="?page={{ screens.previous_page_number }}&search={{ request.GET.search }}"
+          >
+            Previous
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Previous</span>
+        </li>
+        {% endif %}
 
-      <span
-        >Page {{ screens.number }} of {{ screens.paginator.num_pages }}</span
-      >
+        <!-- PAGE NUMBERS -->
+        {% for num in screens.paginator.page_range %} {% if screens.number == num %}
+        
+        <li class="page-item active" aria-current="page">
+          <span class="page-link">{{ num }}</span>
+        </li>
+        {% else %}
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="?page={{ num }}&search={{ request.GET.search }}"
+          >
+            {{ num }}
+          </a>
+        </li>
+        {% endif %} {% endfor %}
 
-      {% if screens.has_next %}
-      <a href="?page={{ screens.next_page_number }}">Next</a>
-      {% endif %}
-    </div>
+        <!-- NEXT -->
+        {% if screens.has_next %}
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="?page={{ screens.next_page_number }}&search={{ request.GET.search }}"
+          >
+            Next
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Next</span>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
   </div>
 </div>
 
