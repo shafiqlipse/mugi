@@ -1120,7 +1120,7 @@ def payment_view(request):
                 athletes = form.cleaned_data['athletes']
 
 # Validate phone number format
-                if not re.match(r'^(075|074|070)\d{7}$', phone_number):
+                if not re.match(r'^(073|075|074|070)\d{7}$', phone_number):
                     messages.error(request, "Phone number must a valid Airtel money number.")
                     return render(request, 'payments/payment_form.html', {'form': form})
 
