@@ -316,7 +316,12 @@ def archives_data_view(request):
     total = queryset.count()
 
     if search_value:
-        queryset = queryset.filter(fname__icontains=search_value)  # or `lname`
+        queryset = queryset.filter(
+            Q(fname__icontains=search_value) |
+            Q(lname__icontains=search_value) |
+            Q(index_number__icontains=search_value) |
+            Q(school__name__icontains=search_value)  # optionally include school name
+        )
 
     filtered_total = queryset.count()
 

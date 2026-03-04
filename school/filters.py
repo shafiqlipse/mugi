@@ -33,6 +33,7 @@ class AthleteFilter(django_filters.FilterSet):
     def filter_by_name(self, queryset, name, value):
         return queryset.filter(Q(fname__icontains=value) | Q(mname__icontains=value))
 
+
 class SchoolFilter(django_filters.FilterSet):
     search = django_filters.CharFilter(
         field_name="name",
