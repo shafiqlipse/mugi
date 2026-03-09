@@ -246,10 +246,10 @@
                             width="100"
                             alt="Old Photo"
                           />
-                          {% else %} — {% endif %} {% else %}
+                          {% else %} — {% endif %}
                           <!---->
                           {{edit_request.original_data|get_item:field|default:"—"}}
-                          <!---->
+                          <!----> {% else %}
                           {% endif %}
                         </td>
 
