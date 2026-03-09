@@ -647,7 +647,7 @@ def edit_request_success(request):
     return render(request, 'athletes/edit_request_success.html')
 
 def edit_requests_list(request):
-    requests = AthleteEditRequest.objects.select_related('athlete', 'requested_by', 'school').filter(status = 'Paid')
+    requests = AthleteEditRequest.objects.select_related('athlete', 'requested_by', 'school').filter(status = 'COMPLETED')
     return render(request, 'athletes/edit_requests_list.html', {'requests': requests})
 
 
