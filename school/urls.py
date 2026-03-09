@@ -24,6 +24,7 @@ urlpatterns = [
     path("archives/", archives, name="archives"),
     path("allathletes/", all_athletes, name="allathletes"),
     path("edit_requests_list/", edit_requests_list, name="edit_requests_list"),
+    path("done_edit_requests_list/", done_edit_requests_list, name="done_edit_requests_list"),
     path("athlete/<int:id>", AthleteDetail, name="athlete"),
     path("editathlete/<int:id>", AthleteUpdate, name="updateathlete"),
     path("delete-athlete/<int:id>", DeleteAthlete, name="del_athlete"),

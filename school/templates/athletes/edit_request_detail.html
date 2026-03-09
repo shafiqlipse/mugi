@@ -206,7 +206,8 @@
                       href="{{ edit_request.supporting_document.url }}"
                       target="_blank"
                     >
-                    <i class="fa fa-file-pdf" aria-hidden="true"></i> View Supporting Document 
+                      <i class="fa fa-file-pdf" aria-hidden="true"></i> View
+                      Supporting Document
                     </a>
                     {% else %} No document uploaded. {% endif %}
                   </div>
@@ -231,38 +232,31 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {% for field, new_value in edit_request.requested_changes.items %}
                       
+                    {% for field, new_value in  edit_request.requested_changes.items %}
                       <tr>
                         <td><strong>{{ field|capfirst }}</strong></td>
+
                         <td>
                           {% if field == "photo" %}
-                          <!-- Added missing closing tag -->
+                          <!---->
                           {% if edit_request.original_data.photo %}
-
                           <img
-                            src="/media/{{ edit_request.original_data.photo. }}"
+                            src="{{ edit_request.original_data.photo.url }}"
                             width="100"
                             alt="Old Photo"
                           />
-                          {% else %} N/A {% endif %}
-                          <!-- Added missing closing tag -->
-                          {% else %}
-                          <!-- Added missing closing tag -->
+                          {% else %} — {% endif %} {% else %}
+                          <!---->
                           {{edit_request.original_data|get_item:field|default:"—"}}
-
-                          <!-- Added missing closing tag -->
+                          <!---->
                           {% endif %}
                         </td>
+
                         <td>
                           {% if field == "photo" %}
-                          <img
-                            src="/media/{{ new_value }}"
-                            width="100"
-                            alt="New Photo"
-                          />
+                         <img src="/media/{{ new_value }}" width="80" style="border-radius:4px;">
                           {% else %} {{ new_value }} {% endif %}
-                        </td>
                         </td>
                       </tr>
                       {% endfor %}
@@ -294,7 +288,8 @@
                     >Updated {{ edit_request.requested_at|timesince }} ago
                   </small>
                 </div>
-              </div>{% endif %}
+              </div>
+              {% endif %}
             </div>
           </div>
         </div>
