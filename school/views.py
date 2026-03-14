@@ -48,82 +48,82 @@ import time
 from django.conf import settings
 from django.core.cache import cache
 
-TOKEN_CACHE_KEY = "airtel_access_token"
+# TOKEN_CACHE_KEY = "airtel_access_token"
 
 
-def get_airtel_token():
-    """
-    Retrieve Airtel Money OAuth token.
-    """
+# def get_airtel_token():
+#     """
+#     Retrieve Airtel Money OAuth token.
+#     """
 
-    # Check cached token first
-    cached_token = cache.get(TOKEN_CACHE_KEY)
-    if cached_token:
-        return cached_token
+#     # Check cached token first
+#     cached_token = cache.get(TOKEN_CACHE_KEY)
+#     if cached_token:
+#         return cached_token
 
-    url = "https://openapi.airtel.ug/auth/oauth2/token"
+#     url = "https://openapi.airtel.ug/auth/oauth2/token"
 
-    headers = {
-        "Content-Type": "application/json",
-        "Accept": "*/*"
-    }
+#     headers = {
+#         "Content-Type": "application/json",
+#         "Accept": "*/*"
+#     }
 
-    payload = {
-        "client_id": settings.AIRTEL_MONEY_CLIENT_ID,
-        "client_secret": settings.AIRTEL_MONEY_CLIENT_SECRET,
-        "grant_type": "client_credentials",
-    }
+#     payload = {
+#         "client_id": settings.AIRTEL_MONEY_CLIENT_ID,
+#         "client_secret": settings.AIRTEL_MONEY_CLIENT_SECRET,
+#         "grant_type": "client_credentials",
+#     }
 
-    retries = 3
+#     retries = 3
 
-    for attempt in range(retries):
+#     for attempt in range(retries):
 
-        try:
-            response = requests.post(url, json=payload, headers=headers, timeout=10)
+#         try:
+#             response = requests.post(url, json=payload, headers=headers, timeout=10)
 
-            logger.info(f"Token Response: {response.status_code}, {response.text}")
+#             logger.info(f"Token Response: {response.status_code}, {response.text}")
 
-            if response.status_code == 200:
+#             if response.status_code == 200:
 
-                data = response.json()
-                token = data.get("access_token")
-                expires = data.get("expires_in", 3600)
+#                 data = response.json()
+#                 token = data.get("access_token")
+#                 expires = data.get("expires_in", 3600)
 
-                if token:
-                    cache.set(TOKEN_CACHE_KEY, token, timeout=expires - 60)
-                    return token
+#                 if token:
+#                     cache.set(TOKEN_CACHE_KEY, token, timeout=expires - 60)
+#                     return token
 
-            elif response.status_code in [500, 503]:
-                logger.warning(f"Airtel server error ({response.status_code}), retrying...")
-                time.sleep(2 ** attempt)
-                continue
+#             elif response.status_code in [500, 503]:
+#                 logger.warning(f"Airtel server error ({response.status_code}), retrying...")
+#                 time.sleep(2 ** attempt)
+#                 continue
 
-            else:
-                try:
-                    error_response = response.json()
-                    error_message = error_response.get(
-                        "error_description",
-                        error_response.get("message", "Unknown error")
-                    )
-                except Exception:
-                    error_message = response.text
+#             else:
+#                 try:
+#                     error_response = response.json()
+#                     error_message = error_response.get(
+#                         "error_description",
+#                         error_response.get("message", "Unknown error")
+#                     )
+#                 except Exception:
+#                     error_message = response.text
 
-                logger.error(f"Airtel token error: {error_message}")
-                return None
+#                 logger.error(f"Airtel token error: {error_message}")
+#                 return None
 
-        except requests.exceptions.ConnectionError:
-            logger.error("Network error: Unable to reach Airtel Money API.")
+#         except requests.exceptions.ConnectionError:
+#             logger.error("Network error: Unable to reach Airtel Money API.")
 
-        except requests.exceptions.Timeout:
-            logger.error("Request timed out contacting Airtel API.")
+#         except requests.exceptions.Timeout:
+#             logger.error("Request timed out contacting Airtel API.")
 
-        except requests.exceptions.RequestException as e:
-            logger.error(f"Unexpected request error: {str(e)}")
+#         except requests.exceptions.RequestException as e:
+#             logger.error(f"Unexpected request error: {str(e)}")
 
-        time.sleep(2 ** attempt)
+#         time.sleep(2 ** attempt)
 
-    logger.error("Failed to retrieve Airtel token after retries.")
-    return None
+#     logger.error("Failed to retrieve Airtel token after retries.")
+#     return None
 
 @school_required
 def Dash(request):
@@ -1248,65 +1248,65 @@ def payment_view(request):
 
     return render(request, 'emails/payment_form.html', {'form': form})
 
-# def get_airtel_token():
-#     """
-#     Retrieve Airtel Money OAuth token.
-#     """
-#     try:
-#         url = "https://openapi.airtel.ug/auth/oauth2/token"
-#         headers = {"Content-Type": "application/json", "Accept": "*/*" }
-#         payload = {
-#             "client_id": settings.AIRTEL_MONEY_CLIENT_ID,
-#             "client_secret": settings.AIRTEL_MONEY_CLIENT_SECRET,
-#             "grant_type": "client_credentials",
-#         }
+def get_airtel_token():
+    """
+    Retrieve Airtel Money OAuth token.
+    """
+    try:
+        url = "https://openapi.airtel.ug/auth/oauth2/token"
+        headers = {"Content-Type": "application/json", "Accept": "*/*" }
+        payload = {
+            "client_id": settings.AIRTEL_MONEY_CLIENT_ID,
+            "client_secret": settings.AIRTEL_MONEY_CLIENT_SECRET,
+            "grant_type": "client_credentials",
+        }
 
-#         response = requests.post(url, json=payload, headers=headers, params={})
-#         logger.info(f"Token Response: {response.status_code}, {response.text}")
-#         print(response.json())
-#         if response.status_code == 200:
-#             return response.json().get("access_token")
+        response = requests.post(url, json=payload, headers=headers, params={})
+        logger.info(f"Token Response: {response.status_code}, {response.text}")
+        print(response.json())
+        if response.status_code == 200:
+            return response.json().get("access_token")
 
-#         # Handle common errors
-#         error_response = response.json()
-#         error_message = error_response.get("error_description", error_response.get("message", "Unknown error"))
+        # Handle common errors
+        error_response = response.json()
+        error_message = error_response.get("error_description", error_response.get("message", "Unknown error"))
 
-#         if response.status_code == 400:
-#             logger.error("Invalid request format. Check parameters.")
-#             return None
-#         elif response.status_code == 401:
-#             logger.error("Authentication failed. Check your API credentials.")
-#             return None
-#         elif response.status_code == 403:
-#             logger.error("Permission denied. Your account may not have access.")
-#             return None
-#         elif response.status_code == 500:
-#             logger.error("Airtel Money server error. Try again later.")
-#             return None
+        if response.status_code == 400:
+            logger.error("Invalid request format. Check parameters.")
+            return None
+        elif response.status_code == 401:
+            logger.error("Authentication failed. Check your API credentials.")
+            return None
+        elif response.status_code == 403:
+            logger.error("Permission denied. Your account may not have access.")
+            return None
+        elif response.status_code == 500:
+            logger.error("Airtel Money server error. Try again later.")
+            return None
 
-#         logger.error(f"Failed to get token: {error_message}")
-#         return None
+        logger.error(f"Failed to get token: {error_message}")
+        return None
 
-#     except requests.exceptions.ConnectionError:
-#         logger.error("Network error: Unable to reach Airtel Money API.")
-#         return None
-#     except requests.exceptions.Timeout:
-#         logger.error("Request timed out: Airtel Money API took too long to respond.")
-#         return None
-#     except requests.exceptions.RequestException as e:
-#         logger.error(f"Unexpected request error: {str(e)}")
-#         return None
-#     except Exception as e:
-#         logger.error(f"Unknown error: {str(e)}")
-#         return None
+    except requests.exceptions.ConnectionError:
+        logger.error("Network error: Unable to reach Airtel Money API.")
+        return None
+    except requests.exceptions.Timeout:
+        logger.error("Request timed out: Airtel Money API took too long to respond.")
+        return None
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Unexpected request error: {str(e)}")
+        return None
+    except Exception as e:
+        logger.error(f"Unknown error: {str(e)}")
+        return None
 
 
-# # def generate_unique_transaction_id():
-# #     """Generate a unique 12-digit transaction ID."""
-# #     while True:
-# #         transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
-# #         if not Payment.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
-# #             return transaction_id
+# def generate_unique_transaction_id():
+#     """Generate a unique 12-digit transaction ID."""
+#     while True:
+#         transaction_id = str(random.randint(10**11, 10**12 - 1))  # 12-digit random number
+#         if not Payment.objects.filter(transaction_id=transaction_id).exists():  # Ensure uniqueness
+#             return transaction_id
 
 
 def initiate_payment(request, id):

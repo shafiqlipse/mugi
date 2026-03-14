@@ -99,7 +99,7 @@
         </div>
         <form
           id="acceptTransferForm"
-          method="POST"
+          method="post"
           enctype="multipart/form-data"
         >
           {% csrf_token %}
@@ -115,7 +115,6 @@
                 class="form-control"
                 id="documents"
                 name="documents"
-                accept=".pdf"
                 required
               />
             </div>

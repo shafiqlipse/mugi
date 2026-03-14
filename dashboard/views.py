@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.db.models import Q
 
 # Filter schools created today
-@login_required
+@login_required(login_url="login")
 def dashboard(request):
     today = timezone.now().date()  # Assuming timezone is set
 
