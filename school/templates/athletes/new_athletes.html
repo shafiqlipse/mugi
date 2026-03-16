@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="card-body">
-                  <div class="imgbox">
+                  {% comment %} <div class="imgbox">
                     <div class="field">
                       <div id="photos_preview" class="preview-container"></div>
                     </div>
@@ -59,7 +59,34 @@
                         id="id_photo"
                       />
                     </div>
-                  </div>
+                  </div> {% endcomment %}
+                  
+                      <div class="colmd4">
+                        <div
+                          class="field"
+                          style="
+                            background-image: url('https://upssaonline.com/profile.png');
+                            background-size: cover;
+                            background-position: center;
+                            padding: 20px;
+                            height: 350px;
+                            width: 100%;
+                          "
+                        >
+                          <div
+                            id="photos_preview"
+                            class="preview-container"
+                          ></div>
+                        </div>
+                        <div class="field mt-2">
+                          <input
+                            type="file"
+                            name="photo"
+                            accept="image/*"
+                            id="id_photo"
+                          />
+                        </div>
+                      </div>
                 </div>
               </div>
             </div>
@@ -200,115 +227,16 @@
     </div>
   </div>
   </div> -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("athlete-form");
-        const fileInput = document.getElementById("id_photo");
-        const previewContainer = document.getElementById("photos_preview");
-        let cropper = null;
-        let croppedBlob = null;
-
-        fileInput.addEventListener("change", function (e) {
-          const file = e.target.files[0];
-          if (!file) return;
-
-          const reader = new FileReader();
-          reader.onload = function (event) {
-            previewContainer.innerHTML = `<img src="${event.target.result}" id="photo_image">`;
-
-            const image = document.getElementById("photo_image");
-
-            if (cropper) cropper.destroy();
-
-            cropper = new Cropper(image, {
-              aspectRatio: 1,
-              viewMode: 1,
-              autoCropArea: 1,
-              cropend() {
-                const canvas = cropper.getCroppedCanvas({
-                  width: 512,
-                  height: 512,
-                });
-                canvas.toBlob(
-                  (blob) => {
-                    croppedBlob = blob;
-                  },
-                  "image/jpeg",
-                  0.9,
-                );
-              },
-            });
-          };
-          reader.readAsDataURL(file);
-        });
-
-        form.addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          const messageBox = document.getElementById("form-messages");
-          messageBox.innerText = ""; // Clear previous message
-
-          if (!cropper) {
-            messageBox.innerText = "Please upload and crop a photo.";
-            return;
-          }
-
-          const canvas = cropper.getCroppedCanvas({ width: 512, height: 512 });
-
-          canvas.toBlob(
-            (blob) => {
-              if (!blob) {
-                messageBox.innerText = "Failed to crop image.";
-                return;
-              }
-
-              const formData = new FormData(form);
-              formData.set("cropped_photo", blob, "cropped_photo.jpg");
-
-              const submitButton = form.querySelector("button[type='submit']");
-              submitButton.disabled = true;
-              const originalBtnText = submitButton.innerText;
-              submitButton.innerText = "Submitting...";
-
-              fetch(form.action, {
-                method: "POST",
-                headers: {
-                  "X-CSRFToken": getCookie("csrftoken"),
-                },
-                body: formData,
-              })
-                .then((res) => {
-                  if (res.ok && res.redirected) {
-                    window.location.href = res.url;
-                  } else {
-                    return res.text().then((html) => {
-                      document.body.innerHTML = html;
-                    });
-                  }
-                })
-                .catch((err) => {
-                  console.error("Submission error:", err);
-                  messageBox.innerText = "An error occurred. Please try again.";
-                })
-                .finally(() => {
-                  submitButton.disabled = false;
-                  submitButton.innerText = originalBtnText;
-                });
-            },
-            "image/jpeg",
-            0.9,
-          );
-        });
-
-        // Helper to get CSRF token
-        function getCookie(name) {
-          const value = `; ${document.cookie}`;
-          const parts = value.split(`; ${name}=`);
-          if (parts.length === 2) return parts.pop().split(";").shift();
-        }
-      });
-    </script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <!-- Croppie JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+  <script src="{% static 'js/photo.js' %}"></script>
+</div>
   </div>
   {% endblock %}
 </div>

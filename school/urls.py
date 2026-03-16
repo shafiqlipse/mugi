@@ -29,9 +29,11 @@ urlpatterns = [
     path("editathlete/<int:id>", AthleteUpdate, name="updateathlete"),
     path("delete-athlete/<int:id>", DeleteAthlete, name="del_athlete"),
     path("request-edit-athlete/<int:athlete_id>/", request_athlete_edit, name="edit_request_athlete"),
+    path("my_edit_requests_list/", my_edit_requests_list, name="my_edit_requests_list"),
     # path("review-edit-request/<uuid:request_id>/", review_edit_request, name="review_edit_request"),
     path("edit_request_detail/<uuid:request_id>/", edit_request_detail, name="edit_request_detail"),
-    # path("delete-athlete/<int:id>", DeleteAthlete, name="del_athlete"),
+    path("delete_athlete_edit/<uuid:id>", delete_athlete_edit, name="delete_athlete_edit"),
+    
     path('athletes/data/', athlete_data_view, name='athlete_data'),
     path('archives/data/', archives_data_view, name='archives_data'),
     # path('athletes/', all_athletes_page, name='all_athletes_page'),

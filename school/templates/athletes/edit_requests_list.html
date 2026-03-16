@@ -22,24 +22,38 @@
               <th>Request Date</th>
               <th>Reviewed On</th>
               <th>Status</th>
+
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {% for request in requests %}
+            {% for reqwest in requests %}
             <tr>
               <td>
-                <a href="{% url 'edit_request_detail' request.id %}">
+                <a href="{% url 'edit_request_detail' reqwest.id %}">
                   <span class="pl-2"
-                    >{{ request.athlete.fname }} {{ request.athlete.lname }}
+                    >{{ reqwest.athlete.fname }} {{ reqwest.athlete.lname }}
                   </span></a
                 >
               </td>
 
-              <td>{{ request.requested_by }}</td>
+              <td>{{ reqwest.requested_by }}</td>
 
-              <td>{{ request.requested_at }}</td>
-              <td>{{ request.reviewed_at }}</td>
-              <td>{{ request.status }}</td>
+              <td>{{ reqwest.requested_at }}</td>
+              <td>{{ reqwest.reviewed_at }}</td>
+              <td>{{ reqwest.status }}</td>
+
+              {% if reqwest.status == "PENDING" %}
+              <td>
+                <a
+                  href="{% url 'delete_athlete_edit' reqwest.id %}"
+                  class="btn btn-danger btn-sm"
+                  >Delete</a
+                >
+              </td>
+              {% else %}
+              <td>.</td>
+              {% endif %}
             </tr>
             {% endfor %}
           </tbody>

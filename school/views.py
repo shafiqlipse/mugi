@@ -42,6 +42,29 @@ logger = logging.getLogger(__name__)
 User = get_user_model()
 
 
+def generate_transaction_id():
+    """
+    Generates a globally unique 12-digit numeric ID.
+    Format:
+    7 digits timestamp + 5 digits random
+    """
+    timestamp_part = int(time.time() * 1000) % 10_000_000  # last 7 digits of ms timestamp
+    random_part = random.randint(10_000, 99_999)           # 5 random digits
+
+    return f"{timestamp_part:07d}{random_part}"
+
+def generate_edittransaction_id():
+    """
+    Generates a globally unique 12-digit numeric ID.
+    Format:
+    7 digits timestamp + 5 digits random
+    """
+    timestamp_part = int(time.time() * 1000) % 10_000_000  # last 7 digits of ms timestamp
+    random_part = random.randint(10_000, 99_999)           # 5 random digits
+
+    return f"{timestamp_part:07d}{random_part}"
+
+
 
 import requests
 import time
@@ -593,16 +616,13 @@ def Official(request):
 
 @login_required(login_url="login")
 def newAthlete(request):
-    if request.method == "POST" and request.FILES.get("cropped_photo"):
+    if request.method == "POST":
         form = NewAthleteForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 with transaction.atomic():
                     new_athlete = form.save(commit=False)
                     new_athlete.school = request.user.school
-                    new_athlete.photo = request.FILES["cropped_photo"]
-
-
                     new_athlete.save()
                     messages.success(request, "Athlete added successfully!")
                     return redirect('athletes')  # Redirect to your athlete list view
@@ -648,7 +668,7 @@ def request_athlete_edit(request, athlete_id):
             supporting_doc = request.FILES.get('supporting_document')
 
             # Validate phone number
-            if not re.match(r'^(075|074|070)\d{7}$', phone_number):
+            if not re.match(r'^(073|075|074|070)\d{7}$', phone_number):
                 messages.error(request, "Phone number must be a valid Airtel number (070, 074, or 075).")
                 return render(request, 'athletes/request_edit.html', {'athlete': athlete})
 
@@ -666,7 +686,7 @@ def request_athlete_edit(request, athlete_id):
                     original_data=original_data,
                     phone_number=phone_number,
                     amount=amount,
-                    transaction_id=str(random.randint(10**11, 10**12 - 1)),
+                    transaction_id = generate_edittransaction_id(),  
                     status='PENDING',
                 )
 
@@ -735,10 +755,24 @@ def edit_requests_list(request):
     return render(request, 'athletes/edit_requests_list.html', {'requests': requests})
 
 
+def my_edit_requests_list(request):
+    school = request.user.school
+    requests = AthleteEditRequest.objects.select_related('athlete', 'requested_by', 'school').filter(school=school)
+    return render(request, 'athletes/edit_requests_list.html', {'requests': requests})
+
+def delete_athlete_edit(request, id):
+    stud = AthleteEditRequest.objects.get(id=id)
+    if request.method == "POST":
+        stud.delete()
+        return redirect("my_edit_requests_list")
+
+    return render(request, "athletes/delete_ath.html", {"obj": stud})
+
+
+
 def done_edit_requests_list(request):
     requests = AthleteEditRequest.objects.select_related('athlete', 'requested_by', 'school').filter(status='Approved')
     return render(request, 'athletes/edit_requests_list.html', {'requests': requests})
-
 
 
 def edit_request_detail(request, request_id):
@@ -1189,18 +1223,6 @@ def export_scsv(request):
 import time
 import random
 #     context = {"payment": payment}
-
-def generate_transaction_id():
-    """
-    Generates a globally unique 12-digit numeric ID.
-    Format:
-    7 digits timestamp + 5 digits random
-    """
-    timestamp_part = int(time.time() * 1000) % 10_000_000  # last 7 digits of ms timestamp
-    random_part = random.randint(10_000, 99_999)           # 5 random digits
-
-    return f"{timestamp_part:07d}{random_part}"
-
 logger = logging.getLogger( "airtel")
 
 def payment_view(request):
