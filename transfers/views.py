@@ -496,7 +496,7 @@ def reject_transfer(request, id):
         form = TransferRejectionForm(request.POST)
         if form.is_valid():
             # Update the transfer request status
-            transfer_request.status = "pending"
+            transfer_request.status = "paid"
             transfer_request.documents = None  # Optional: Clear documents
             transfer_request.save()
 
@@ -537,7 +537,7 @@ def reject_request(request, id):
             return redirect("myrequests")
 
         # Only allow pending transfer requests to be rejected
-        if transfer_request.status != "pending":
+        if transfer_request.status != "paid":
             messages.error(request, "You can only reject pending transfer requests.")
             return redirect("myrequests")
 
@@ -580,7 +580,7 @@ def export_tcsv(request):
     )  # Replace with your model's fields
 
     # Write data rows
-    for obj in TransferRequest.objects.all():
+    for obj in TransferRequest.objects.filter(status = "approved"):
         writer.writerow(
             [
                 obj.id,

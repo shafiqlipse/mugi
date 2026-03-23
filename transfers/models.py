@@ -134,7 +134,7 @@ class TransferPayment(models.Model):
         
     def clean(self):
             """Validate phone number format."""
-            if not re.match(r'^(075|074|070)\d{7}$', self.phone_number):
+            if not re.match(r'^(073|075|074|070)\d{7}$', self.phone_number):
                 raise ValidationError("Phone number must a valid Airtel money number.")
 
     def save(self, *args, **kwargs):
