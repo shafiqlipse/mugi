@@ -65,13 +65,14 @@
               <td>{{ athlete.classroom }}</td>
               <td>{{ athlete.date_of_birth }}</td>
               <td>
-                <button
+                <span class="badge text-bg-danger">Transfers Closed</span>
+               <!-- <button
                   class="btn btn-outline-primary request-transfer"
                   data-athlete-id="{{ athlete.id }}"
                   data-athlete-name="{{ athlete.fname }} {{ athlete.lname }}"
                 >
                   <i class="fa fa-plus"></i> Request transfer
-                </button>
+                </button>-->
               </td>
             </tr>
             {% endfor %}
