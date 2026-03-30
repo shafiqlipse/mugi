@@ -557,10 +557,92 @@ def reject_request(request, id):
 import csv
 from django.http import HttpResponse
 
-def export_tcsv(request):
+def export_pending_transfers(request):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = 'attachment; filename="data.csv"'
+    response["Content-Disposition"] = 'attachment; filename="pending_transfers.csv"'
+
+    # Create a CSV writer object using the HttpResponse as the file.
+    writer = csv.writer(response)
+
+    # Write the header row
+    writer.writerow(
+        [
+            "id",
+            "athlete",
+            "requesting school",
+            "requesting school",
+            "status",
+            "requested at",
+            "accepted at",
+            "approved at",
+        ]
+    )  # Replace with your model's fields
+
+    # Write data rows
+    for obj in TransferRequest.objects.filter(status = "pending"):
+        writer.writerow(
+            [
+                obj.id,
+                obj.athlete,
+                obj.requester,
+                obj.owner,
+                obj.status,
+                obj.requested_at,
+                obj.accepted_at,
+                obj.approved_at,
+               
+            ]
+        )  # Replace with your model's fields
+
+    return response
+
+
+def export_paid_transfers(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="paid_transfers.csv"'
+
+    # Create a CSV writer object using the HttpResponse as the file.
+    writer = csv.writer(response)
+
+    # Write the header row
+    writer.writerow(
+        [
+            "id",
+            "athlete",
+            "requesting school",
+            "requesting school",
+            "status",
+            "requested at",
+            "accepted at",
+            "approved at",
+        ]
+    )  # Replace with your model's fields
+
+    # Write data rows
+    for obj in TransferRequest.objects.filter(status = "paid"):
+        writer.writerow(
+            [
+                obj.id,
+                obj.athlete,
+                obj.requester,
+                obj.owner,
+                obj.status,
+                obj.requested_at,
+                obj.accepted_at,
+                obj.approved_at,
+               
+            ]
+        )  # Replace with your model's fields
+
+    return response
+
+
+def export_done_deals(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="done_deals.csv"'
 
     # Create a CSV writer object using the HttpResponse as the file.
     writer = csv.writer(response)
@@ -596,6 +678,8 @@ def export_tcsv(request):
         )  # Replace with your model's fields
 
     return response
+
+
 
 def transfer_payments(request):
     payments = TransferPayment.objects.select_related("transfer").all().order_by('id')  # Order by a unique field, like 'id'

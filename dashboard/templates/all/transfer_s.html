@@ -8,8 +8,42 @@
 {% block content %}
 <div class="container-fluid">
   <div class="card">
-    <div class="card-header">
-      <h1 class="fs-18 fw-semibold m-0">All Transfers</h1>
+    <div class="card-header row">
+      <div class="col-md-6">
+        <h1 class="fs-18 fw-semibold m-0 mb-3">All Transfers</h1>
+      </div>
+      <div class="col-md-6">
+        <div class="dropdown">
+          <button
+            class="btn btn-primary dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Export Transfers
+            <i class="mdi mdi-chevron-down"></i>
+          </button>
+          <ul class="dropdown-menu" style="">
+            <li>
+              <a
+                class="dropdown-item"
+                href="{% url 'export_pending_transfers' %}"
+                >Pending Transfers</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'export_paid_transfers' %}"
+                >Paid Transfers</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'export_done_deals' %}"
+                >Approved Transfers</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <div class="card-body">
@@ -48,4 +82,4 @@
   </div>
 </div>
 
-  {% endblock %}
+{% endblock %}
