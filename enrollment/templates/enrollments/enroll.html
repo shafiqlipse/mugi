@@ -119,13 +119,13 @@
                         class="btn btn-info"
                         >Form A</a
                       >
-                      
+                      {% endif %}
                       <a
                         class="dropdown-item"
                         href="{% url 'team_cert' school_enrollment.id%}"
                         class="btn btn-success"
                         >Certificate</a
-                      >{% endif %}
+                      >
                       {% if user.is_superuser %}
                       <a
                         class="dropdown-item"
