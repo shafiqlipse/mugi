@@ -535,7 +535,7 @@ def export_tcsv(request):
             "district",
             "venue",
             "course",
-            "level",
+            "status",
         ]
     )  # Replace with your model's fields
 
@@ -551,7 +551,7 @@ def export_tcsv(request):
                 obj.district,
                 obj.venue,
                 obj.course,
-                obj.level,
+                obj.payment_status,
             ]
         )  # Replace with your model's fields
 
