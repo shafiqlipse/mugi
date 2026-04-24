@@ -634,7 +634,6 @@ def export_ecsv(request):
     return response
 
 
-
 def prepare_certificate(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     officials = school_official.objects.filter(school=team.school).exclude(status="Inactive")
@@ -1068,6 +1067,44 @@ def export_enrollment_csv(request):
             enrollment.sport,
             enrollment.level,
             enrollment.school.district,
+        ])
+
+    return response
+
+
+def export_screening_csv(request):
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="screeningreport.csv"'
+
+    writer = csv.writer(response)
+
+    writer.writerow([
+        "School",
+        "Championship",
+        "Sport",
+        "Athletes",
+        "Screened By",
+        "Screened On",
+    ])
+
+    enrollments = SchoolEnrollment.objects.filter(
+    screening_reports__isnull=False
+).distinct()
+
+    for enrollment in enrollments:
+        athlete_count = Athlete.objects.filter(
+            athleteenrollment__school_enrollment=enrollment
+        ).count()
+
+        report = screening_report.objects.filter(enrollment=enrollment).first()
+
+        writer.writerow([
+            enrollment.school,
+            enrollment.championship,
+            enrollment.sport,
+            athlete_count,
+            report.screened_by if report else "",
+            report.screened_at if report else "",
         ])
 
     return response
