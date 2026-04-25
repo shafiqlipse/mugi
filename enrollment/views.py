@@ -1109,3 +1109,15 @@ def export_screening_csv(request):
 
     return response
 
+
+
+def delete_screen_report(request, id):
+    stud = screening_report.objects.get(id=id)
+    school_enrollment = stud.enrollment
+    if request.method == "POST":
+        stud.delete()
+        return redirect("school_enrollment", school_enrollment.id)
+           
+
+    return render(request, "U14/delete_athletics_enroll.html", {"obj": stud})
+
