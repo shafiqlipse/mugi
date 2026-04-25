@@ -241,7 +241,7 @@
                 {{report.screened_at|date:"F j, Y, g:i a" }}
               </h5>
               <p class="card-text">{{ report.report }}</p>
-              {% if report.screened_by = request.user %}
+            {% if report.screened_by == request.user %}
               <a
                 href="{% url 'delete_screen_report' report.id %}"
                 class="btn btn-danger"
