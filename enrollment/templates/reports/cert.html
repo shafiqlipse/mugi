@@ -22,18 +22,18 @@
       }
       .header .athletes table tbody tr td {
         padding-top: 250px;
-        padding-left: 60px;
+        padding-left: 40px;
         padding-right: 30px;
         margin: 0;
       }
       .header .athletes table tbody tr .athlete-cell .athlete-info {
         font-size: 1.4em; /* Adjust font size */
         text-align: center; /* Align text to the left */
-        width: 500px; /* Set a fixed width to ensure text fits on one line */
+        width: 700px; /* Set a fixed width to ensure text fits on one line */
       }
       .header .athletes table tbody tr .athlete-cell .athlete-image img {
-        width: 130px;
-        height: 130px;
+        width: 120px;
+        height: 120px;
         image-orientation: from-image;
         transform: rotate(0deg);
       }
@@ -46,13 +46,14 @@
             <tr>
               <td class="athlete-cell">
                 <div class="athlete-info">
-                  <span style="font-size: 1.4em"
-                    ><strong>{{ athlete.fname|upper }} {% if athlete.mname%}
-                    {{athlete.mname|upper}}{% endif %} {{athlete.lname|upper}} </span
-                  ></strong><br />
+                  <span
+                    ><strong
+                      >{{ athlete.fname|upper }} {{athlete.lname|upper}}
+                    </strong></span
+                  ><br />
 
-                  <span>{{ athlete.school|upper }}</span><br />
-                  <span>{{ team.sport|upper }}</span><br />
+                  <span>{{ team.school}}</span><br />
+                  <span>{{ team.sport }}</span><br />
                 </div>
               </td>
               <td class="athlete-cell">

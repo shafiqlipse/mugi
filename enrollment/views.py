@@ -492,10 +492,10 @@ def Certificate(request, id):
 
     # Render HTML
     html = template.render(context)
-
+    filename = f"{team.school}~{team.sport}"
     # Create a PDF
     response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = 'attachment; filename="Accreditation.pdf"'
+    response["Content-Disposition"] = f'attachment; filename= "{filename}.pdf"'
 
     # Generate PDF from HTML
     pisa_status = pisa.CreatePDF(html, dest=response)
