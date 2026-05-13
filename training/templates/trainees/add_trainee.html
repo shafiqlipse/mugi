@@ -262,7 +262,7 @@
                                     <p>
                                       To complete your registration, please pay
                                       the course fee of
-                                      <strong>{{ amount }}/=</strong> 
+                                      <p>Amount: UGX <span id="amount-display">{{ venue_amounts|json_script:"venue-data" }}</span></p> 
                                     <div class="field">
                                       <label
                                         >Input your Airtel Money Number</label
@@ -432,6 +432,59 @@
       submitButton.textContent = 'Processing...';
     });
   });
+</script>
+
+<script>
+
+    const venueAmounts = JSON.parse(document.getElementById('venue-data').textContent);
+
+    const venueField = document.getElementById('id_venue');
+    const residenceField = document.getElementById('id_residence_type');
+    const amountDisplay = document.getElementById('amount-display');
+
+    function updateAmount() {
+
+        const venueId = String(venueField.value);
+        const residenceType = String(residenceField.value);
+
+        console.log("venueId:", venueId);
+        console.log("residenceType:", residenceType);
+
+        if (!venueId || !residenceType) {
+            amountDisplay.textContent = '0';
+            return;
+        }
+
+        const amounts = venueAmounts[String(venueId)];
+
+        console.log("amounts:", amounts);
+
+        if (!amounts) {
+            amountDisplay.textContent = '0';
+            return;
+        }
+
+        let amount = 0;
+
+        if (residenceType === 'Residential') {
+            amount = amounts.residential;
+        }
+
+        if (residenceType === 'Non Residential') {
+            amount = amounts.non_residential;
+        }
+
+        console.log("Final Amount:", amount);
+
+        amountDisplay.textContent =
+            Number(amount).toLocaleString();
+    }
+
+    venueField.addEventListener('change', updateAmount);
+    residenceField.addEventListener('change', updateAmount);
+
+    updateAmount();
+
 </script>
     <script src="{% static 'js/cbj.js'%}"></script>
     <!--Datatable scripts-->

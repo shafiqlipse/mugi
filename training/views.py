@@ -23,9 +23,10 @@ import re
 from school.views import get_airtel_token
 from django.urls import reverse
 from django.http import JsonResponse
-logger = logging.getLogger(__name__)
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
-airtel_logger = logging.getLogger('airtel_callback')  # Use the specific logger
+airtel_logger = logging.getLogger('airtel_callback')  # Use the specific airtel_logger
 
 def get_venues(request):
     season_id = request.GET.get("season_id")  # Get the selected season ID from the request
@@ -108,37 +109,46 @@ def generate_transaction_id():
 
     return f"{timestamp_part:07d}{random_part}"
 
-
-
 def trainee_add(request):
+    amount = 0
+    venues = Venue.objects.all()
+    venue_amounts = {
+        str(v.id): {
+            "residential": float(v.residential_amount or 0),
+            "non_residential": float(v.non_residential_amount or 0),
+        }
+        for v in venues
+    }
+    
     if request.method == 'POST':
         form = TraineesForm(request.POST, request.FILES)
+
         if form.is_valid():
             try:
                 phone_number = form.cleaned_data.get('phone_number')
+                venue = form.cleaned_data.get('venue')
+                residence_type = form.cleaned_data.get('residence_type')
 
-                if not phone_number:
-                    messages.error(request, "Phone number is required.")
-                    return render(request, 'trainees/add_trainee.html', {'form': form})
+                # Calculate amount
+                if residence_type == "Residential":
+                    amount = venue.residential_amount
+                else:
+                    amount = venue.non_residential_amount
 
-                # 💰 Payment details
-                amount = 30500  # Total amount (UGX 110,000 + 500 fee)
-
-                # 🎯 Save trainee record first (pending payment)
                 with transaction.atomic():
                     trainee = form.save(commit=False)
-                    trainee.amount = amount
                     trainee.payment_status = "Pending"
                     trainee.transaction_id = generate_unique_transaction_id()
+                    # amount is now set by model's save(), no need to set it here
                     trainee.save()
 
-                # 🔐 Get Airtel token
+                # Get Airtel token
                 token = get_airtel_token()
                 if not token:
                     messages.error(request, "Failed to connect to Airtel. Try again later.")
-                    return render(request, 'trainees/add_trainee.html', {'form': form})
+                    return render(request, 'trainees/add_trainee.html', {'form': form, 'amount': amount})
 
-                # 🌍 Airtel API setup
+                # Airtel payment
                 payment_url = "https://openapi.airtel.ug/merchant/v2/payments/"
                 msisdn = re.sub(r"\D", "", str(phone_number)).lstrip('0')
 
@@ -160,41 +170,59 @@ def trainee_add(request):
                         "msisdn": msisdn,
                     },
                     "transaction": {
-                        "amount": float(amount),
+                        "amount": float(trainee.amount),  # ✅ use saved amount from model
                         "country": "UG",
                         "currency": "UGX",
                         "id": trainee.transaction_id,
                     },
                 }
 
-                # 🚀 Send payment request
                 response = requests.post(payment_url, json=payload, headers=headers)
-                logger.info(f"Airtel Payment Response ({response.status_code}): {response.text}")
+                airtel_logger.info(f"Airtel Payment Response ({response.status_code}): {response.text}")
 
-                # 🧾 Handle response
                 if response.status_code == 200:
                     messages.success(
                         request,
-                        f"Payment initiated successfully! Please confirm UGX {amount} on your Airtel line."
+                        f"Payment initiated successfully! "
+                        f"Please confirm UGX {trainee.amount} on your Airtel line."
                     )
                     return redirect('payment_success')
+
                 else:
+                    # ✅ update status and save, then return
                     trainee.payment_status = "Failed"
-                    trainee.save()
+                    trainee.save(update_fields=['payment_status'])  # avoid re-triggering full save logic
                     messages.error(request, "Payment initiation failed. Please try again.")
-                    return render(request, 'trainees/add_trainee.html', {'form': form})
+                    return render(request, 'trainees/add_trainee.html', {'form': form, 'amount': amount})  # ✅ was missing
 
             except Exception as e:
-                logger.error(f"❌ Error during trainee payment: {str(e)}", exc_info=True)
-                messages.error(request, "An error occurred while processing your payment.")
-                return render(request, 'trainees/add_trainee.html', {'form': form})
+                airtel_logger.exception(f"Error in trainee_add: {e}")  # ✅ log the actual error
+                messages.error(request, "An error occurred while processing payment.")
+                return render(request, 'trainees/add_trainee.html', {'form': form, 'amount': amount})
+
+        else:
+            # ✅ safely read amount even when form is invalid
+            venue = form.data.get('venue')       # use raw POST data, not cleaned_data
+            residence_type = form.data.get('residence_type')
+
+            if venue and residence_type:
+                try:
+                    venue_obj = Venue.objects.get(pk=venue)
+                    if residence_type == "Residential":
+                        amount = venue_obj.residential_amount
+                    else:
+                        amount = venue_obj.non_residential_amount
+                except Venue.DoesNotExist:
+                    pass
 
     else:
-        form = TraineesForm()
+            form = TraineesForm()
+            
+    return render(request, 'trainees/add_trainee.html', {'form': form, 'amount': amount, 'venue_amounts': venue_amounts, })
 
-    # Default GET request
-    return render(request, 'trainees/add_trainee.html', {'form': form, 'amount': '30,500'})
- 
+
+
+
 
 def ittf_trainee_add(request):
     if request.method == 'POST':
@@ -255,7 +283,7 @@ def ittf_trainee_add(request):
 
                 # 🚀 Send payment request
                 response = requests.post(payment_url, json=payload, headers=headers)
-                logger.info(f"Airtel Payment Response ({response.status_code}): {response.text}")
+                airtel_logger.info(f"Airtel Payment Response ({response.status_code}): {response.text}")
 
                 # 🧾 Handle response
                 if response.status_code == 200:
@@ -271,7 +299,7 @@ def ittf_trainee_add(request):
                     return render(request, 'ittf/add_trainee.html', {'form': form})
 
             except Exception as e:
-                logger.error(f"❌ Error during trainee payment: {str(e)}", exc_info=True)
+                airtel_logger.error(f"❌ Error during trainee payment: {str(e)}", exc_info=True)
                 messages.error(request, "An error occurred while processing your payment.")
                 return render(request, 'ittf/add_trainee.html', {'form': form})
 
