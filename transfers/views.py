@@ -24,6 +24,8 @@ from django.urls import reverse
 from .filters import TransferPaymentFilter
 import random
 from django.db import transaction
+from django.db.models import Q, Exists, OuterRef
+from django.utils import timezone
 
 logger = logging.getLogger("airtel")
 # from accounts.decorators import transfer_required
@@ -49,9 +51,24 @@ def generate_ttransaction_id():
 def transfers(request):
     user = request.user
     school = user.school
-    athletes_list = Athlete.objects.select_related("school").exclude(
-    Q(school=school) | Q(status="COMPLETED")
-).order_by("id")
+
+    current_year = timezone.now().year
+
+    approved_transfer_exists = TransferRequest.objects.filter(
+        athlete=OuterRef("pk"),
+        status="approved",
+        requested_at__year=current_year
+    )
+
+    athletes_list = (
+        Athlete.objects.select_related("school")
+        .exclude(
+            Q(school=school) | Q(status="COMPLETED")
+        )
+        .annotate(has_approved_transfer=Exists(approved_transfer_exists))
+        .filter(has_approved_transfer=False)
+    ).order_by("id")
+    
     athlete_filter = AthleteFilter(request.GET, queryset=athletes_list)
     filtered_athletes = athlete_filter.qs  # Get the filtered queryset
 

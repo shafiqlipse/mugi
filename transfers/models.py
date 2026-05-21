@@ -99,6 +99,10 @@ class TransferRequest(models.Model):
         athlete.save()
         self.save()
 
+
+
+
+
 class TransferMessage(models.Model):
     transfer = models.ForeignKey(TransferRequest, on_delete=models.CASCADE)
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
