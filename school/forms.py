@@ -149,11 +149,13 @@ class NewAthleteForm(forms.ModelForm):
             "fname": forms.TextInput(attrs={"class": "form-control"}),
             "mname": forms.TextInput(attrs={"class": "form-control"}),
             "lname": forms.TextInput(attrs={"class": "form-control"}),
-            "lin": forms.TextInput(attrs={"class": "form-control"}),
+            "lin": forms.TextInput(attrs={"class": "form-control", "required": True}),
             # "student_pass_code": forms.TextInput(attrs={"class": "form-control"}),
             # "uneb_code": forms.TextInput(attrs={"class": "form-control"}),
             "uce_index_number": forms.TextInput(attrs={"class": "form-control"}),
-            "index_number": forms.TextInput(attrs={"class": "form-control"}),
+            "index_number": forms.TextInput(
+    attrs={"class": "form-control", "required": True}
+),
             "Parent_fname": forms.TextInput(attrs={"class": "form-control"}),
             "Parent_lname": forms.TextInput(attrs={"class": "form-control"}),
             "parent_phone_number": forms.TextInput(attrs={"class": "form-control"}),
