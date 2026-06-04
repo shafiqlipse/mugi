@@ -18,6 +18,8 @@ from xhtml2pdf import pisa
 from io import BytesIO
 from django.core.paginator import Paginator
 
+import base64
+import os
 from .filters import SchoolEnrollmentFilter  # Assume you have created this filter
 from django.http import JsonResponse
 
@@ -339,40 +341,83 @@ from xhtml2pdf import pisa
 
 # Make sure to import your models
 
-admin_required
+
+
+def generate_qr_base64(token):
+    url = reverse('accreditation_scan', kwargs={'token': token})
+
+    qr = qrcode.make(url)
+
+    buffer = BytesIO()
+    qr.save(buffer, format="PNG")
+
+    return base64.b64encode(buffer.getvalue()).decode()
 
 @login_required(login_url="login")
 def Accreditation(request, id):
-    team = get_object_or_404(SchoolEnrollment, id=id)
-    athlete_enrollments = AthleteEnrollment.objects.select_related("school").filter(school_enrollment=team)
-    athletes = Athlete.objects.filter(athleteenrollment__in=athlete_enrollments)
 
-    # Get template
+    team = get_object_or_404(SchoolEnrollment, id=id)
+
+    athlete_enrollments = AthleteEnrollment.objects.select_related("school_enrollment").filter(
+        school_enrollment=team
+    )
+
+    athletes = Athlete.objects.filter(
+        athleteenrollment__in=athlete_enrollments
+    ).select_related("qr_identity")
+
+    # Add QR to each athlete
+    athlete_data = []
+    for athlete in athletes:
+        athlete_data.append({
+            "athlete": athlete,
+            "qr": generate_qr_base64(athlete.qr_identity.token)
+        })
+
+    # Chunk into rows of 2 for the 2-column card layout
+    athlete_rows = [athlete_data[i:i+2] for i in range(0, len(athlete_data), 2)]
+
+    # Build absolute path to background image for xhtml2pdf
+  
+
     template = get_template("reports/acred.html")
 
-    # Compress and fix rotation for athletes' photos
-
-    # Prepare context
     context = {
-        "athletes": athletes,
+        "athlete_rows": athlete_rows,
         "team": team,
         "MEDIA_URL": settings.MEDIA_URL,
     }
 
-    # Render HTML
     html = template.render(context)
 
-    # Create a PDF
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = 'attachment; filename="Accreditation.pdf"'
 
-    # Generate PDF from HTML
     pisa_status = pisa.CreatePDF(html, dest=response)
+
     if pisa_status.err:
         return HttpResponse("We had some errors <pre>" + html + "</pre>")
 
     return response
 
+
+def accreditation_scan(request, token):
+
+    qr = get_object_or_404(
+        AthleteQR,
+        token=token,
+        is_active=True
+    )
+
+    athlete = qr.athlete
+
+    # Option A: show profile page
+    return render(request, "reports/profile.html", {
+        "athlete": athlete
+    })
+
+
+# Make sure to import your models
 @login_required(login_url="login")
 def Occreditation(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)

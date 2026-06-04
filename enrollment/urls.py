@@ -74,5 +74,10 @@ urlpatterns = [
     path("export_enrollment_csv/", export_enrollment_csv, name="export_enrollment_csv"),
     path("export_screening_csv/", export_screening_csv, name="export_screening_csv"),
     path("delete_screen_report/<int:id>/", delete_screen_report, name="delete_screen_report"),
-    # Add more URLs as ne
+    # Add more URLs as  
+    path(
+    'accreditation/<uuid:token>/',
+    accreditation_scan,
+    name='accreditation_scan'
+)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

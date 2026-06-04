@@ -1,0 +1,64 @@
+{% include "variables/new_css.html" %}
+<!-- Start Content-->
+<style>
+  * {
+    text-align: center;
+  }
+  .VVV {
+    color: red;
+    font-weight: bold;
+  }
+</style>
+<!-- Start Content-->
+<div class="container-fluid">
+  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column"></div>
+
+  <div class="row">
+    <div class="col-sm-6 col-xl-3">
+      <div class="flex-grow-1">
+        <h1 class="fs-18 fw-semibold m-1 VVV">
+          UGANDA SECONDARY SCHOOLS SPORTS ASSOCIATION
+        </h1>
+        <h4 class="fs-18 fw-semibold m-1">BALL GAMES II & ATHLETICS 2026</h4>
+        <h6 class="fs-18 fw-semibold m-1">SACRED HEART SS GULU</h6>
+      </div>
+      <div class="card d-block">
+        <div class="card-body">
+          <h4 class="card-title">{{athlete.fname}} {{athlete.lname}}</h4>
+          <h6 class="card-subtitle text-muted">{{athlete.index_number}}</h6>
+        </div>
+        <img
+          class="img-fluid"
+          src="{{athlete.photo.url}}"
+          alt="Card image cap"
+        />
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              Date of Birth: <strong>{{athlete.date_of_birth}}</strong>
+            </li>
+            <li class="list-group-item">
+              School: <strong>{{athlete.school}}</strong>
+            </li>
+            <li class="list-group-item">
+              Sport: <strong>{{athlete.sport}}</strong>
+            </li>
+          </ul>
+        </div>
+        <!-- end card-body-->
+        <div class="card-footer">
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae
+            odio maxime libero.
+          </p>
+        </div>
+        <!-- end card-body-->
+      </div>
+      <!-- end card-->
+    </div>
+    <!-- end col -->
+  </div>
+
+  <!-- End Cart Grid -->
+</div>
+<!-- container-fluid -->

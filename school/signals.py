@@ -44,3 +44,10 @@ def manage_user_for_official(sender, instance, **kwargs):
     elif instance.status == "Inactive" and user:
         user.is_active = False  # Deactivate the user
         user.save(update_fields=["is_active"])
+        
+        
+
+@receiver(post_save, sender=Athlete)
+def create_athlete_qr(sender, instance, created, **kwargs):
+    if created:
+        AthleteQR.objects.create(athlete=instance)
