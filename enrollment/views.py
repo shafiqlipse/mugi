@@ -342,9 +342,10 @@ from xhtml2pdf import pisa
 # Make sure to import your models
 
 
-
 def generate_qr_base64(token):
-    url = reverse('accreditation_scan', kwargs={'token': token})
+    main_url = reverse('accreditation_scan', kwargs={'token': token})
+
+    url = f"https://reg.usssaonline.com{main_url}"
 
     qr = qrcode.make(url)
 
@@ -352,6 +353,7 @@ def generate_qr_base64(token):
     qr.save(buffer, format="PNG")
 
     return base64.b64encode(buffer.getvalue()).decode()
+
 
 @login_required(login_url="login")
 def Accreditation(request, id):
