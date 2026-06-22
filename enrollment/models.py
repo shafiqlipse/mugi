@@ -154,7 +154,64 @@ class screening_report(models.Model):
     )
     screened_at = models.DateTimeField(auto_now_add=True)
 
-
-        
+       
     def __str__(self):
         return f"{self.enrollment.school} - {self.enrollment.sport}"
+    
+    
+  
+    
+class U14Athlete(models.Model):
+    school = models.ForeignKey(
+        School, related_name="uthletes", on_delete=models.CASCADE, db_index=True
+    )
+    fname = models.CharField(max_length=255, db_index=True)
+    lname = models.CharField(max_length=255, null=True, blank=True)
+    lin = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    date_of_birth = models.DateField(db_index=True)
+    created = models.DateField(auto_now_add=True, null=True)
+    gender = models.CharField(choices=[("Male", "male"), ("Female", "female")], max_length=10)
+    classroom = models.ForeignKey(Classroom, related_name="classa", on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to="u14athlete_photos/")
+    Parent_fname = models.CharField(max_length=100)
+    Parent_lname = models.CharField(max_length=100)
+    parent_phone_number = models.CharField(max_length=15)
+    parent_nin = models.CharField(max_length=20) 
+
+    added_by = models.ForeignKey(User, related_name="aploader", on_delete=models.CASCADE, null=True, blank=True)
+
+    status = models.CharField(
+        max_length=10, choices=[
+            ("NEW", "NEW"), ("ACTIVE", "ACTIVE"), ("INACTIVE", "INACTIVE"), ("COMPLETED", "COMPLETED")
+        ],
+        null=True, blank=True, default="NEW", db_index=True
+    )
+
+    def __str__(self):
+        return f"{self.fname} {self.lname}"
+
+
+
+import uuid
+from django.db import models
+
+class AthleteQR(models.Model):
+    athlete = models.OneToOneField(
+        U14Athlete,
+        on_delete=models.CASCADE,
+        related_name='qr_identity'
+    )
+
+    token = models.UUIDField(
+        default=uuid.uuid4,
+        unique=True,
+        editable=False
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.athlete.id} QR"
+

@@ -5,6 +5,7 @@ from school.models import *
 from zone.models import *
 from training.models import *
 from transfers.models import *
+from enrollment.models import *
 
 
 class UserAdmin(BaseUserAdmin):
@@ -65,4 +66,6 @@ admin.site.register(Classroom)
 admin.site.register(Zonalchair)
 
 
+#competitions
+admin.site.register(U14Athlete)
 
