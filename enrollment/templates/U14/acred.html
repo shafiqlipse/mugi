@@ -3,99 +3,159 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Album</title>
-  </head>
-
-  <body>
+    <title>{{team.school}}</title>
     <style>
-      @media print {
-        @page {
-          size: A4 portrait; /* Set the size of the page to A4 in portrait orientation */
-          margin: 0; /* Remove default margin */
-        }
-
-        body {
-          margin: 0; /* Remove default body margin */
-          padding: 0; /* Remove default body padding */
-        }
-
-        .athletes table {
-          display: grid;
-          grid-template-rows: repeat(2, 1fr); /* Two rows */
-          grid-template-columns: repeat(2, 1fr); /* Two columns */
-          gap: 10px; /* Adjust the gap between grid items */
-        }
+      @page {
+        size: A4 portrait;
+        margin: 5mm;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
       }
-      .header .athletes table tbody tr td table tr .td {
-        padding-top: 105px;
-        padding-bottom: 40px;
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        font-size: 10px;
+      }
+
+      .page-grid > tbody > tr {
+        padding: 0;
+        margin: 0;
+        vertical-align: top;
+      }
+
+      .page-grid > tbody > tr > td {
+        padding-top: 200px;
+        padding-bottom: 100px;
         padding-left: 50px;
         padding-right: 40px;
         margin: 0;
+        vertical-align: top;
       }
-      .header .athletes table tbody tr td table tr .td .inner {
-        width: 350px;
+
+      .card-inner {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      .card-top {
+        padding: 0;
+        margin: 0;
+        line-height: 1;
+        vertical-align: top;
+        font-size: 10px;
         text-align: center;
-        text-transform: uppercase;
       }
-      .header .athletes table tbody tr td table tr .td .inner img {
-        width: 160px;
-        height: 160px;
-        image-orientation: from-image;
-        transform: rotate(0deg);
+
+      .card-photo {
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 140px;
+        height: 140px;
       }
-      .header .athletes table tbody tr td table tr .td .inner span {
+
+      .card-bottom {
+        padding: 0;
+        margin: 0;
+        vertical-align: top;
+      }
+
+      .athlete-table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      .athlete-table > tr {
+        padding: 0;
+        width: 100%;
+      }
+      .athlete-table > tr > .text-column {
+        width: auto;
+      }
+      .qr-column {
+        width: 80px;
+        height: 80px;
+      }
+      .qr-cell {
+        width: 100%;
+        height: 100%;
       }
     </style>
-    <div class="header">
-      <div class="athletes">
-        <table>
-          <tbody>
-            {% for athlete in athletes %} {% if forloop.counter0|divisibleby:2%}
-
-            <tr>
-              {% endif %}
-              <td>
-                <table>
-                  <tr>
-                    <td class="td">
-                      <div class="inner">
-                        <span
-                          >{{ team.sport|upper}}
-                          ({{athlete.gender|upper}})</span
-                        >
-                        <br />
-                        {% if athlete.photo %}
+  </head>
+  <body>
+    <table class="page-grid">
+      <tbody>
+        {% for row in athlete_rows %}
+        <tr>
+          {% for athlete in row %}
+          <td class="card-box">
+            <table class="card-inner" cellspacing="0" cellpadding="0">
+              <tr>
+                <td class="card-top">
+                  {% if athlete.athlete.gender == "Male" %}
+                  <!---->
+                  FOOTBALL BOYS U14
+                  <!---->
+                  {% else %}FOOTBALL GIRLS U14{% endif %}
+                  <!---->
+                  ({{ athlete.athlete.gender|upper }})
+                  <br />
+                  {% if athlete.athlete.photo %}
+                  <img
+                    class="card-photo"
+                    src="{{ athlete.athlete.photo.path }}"
+                    alt="{{ athlete.athlete.fname }}"
+                  />
+                  {% else %}
+                  <img
+                    class="card-photo"
+                    src="{% static 'images/profile.png' %}"
+                    alt="{{ athlete.athlete.lname }}"
+                  />
+                  {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td class="card-bottom">
+                  <table class="athlete-table" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td class="qr-column">
                         <img
-                          src="{{ athlete.photo.path }}"
-                          alt="{{ athlete.fname }}"
+                          class="qr-cell"
+                          src="data:image/png;base64,{{ athlete.qr }}"
+                          alt="QR Code"
                         />
-                        {% else %}
-                        <img
-                          src="{% static 'images/profile.png' %}"
-                          alt="{{ athlete.lname }}"
-                        />
-                        {% endif %}
+                      </td>
+                      <td class="text-column">
+                        <span class="athlete-name">
+                          {{ athlete.athlete.fname|upper }}
+                          <!---->
+                          {{ athlete.athlete.lname|upper }}
+                        </span>
                         <br />
-                        <span
-                          >{{ athlete.fname|upper }} {{ athlete.mname|upper }}
-                          {{athlete.lname|upper}}</span
-                        >
-                        <br />
-                        <span>{{ athlete.index_number|upper }}</span><br />
-                        <span>{{ team.schoool|upper }}</span><br />
-                        <span>{{ athlete.date_of_birth|upper }}</span><br />
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-              {% if forloop.last or forloop.counter0|add:1|divisibleby:2 %}
-            </tr>
-            {% endif %} {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
+                        {{ athlete.athlete.lin|upper }}<br />
+                        {{ athlete.athlete.school|upper }}<br />
+                        {{ athlete.athlete.date_of_birth }}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          {% endfor %} {% if row|length == 1 %}
+          <td></td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </body>
 </html>

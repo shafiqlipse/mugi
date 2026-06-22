@@ -1,0 +1,86 @@
+{% extends "dashboard/dashboard.html" %}
+<!---->
+{% load static %}
+<!---->
+{%block title%}Schools{% endblock %}
+<!---->
+{% block content %}
+<div class="container-fluid">
+  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+    <div class="flex-grow-1">
+      <h4 class="fs-18 fw-semibold m-0">Schools</h4>
+    </div>
+  </div>
+
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <table
+              id="datatable-buttons"
+              class="table table-striped dt-responsive nowrap"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th>School</th>
+                  <th>Center Number</th>
+                  <th>District</th>
+                  <th>Zone</th>
+                  {% if user.is_staff %}
+                  <th>Actions</th>
+                  {% endif %}
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+
+<!-- DataTable Initialization -->
+<script>
+  $(document).ready(function () {
+    const isStaff = {{ user.is_staff|yesno:"true,false" }};
+
+    $('#datatable-buttons').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: {
+        url: "{% url 'school_data' %}",  // Adjust to your correct data URL
+        type: "GET"
+      },
+      dom: 'Bfrtip',
+      buttons: ['copy', 'csv', 'excel', 'print', 'colvis'],
+      columns: [
+        {
+          data: null,
+          render: function (data) {
+            return `<span>${data.name}</span>`;
+          }
+        },
+        { data: 'center_number' },
+        { data: 'district' },
+        { data: 'zone' },
+        isStaff ? {
+          data: null,
+          orderable: false,
+          render: function (data) {
+            return `
+              <a href="/enrollment/U14Accreditation/${data.id}" class="btn btn-sm btn-primary mr-1">Accreditation</a>
+              <a href="/school/delschool/${data.id}" class="btn btn-sm btn-secondary">Certificate</a>
+            `;
+          }
+        } : null
+      ].filter(Boolean),
+      pageLength: 10,
+      lengthMenu: [10, 25, 50, 100, 500],
+    });
+  });
+</script>
+</div>
+{% endblock %}

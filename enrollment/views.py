@@ -402,6 +402,55 @@ def Accreditation(request, id):
 
     return response
 
+@login_required(login_url="login")
+def u14schools(request):
+    schools = School.objects.all()
+    context = {"schools":schools}
+    return render(request, "U14/schools.html", context)
+
+@login_required(login_url="login")
+def U14Accreditation(request, id):
+
+    school = get_object_or_404(School, id=id)
+
+    athletes = U14Athlete.objects.filter(
+        school = school
+    ).select_related("qr_identity")
+
+    # Add QR to each athlete
+    athlete_data = []
+    for athlete in athletes:
+        athlete_data.append({
+            "athlete": athlete,
+            "qr": generate_qr_base64(athlete.qr_identity.token)
+        })
+
+    # Chunk into rows of 2 for the 2-column card layout
+    athlete_rows = [athlete_data[i:i+2] for i in range(0, len(athlete_data), 2)]
+
+    # Build absolute path to background image for xhtml2pdf
+  
+
+    template = get_template("U14/acred.html")
+
+    context = {
+        "athlete_rows": athlete_rows,
+        "school": school,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    html = template.render(context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="Accreditation.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+
 
 def accreditation_scan(request, token):
 
