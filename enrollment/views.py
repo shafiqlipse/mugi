@@ -500,7 +500,7 @@ def u14Albums(request, id):
     filename = f"{school} | U14Football .pdf"
 
     # Get template
-    template = get_template("u14/albums.html")
+    template = get_template("U14/albums.html")
 
     # Prepare context
     context = {
