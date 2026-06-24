@@ -525,7 +525,6 @@ def u14Albums(request, id):
     return response
 
 
-
 def accreditation_scan(request, token):
 
     qr = get_object_or_404(
@@ -1133,8 +1132,11 @@ def UAcreditation(request, id):
 
 def UAlbums(request, id):
     team = get_object_or_404(U14thleticsEnrollment, id=id)
+    
     athlete_enrollments = U14thleticsAthletes.objects.filter(school_enrollment=team)
-
+    school = team.schoool
+    primary_athletes = U14Athlete.objects.filter(school = school)
+    
     today = date.today()
     athletes = Athlete.objects.filter(
         u14thleticsathletes__in=athlete_enrollments
@@ -1165,7 +1167,9 @@ def UAlbums(request, id):
 
     # Prepare context
     context = {
+        "school": school,
         "team": team,
+        "primary_athletes": primary_athletes,
         "athlete_count": athlete_count,
         "athletes": athletes,
         "MEDIA_URL": settings.MEDIA_URL,

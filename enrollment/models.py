@@ -165,6 +165,9 @@ class U14Athlete(models.Model):
     school = models.ForeignKey(
         School, related_name="uthletes", on_delete=models.CASCADE, db_index=True
     )
+    sport = models.ForeignKey(
+        Sport, related_name="sportal", on_delete=models.CASCADE, db_index=True, null=True, blank=True
+    )
     fname = models.CharField(max_length=255, db_index=True)
     lname = models.CharField(max_length=255, null=True, blank=True)
     lin = models.CharField(max_length=255, unique=True, null=True, blank=True)

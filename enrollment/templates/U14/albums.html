@@ -78,6 +78,62 @@
  
           <table>
             <tbody>
+              {% for athlete in primary_athletes %}
+              <!---->
+              {% if forloop.counter0|divisibleby:2 %}
+              <!-- Start a new row for every even-numbered athlete -->
+              <tr>
+                {% endif %}
+                <td>
+                  <table>
+                    <tr>
+                      <td>
+                        {% if athlete.photo %}
+                        <img
+                          src="{{ athlete.photo.path }}"
+                          alt="{{ athlete.fname }}"
+                        />
+                        {% else %}
+                        <img
+                          src="{% static 'images/profile.png' %}"
+                          alt="{{ athlete.fname }}"
+                        />
+                        {% endif %}
+                      </td>
+                      <td>
+                        <ul>
+                          <span>
+                            Names: {{ athlete.fname|upper }} {% if athlete.mname %}{{ athlete.mname|upper }}{% endif %} 
+                            {{athlete.lname|upper }} </span
+                          ><br />
+                          <span>LIN: {{ athlete.lin|upper }}</span
+                          ><br />
+                          <span
+                            >Index No.: {{ athlete.index_number|upper }}</span
+                          ><br />
+                          <span>Class: {{ athlete.classroom|upper }}</span
+                          ><br />
+                          <span
+                            >Date of birth:
+                            {{athlete.date_of_birth|upper}}</span
+                          ><br />
+                          <span>Age: {{ athlete.age|upper }}</span
+                          ><br />
+                          <span>Sport: U14 FOOTBALL{% if athlete.gender == "Male" %} BOYS  {% else %} GIRLS {% endif %}</span
+                          ><br />
+                        </ul>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                {% if forloop.last or forloop.counter0|add:1|divisibleby:2 %}
+                <!-- End the row for the last or odd-numbered athlete -->
+              </tr>
+              {% endif %} {% endfor %}
+            </tbody>
+          </table>
+          <table>
+            <tbody>
               {% for athlete in athletes %}
               <!---->
               {% if forloop.counter0|divisibleby:2 %}
