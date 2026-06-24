@@ -1,5 +1,5 @@
 import django_filters
-from .models import SchoolEnrollment
+from .models import *
 from school.models import School
 from accounts.models import Championship,Sport
 from django import forms
@@ -35,4 +35,20 @@ class SchoolEnrollmentFilter(django_filters.FilterSet):
             "sport",
             "level",
         ]  # Add all fields you want to filter on
- 
+        
+        
+class U14athletesFilter(django_filters.FilterSet):
+
+    gender = django_filters.ChoiceFilter(
+        choices=[("Male", "male"), ("Female", "female")],
+        label="Gender",
+      
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+
+    class Meta:
+        model = U14Athlete
+        fields = [
+            "gender","lin"
+           
+        ] 

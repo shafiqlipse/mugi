@@ -69,58 +69,13 @@
       <img src="https://upssaonline.com/head.png" alt="" />
 
       <h3 style="font-size: 20px; color: #00338b">
-        {{team.schoool|upper}} ~ {{team.sport}} ~ {{team.championship}} ~
-         E{{team.id}}A00{{athlete_count}}
+        {{school|upper}} ~ U14 FOOTBALL ~ BALL GAMES II ~
+         E{{school.id}}A00{{athlete_count}}
       </h3>
 
       <div class="headexher">
         <div class="athletes">
-          <table>
-            <tbody>
-              {% for official in officials %}
-              <!---->
-              {% if forloop.counter0|divisibleby:2 %}
-              <!-- Start a new row for every even-numbered athlete -->
-              <tr>
-                {% endif %}
-                <td>
-                  <table>
-                    <tr>
-                      <td>
-                        {% if official.photo %}
-                        <img
-                          src="{{ official.photo.path }}"
-                          alt="{{ official.fname }}"
-                        />
-                        {% else %}
-                        <img
-                          src="https://smarterpaymentsummit.co.uk/wp-content/uploads/2019/04/profile-pic-dummy.png"
-                          alt="{{ official.fname }}"
-                        />
-                        {% endif %}
-                      </td>
-                      <td>
-                        <ul>
-                          <span>
-                            Names: {{ official.fname|upper }}
-                            {{official.lname|upper }} </span
-                          ><br />
-                          <span>NIN: {{ official.nin|upper }}</span
-                          ><br />
-                          <span>Role: {{ official.role|upper }}</span
-                          ><br />
-                        </ul>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-                {% if forloop.last or forloop.counter0|add:1|divisibleby:2 %}
-                <!-- End the row for the last or odd-numbered athlete -->
-              </tr>
-              {% endif %} {% endfor %}
-            </tbody>
-          </table>
-          <hr />
+ 
           <table>
             <tbody>
               {% for athlete in athletes %}
@@ -164,7 +119,7 @@
                           ><br />
                           <span>Age: {{ athlete.age|upper }}</span
                           ><br />
-                          <span>Sport: {{ team.sport|upper }}</span
+                          <span>Sport: U14 FOOTBALL{% if athlete.gender == "Male" %} BOYS  {% else %} GIRLS {% endif %}</span
                           ><br />
                         </ul>
                       </td>

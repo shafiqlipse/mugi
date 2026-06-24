@@ -17,10 +17,11 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from io import BytesIO
 from django.core.paginator import Paginator
-
+from django.db import IntegrityError
+from django.contrib import messages
 import base64
 import os
-from .filters import SchoolEnrollmentFilter  # Assume you have created this filter
+from .filters import *  # Assume you have created this filter
 from django.http import JsonResponse
 
 
@@ -35,8 +36,7 @@ def get_sports(request):
             return JsonResponse({"error": "Championship not found"}, status=404)
     return JsonResponse([], safe=False)
 
-from django.db import IntegrityError
-from django.contrib import messages
+
 @login_required(login_url="login")
 def SchoolEnrollments(request):
     school = request.user.school
@@ -408,6 +408,23 @@ def u14schools(request):
     context = {"schools":schools}
     return render(request, "U14/schools.html", context)
 
+def u14school_details(request, id):
+    school = get_object_or_404(School, id=id)
+
+    athletes = U14Athlete.objects.filter(
+        school = school
+    ).select_related("qr_identity")
+    
+    athletes_filter = U14athletesFilter(request.GET, queryset=athletes)
+    filtered_enrolls = athletes_filter.qs 
+    
+    return render(request, "U14/report.html", {
+        "school": school,
+        "filtered_enrolls": filtered_enrolls,
+        "athletes_filter": athletes_filter
+    })
+    
+    
 @login_required(login_url="login")
 def U14Accreditation(request, id):
 
@@ -450,6 +467,63 @@ def U14Accreditation(request, id):
         return HttpResponse("We had some errors <pre>" + html + "</pre>")
 
     return response
+
+
+def u14Albums(request, id):
+    today = date.today()
+    school = get_object_or_404(School, id=id)
+    
+    base_athletes = U14Athlete.objects.filter(
+        school=school
+    ).select_related("qr_identity").distinct()
+
+    # Apply the same filter used in the detail view
+    athletes_filter = U14athletesFilter(request.GET, queryset=base_athletes)
+    filtered_qs = athletes_filter.qs
+
+    athletes = filtered_qs.annotate(
+        age=ExpressionWrapper(
+            today.year - F('date_of_birth__year') -
+            Case(
+                When(date_of_birth__month__gt=today.month, then=Value(1)),
+                When(date_of_birth__month=today.month, date_of_birth__day__gt=today.day, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ),
+            output_field=IntegerField()
+        )
+    )
+    # Get athlete and official counts
+    athlete_count = athletes.count()
+
+    # Create a unique filename
+    filename = f"{school} | U14Football .pdf"
+
+    # Get template
+    template = get_template("u14/albums.html")
+
+    # Prepare context
+    context = {
+        "school": school,
+        "athlete_count": athlete_count,
+        "athletes": athletes,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    # Render HTML
+    html = template.render(context)
+
+    # Create a PDF
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+    # Generate PDF from HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+
 
 
 def accreditation_scan(request, token):

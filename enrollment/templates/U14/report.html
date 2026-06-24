@@ -1,0 +1,83 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Enrollment{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <div class="filterlist card">
+        <h2>Filter Enrollments</h2>
+        <div method="get" class="formlix flex">
+          <form method="get" class="formix">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="school">Gender</label>
+                  {{ athletes_filter.form.gender}}
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center mt-3">
+              <button type="submit" class="btn btn-primary">Filter</button>
+              <a href="{% url 'u14Albums' school.id %}?{{ request.GET.urlencode }}" class="btn btn-success">Album</a>
+              <a href="" class="btn btn-secondary">Reset</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="enrolled-athletes flex">
+        <h2>Enrolled Athletes</h2>
+      </div>
+      {% if filtered_enrolls %}
+      <div class="row">
+        <!---->
+        {% for athlete in filtered_enrolls %}
+        <div class="col-12 col-md-3">
+          <div class="card border">
+            <div class="card-body">
+              <div class="text-center">
+                <img
+                  src="{{athlete.photo.url}}"
+                  class="rounded-circle avatar-xl img-thumbnail"
+                  alt="image profile"
+                />
+
+                <div class="mt-2 mb-3">
+                  <span
+                    class="badge bg-primary-subtle rounded-2 text-primary mb-2 fw-normal"
+                    >{{athlete.lin}} | {{athlete.gender}}</span
+                  >
+                  <h5 class="m-0 fw-medium text-dark fs-16">
+                    {{athlete.fname}} {{athlete.lname}}
+                  </h5>
+                  <p class="mt-1 mb-0">{{athlete.index_number}}</p>
+                  <p class="mt-1 mb-0">{{athlete.date_of_birth}}</p>
+                </div>
+              </div>
+            </div>
+            <!--end card-body-->
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p>No athletes enrolled yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#id_schoool").select2();
+  });
+</script>
+{% endblock %}
