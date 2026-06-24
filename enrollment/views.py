@@ -1135,7 +1135,7 @@ def UAlbums(request, id):
     
     athlete_enrollments = U14thleticsAthletes.objects.filter(school_enrollment=team)
     school = team.schoool
-    primary_athletes = U14Athlete.objects.filter(school = school)
+    primary_athletes = U14Athlete.objects.filter(school = school,sport = team.sport)
     
     today = date.today()
     athletes = Athlete.objects.filter(
