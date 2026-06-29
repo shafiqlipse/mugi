@@ -69,7 +69,7 @@ def SchoolEnrollments(request):
 
 @login_required(login_url="login")
 def athleticsEnrollments(request):
-    enrollment0s = AthleticsEnrollment.objects.all()
+    enrollment0s = AthleticsEnrollment.objects.all(championship__status= 'Active')
 
     if request.method == "POST":
         form = AthleticsEnrollmentForm(request.POST, request.FILES)
@@ -969,7 +969,7 @@ def remove_athletics(request, enrollment_id, athlete_id):
 
 @login_required(login_url="login")
 def uthleticsEnrollments(request):
-    u14enrollment0s = U14thleticsEnrollment.objects.all()
+    u14enrollment0s = U14thleticsEnrollment.objects.filter(championship__status='Active')
 
     if request.method == "POST":
         form = U14AthleticsEnrollmentForm(request.POST, request.FILES)
