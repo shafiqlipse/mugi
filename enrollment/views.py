@@ -288,13 +288,13 @@ def athletics_enrollment_details(request, id):
     athlete_enrollments = AthleticsAthletes.objects.filter(
        school_enrollment_id=id
     )
-    all_athletes = Athlete.objects.filter(status="ACTIVE")
+    # all_athletes = Athlete.objects.filter(status="ACTIVE")
 
     context = {
         "athletics_enrollment": athletics_enrollment,
         "form": form,
         "athlete_enrollments": athlete_enrollments,
-        "all_athletes": all_athletes,
+        # "all_athletes": all_athletes,
         
     }
     return render(request, "athletics/athletics_team.html", context)
