@@ -61,10 +61,10 @@ class AthleticsEnrollment(models.Model):
         Sport, related_name="athletics_enrollments", on_delete=models.CASCADE, db_index=True
     )
     district = models.ForeignKey(
-        District, related_name="athletices_enrollments", on_delete=models.CASCADE, db_index=True
+        District, related_name="athletices_enrollments", on_delete=models.CASCADE, db_index=True,null=True, blank=True
     )
     zone = models.ForeignKey(
-        Zone, related_name="athletic_enrollments", on_delete=models.CASCADE, db_index=True
+        Zone, related_name="athletic_enrollments", on_delete=models.CASCADE, db_index=True,null=True, blank=True
     )
     enrollment_date = models.DateTimeField(auto_now_add=True)
 

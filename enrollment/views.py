@@ -69,7 +69,7 @@ def SchoolEnrollments(request):
 
 @login_required(login_url="login")
 def athleticsEnrollments(request):
-    enrollment0s = AthleticsEnrollment.objects.all(championship__status= 'Active')
+    enrollment0s = AthleticsEnrollment.objects.filter(championship__status= 'Active')
 
     if request.method == "POST":
         form = AthleticsEnrollmentForm(request.POST, request.FILES)
