@@ -1,6 +1,6 @@
 {% extends "dashboard/dashboard.html" %}
 <!--static-->
-{% block title %}{{athletics_enrollment.id}} {{athletics_enrollment}}
+{% block title %}
 
 <!---->{% endblock%}
 
@@ -34,7 +34,7 @@
         >
       </div>
 
-      <div
+      <!--<div
         class="modal fade"
         id="exampleModal"
         tabindex="-1"
@@ -96,6 +96,55 @@
                       Add Selected Athletes
                     </button>
                   </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>-->
+      
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Enroll Athletes
+              </h5>
+
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="school-long">
+                <form method="post">
+                  {% csrf_token %} {% csrf_token %}
+                  <label for="athlete_id">Enter Athlete ID:</label>
+                  <input
+                    type="number"
+                    name="athlete_id"
+                    id="athlete_id"
+                    required
+                  />
+                  <button type="submit">Add Athlete</button>
                 </form>
               </div>
             </div>

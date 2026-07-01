@@ -237,48 +237,58 @@ def school_enrollment_details(request, id):
 @login_required(login_url="login")
 def athletics_enrollment_details(request, id):
     athletics_enrollment = get_object_or_404(AthleticsEnrollment, id=id)
-    zone = athletics_enrollment.zone
+
     if request.method == "POST":
-        form = AthleticsAthletesForm(request.POST)
-        if form.is_valid():
-            selected_athletes = form.cleaned_data["athletes"]
+        athlete_id = request.POST.get("athlete_id")
+
+        if athlete_id and athlete_id.isdigit():
+            athlete_id = int(athlete_id)
+
+            try:
+                athlete = Athlete.objects.get(id=athlete_id)
+            except Athlete.DoesNotExist:
+                messages.error(request, f"Athlete with ID {athlete_id} does not exist.")
+                return redirect("athletics_enrollment", id=id)
+
+            # ✅ Check if already enrolled
             already_enrolled = AthleticsAthletes.objects.filter(
                 school_enrollment=athletics_enrollment,
-                athletes__in=selected_athletes
-            ).values_list("athletes__id", flat=True).distinct()
+                athletes=athlete
+            ).exists()
 
             if already_enrolled:
-                messages.error(request, "Some of the selected athletes are already enrolled in this athletics enrollment.")
+                messages.error(request, f"Athlete {athlete} is already enrolled in this sport.")
             else:
-                current_total = Athlete.objects.filter(
-                    athleticsathletes__school_enrollment=athletics_enrollment
-                ).distinct().count()
+                # ✅ Check entry limit
+                current_total = AthleticsAthletes.objects.filter(
+                school_enrollment=athletics_enrollment
+            ).values_list("athletes", flat=True).distinct().count()
 
                 allowed_entries = athletics_enrollment.sport.entries
 
-                if current_total + selected_athletes.count() > allowed_entries:
-                    remaining = allowed_entries - current_total
-                    messages.error(
-                        request,
-                        f"You can only enroll {remaining} more athlete(s) for this sport."
-                    )
+                if current_total >= allowed_entries:
+                    messages.error(request, "You have reached the maximum number of athletes allowed.")
                 else:
-                    athlete_enrollment = AthleticsAthletes.objects.create(
+                    # ✅ Create enrollment and add this athlete
+                    enrollment = AthleticsAthletes.objects.create(
                         school_enrollment=athletics_enrollment,
                         enrolled_by=request.user
                     )
+                    enrollment.athletes.add(athlete)
+                    messages.success(request, f"Athlete {athlete} enrolled successfully.")
+                    return redirect("athletics_enrollment", id=id)
+        else:
+            messages.error(request, "Please enter a valid athlete ID.")
 
-                    athlete_enrollment.athletes.set(selected_athletes)
-                    messages.success(request, "Athletes enrolled successfully.")
-                    return HttpResponseRedirect(reverse("athletics_enrollment", args=[id]))
     else:
-        form = AthleticsAthletesForm()
+        form = AthleticsEnrollmentForm()
+
+
 
     athlete_enrollments = AthleticsAthletes.objects.filter(
        school_enrollment_id=id
     )
-
-    all_athletes = Athlete.objects.filter(school__district__zone=zone, status="ACTIVE")
+    all_athletes = Athlete.objects.filter(status="ACTIVE")
 
     context = {
         "athletics_enrollment": athletics_enrollment,
