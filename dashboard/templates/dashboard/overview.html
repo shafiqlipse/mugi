@@ -234,10 +234,12 @@
         <div class="card-body p-0">
           <div class="table-responsive table-centered mt-0">
             <table
-              class="table table-centered table-nowrap table-hover table-stock mb-0"
+              class="table table-centered table-nowrap display"
+              id="myTable"
             >
               <thead>
                 <tr>
+                  <th>Championship</th>
                   <th>Sport</th>
                   <th>Number of Enrollments Screened</th>
                 </tr>
@@ -245,6 +247,7 @@
               <tbody>
                 {% for row in sport_screening_data %}
                 <tr>
+                  <td>{{ row.enrollment__championship__name }}</td>
                   <td>{{ row.enrollment__sport__name }}</td>
                   <td>{{ row.num_enrollments }}</td>
                 </tr>

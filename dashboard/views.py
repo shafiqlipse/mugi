@@ -41,9 +41,14 @@ def dashboard(request):
 
     queryset = (
         screening_report.objects
-        .values('enrollment__sport__id', 'enrollment__sport__name')
+        .values(
+            'enrollment__championship__id',
+            'enrollment__championship__name',
+            'enrollment__sport__id',
+            'enrollment__sport__name',
+        )
         .annotate(num_enrollments=Count('enrollment', distinct=True))
-        .order_by('-num_enrollments')
+        .order_by('enrollment__championship__name', '-num_enrollments')
     )
 
     context = {
