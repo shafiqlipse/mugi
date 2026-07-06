@@ -198,11 +198,11 @@ class U14Athlete(models.Model):
 import uuid
 from django.db import models
 
-class AthleteQR(models.Model):
+class AthletegQR(models.Model):
     athlete = models.OneToOneField(
         U14Athlete,
         on_delete=models.CASCADE,
-        related_name='qr_identity'
+        related_name='qr_idenytity'
     )
 
     token = models.UUIDField(

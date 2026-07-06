@@ -6,4 +6,4 @@ from .models import *
 @receiver(post_save, sender=U14Athlete)
 def create_athlete_qr(sender, instance, created, **kwargs):
     if created:
-        AthleteQR.objects.create(athlete=instance)
+        AthletegQR.objects.create(athlete=instance)
