@@ -39,6 +39,13 @@ def dashboard(request):
     schools = School.objects.select_related("district").order_by("-created")[:5]
     athletes = Athlete.objects.select_related("school").exclude(status='COMPLETED').order_by("-created")[:5]
 
+    queryset = (
+        screening_report.objects
+        .values('enrollment__sport__id', 'enrollment__sport__name')
+        .annotate(num_enrollments=Count('enrollment', distinct=True))
+        .order_by('-num_enrollments')
+    )
+
     context = {
         "enrollments_count": enrollments_count,
         "schools_count": schools_count,
@@ -50,7 +57,7 @@ def dashboard(request):
         "regions": regions,
         "athletes_count": athletes_count,
         "schools_today": schools_today,
-        "athletes_today": athletes_today,
+        "athletes_today": athletes_today, 'sport_screening_data': queryset,
     }
     return render(request, "dashboard/overview.html", context)
 
