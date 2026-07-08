@@ -1305,3 +1305,28 @@ def delete_screen_report(request, id):
 
     return render(request, "U14/delete_athletics_enroll.html", {"obj": stud})
 
+from django.db.models import Count, Q
+
+def screening_report_detail(request, championship_id, sport_id):
+    sport = get_object_or_404(Sport, pk=sport_id)
+    championship = get_object_or_404(Championship, pk=championship_id)
+
+    enrollments = (
+        SchoolEnrollment.objects
+        .filter(
+            sport_id=sport_id,
+            championship_id=championship_id,
+            screening_reports__isnull=False,  # only screened enrollments
+        )
+        .distinct()
+        .select_related('school')
+        .annotate(num_athletes=Count('athlete_enrollments__athletes', distinct=True))
+        .order_by('school__name')
+    )
+
+    context = {
+        'sport': sport,
+        'championship': championship,
+        'enrollments': enrollments,
+    }
+    return render(request, 'enrollments/screening_report_detail.html', context)

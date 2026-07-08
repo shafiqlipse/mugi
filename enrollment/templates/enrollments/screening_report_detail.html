@@ -1,0 +1,47 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Enrollment{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1>ENROLLMENTS</h1>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table id="myTable" class="display">
+          <thead>
+            <tr>
+              <th>School</th>
+              <th>Number of Athletes Enrolled</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for enrollment in enrollments %}
+            <tr>
+              <td>{{ enrollment.school.name }}</td>
+              <td>{{ enrollment.num_athletes }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="2">No schools screened yet for this sport.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <a
+          href="{% url 'dashboard' %}"
+          class="btn btn-secondary mt-3"
+          >&larr; Back to dashboard</a
+        >
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}
+</div>

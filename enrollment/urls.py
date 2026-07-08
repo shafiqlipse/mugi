@@ -85,5 +85,11 @@ urlpatterns = [
     'accreditation/<uuid:token>/',
     accreditation_scan,
     name='accreditation_scan'
-)
+),
+    
+    path(
+        'dashboard/screening-report/<int:championship_id>/<int:sport_id>/',
+        screening_report_detail,
+        name='screening_report_detail'
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

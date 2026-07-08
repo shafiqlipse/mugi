@@ -248,7 +248,11 @@
                 {% for row in sport_screening_data %}
                 <tr>
                   <td>{{ row.enrollment__championship__name }}</td>
-                  <td>{{ row.enrollment__sport__name }}</td>
+                   <td>
+                <a href="{% url 'screening_report_detail' row.enrollment__championship__id row.enrollment__sport__id %}">
+                    {{ row.enrollment__sport__name }}
+                </a>
+            </td>
                   <td>{{ row.num_enrollments }}</td>
                 </tr>
                 {% empty %}
