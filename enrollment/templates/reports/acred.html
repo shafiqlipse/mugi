@@ -147,7 +147,39 @@
             </table>
           </td>
           {% endfor %} {% if row|length == 1 %}
-          <td></td>
+          <td class="card-box">
+            <table class="card-inner" cellspacing="0" cellpadding="0">
+              <tr>
+                <td class="card-top" style="visibility: hidden">
+                  {{ team.sport|upper }} ({{ team.gender|upper }})<br />
+                  <img
+                    class="card-photo"
+                    src="{% static 'images/profile.png' %}"
+                    alt=""
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="card-bottom">
+                  <table class="athlete-table" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td class="qr-column">
+                        <img
+                          class="qr-cell"
+                          src="{% static 'images/profile.png' %}"
+                          alt=""
+                          style="visibility: hidden"
+                        />
+                      </td>
+                      <td class="text-column" style="visibility: hidden">
+                        placeholder text
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
           {% endif %}
         </tr>
         {% endfor %}
