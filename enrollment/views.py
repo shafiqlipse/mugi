@@ -1114,13 +1114,13 @@ def UAcreditation(request, id):
     )
 
     # Get template
-    template = get_template("U14/acred.html")
+    template = get_template("U14/u14acred.html")
 
     # Compress and fix rotation for athletes' photos
 
     # Prepare context
     context = {
-        "athletes": athletes,
+        "athlete_rows": athletes,
         "team": team,
         "MEDIA_URL": settings.MEDIA_URL,
     }

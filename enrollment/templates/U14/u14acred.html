@@ -1,0 +1,153 @@
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{team.school}}</title>
+    <style>
+      @page {
+        size: A4 portrait;
+        margin: 5mm;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        font-size: 10px;
+      }
+
+      .page-grid > tbody > tr {
+        padding: 0;
+        margin: 0;
+        vertical-align: top;
+      }
+
+      .page-grid > tbody > tr > td {
+        padding-top: 200px;
+        padding-bottom: 100px;
+        padding-left: 50px;
+        padding-right: 40px;
+        margin: 0;
+        vertical-align: top;
+      }
+
+      .card-inner {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      .card-top {
+        padding: 0;
+        margin: 0;
+        line-height: 1;
+        vertical-align: top;
+        font-size: 10px;
+        text-align: center;
+      }
+
+      .card-photo {
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 140px;
+        height: 140px;
+      }
+
+      .card-bottom {
+        padding: 0;
+        margin: 0;
+        vertical-align: top;
+      }
+
+      .athlete-table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      .athlete-table > tr {
+        padding: 0;
+        width: 100%;
+      }
+      .athlete-table > tr > .text-column {
+        width: auto;
+      }
+      .qr-column {
+        width: 80px;
+        height: 80px;
+      }
+      .qr-cell {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <table class="page-grid">
+      <tbody>
+        {% for athlete in athlete_rows %}
+        <tr>
+          <td class="card-box">
+            <table class="card-inner" cellspacing="0" cellpadding="0">
+              <tr>
+                <td class="card-top">
+                  {{ team.sport|upper }} ({{ athlete.gender|upper }})
+                  <br />
+                  {% if athlete.photo %}
+                  <img
+                    class="card-photo"
+                    src="{{ athlete.photo.path }}"
+                    alt="{{ athlete.fname }}"
+                  />
+                  {% else %}
+                  <img
+                    class="card-photo"
+                    src="{% static 'images/profile.png' %}"
+                    alt="{{ athlete.lname }}"
+                  />
+                  {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td class="card-bottom">
+                  <table class="athlete-table" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td class="qr-column">
+                        <img
+                          class="qr-cell"
+                          src="data:image/png;base64,{{ athlete.qr }}"
+                          alt="QR Code"
+                        />
+                      </td>
+                      <td class="text-column">
+                        <span class="athlete-name">
+                          {{ athlete.fname|upper }}
+                          <!---->{% if athlete.mname %}
+                          <!---->
+                          {{ athlete.mname|upper }} {% endif %}<!---->
+                          {{ athlete.lname|upper }}
+                        </span>
+                        <br />
+                        {{ athlete.index_number|upper }}<br />
+                        {{ athlete.school|upper }}<br />
+                        {{ athlete.date_of_birth }}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
