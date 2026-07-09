@@ -423,7 +423,7 @@ def u14school_details(request, id):
 
     athletes = U14Athlete.objects.filter(
         school = school
-    ).select_related("qr_identity")
+    ).select_related("qr_idenytity")
     
     athletes_filter = U14athletesFilter(request.GET, queryset=athletes)
     filtered_enrolls = athletes_filter.qs 
