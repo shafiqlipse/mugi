@@ -99,13 +99,7 @@
             <table class="card-inner" cellspacing="0" cellpadding="0">
               <tr>
                 <td class="card-top">
-                  {% if athlete.athlete.gender == "Male" %}
-                  <!---->
-                  FOOTBALL BOYS U14
-                  <!---->
-                  {% else %}FOOTBALL GIRLS U14{% endif %}
-                  <!---->
-                  ({{ athlete.athlete.gender|upper }})
+                  {{ team.sport|upper }} ({{ athlete.athlete.gender|upper }})
                   <br />
                   {% if athlete.athlete.photo %}
                   <img
@@ -136,11 +130,13 @@
                       <td class="text-column">
                         <span class="athlete-name">
                           {{ athlete.athlete.fname|upper }}
+                          <!---->{% if athlete.athlete.mname %}
                           <!---->
+                          {{ athlete.athlete.mname|upper }} {% endif %}<!---->
                           {{ athlete.athlete.lname|upper }}
                         </span>
                         <br />
-                        {{ athlete.athlete.lin|upper }}<br />
+                        {{ athlete.athlete.index_number|upper }}<br />
                         {{ athlete.athlete.school|upper }}<br />
                         {{ athlete.athlete.date_of_birth }}
                       </td>
@@ -151,7 +147,39 @@
             </table>
           </td>
           {% endfor %} {% if row|length == 1 %}
-          <td></td>
+          <td class="card-box">
+            <table class="card-inner" cellspacing="0" cellpadding="0">
+              <tr>
+                <td class="card-top" style="visibility: hidden">
+                  {{ team.sport|upper }} ({{ team.gender|upper }})<br />
+                  <img
+                    class="card-photo"
+                    src="{% static 'images/profile.png' %}"
+                    alt=""
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="card-bottom">
+                  <table class="athlete-table" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td class="qr-column">
+                        <img
+                          class="qr-cell"
+                          src="{% static 'images/profile.png' %}"
+                          alt=""
+                          style="visibility: hidden"
+                        />
+                      </td>
+                      <td class="text-column" style="visibility: hidden">
+                        placeholder text
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
           {% endif %}
         </tr>
         {% endfor %}

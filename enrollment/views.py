@@ -442,14 +442,14 @@ def U14Accreditation(request, id):
 
     athletes = U14Athlete.objects.filter(
         school = school
-    ).select_related("qr_identity")
+    ).select_related("qr_idenytity")
 
     # Add QR to each athlete
     athlete_data = []
     for athlete in athletes:
         athlete_data.append({
             "athlete": athlete,
-            "qr": generate_qr_base64(athlete.qr_identity.token)
+            "qr": generate_qr_base64(athlete.qr_idenytity.token)
         })
 
     # Chunk into rows of 2 for the 2-column card layout
