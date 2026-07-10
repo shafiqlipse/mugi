@@ -55,7 +55,11 @@
 
               <td>{{athletics.championship}}</td>
               <td>{{athletics.sport}}</td>
+              {% if athletics.zone %}
               <td>{{athletics.zone}}</td>
+              {% else %}
+              <td>{{athletics.district}}</td>
+              {% endif %}
               <td>
                 <div class="dropdown">
                   <button
