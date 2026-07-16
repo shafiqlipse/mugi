@@ -81,7 +81,7 @@
                   >
                 </td>
 
-                <td>{{school_enrollment.championship}}</td>
+                <td><a href="{% url 'national_certificates_bulk' school_enrollment.championship.id%}">{{school_enrollment.championship}}</a></td>
                 <td>{{school_enrollment.sport}}</td>
                 <td>{{school_enrollment.level}}</td>
 
@@ -119,6 +119,12 @@
                         href="{% url 'team_formA' school_enrollment.id%}"
                         class="btn btn-info"
                         >Form A</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        href="{% url 'school_certificate' school_enrollment.id%}"
+                        class="btn btn-info"
+                        >School Certificate</a
                       >
                       {% endif %}
                       <a

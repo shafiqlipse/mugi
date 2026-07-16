@@ -93,4 +93,11 @@ urlpatterns = [
         screening_report_detail,
         name='screening_report_detail'
     ),
+    # path(
+    #     'dashboard/screening-report/<int:championship_id>/<int:sport_id>/',
+    #     screening_report_detail,
+    #     name='screening_report_detail'
+    # ),
+    path('certificate/<int:id>/', SchoolCertificate, name='school_certificate'),
+path('certificates/<int:championship_id>/national/', generate_national_certificates, name='national_certificates_bulk'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

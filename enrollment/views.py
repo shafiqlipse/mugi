@@ -20,9 +20,74 @@ from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.contrib import messages
 import base64
+import zipfile
 import os
 from .filters import *  # Assume you have created this filter
 from django.http import JsonResponse
+import io
+
+
+def _render_school_certificate_pdf(enrollment):
+    """Shared render logic used by both the single and bulk views."""
+    template = get_template("reports/school_cert.html")
+
+    context = {
+        "enrollment": enrollment,
+        "school": enrollment.school,
+        "sport": enrollment.sport,
+        "championship": enrollment.championship,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    html = template.render(context)
+
+    pdf_buffer = io.BytesIO()
+    pisa_status = pisa.CreatePDF(html, dest=pdf_buffer)
+
+    if pisa_status.err:
+        return None, html  # signal failure, return html for debugging
+
+    pdf_buffer.seek(0)
+    return pdf_buffer, None
+
+
+def SchoolCertificate(request, id):
+    """Single certificate — download for one school/sport."""
+    enrollment = get_object_or_404(SchoolEnrollment, id=id, level="National")
+
+    pdf_buffer, error_html = _render_school_certificate_pdf(enrollment)
+    if pdf_buffer is None:
+        return HttpResponse("We had some errors <pre>" + error_html + "</pre>")
+
+    filename = f"{enrollment.school.name} | {enrollment.sport.name}.pdf"
+    response = HttpResponse(pdf_buffer.read(), content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return response
+
+
+def generate_national_certificates(request, championship_id):
+    """Bulk certificates — one ZIP for every school/sport at National level."""
+    enrollments = (
+        SchoolEnrollment.objects
+        .filter(championship_id=championship_id, level="National")
+        .select_related("school", "sport", "championship")
+    )
+
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w") as zf:
+        for enrollment in enrollments:
+            pdf_buffer, error_html = _render_school_certificate_pdf(enrollment)
+            if pdf_buffer is None:
+                continue  # or collect errors to report at the end — see note below
+
+            filename = f"{enrollment.sport.name}_{enrollment.school.name}.pdf".replace(" ", "_")
+            zf.writestr(filename, pdf_buffer.getvalue())
+
+    zip_buffer.seek(0)
+    response = HttpResponse(zip_buffer.read(), content_type="application/zip")
+    response["Content-Disposition"] = f'attachment; filename="national_certificates_{championship_id}.zip"'
+    return response
+
 
 
 def get_sports(request):
