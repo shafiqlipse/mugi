@@ -535,6 +535,43 @@ def u14Albums(request, id):
     return response
 
 
+def U14certificate(request, id):
+    school = get_object_or_404(School, id=id)
+
+    athletes = U14Athlete.objects.filter(
+        school = school
+    )
+
+    # Get template
+    template = get_template("U14/cert.html")
+
+    # Compress and fix rotation for athletes' photos
+
+    # Prepare context
+    context = {
+        "school": school,
+        "athletes": athletes,
+        "MEDIA_URL": settings.MEDIA_URL,
+    }
+
+    # Render HTML
+    html = template.render(context)
+
+    # Create a PDF
+    filename = f"{school}  .pdf"
+    # Create a PDF
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+    # Generate PDF from HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+    return response
+
+
+
 def accreditation_scan(request, token):
 
     qr = get_object_or_404(

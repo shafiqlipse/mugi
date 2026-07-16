@@ -65,6 +65,7 @@ urlpatterns = [
     # path("athletics_enrollments/<int:id>/", athletics_enrollment_details, name="athletics_enrollment"),
     path("u14schools", u14schools, name="u14schools"),
     path("U14Accreditation/<int:id>", U14Accreditation, name="U14Accreditation/<int:id>"),
+    path("U14certificate/<int:id>", U14certificate, name="U14certificate"),
     path("u14school_details/<int:id>", u14school_details, name="u14school_details"),
     path("u14Albums/<int:id>", u14Albums, name="u14Albums"),
     # path("U14athletics_cert/<int:id>", Uertificate, name="U14athletics_occred"),
