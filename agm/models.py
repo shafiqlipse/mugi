@@ -62,7 +62,7 @@ class Delegates(models.Model):
             ("Commissioner PES", "Commissioner PES"),
             ("Asst Commissioner PES", "Asst Commissioner PES"),
             ("MoES/ PES", "MoES/ PES"),
-            ("Invited Guest", "Invited Guest"),
+            ("Guest", "Guest"),
             ("Secretary for Women", "Secretary for Women"),
             ("Western Representative", "Western Representative"),
             ("Eastern Representative", "Eastern Representative"),
