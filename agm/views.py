@@ -22,7 +22,7 @@ def delegate_add(request):
                     delegate = form.save(commit=False)
                     delegate.save()
                     messages.success(request, "Delegate registered successfully.")
-                    return redirect("adddelegate")  # reload same page
+                    return  redirect(reverse('success', args=[delegate.id]))   # reload same page
             except IntegrityError:
                 messages.error(request, "A delegate with this index number already exists.")
             except Exception as e:
@@ -126,7 +126,17 @@ def delegate_delete(request, id):
 
     return render(request, "delete_delegate.html", {"obj": stud})
 
+def success(request,id):
+    delegate = Delegates.objects.filter(id=id).first()
+    
+    if not delegate:
+        return render(request, 'registration_failed.html', {'error': 'Delegate not registered'})
 
+    return render(request, 'success.html', {
+        'delegate': delegate,
+
+    })
+    
 import csv
 from django.http import HttpResponse
 

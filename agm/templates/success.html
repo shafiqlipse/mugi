@@ -1,0 +1,96 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Register | USSSA - Annual General Meeting 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="USSSA Elective Annual General Meeting 2026"
+    />
+    <meta name="author" content="Shafiq" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="manifest" href="{% static 'lib/js/manifest.json' %}" />
+    <meta name="theme-color" content="#000000" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static 'lib/images/logo.png'%}" />
+    {% include "variables/new_css.html" %}
+
+    <script src="assets/js/head.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css"
+    />
+  </head>
+
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+    background-color: #f8f9fa;
+  }
+  .success-box {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+  }
+  .success-box img {
+    width: 80px;
+    margin-bottom: 10px;
+  }
+  .amount {
+    font-size: 24px;
+    font-weight: bold;
+    color: #28a745;
+  }
+  .message {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  .details {
+    font-size: 14px;
+    color: #777;
+  }
+  .done-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 20px;
+  }
+</style>
+<div class="schools-dew content-wrapper">
+  <div class="success-box">
+ 
+    <div class="amount">Thank You {{delegate}}</div>
+    <div class="message"><strong>Your data has been submited Successfully</div>
+    <div class="details">
+      
+    </div>
+    <a href="" class="done-btn">DONE</a>
+  </div>
+</div>
+    <!-- END wrapper -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+    <script src="{% static 'script/photo.js' %}"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $("#id_district").select2();
+      });
+    </script>
+    <!-- Vendor -->
+    <!-- END wrapper -->
+    {% include "variables/new_js.html" %} {% block extra_js %} {% endblock %}
+  </body>
+</html>

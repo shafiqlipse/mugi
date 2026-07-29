@@ -26,7 +26,6 @@ urlpatterns = [
     path("comiser/<int:id>", comiser_details, name="comiser"),
     path("delete_comiser/<int:id>", comiser_delete, name="delete_comiser"),
     path("update_comiser/<int:id>", comiser_update, name="update_comiser"),
-    # path("process-p
-    # payment/", process_payment, name="process_payment"),  # Add this line
+    path("success<int:id>/", success, name="success"),  # Add this line
     # Add more URLs as ne
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
