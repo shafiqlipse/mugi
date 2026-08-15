@@ -895,7 +895,7 @@ def export_ecsv(request):
 
     for enrollment in SchoolEnrollment.objects.select_related(
         "school", "school__district", "school__district__zone", "championship", "sport"
-    ).all():
+    ).filter(championship__status='Active'):
         athlete_count = sum(
             athlete_enrollment.athletes.count()
             for athlete_enrollment in enrollment.athlete_enrollments.all()
