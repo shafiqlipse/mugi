@@ -875,6 +875,7 @@ import csv
 from django.http import HttpResponse
 
 def export_ecsv(request):
+    
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="enrollments.csv"'
 
@@ -889,32 +890,29 @@ def export_ecsv(request):
         "Championship",
         "Sport",
         "level",
-        "first Name",
-        "last Name",
-        "Date of Birth",
-        "Index Number",
+        "Number of Athletes",
     ])
 
-    for enrollment in SchoolEnrollment.objects.select_related("school").filter(level='National', championship__status='Active'):
-        for athlete_enrollment in enrollment.athlete_enrollments.all():
-            for athlete in athlete_enrollment.athletes.all():
-                writer.writerow([
-                    enrollment.id,
-                    enrollment.school.name,
-                    enrollment.school.district.name if enrollment.school.district else "",
-                    enrollment.school.district.zone.name if enrollment.school.district and enrollment.school.district.zone else "",
-                    enrollment.championship.name,
-                    enrollment.sport.name,
-                    enrollment.level,
-                    athlete.fname,
-                    athlete.lname,
-                    athlete.date_of_birth,
-                    athlete.index_number,
-                ])
+    for enrollment in SchoolEnrollment.objects.select_related(
+        "school", "school__district", "school__district__zone", "championship", "sport"
+    ).all():
+        athlete_count = sum(
+            athlete_enrollment.athletes.count()
+            for athlete_enrollment in enrollment.athlete_enrollments.all()
+        )
+
+        writer.writerow([
+            enrollment.id,
+            enrollment.school.name,
+            enrollment.school.district.name if enrollment.school.district else "",
+            enrollment.school.district.zone.name if enrollment.school.district and enrollment.school.district.zone else "",
+            enrollment.championship.name,
+            enrollment.sport.name,
+            enrollment.level,
+            athlete_count,
+        ])
 
     return response
-
-
 def prepare_certificate(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     officials = school_official.objects.filter(school=team.school).exclude(status="Inactive")
