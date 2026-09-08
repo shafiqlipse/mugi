@@ -1408,8 +1408,8 @@ def delete_screen_report(request, id):
 from django.db.models import Count, Q
 
 def screening_report_detail(request, championship_id, sport_id):
-    sport = get_object_or_404(Sport, pk=sport_id)
-    championship = get_object_or_404(Championship, pk=championship_id)
+    sport = get_object_or_404(Sport, id=sport_id)
+    championship = get_object_or_404(Championship, id=championship_id)
 
     enrollments = (
         SchoolEnrollment.objects
@@ -1430,3 +1430,19 @@ def screening_report_detail(request, championship_id, sport_id):
         'enrollments': enrollments,
     }
     return render(request, 'enrollments/screening_report_detail.html', context)
+
+
+from django.db import transaction
+
+@login_required
+def restore_athlete(request, id):
+    screening = get_object_or_404(Screening, id=id)
+    athlete = screening.athlete
+
+    with transaction.atomic():
+        athlete.status = "NEW"
+        athlete.save(update_fields=["status"])
+        screening.delete()
+
+    messages.success(request, f"{athlete} has been restored — status set to NEW.")
+    return redirect("screening_list")

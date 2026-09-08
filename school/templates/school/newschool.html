@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   {% load static %}
   <head>
@@ -63,7 +63,9 @@
   <body>
     <div
       class="account-page"
-      style="background-image: url('{% static 'lib/images/auth-bg.jpg' %}')"
+      style="
+        background-image: url(&quot;{% static &quot;lib/images/auth-bg.jpg&quot; %}&quot;);
+      "
     >
       <div class="container-fluid p-0">
         <div class="row align-items-center g-0 px-3 py-3 vh-100">
@@ -103,7 +105,7 @@
                           </h3>
                         </div>
                         <div class="pt-0">
-                          <form
+                          <!--<form
                             action=""
                             method="POST"
                             class="form-cotrol"
@@ -112,7 +114,7 @@
                           >
                             {% csrf_token %}
 
-                            <!-- Progress Steps Indicator -->
+                            <!-- Progress Steps Indicator 
                             <div class="progress-steps">
                               <div class="step active" data-step="1">
                                 School Info
@@ -121,9 +123,9 @@
                               <div class="step" data-step="3">
                                 Games Teacher
                               </div>
-                            </div>
+                            </div>-->
 
-                            <!-- Step 1: School Info -->
+                          <!-- Step 1: School Info 
                             <div class="form-step active" data-step="1">
                               <div class="schoolt">
                                 <h2>School Info</h2>
@@ -179,9 +181,9 @@
                                   Next
                                 </button>
                               </div>
-                            </div>
+                            </div>-->
 
-                            <!-- Step 2: Head Teacher -->
+                          <!-- Step 2: Head Teacher 
                             <div class="form-step" data-step="2">
                               <div class="schoolt">
                                 <h2>Head Teacher</h2>
@@ -253,9 +255,9 @@
                                   Next
                                 </button>
                               </div>
-                            </div>
+                            </div>-->
 
-                            <!-- Step 3: Games Teacher -->
+                          <!-- Step 3: Games Teacher 
                             <div class="form-step" data-step="3">
                               <div class="schoolt">
                                 <h2>Games Teacher</h2>
@@ -324,8 +326,8 @@
                                 </button>
                               </div>
                             </div>
-
-                            {% if messages %}
+-->
+                          <!--                     {% if messages %}
                             <div class="messages">
                               {% for message in messages %}
                               <div class="alert alert-{{ message.tags }}">
@@ -334,7 +336,7 @@
                               {% endfor %}
                             </div>
                             {% endif %}
-                          </form>
+                          </form>-->
                         </div>
                       </div>
                     </div>
@@ -440,7 +442,7 @@
           // Get all inputs in current step
           const currentStepElement = steps[stepIndex];
           const inputs = currentStepElement.querySelectorAll(
-            "input, select, textarea"
+            "input, select, textarea",
           );
           let isValid = true;
 

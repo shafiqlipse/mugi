@@ -1121,14 +1121,14 @@ def DeleteAthlete(request, id):
 
 
 # # Athletes details......................................................
-@admin_required(login_url="login")
+@login_required(login_url="login")
 def DeleteOfficial(request, id):
     stud = school_official.objects.get(id=id)
     if request.method == "POST":
         stud.delete()
         return redirect("officials")
 
-    return render(request, "officials/delete_off.html", {"obj": stud})
+    return render(request, "officials/delete_official.html", {"obj": stud})
 
 
 # # Athletes details......................................................
