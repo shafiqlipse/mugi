@@ -35,6 +35,18 @@ class AthleteEnrollmentForm(forms.ModelForm):
         fields = ["athletes"]
 
 
+class OfficialEnrollmentForm(forms.ModelForm):
+    officials = forms.ModelMultipleChoiceField(
+        queryset=school_official.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+    )
+
+    class Meta:
+        model = OfficialEnrollment
+        fields = ["officials"]
+
+
 class AthleticsEnrollmentForm(forms.ModelForm):
     class Meta:
         model = AthleticsEnrollment

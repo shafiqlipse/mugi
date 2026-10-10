@@ -16,22 +16,22 @@
         margin: 0;
         padding: 0;
       }
-      .athlete-table {
+      .official-table {
         width: 100%;
         border-collapse: collapse;
       }
-      .header .athletes table tbody tr td {
+      .header .officials table tbody tr td {
         padding-top: 250px;
         padding-left: 60px;
         padding-right: 30px;
         margin: 0;
       }
-      .header .athletes table tbody tr .athlete-cell .athlete-info {
+      .header .officials table tbody tr .official-cell .official-info {
         font-size: 1.4em; /* Adjust font size */
         text-align: center; /* Align text to the left */
         width: 500px; /* Set a fixed width to ensure text fits on one line */
       }
-      .header .athletes table tbody tr .athlete-cell .athlete-image img {
+      .header .officials table tbody tr .official-cell .official-image img {
         width: 120px;
         height: 120px;
         image-orientation: from-image;
@@ -39,35 +39,33 @@
       }
     </style>
     <div class="header">
-      <div class="athletes">
-        <table class="athlete-table">
+      <div class="officials">
+        <table class="official-table">
           <tbody>
-            {% for athlete in officials %}
+            {% for official in officials %}
             <tr>
-              <td class="athlete-cell">
-                <div class="athlete-info">
+              <td class="official-cell">
+                <div class="official-info">
                   <span
-                    >{{ athlete.fname|upper }} {{athlete.lname|upper}}
-                    ({{athlete.gender|upper}})</span
+                    >{{ official.fname|upper }} {{official.lname|upper}}
+                    ({{official.gender|upper}})</span
                   ><br />
 
-                  <span>{{ athlete.school|upper }}</span><br />
-                  <span
-                    >{{ athlete.role|upper }} </span
-                  ><br />
+                  <span>{{ official.school|upper }}</span><br />
+                  <span>{{ official.role|upper }} </span><br />
                 </div>
               </td>
-              <td class="athlete-cell">
-                <div class="athlete-image">
-                  {% if athlete.photo %}
+              <td class="official-cell">
+                <div class="official-image">
+                  {% if official.photo %}
                   <img
-                    src="{{ athlete.photo.path }}"
-                    alt="{{ athlete.first_name }}"
+                    src="{{ official.photo.path }}"
+                    alt="{{ official.first_name }}"
                   />
                   {% else %}
                   <img
                     src="{% static 'images/profile.png' %}"
-                    alt="{{ athlete.last_name }}"
+                    alt="{{ official.last_name }}"
                   />
                   {% endif %}
                 </div>

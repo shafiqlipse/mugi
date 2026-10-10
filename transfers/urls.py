@@ -5,7 +5,7 @@ from .views import *
 
 
 urlpatterns = [
-    path("initiate_transfer/<int:id>", initiate_transfer, name="initiate_transfer"),
+    path("initiate_transfer/<int:id>/", initiate_transfer, name="initiate_transfer"),
     path("transfers/", transfers, name="transfers"),
     path("mytransfers/", myTransfers, name="mytransfers"),
     path("myrequests/", myRequests, name="myrequests"),
@@ -15,8 +15,8 @@ urlpatterns = [
     path("transfers/cancel/<int:id>/", cancel_transfer, name="cancel_transfer"),
     path("transfers/reject/<int:id>/", reject_transfer, name="reject_transfer"),   
     path("transfers/reject/request/<int:id>/", reject_request, name="reject_request"),   
-    path("export_pending_transfers/", export_pending_transfers, name="export_pending_transfers"),
-    path("export_paid_transfers/", export_paid_transfers, name="export_paid_transfers"),
-    path("export_done_deals/", export_done_deals, name="export_done_deals"),
-    path("transfer_payments/", transfer_payments, name="transfer_payments"),
+    # path("export_pending_transfers/", export_pending_transfers, name="export_pending_transfers"),
+    # path("export_paid_transfers/", export_paid_transfers, name="export_paid_transfers"),
+    # path("export_done_deals/", export_done_deals, name="export_done_deals"),
+    # path("transfer_payments/", transfer_payments, name="transfer_payments"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

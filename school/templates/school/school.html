@@ -27,7 +27,7 @@
                 />
                 {% else %}
                 <img
-                  src="{% static 'lib/images/badge-01.png'%}"
+                  src="{% static 'images/badge-01.png'%}"
                   class="rounded-circle img-fluid avatar-xxl img-thumbnail float-start"
                   alt="image profile"
                 />
@@ -174,7 +174,7 @@
             <div class="tab-pane pt-4" id="profile_experience" role="tabpanel">
               <div class="row">
                 <div class="table-responsive">
-                  <table id="myaTable" class="display table">
+                  <table id="myTable" class="display table">
                     <thead>
                       <tr>
                         <th>Names</th>
@@ -192,7 +192,7 @@
                       {% for official in officials%}
                       <tr>
                         <td>
-                          <a href="{% url 'official' official.id%}"
+                          <a href=""
                             >{{official.fname}} {{official.lname}}</a
                           >
                         </td>
@@ -204,7 +204,7 @@
                         {% if user.is_staff %}
                         <td>
                           <a
-                            href="{% url 'deactivate_official' official.id %}"
+                            href=""
                             class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
                             data-template="trashOne"
                           >
@@ -214,7 +214,7 @@
                             </div>
                           </a>
                           <a
-                            href="{% url 'update_official' official.id %}"
+                            href=""
                             class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
                             data-template="trashOne"
                           >
@@ -225,7 +225,7 @@
                           </a>
 
                           <a
-                            href="{% url 'activate_official' official.id %}"
+                            href=""
                             class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip"
                             data-template="eyeOne"
                           >

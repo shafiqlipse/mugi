@@ -1,0 +1,521 @@
+{% extends "dashboard/dashboard.html" %}
+<!---->
+<!---->
+{% load static %}
+<!--    hjjhh-->
+{% block title %} Tickets{% endblock title %} {% block content %}
+
+<style>
+  .tk-chat {
+    --tk-primary: #2a9bc6;
+    --tk-active-bg: #d3ecf6;
+    --tk-own-bubble: #e6f4fa;
+    --tk-other-bubble: #f1f2f6;
+    --tk-border: #dfe3e8;
+    display: flex;
+    height: calc(100vh - 170px);
+    min-height: 540px;
+    background: #fff;
+    border: 1px solid var(--tk-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .tk-side {
+    width: 320px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background: #f3f3f3;
+    border-right: 1px solid var(--tk-border);
+  }
+  .tk-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--tk-border);
+  }
+  .tk-tab {
+    flex: 1;
+    padding: 0.85rem 0;
+    text-align: center;
+    font-weight: 600;
+    color: var(--tk-primary);
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+  }
+  .tk-tab.active {
+    border-bottom-color: var(--tk-primary);
+  }
+  .tk-search {
+    padding: 0.75rem;
+  }
+  .tk-list {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .tk-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.7rem 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid #ececec;
+  }
+  .tk-item:hover {
+    background: #ebebeb;
+    color: inherit;
+  }
+  .tk-item.active {
+    background: var(--tk-active-bg);
+  }
+  .tk-item-body {
+    min-width: 0;
+    flex: 1;
+  }
+  .tk-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .tk-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tk-time {
+    font-size: 0.75rem;
+    color: #8a8f98;
+    white-space: nowrap;
+  }
+  .tk-preview {
+    font-size: 0.85rem;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tk-dot {
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background: var(--tk-primary);
+    color: #fff;
+    font-size: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tk-new {
+    padding: 0.9rem;
+    text-align: center;
+    border-top: 1px solid var(--tk-border);
+  }
+  .tk-new a {
+    color: var(--tk-primary);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* ---------- Avatars ---------- */
+  .tk-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    background: #e3e6ea;
+    color: var(--tk-primary);
+  }
+  .tk-avatar-lg {
+    width: 44px;
+    height: 44px;
+  }
+  .tk-av-staff {
+    background: var(--tk-primary);
+    color: #fff;
+  }
+  .tk-av-school {
+    background: #e3e6ea;
+    color: #4a5059;
+  }
+
+  /* ---------- Conversation ---------- */
+  .tk-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .tk-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--tk-border);
+  }
+  .tk-head-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .tk-head-title {
+    font-weight: 600;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tk-head-sub {
+    font-size: 0.8rem;
+    color: #8a8f98;
+  }
+  .tk-details {
+    min-width: 260px;
+  }
+  .tk-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.25rem;
+  }
+  .tk-msg {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .tk-msg.tk-own {
+    flex-direction: row-reverse;
+  }
+  .tk-msg-body {
+    max-width: 75%;
+  }
+  .tk-own .tk-msg-body {
+    text-align: right;
+  }
+  .tk-meta {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+  }
+  .tk-meta .tk-name {
+    font-weight: 600;
+    color: #444;
+  }
+  .tk-meta .tk-when {
+    color: #8a8f98;
+    margin-left: 0.35rem;
+  }
+  .tk-bubble {
+    display: inline-block;
+    text-align: left;
+    padding: 0.7rem 0.9rem;
+    border-radius: 0.75rem;
+    background: var(--tk-other-bubble);
+  }
+  .tk-own .tk-bubble {
+    background: var(--tk-own-bubble);
+  }
+
+  /* ---------- Reply bar ---------- */
+  .tk-reply {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--tk-border);
+  }
+  .tk-reply textarea {
+    resize: none;
+  }
+  .tk-closed {
+    padding: 1rem;
+    text-align: center;
+    color: #6c757d;
+    background: #f8f9fa;
+    border-top: 1px solid var(--tk-border);
+  }
+
+  @media (max-width: 767.98px) {
+    .tk-chat {
+      flex-direction: column;
+      height: auto;
+    }
+    .tk-side {
+      width: 100%;
+      max-height: 240px;
+      border-right: 0;
+      border-bottom: 1px solid var(--tk-border);
+    }
+    .tk-main {
+      min-height: 520px;
+    }
+    .tk-msg-body {
+      max-width: 85%;
+    }
+  }
+</style>
+<div class="container">
+  <div
+    class="tk-chat"
+    data-start="{% if ticket.status == 'Closed' %}closed{% else %}active{% endif %}"
+  >
+    <!-- ================= Sidebar: ticket list ================= -->
+    <aside class="tk-side">
+      <div class="tk-tabs">
+        <button type="button" class="tk-tab" data-tab="active">Active</button>
+        <button type="button" class="tk-tab" data-tab="closed">Closed</button>
+      </div>
+
+      <div class="tk-search">
+        <input
+          type="search"
+          id="tk-search"
+          class="form-control form-control-sm"
+          placeholder="Search"
+        />
+      </div>
+
+      <div class="tk-list">
+        {% for t in tickets %}
+        <a
+          href="{% url 'ticket' id=t.id %}"
+          class="tk-item {% if t.id == ticket.id %}active{% endif %}"
+          data-state="{% if t.status == 'Closed' %}closed{% else %}active{% endif %}"
+          data-search="{{ t.title|lower }} {{ t.ticket_id|lower }} {{ t.topic|lower }}"
+        >
+          <span class="tk-avatar">{{ t.topic|first }}</span>
+          <span class="tk-item-body">
+            <span class="tk-row">
+              <span class="tk-title">{{ t.title }}</span>
+              <span class="tk-time">
+                {% if t.updated_at|date:"Y-m-d" == today %}
+                <!---->
+                {{t.updated_at|date:"H:i" }}{% else %}{{ t.updated_at|date:"d M"}}
+               
+
+                <!---->
+                {% endif %}
+              </span>
+            </span>
+            <span class="tk-row">
+              <span class="tk-preview">{{ t.content|truncatechars:45 }}</span>
+            
+
+              <!---->{% if request.user.is_staff %}
+              <!---->{% if t.status == 'Open' or t.status == 'School Response'%}<!---->
+              <span class="tk-dot">&bull;</span>{% endif %}<!---->{% else %}<!---->
+              {% if t.status == 'Answered' %}
+              <!---->
+              <span class="tk-dot">&bull;</span>{% endif %}<!---->
+              {% endif %}
+            </span>
+          </span>
+        </a>
+        {% endfor %}
+        <div id="tk-empty" class="text-center text-muted small p-4 d-none">
+          No tickets found
+        </div>
+      </div>
+
+      {% if not request.user.is_staff and new_ticket_url %}
+      <div class="tk-new"><a href="{{ new_ticket_url }}">+ New ticket</a></div>
+      {% endif %}
+    </aside>
+
+    <!-- ================= Conversation ================= -->
+    <section class="tk-main">
+      <div class="tk-head">
+        <span class="tk-avatar tk-avatar-lg">{{ ticket.topic|first }}</span>
+        <div class="tk-head-text">
+          <h6 class="tk-head-title">{{ ticket.title }}</h6>
+          <div class="tk-head-sub">
+            {{ ticket.ticket_id }} &middot; {{ ticket.topic }} &middot;
+            {{ ticket.priority }} priority
+          </div>
+        </div>
+
+        {% if ticket.status == 'Open' %}<span class="badge text-bg-primary"
+          >{{ ticket.status }}</span
+        >
+        {% elif ticket.status == 'Picked up' %}<span
+          class="badge text-bg-warning"
+          >{{ ticket.status }}</span
+        >
+        {% elif ticket.status == 'Answered' %}<span
+          class="badge text-bg-secondary"
+          >{{ ticket.status }}</span
+        >
+        {% elif ticket.status == 'School Response' %}<span
+          class="badge text-bg-success"
+          >{{ ticket.status }}</span
+        >
+        {% elif ticket.status == 'Closed' %}<span class="badge text-bg-dark"
+          >{{ ticket.status }}</span
+        >
+        {% else %}<span class="badge text-bg-light">{{ ticket.status }}</span><!---->
+      {%  endif %}
+
+        <div class="dropdown">
+          <button
+            class="btn btn-sm btn-light"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            aria-label="Ticket details"
+          >
+            &#8942;
+          </button>
+          <div class="dropdown-menu dropdown-menu-end p-3 tk-details">
+            <dl class="row mb-0 small">
+              <dt class="col-5">School</dt>
+              <dd class="col-7">{{ ticket.sender.school }}</dd>
+              <dt class="col-5">Topic</dt>
+              <dd class="col-7">{{ ticket.topic }}</dd>
+              <dt class="col-5">Priority</dt>
+              <dd class="col-7">{{ ticket.priority }}</dd>
+              <dt class="col-5">Handled by</dt>
+              <dd class="col-7">
+                {{ ticket.assigned_to|default:"Unassigned" }}
+              </dd>
+              <dt class="col-5">Opened</dt>
+              <dd class="col-7">{{ ticket.created_at|date:"d M Y, H:i" }}</dd>
+              <dt class="col-5">Updated</dt>
+              <dd class="col-7 mb-0">{{ ticket.updated_at|timesince }} ago</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="tk-messages" id="tk-messages">
+        <!-- The ticket's original description is the first message -->
+        <div
+          class="tk-msg {% if ticket.sender == request.user %}tk-own{% endif %}"
+        >
+          <span
+            class="tk-avatar {% if ticket.sender.is_staff %}tk-av-staff{% else %}tk-av-school{% endif %}"
+            >{{ticket.sender.first_name|first|default:ticket.sender.username|first|upper  }}
+            
+          </span
+          >
+          <div class="tk-msg-body">
+            <div class="tk-meta">
+              <span class="tk-name"
+                >{{ ticket.sender.get_full_name|default:ticket.sender.username}}
+                </span
+              >
+              <span class="tk-when">{{ ticket.created_at|date:"H:i" }}</span>
+            </div>
+            <div class="tk-bubble">{{ ticket.content|linebreaksbr }}</div>
+          </div>
+        </div>
+
+        {% for response in responses reversed %}
+        <div
+          class="tk-msg {% if response.author_id == request.user.id %}tk-own{% endif %}"
+        >
+          <span
+            class="tk-avatar {% if response.author.is_staff %}tk-av-staff{% else %}tk-av-school{% endif %}"
+            >{{response.author.first_name|first|default:response.author.username|first|upper}}
+            </span
+          >
+            
+          <div class="tk-msg-body">
+            <div class="tk-meta">
+              <span class="tk-name"
+                >{{response.author.get_full_name|default:response.author.username}}
+                
+                </span
+              >
+              <span class="tk-when"
+                >{{ response.created_at|date:"d M, H:i" }}</span
+              >
+            </div>
+            <div class="tk-bubble">{{ response.message|linebreaksbr }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% if ticket.status == 'Closed' %}
+      <div class="tk-closed">
+        This ticket is closed. Please open a new request if you still need help.
+      </div>
+      {% else %}
+      <form method="post" class="tk-reply">
+        {% csrf_token %}
+        <textarea
+          class="form-control"
+          name="message"
+          id="message"
+          rows="1"
+          placeholder="Type here.."
+          required
+        >
+{{ form.message.value|default:'' }}</textarea
+        >
+        <button type="submit" class="btn btn-primary">Send</button>
+      </form>
+      {% if form.message.errors %}
+      <div class="text-danger small px-3 pb-2">{{ form.message.errors.0 }}</div>
+      {% endif %} {% endif %}
+    </section>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const root = document.querySelector(".tk-chat");
+    const items = root.querySelectorAll(".tk-item");
+    const tabs = root.querySelectorAll(".tk-tab");
+    const search = document.getElementById("tk-search");
+    const empty = document.getElementById("tk-empty");
+    let tab = root.dataset.start;
+
+    // Active / Closed tabs + search
+    function apply() {
+      const q = search.value.trim().toLowerCase();
+      let shown = 0;
+      items.forEach(function (el) {
+        const ok =
+          el.dataset.state === tab && (!q || el.dataset.search.includes(q));
+        el.classList.toggle("d-none", !ok);
+        if (ok) shown++;
+      });
+      tabs.forEach(function (t) {
+        t.classList.toggle("active", t.dataset.tab === tab);
+      });
+      empty.classList.toggle("d-none", shown > 0);
+    }
+    tabs.forEach(function (t) {
+      t.addEventListener("click", function () {
+        tab = t.dataset.tab;
+        apply();
+      });
+    });
+    search.addEventListener("input", apply);
+    apply();
+
+    // Scroll the thread to the latest message and the list to the open ticket
+    const thread = document.getElementById("tk-messages");
+    thread.scrollTop = thread.scrollHeight;
+    const current = root.querySelector(".tk-item.active");
+    if (current) current.scrollIntoView({ block: "nearest" });
+
+    // Enter sends, Shift+Enter adds a new line
+    const box = document.getElementById("message");
+    if (box) {
+      box.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          if (box.value.trim()) box.form.submit();
+        }
+      });
+    }
+  })();
+</script>
+
+{% endblock content %}

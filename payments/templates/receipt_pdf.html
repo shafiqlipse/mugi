@@ -1,0 +1,72 @@
+<!-- payments/templates/payments/receipt_pdf.html -->
+<html>
+<head>
+<style>
+    @page { size: letter; margin: 0.5in; }
+    body { font-family: Helvetica; font-size: 10pt; color: #000; }
+    .watermark { position: absolute; top: 40%; left: 15%; font-size: 60pt;
+                 color: #e6e6e6; font-weight: bold; -pdf-word-wrap: none; }
+    .header-table { width: 100%; margin-bottom: 20pt; }
+    .company-name { color: red; font-size: 14pt; font-weight: bold; }
+    .logo { width: 1.5in; }
+    .recipient-label { color: #666; font-size: 12pt; font-weight: bold; }
+    .receipt-title { font-size: 14pt; font-weight: bold; text-align: right; }
+    .items-table { width: 100%; border-collapse: collapse; margin-top: 20pt; }
+    .items-table th { text-align: left; border-bottom: 1px solid #000; padding-bottom: 4pt; }
+    .items-table td { padding: 3pt 0; }
+    .sub-item { padding-left: 12pt; color: #333; font-size: 9pt; }
+    .totals-table { width: 100%; margin-top: 10pt; }
+    .totals-table td { text-align: right; padding: 2pt 0; }
+    .total-row { font-weight: bold; color: navy; }
+    .footer { color: red; margin-top: 30pt; }
+    .powered-by { font-size: 8pt; margin-top: 20pt; }
+</style>
+</head>
+<body>
+    <div class="watermark">USSSA RECEIPT</div>
+
+    <table class="header-table">
+        <tr>
+            <td style="width: 1.6in;"><img class="logo" src="{{ logo_path }}"/></td>
+            <td>
+                <div class="company-name">UGANDA SECONDARY SCHOOLS SPORTS ASSOCIATION</div>
+                GNS PLAZA, OLD K'LA ROAD<br/>
+                114052 KAMPALA UGANDA<br/>
+                (256) 393-256054 | info@usssaonline.com<br/>
+                www.usssaonline.com
+            </td>
+        </tr>
+    </table>
+
+    <div class="recipient-label">RECIPIENT:</div>
+    {{ recipient_name }}<br/>
+    Address: {{ recipient_address }}<br/>
+    Phone: {{ payment.phone_number }}
+
+    <div class="receipt-title">Receipt for #{{ payment.transaction_id|default:"N/A" }}</div>
+    <div style="text-align: right;">Transaction Date: {{ payment.created_at|date:"F d, Y" }}</div>
+
+    <table class="items-table">
+        <tr><th>SERVICE</th><th>DESCRIPTION</th><th>QTY.</th><th>COST</th><th>TOTAL</th></tr>
+        {% for item in line_items %}
+        <tr>
+            <td>{{ item.service }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.qty }}</td>
+            <td>UGX {{ item.cost|floatformat:2 }}</td>
+            <td>UGX {{ item.total|floatformat:2 }}</td>
+        </tr>
+        {% for sub in item.sub_items %}
+        <tr><td></td><td class="sub-item">- {{ sub }}</td><td></td><td></td><td></td></tr>
+        {% endfor %}
+        {% endfor %}
+    </table>
+
+    <table class="totals-table">
+        <tr class="total-row"><td>Total: UGX {{ subtotal|floatformat:2 }}</td></tr>
+    </table>
+
+    <div class="footer">Thanks for your business!</div>
+    <div class="powered-by">POWERED BY <b>USSSA FINANCE SYSTEM</b></div>
+</body>
+</html>

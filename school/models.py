@@ -119,7 +119,7 @@ class school_official(models.Model):
     added_by = models.ForeignKey(
         User,
         related_name="uploader",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
@@ -205,7 +205,7 @@ class Athlete(models.Model):
         max_length=255, unique=True, validators=[validate_index_number], null=True, blank=True, db_index=True
     )
     uce_index_number = models.CharField(max_length=255, null=True, blank=True)
-    sport = models.ForeignKey(Sport, related_name="sport", on_delete=models.CASCADE, null=True, blank=True)
+    sport = models.ForeignKey(Sport, related_name="sport", on_delete=models.SET_NULL, null=True, blank=True)
     date_of_birth = models.DateField(db_index=True)
     created = models.DateField(auto_now_add=True, null=True)
     gender = models.CharField(choices=[("Male", "male"), ("Female", "female")], max_length=10)
@@ -226,7 +226,7 @@ class Athlete(models.Model):
         max_length=15, choices=[("Father", "Father"), ("Mother", "Mother"), ("Other", "Other")]
     )
 
-    added_by = models.ForeignKey(User, related_name="suploader", on_delete=models.CASCADE, null=True, blank=True)
+    added_by = models.ForeignKey(User, related_name="suploader", on_delete=models.SET_NULL, null=True, blank=True)
 
     status = models.CharField(
         max_length=10, choices=[
@@ -262,54 +262,17 @@ class AthleteQR(models.Model):
 
 
 
-class AthleteEditRequest(models.Model):
-    STATUS_CHOICES = [
-        ('PENDING', 'Pending'),
-        ('APPROVED', 'Approved'),
-        ('REJECTED', 'Rejected'),
-        ('PAID', 'Paid'),
-    ]
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    athlete = models.ForeignKey(Athlete, on_delete=models.CASCADE, related_name='edit_requests')
-    school = models.ForeignKey('School', on_delete=models.CASCADE)
-    requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    requested_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
-
-    # JSON field to hold all changes (field_name → new_value)
-    requested_changes = models.JSONField()  # e.g. {"fname": "John", "lname": "Doe"}
-    original_data = models.JSONField(default=dict) 
-    
-    reason = models.TextField(blank=True, null=True)
-    supporting_document = models.FileField(upload_to='edit_support_docs/', blank=True, null=True)
-
-    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_edit_requests')
-    reviewed_at = models.DateTimeField(blank=True, null=True)
-    admin_comment = models.TextField(blank=True, null=True)
-    
-    transaction_id = models.CharField(max_length=100,null=True, blank=True)
-    
-    amount = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
+class RegistrationPayment(models.Model):  
+    payment = models.OneToOneField('payments.Payment', on_delete=models.CASCADE, related_name='registration_payment')
      
-    phone_number = models.CharField(max_length=15)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, db_index=True)
+    athletes = models.ManyToManyField(Athlete, related_name='payments', db_index=True)
+    
     def __str__(self):
-        return f"{self.athlete} Edit Request ({self.status})"
-
-    def apply_changes(self):
-        """Apply approved changes to the athlete record."""
-        for field, value in self.requested_changes.items():
-            setattr(self.athlete, field, value)
-        self.athlete.save()
-        self.status = 'APPROVED'
-        self.reviewed_at = timezone.now()
-        self.save()
+            return f"{self.payment} {self.school}"
+      
         
-    def get_absolute_url(self):
-        return reverse('request_detail', args=[str(self.id)])   
-    
-     
 class Screening(models.Model):
 
     athlete = models.ForeignKey(
@@ -337,38 +300,9 @@ class Screening(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
-        return self.athlete
+        return self.athlete     
 
-
-import random
-import string
-   
-class Payment(models.Model):
-
-        transaction_id = models.CharField(max_length=100,null=True, blank=True)
-        amount = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
-     
-        phone_number = models.CharField(max_length=15)
-        status = models.CharField(
-        max_length=20, 
-        choices=[('PENDING', 'Pending'), ('COMPLETED', 'Completed')], 
-        default='PENDING'
-    )
-  
-        created_at = models.DateTimeField(auto_now_add=True)
-        school = models.ForeignKey(School, on_delete=models.CASCADE, db_index=True)
-        athletes = models.ManyToManyField(Athlete, related_name='payments', db_index=True)
-        def __str__(self):
-            return f"{self.transaction_id} - {self.amount} {self.school}"
         
-        def clean(self):
-            """Validate phone number format."""
-            if not re.match(r'^(073|075|074|070)\d{7}$', self.phone_number):
-                raise ValidationError("Phone number must a valid Airtel money number.")
 
-        def save(self, *args, **kwargs):
-            """Ensure validation before saving."""
-            self.clean()
-            super().save(*args, **kwargs)
             
 

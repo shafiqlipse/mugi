@@ -8,6 +8,13 @@
 
   <body>
     <style>
+      @page {
+        size: letter portrait;
+        width: 512pt;
+        height: 692pt;
+        margin: 20pt;
+        background-image: url("https://upssaonline.com/bg.png");
+      }
       .header {
         text-align: center;
       }
@@ -59,6 +66,14 @@
       }
       .header .headexher .athletes table tbody tr td ul {
         margin-left: -30px;
+      }
+      .header .headexher .athletes table tbody tr td ul h2 {
+        font-weight: bold;
+        margin-top: 10px;
+        font-size: 18px;
+        color: blue;
+        margin-bottom: -40px;
+        font-family: Georgia;
       }
       .header .headexher .athletes table tbody tr td ul span {
         font-weight: bold;
@@ -145,12 +160,12 @@
                       </td>
                       <td>
                         <ul>
-                          <span>
-                            Names: {{ athlete.fname|upper }} {% if athlete.mname %}{{ athlete.mname|upper }}{% endif %} 
-                            {{athlete.lname|upper }} </span
-                          ><br />
-                          <span>LIN: {{ athlete.lin|upper }}</span
-                          ><br />
+                          <h2>
+                            {{ athlete.fname|upper }} {% if athlete.mname %}
+                           {{ athlete.mname|upper }}{% endif %}
+                            {{athlete.lname|upper }}
+                          </h2>
+
                           <span
                             >Index No.: {{ athlete.index_number|upper }}</span
                           ><br />

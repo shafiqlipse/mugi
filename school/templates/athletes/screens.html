@@ -20,6 +20,17 @@
       </form>
     </div>
   </nav>
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <div
+      class="alert {% if message.tags == 'error' %}error-message {% elif message.tags == 'success' %}success-message {% endif %}"
+    >
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
   <div class="tab-pane pt-4" id="friends_setting" role="tabpanel">
     <div class="row">
       {% for screen in screens %}
@@ -50,10 +61,59 @@
                   Reason: {{screen.status}}
                 </h5>
                 <p class="mt-1 mb-0">{{screen.description}}</p>
+                {% if user.is_superuser %}
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#standard-modal"
+                >
+                  Restore Athlete</button
+                >{% endif %}
               </div>
             </div>
           </div>
 
+          <!-- Default Modal -->
+          <div
+            class="modal fade"
+            id="standard-modal"
+            tabindex="-1"
+            aria-labelledby="standard-modalLabel"
+            style="display: none"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="standard-modalLabel">
+                    Are you sure you want to restore {{screen.athlete}}
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-light"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <a
+                    href="{% url 'restore_athlete' screen.id %}"
+                    class="btn btn-primary"
+                  >
+                    Restore Athlete
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
           <!--end card-body-->
         </div>
       </div>
@@ -78,8 +138,10 @@
         {% endif %}
 
         <!-- PAGE NUMBERS -->
-        {% for num in screens.paginator.page_range %} {% if screens.number == num %}
-        
+        {% for num in screens.paginator.page_range %}
+        <!---->
+        {% if screens.number == num %}
+
         <li class="page-item active" aria-current="page">
           <span class="page-link">{{ num }}</span>
         </li>

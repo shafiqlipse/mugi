@@ -19,39 +19,39 @@
           padding: 0; /* Remove default body padding */
         }
 
-        .athletes table {
+        .officials table {
           display: grid;
           grid-template-rows: repeat(2, 1fr); /* Two rows */
           grid-template-columns: repeat(2, 1fr); /* Two columns */
           gap: 10px; /* Adjust the gap between grid items */
         }
       }
-      .header .athletes table tbody tr td table tr .td {
+      .header .officials table tbody tr td table tr .td {
         padding-top: 105px;
         padding-bottom: 40px;
         padding-left: 50px;
         padding-right: 40px;
         margin: 0;
       }
-      .header .athletes table tbody tr td table tr .td .inner {
+      .header .officials table tbody tr td table tr .td .inner {
         width: 350px;
         text-align: center;
         text-transform: uppercase;
       }
-      .header .athletes table tbody tr td table tr .td .inner img {
+      .header .officials table tbody tr td table tr .td .inner img {
         width: 160px;
         height: 160px;
         image-orientation: from-image;
         transform: rotate(0deg);
       }
-      .header .athletes table tbody tr td table tr .td .inner span {
+      .header .officials table tbody tr td table tr .td .inner span {
       }
     </style>
     <div class="header">
-      <div class="athletes">
+      <div class="officials">
         <table>
           <tbody>
-            {% for athlete in officials %} {% if forloop.counter0|divisibleby:2%}
+            {% for official in officials %} {% if forloop.counter0|divisibleby:2%}
 
             <tr>
               {% endif %}
@@ -61,31 +61,31 @@
                     <td class="td">
                       <div class="inner">
                         <span
-                          >{{ athlete.nin|upper}}
-                          ({{athlete.gender|upper}})</span
+                          >{{ official.nin|upper}}
+                          ({{official.gender|upper}})</span
                         >
                         <br />
-                        {% if athlete.photo %}
+                        {% if official.photo %}
                         <img
-                          src="{{ athlete.photo.path }}"
-                          alt="{{ athlete.fname }}"
+                          src="{{ official.photo.path }}"
+                          alt="{{ official.fname }}"
                         />
                         {% else %}
                         <img
                           src="{% static 'images/profile.png' %}"
-                          alt="{{ athlete.lname }}"
+                          alt="{{ official.lname }}"
                         />
                         {% endif %}
                         <br />
                         <span
-                          >{{ athlete.fname|upper }}
-                          {{athlete.lname|upper}}</span
+                          >{{ official.fname|upper }}
+                          {{official.lname|upper}}</span
                         >
                         <br />
                         
-                        <span>{{ athlete.role|upper }}</span><br />
+                        <span>{{ official.role|upper }}</span><br />
                         
-                        <span>{{ athlete.school|upper }}</span><br />
+                        <span>{{ official.school|upper }}</span><br />
                       </div>
                     </td>
                   </tr>

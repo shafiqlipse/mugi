@@ -52,7 +52,7 @@
             {% for athlete in athletes %}
             <tr>
               <td>
-                <a href="">
+                <a href="" class="">
                   <span class="pl-2"
                     >{{athlete.fname}} {{athlete.lname}}</span
                   ></a
@@ -66,13 +66,26 @@
               <td>{{ athlete.date_of_birth }}</td>
               <td>
                
-             <span class="badge text-bg-danger">Transfers Closed</span>   <!-- <button
+             <!-- <span class="badge text-bg-danger">Transfers Closed</span>-->   
+              {% if athlete.status == "ACTIVE" %}
+              <button
                   class="btn btn-outline-primary request-transfer"
                   data-athlete-id="{{ athlete.id }}"
-                  data-athlete-name="{{ athlete.fname }} {{ athlete.lname }}"
+    data-athlete-name="{{ athlete.fname }} {{ athlete.lname }}"
+    data-athlete-status="{{ athlete.status }}"
                 >
                   <i class="fa fa-plus"></i> Request transfer
-                </button>-->
+                </button>
+                {% else %}
+              <button
+                  class="btn btn-primary request-transfer"
+                  data-athlete-id="{{ athlete.id }}"
+    data-athlete-name="{{ athlete.fname }} {{ athlete.lname }}"
+    data-athlete-status="{{ athlete.status }}"
+                >
+                  <i class="fa fa-plus"></i> Request Free Agent
+                </button>
+                {% endif %}
               </td>
             </tr>
             {% endfor %}
@@ -127,88 +140,76 @@
         </div>
       </div>
       <!-- Modal -->
-      <div
-        class="modal fade"
-        id="paymentModal"
-        tabindex="-1"
-        aria-labelledby="paymentModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <form
-              id="paymentForm"
-              method="POST"
-              action="{% url 'initiate_transfer' 0 %}"
-            >
-              {% csrf_token %}
-              <div class="modal-header">
-                <h5 class="modal-title" id="paymentModalLabel">
-                  Enter Airtel Number
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <p><span id="athleteName"></span> at a fee of UGX <strong>10,000</strong></p>
-                <input type="hidden" id="athleteIdInput" name="athlete_id" />
-                <div class="form-group mb-3">
-                  <label for="phone_number">Airtel Number</label>
-                  <input
-                    type="text"
-                    id="phone_number"
-                    name="phone_number"
-                    class="form-control"
-                    required
-                    placeholder="e.g. 075XXXXXXX"
-                  />
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">
-                  Pay & Request Transfer
-                </button>
-              </div>
-            </form>
+  <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="paymentForm" method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="paymentModalLabel">Enter Airtel Number</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p><span id="athleteName"></span> at a fee of UGX <strong>10,000</strong></p>
+
+          <div class="form-group mb-3">
+            <label for="phone_number">Airtel Number</label>
+            <input
+              type="text"
+              id="phone_number"
+              name="phone_number"
+              class="form-control"
+              required
+              placeholder="e.g. 075XXXXXXX"
+            />
+          </div>
+
+          <div class="form-group mb-3" id="documentsGroup" style="display: none;">
+            <label for="documents">Academic documents (PDF)</label>
+            <input
+              type="file"
+              id="documents"
+              name="documents"
+              class="form-control"
+              accept="application/pdf"
+            />
+            <small class="form-text text-muted">Proof the athlete is currently at your school.</small>
           </div>
         </div>
-      </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Pay &amp; Request Transfer</button>
+        </div>
+      </form>
     </div>
-    {% comment %} <script>
-      // Wait until the DOM is fully loaded
-      document.addEventListener("DOMContentLoaded", function () {
-        // Get all the transfer request buttons
-        var transferButtons = document.querySelectorAll(".request-transfer");
-
-        // Add a click event listener to each transfer button
-        transferButtons.forEach(function (button) {
-          button.addEventListener("click", function (event) {
-            // Prevent the default link click
-            event.preventDefault();
-
-            // Get the athlete's name for the confirmation message
-            var athleteName = this.getAttribute("data-athlete");
-
-            // Show a confirmation popup
-            var confirmTransfer = confirm(
-              "Are you sure you want to request a transfer for " +
-                athleteName +
-                "?"
-            );
-
-            // If confirmed, proceed with the request
-            if (confirmTransfer) {
-              window.location.href = this.href; // Redirect to the transfer initiation URL
-            }
-          });
-        });
-      });
-    </script> {% endcomment %}
   </div>
 </div>
+    </div>
+   <script>
+     document.querySelectorAll(".request-transfer").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const athleteId = btn.dataset.athleteId;
+    const athleteName = btn.dataset.athleteName;
+    const athleteStatus = btn.dataset.athleteStatus;
+
+    const form = document.getElementById("paymentForm");
+    form.action = `/transfers/initiate_transfer/${athleteId}/`;  // match your url pattern
+
+    document.getElementById("athleteName").textContent = athleteName;
+
+    const documentsGroup = document.getElementById("documentsGroup");
+    const documentsInput = document.getElementById("documents");
+    const isFreeAgent = athleteStatus !== "ACTIVE";
+
+    documentsGroup.style.display = isFreeAgent ? "block" : "none";
+    documentsInput.required = isFreeAgent;
+    if (!isFreeAgent) documentsInput.value = "";  // clear a stale selection if reused for a different athlete
+
+    new bootstrap.Modal(document.getElementById("paymentModal")).show();
+  });
+});
+    </script>
+  </div>
+{% comment %} </div>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   const modal = new bootstrap.Modal(document.getElementById("paymentModal"));
@@ -231,7 +232,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 });
-</script>
+</script> {% endcomment %}
 
 </div>
 

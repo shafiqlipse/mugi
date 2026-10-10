@@ -162,13 +162,13 @@
                     >
                       <a
                         class="dropdown-item"
-                        href="{% url 'prepare_accred' school_enrollment.id%}"
+                        href="{% url 'team_occred' school_enrollment.id%}"
                         class="btn btn-info"
                         >Accreditation</a
                       >
                       <a
                         class="dropdown-item"
-                        href="{% url 'prepare_cert' school_enrollment.id%}"
+                        href="{% url 'team_cort' school_enrollment.id%}"
                         class="btn btn-success"
                         >Certificate</a
                       >
@@ -229,6 +229,41 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      {% for c in championships %}
+<h5 class="mt-4">
+  {{ c.summary.championship__name }}
+  <small class="text-muted">
+    {{ c.summary.total_schools }} schools ·
+    {{ c.summary.total_school_enrollments }} enrollments ·
+    {{ c.summary.total_athletes }} unique athletes
+  </small>
+</h5>
+
+
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="display" id = "schools">
+  <thead>
+    <tr><th>Sport</th><th>Level</th><th>Schools</th><th>Athletes</th></tr>
+  </thead>
+  <tbody>
+    {% for row in c.rows %}
+    <tr>
+      <td>{{ row.sport__name }}</td>
+      <td>{{ row.level|default:"-" }}</td>
+      <td>{{ row.total_school_enrollments }}</td>
+      <td>{{ row.total_athletes }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+      </div>
+    </div>
+{% endfor %}
   </div>
   <div
     class="modal fade"

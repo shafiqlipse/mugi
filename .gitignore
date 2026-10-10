@@ -2,6 +2,7 @@
 usssa/settings.py
 usssa/urls.py
 django.log
+airtel.log
 
 # Django migrations
 accounts/migrations/*
@@ -13,10 +14,14 @@ training/migrations/*
 enrollment/migrations/*
 transfers/migrations/*
 zone/migrations/*
+payments/migrations/*
+support/migrations/*
+editrequests/migrations/*
 
 
 # Media and uploaded files (one level up)
 athlete_photos/
+athlete_photo_edits/
 u14athlete_photos/
 agm_photo/
 b2_photos/
@@ -29,3 +34,4 @@ qr_codes/
 banners/
 b2_photo/
 edit_support_docs/
+logs/

@@ -9,7 +9,7 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
 
-    <link rel="shortcut icon" href="{% static 'lib/images/logo.png'%}" />
+    <link rel="shortcut icon" href="{% static 'images/logo.png'%}" />
     <title>USSSA | lOGIN</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="{% static 'css/athlete/athlete.css' %}" />
@@ -61,15 +61,10 @@
     }
   </style>
   <body>
-    <div
-      class="account-page"
-      style="
-        background-image: url({% static 'lib/images/auth-bg.jpg' %});
-      "
-    >
+    <div class="account-page">
       <div class="container-fluid p-0">
         <div class="row align-items-center g-0 px-3 py-3 vh-100">
-          <div class="col-xl-6">
+          <div class="col-xl-8">
             <div class="row">
               <div class="col-md-8 mx-auto">
                 <div class="card">
@@ -78,19 +73,19 @@
                       <div class="mb-0 border-0 p-md-4 p-lg-0">
                         <div class="mb-3 p-0 text-center">
                           <div class="auth-brand">
-                            <a class="logo logo-light" href="/dusty/html/">
+                            <a class="logo logo-light" href="/">
                               <span class="logo-lg">
                                 <img
-                                  src="{% static 'lib/images/logo-light-01.png'%}"
+                                  src="{% static 'images/logo-light-01.png'%}"
                                   alt=""
                                   height="24"
                                 />
                               </span>
                             </a>
-                            <a class="logo logo-dark" href="/dusty/html/">
+                            <a class="logo logo-dark" href="/">
                               <span class="logo-lg">
                                 <img
-                                  src="{% static 'lib/images/logo-light-01.png'%}"
+                                  src="{% static 'images/logo-light-01.png'%}"
                                   alt=""
                                   height="24"
                                 />
@@ -105,7 +100,8 @@
                           </h3>
                         </div>
                         <div class="pt-0">
-                          <!--<form
+                          <!---->
+                          <form
                             action=""
                             method="POST"
                             class="form-cotrol"
@@ -114,7 +110,7 @@
                           >
                             {% csrf_token %}
 
-                            <!-- Progress Steps Indicator 
+                            <!-- Progress Steps Indicator -->
                             <div class="progress-steps">
                               <div class="step active" data-step="1">
                                 School Info
@@ -123,9 +119,9 @@
                               <div class="step" data-step="3">
                                 Games Teacher
                               </div>
-                            </div>-->
+                            </div>
 
-                          <!-- Step 1: School Info 
+                            <!-- Step 1: School Info -->
                             <div class="form-step active" data-step="1">
                               <div class="schoolt">
                                 <h2>School Info</h2>
@@ -181,9 +177,9 @@
                                   Next
                                 </button>
                               </div>
-                            </div>-->
+                            </div>
 
-                          <!-- Step 2: Head Teacher 
+                            <!-- Step 2: Head Teacher -->
                             <div class="form-step" data-step="2">
                               <div class="schoolt">
                                 <h2>Head Teacher</h2>
@@ -202,7 +198,7 @@
                                           type="file"
                                           name="photo"
                                           accept="image/*"
-                                          onchange="displayImage2(this);"
+                                          onchange="displayImage2(this)"
                                           id="id_photo"
                                         />
                                       </div>
@@ -255,9 +251,9 @@
                                   Next
                                 </button>
                               </div>
-                            </div>-->
+                            </div>
 
-                          <!-- Step 3: Games Teacher 
+                            <!-- Step 3: Games Teacher -->
                             <div class="form-step" data-step="3">
                               <div class="schoolt">
                                 <h2>Games Teacher</h2>
@@ -276,7 +272,7 @@
                                           type="file"
                                           name="gphoto"
                                           accept="image/*"
-                                          onchange="displayImage1(this);"
+                                          onchange="displayImage1(this)"
                                           id="id_gphoto"
                                         />
                                       </div>
@@ -326,8 +322,8 @@
                                 </button>
                               </div>
                             </div>
--->
-                          <!--                     {% if messages %}
+
+                            {% if messages %}
                             <div class="messages">
                               {% for message in messages %}
                               <div class="alert alert-{{ message.tags }}">
@@ -336,7 +332,7 @@
                               {% endfor %}
                             </div>
                             {% endif %}
-                          </form>-->
+                          </form>
                         </div>
                       </div>
                     </div>
@@ -346,12 +342,12 @@
             </div>
           </div>
 
-          <div class="col-xl-6 d-none d-xl-inline-block">
+          <div class="col-xl-4 d-none d-xl-inline-block">
             <div class="account-page-bg rounded-4">
               <div class="text-center">
                 <div class="auth-image">
                   <img
-                    src="{% static 'lib/images/logo.png'%}"
+                    src="{% static 'images/logo.png'%}"
                     class="mx-auto img-fluid"
                     alt="images"
                   />

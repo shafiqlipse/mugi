@@ -52,7 +52,7 @@ urlpatterns = [
     path("athletics_cert/<int:id>", Aertificate, name="athletics_occred"),
     path("athletics_enroll_delete/<int:id>", athletics_enroll_delete, name="athletics_enroll_delete"),
     path("athletics_album/<int:id>", AAlbums, name="athletics_album"),
-        path(
+    path(
         "remove_athletics/<int:enrollment_id>/<int:athlete_id>/",
         remove_athletics,
         name="remove_athletics",
@@ -64,7 +64,7 @@ urlpatterns = [
     path("U14athletics_accred/<int:id>", UAcreditation, name="U14athletics_accred"),
     # path("athletics_enrollments/<int:id>/", athletics_enrollment_details, name="athletics_enrollment"),
     path("u14schools", u14schools, name="u14schools"),
-    path("U14Accreditation/<int:id>", U14Accreditation, name="U14Accreditation/<int:id>"),
+    path("U14Accreditation/<int:id>", U14Accreditation, name="U14Accreditation"),
     path("U14certificate/<int:id>", U14certificate, name="U14certificate"),
     path("u14school_details/<int:id>", u14school_details, name="u14school_details"),
     path("u14Albums/<int:id>", u14Albums, name="u14Albums"),
@@ -72,7 +72,7 @@ urlpatterns = [
     path("U14athletics_cert/<int:id>", Uertificate, name="U14athletics_occred"),
     path("U14athletics_enroll_delete/<int:id>", Uthletics_enroll_delete, name="U14athletics_enroll_delete"),
     path("U14athletics_album/<int:id>", UAlbums, name="U14athletics_album"),
-        path(
+    path(
         "remove_u14athletics/<int:enrollment_id>/<int:athlete_id>/",
         remove_Uthletics,
         name="remove_u14athletics",
@@ -81,6 +81,8 @@ urlpatterns = [
     path("export_enrollment_csv/", export_enrollment_csv, name="export_enrollment_csv"),
     path("export_screening_csv/", export_screening_csv, name="export_screening_csv"),
     path("delete_screen_report/<int:id>/", delete_screen_report, name="delete_screen_report"),
+    # path("delete_screen_report/<int:id>/", delete_screen_report, name="delete_screen_report"),
+    path("restore_athlete/<int:id>/", restore_athlete, name="restore_athlete"),
     # Add more URLs as  
     path(
     'accreditation/<uuid:token>/',

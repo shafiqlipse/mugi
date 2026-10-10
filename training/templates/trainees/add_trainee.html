@@ -15,7 +15,7 @@
     <!-- App favicon -->
     <link rel="shortcut icon" href="{% static 'img/logos.png' %}" />
     <!-- App css -->
-    <link rel="stylesheet" href="{% static 'lib/css/newdel.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/newdel.css' %}" />
 
     {% include "variables/new_css.html" %}
 
@@ -75,220 +75,220 @@
                   <div class="card-body">
                     <div class="mb-0 p-0 p-lg-3">
                       <div class="mb-0 border-0 p-md-4 p-lg-0">
-                        <form
-                          action=""
-                          method="POST"
-                          class="form-control fomin"
-                          enctype="multipart/form-data"
-                          id="trainee_form"
-                        >
-                          {% csrf_token %}
-                          <div class="schoolt">
-                            <h2>Personal Info</h2>
-
-                            <div class="row fields">
-                              <div class="col-xl-4 col-lg-4 col-md-12">
-                                <div class="imgbox">
-                                  <div class="field">
-                                    <label>{{form.photo.label}} </label>
-                                    <div
-                                      id="photos_preview"
-                                      class="preview-container mb-2"
-                                      style="
-                                        background-image: url({% static 'img/profile.png' %}); background-size: cover;
-                                      "
-                                    ></div>
-                                  </div>
-                                  
-                                  <div class="field">
-                                    <input
-                                      type="file"
-                                      name="photo"
-                                      accept="image/*"
-                                      id="id_photo"
-                                      class="form-control"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-xl-8 col-lg-8 col-md-12">
-                                <div class="row">
-                                  <div class="col-md-6">
-                                    <div class="field">
-                                      <label>{{ form.first_name.label}}</label>
-                                      {{form.first_name}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-6">
-                                    <div class="field">
-                                      <label>{{ form.last_name.label}}</label>
-                                      {{form.last_name}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-6">
-                                    <div class="field">
-                                      <label>{{ form.contact.label}}</label>
-                                      {{form.contact}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-6">
-                                    <div class="field">
-                                      <label>{{ form.email.label}}</label>
-                                      {{form.email}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-6">
-                                    <div class="field">
-                                      <label>Work Place/ School</label>
-                                      {{form.place}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-6">
-                                    <div class="field">
-                                      <label>{{ form.district.label}}</label>
-                                      {{form.district}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-6">
-                                    <div class="field">
-                                      <label>{{ form.gender.label}}</label>
-                                      {{form.gender}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-6">
-                                    <div class="field">
-                                      <label
-                                        >{{ form.date_of_birth.label}}</label
-                                      >
-                                      {{form.date_of_birth}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-6">
-                                    <div class="field">
-                                      <label>{{ form.designation.label}}</label>
-                                      {{form.designation}}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div></div>
-                          <div class="schoolt mb-4">
-                            <h2>Course Info</h2>
-
-                            <div class="row fields">
-                              <div class="col-md-12">
-                                <div class="row">
-                                  <div class="col-md-4 mb-4">
-                                    <div class="field">
-                                      <label>{{ form.season.label}}</label>
-                                      {{form.season}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-4 mb-4">
-                                    <div class="field">
-                                      <label>{{ form.venue.label}}</label>
-                                      {{form.venue}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-4 mb-4">
-                                    <div class="field">
-                                      <label>{{ form.course.label}}</label>
-                                      {{form.course}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-4 mb-4">
-                                    <div class="field">
-                                      <label>{{ form.level.label}}</label>
-                                      {{form.level}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-4 mb-4">
-                                    <div class="field">
-                                      <label
-                                        >{{ form.residence_type.label}}</label
-                                      >
-                                      {{form.residence_type}}
-                                    </div>
-                                  </div>
-                                  <div class="col-md-4">
-                                    <div class="field">
-                                      <label>.</label>
-                                      <button
-                                        type="button"
-                                        class="btn btn-primary"
-                                        data-toggle="modal"
-                                        data-target="#exampleModal"
-                                      >
-                                        Continue to Payment
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- Button trigger modal -->
-
-                          <!-- Modal -->
-                          <div
-                            class="modal fade"
-                            id="exampleModal"
-                            tabindex="-1"
-                            role="dialog"
-                            aria-labelledby="exampleModalLabel"
-                            aria-hidden="true"
+                          <form
+                            action=""
+                            method="POST"
+                            class="form-control fomin"
+                            enctype="multipart/form-data"
+                            id="trainee_form"
                           >
-                            <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5
-                                    class="modal-title"
-                                    id="exampleModalLabel"
-                                  >
-                                    Complete Payment
-                                  </h5>
-                                  <button
-                                    type="button"
-                                    class="close"
-                                    data-dismiss="modal"
-                                    aria-label="Close"
-                                  >
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                                <div class="modal-body">
-                                  <div class="col-md-12">
-                                    <p>
-                                      To complete your registration, please pay
-                                      the course fee of
-                                      <p>Amount: UGX <span id="amount-display">{{ venue_amounts|json_script:"venue-data" }}</span></p> 
+                            {% csrf_token %}
+                            <div class="schoolt">
+                              <h2>Personal Info</h2>
+
+                              <div class="row fields">
+                                <div class="col-xl-4 col-lg-4 col-md-12">
+                                  <div class="imgbox">
                                     <div class="field">
-                                      <label
-                                        >Input your Airtel Money Number</label
-                                      >
-                                      {{form.phone_number}}
+                                      <label>{{form.photo.label}} </label>
+                                      <div
+                                        id="photos_preview"
+                                        class="preview-container mb-2"
+                                        style="
+                                          background-image: url({% static 'img/profile.png' %}); background-size: cover;
+                                        "
+                                      ></div>
+                                    </div>
+                                    
+                                    <div class="field">
+                                      <input
+                                        type="file"
+                                        name="photo"
+                                        accept="image/*"
+                                        id="id_photo"
+                                        class="form-control"
+                                      />
                                     </div>
                                   </div>
                                 </div>
-                                <div class="modal-footer">
-                                  <button type="submit" class="btn btn-success" id="submitBtton">
-                                    Submit and Pay
-                                  </button>
+                                <div class="col-xl-8 col-lg-8 col-md-12">
+                                  <div class="row">
+                                    <div class="col-md-6">
+                                      <div class="field">
+                                        <label>{{ form.first_name.label}}</label>
+                                        {{form.first_name}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="field">
+                                        <label>{{ form.last_name.label}}</label>
+                                        {{form.last_name}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="field">
+                                        <label>{{ form.contact.label}}</label>
+                                        {{form.contact}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="field">
+                                        <label>{{ form.email.label}}</label>
+                                        {{form.email}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="field">
+                                        <label>Work Place/ School</label>
+                                        {{form.place}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="field">
+                                        <label>{{ form.district.label}}</label>
+                                        {{form.district}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="field">
+                                        <label>{{ form.gender.label}}</label>
+                                        {{form.gender}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="field">
+                                        <label
+                                          >{{ form.date_of_birth.label}}</label
+                                        >
+                                        {{form.date_of_birth}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="field">
+                                        <label>{{ form.designation.label}}</label>
+                                        {{form.designation}}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div></div>
+                            <div class="schoolt mb-4">
+                              <h2>Course Info</h2>
+
+                              <div class="row fields">
+                                <div class="col-md-12">
+                                  <div class="row">
+                                    <div class="col-md-4 mb-4">
+                                      <div class="field">
+                                        <label>{{ form.season.label}}</label>
+                                        {{form.season}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4 mb-4">
+                                      <div class="field">
+                                        <label>{{ form.venue.label}}</label>
+                                        {{form.venue}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4 mb-4">
+                                      <div class="field">
+                                        <label>{{ form.course.label}}</label>
+                                        {{form.course}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4 mb-4">
+                                      <div class="field">
+                                        <label>{{ form.level.label}}</label>
+                                        {{form.level}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4 mb-4">
+                                      <div class="field">
+                                        <label
+                                          >{{ form.residence_type.label}}</label
+                                        >
+                                        {{form.residence_type}}
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <div class="field">
+                                        <label>.</label>
+                                        <button
+                                          type="button"
+                                          class="btn btn-primary"
+                                          data-toggle="modal"
+                                          data-target="#exampleModal"
+                                        >
+                                          Continue to Payment
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          {% if messages %}
-                          <div class="messages">
-                            {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">
-                              {{ message }}
+                            <!-- Button trigger modal -->
+
+                            <!-- Modal -->
+                            <div
+                              class="modal fade"
+                              id="exampleModal"
+                              tabindex="-1"
+                              role="dialog"
+                              aria-labelledby="exampleModalLabel"
+                              aria-hidden="true"
+                            >
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5
+                                      class="modal-title"
+                                      id="exampleModalLabel"
+                                    >
+                                      Complete Payment
+                                    </h5>
+                                    <button
+                                      type="button"
+                                      class="close"
+                                      data-dismiss="modal"
+                                      aria-label="Close"
+                                    >
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div class="col-md-12">
+                                      <p>
+                                        To complete your registration, please pay
+                                        the course fee of
+                                        <p>Amount: UGX <span id="amount-display">{{ venue_amounts|json_script:"venue-data" }}</span></p> 
+                                      <div class="field">
+                                        <label
+                                          >Input your Airtel Money Number</label
+                                        >
+                                        {{form.phone_number}}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success" id="submitBtton">
+                                      Submit and Pay
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
-                            {% endfor %}
-                          </div>
-                          {% endif %}
-                        </form>
+                            {% if messages %}
+                            <div class="messages">
+                              {% for message in messages %}
+                              <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                              </div>
+                              {% endfor %}
+                            </div>
+                            {% endif %}
+                          </form>
 
                         <div class="text-center text-muted mt-4">
                           <p class="mb-0">
@@ -320,7 +320,7 @@
 ></script>
 <!-- Croppie JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script> 
-    <script src="{% static 'script/photo.js' %}"></script>
+   
     <script>
       $(document).ready(function () {
         $("#id_season").change(function () {

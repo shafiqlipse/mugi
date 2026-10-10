@@ -17,14 +17,6 @@ class TraineeFilter(django_filters.FilterSet):
     )
 
 
-    payment_status = django_filters.ChoiceFilter(
-        choices=[("Pending", "Pending"), ("Completed", "Completed"), ("Failed", "Failed")],
-        label="Payment Status",
-        widget=forms.Select(attrs={"class": "form-control"})
-    )
-
-
-
     venue = django_filters.ModelChoiceFilter(
         queryset=Venue.objects.all(),
         label="Venue",
@@ -47,31 +39,5 @@ class TraineeFilter(django_filters.FilterSet):
 
     class Meta:
         model = Trainee
-        fields = ["gender", "venue", "course", "payment_status", "created_at"]
+        fields = ["gender", "venue", "course",  "created_at"]
 
-class ITTFTraineeFilter(django_filters.FilterSet):
-    gender = django_filters.ChoiceFilter(
-        choices=[("Male", "Male"), ("Female", "Female")],
-        label="Gender",
-        widget=forms.Select(attrs={"class": "form-control"})
-    )
-
-
-    payment_status = django_filters.ChoiceFilter(
-        choices=[("Pending", "Pending"), ("Completed", "Completed"), ("Failed", "Failed")],
-        label="Payment Status",
-        widget=forms.Select(attrs={"class": "form-control"})
-    )
-
-
-    created_at = DateFromToRangeFilter(
-        field_name="created_at",
-        label="Created At (Range)",
-        widget=RangeWidget(
-            attrs={"type": "date", "class": "form-control"}
-        ),
-    )
-
-    class Meta:
-        model = ITTFTrainee
-        fields = ["gender","payment_status", "created_at"]

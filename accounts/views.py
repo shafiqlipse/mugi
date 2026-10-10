@@ -34,27 +34,7 @@ def edit_user(request, id=None):
     return render(request, "accounts/edit_user.html", {"form": form, "id": user.id})
 
 
-# from accounts.forms import AthleteFilterForm
 
-
-# @staff_required
-# def school_registration(request):
-#     if request.method == "POST":
-#         form = SchoolRegistrationForm(request.POST)
-#         if form.is_valid():
-#             user = form.save(
-#                 commit=False
-#             )  # Create the user object without saving to the database
-#             user.is_school = True  # Set is_school to True
-#             user.save()  # Save the user object with is_school set to True
-
-#             # Log in the user
-#             login(request, user)
-
-#             return redirect("confirmation")
-#     else:
-#         form = SchoolRegistrationForm()
-#     return render(request, "register.html", {"form": form})
 
 
 # Create your views here.
@@ -68,7 +48,7 @@ def user_login(request):
 
             if user.is_school:
                 messages.success(request, "School login successful.")
-                return redirect("schooldash")
+                return redirect("dashboard")
             elif user.is_admin:
                 messages.success(request, "Officer login successful.")
                 return redirect("dashboard")
@@ -82,7 +62,7 @@ def user_login(request):
                     "dashboard"
                 )  # Adjust the URL name for your dashboard view
         else:
-            messages.error(request, "Error in login. Please check your credentials.")
+            messages.error(request, "Error in login. Please check your credentials. Note that Passwords are case sensitive")
     else:
         form = AuthenticationForm()
     return render(request, "auth/login.html", {"form": form})

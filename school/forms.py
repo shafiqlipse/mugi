@@ -31,9 +31,7 @@ class SchoolProfileForm(forms.ModelForm):
         ]
 
         widgets = {
-            # "badge": ImageCropWidget,
-            # "photo": ImageCropWidget,
-            # "gphoto": ImageCropWidget,
+
             "name": forms.TextInput(attrs={"class": "form-control"}),
             "emis_number": forms.TextInput(attrs={"class": "form-control"}),
             "center_number": forms.TextInput(attrs={"class": "form-control"}),
@@ -60,17 +58,19 @@ class SchoolProfileForm(forms.ModelForm):
             ),
         }
 
-    def __init__(self, *args, **kwargs):
-        super(SchoolProfileForm, self).__init__(*args, **kwargs)
-        self.fields["badge"].widget.attrs["onchange"] = "displayImage(this);"
 
-    def __init__(self, *args, **kwargs):
-        super(SchoolProfileForm, self).__init__(*args, **kwargs)
-        self.fields["photo"].widget.attrs["onchange"] = "displayImage(this);"
-
-    def __init__(self, *args, **kwargs):
-        super(SchoolProfileForm, self).__init__(*args, **kwargs)
-        self.fields["gphoto"].widget.attrs["onchange"] = "displayImage(this);"
+class SchoolEditForm(forms.ModelForm):
+    class Meta:
+        model = School
+        fields = ["name", "emis_number", "center_number", "district", "status", "badge"]
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "form-control"}),
+            "emis_number": forms.TextInput(attrs={"class": "form-control"}),
+            "center_number": forms.TextInput(attrs={"class": "form-control"}),
+            "district": forms.Select(attrs={"class": "form-select"}),
+            "status": forms.Select(attrs={"class": "form-select"}),
+            "badge": forms.ClearableFileInput(attrs={"class": "form-control"}),
+        }
 
 
 class OfficialForm(forms.ModelForm):
@@ -123,20 +123,10 @@ class NewAthleteForm(forms.ModelForm):
             "date_of_birth",
             "gender",
             "classroom",
-            # "physic",
-            # "nationality",
-            # "refugee",
             "photo",
             "uce_certificate",
             "ple_certificate",
-            # "student_pass",
-            # "student_visa",
-            # "bursary",
             "sponsorship",
-            # "student_pass_code",
-            # "uneb_code",
-            # "uneb_eq_results",
-            # "refugee_card",
             "Parent_fname",
             "Parent_lname",
             "parent_phone_number",
@@ -150,8 +140,6 @@ class NewAthleteForm(forms.ModelForm):
             "mname": forms.TextInput(attrs={"class": "form-control"}),
             "lname": forms.TextInput(attrs={"class": "form-control"}),
             "lin": forms.TextInput(attrs={"class": "form-control", "required": True}),
-            # "student_pass_code": forms.TextInput(attrs={"class": "form-control"}),
-            # "uneb_code": forms.TextInput(attrs={"class": "form-control"}),
             "uce_index_number": forms.TextInput(attrs={"class": "form-control"}),
             "index_number": forms.TextInput(
     attrs={"class": "form-control", "required": True}
@@ -162,9 +150,6 @@ class NewAthleteForm(forms.ModelForm):
             "parent_nin": forms.TextInput(attrs={"class": "form-control"}),
             "address": forms.TextInput(attrs={"class": "form-control"}),
             "sport": forms.Select(attrs={"class": "form-control"}),
-            # "nationality": forms.Select(attrs={"class": "form-control"}),
-            # "refugee": forms.Select(attrs={"class": "form-control"}),
-            # "physic": forms.Select(attrs={"class": "form-control"}),
             "classroom": forms.Select(attrs={"class": "form-control"}),
             "gender": forms.Select(attrs={"class": "form-control"}),
             "relationship": forms.Select(attrs={"class": "form-control"}),
@@ -175,44 +160,6 @@ class NewAthleteForm(forms.ModelForm):
         }
 
 
-class ScreenForm(forms.ModelForm):
-    class Meta:
-        model = Screening
-        fields = [
-            "status",
-            "description",
-        ]
-
-        widgets = {
-            "description": forms.Textarea(attrs={"class": "form-control"}),
-            "status": forms.Select(attrs={"class": "form-control"}),
-        }
-
-class AthleteEditRequestForm(forms.ModelForm):
-    # Let schools specify the fields they want to change
-    fname = forms.CharField(required=False)
-    lname = forms.CharField(required=False)
-    mname = forms.CharField(required=False)
-    phone_number = forms.CharField(
-        label="Phone Number",
-        max_length=15,
-        required=True,
-        widget=forms.TextInput(attrs={'placeholder': 'Enter phone number'})
-    )
-    lin = forms.CharField(required=False)
-    index_number = forms.CharField(required=False)
-    date_of_birth = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
-    gender = forms.CharField(required=False)
-    photo = forms.ImageField(required=False)
-    reason = forms.CharField(widget=forms.Textarea, required=True)
-
-    class Meta:
-        model = AthleteEditRequest
-        fields = ['reason', 'supporting_document']
-    widgets = {
-        "supporting_document": forms.ClearableFileInput(attrs={"class": "form-control"}),
-        "reason": forms.Textarea(attrs={"class": "form-control", "placeholder": "Explain the reason for the edit request"}),
-    }
 
 class PaymentForm(forms.Form):
     phone_number = forms.CharField(
@@ -237,3 +184,20 @@ class PaymentForm(forms.Form):
             )
             # Customize labels to include the amount for each learner
             self.fields['athletes'].label_from_instance = lambda obj: f"{obj.fname} (Amount: 6000)"
+            
+            
+            
+class ScreenForm(forms.ModelForm):
+    class Meta:
+        model = Screening
+        fields = [
+            "status",
+            "description",
+        ]
+
+        widgets = {
+            "description": forms.Textarea(attrs={"class": "form-control"}),
+            "status": forms.Select(attrs={"class": "form-control"}),
+        }
+            
+            

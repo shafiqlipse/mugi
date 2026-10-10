@@ -1,26 +1,19 @@
 {% load static %}
 
 <!-- Vendor -->
-<script src="{% static 'lib/js/jquery.min.js'%}"></script>
+<script src="{% static 'js/jquery.min.js'%}"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script src="{% static 'lib/js/bootstrap.bundle.min.js'%}"></script>
-<script src="{% static 'lib/js/iconify-icon/iconify-icon.min.js'%}"></script>
-<script src="{% static 'lib/js/simplebar.min.js'%}"></script>
-<script src="{% static 'lib/js/waves.min.js'%}"></script>
-<script src="{% static 'lib/js/jquery.waypoints.min.js'%}"></script>
-<script src="{% static 'lib/js/jquery.counterup/jquery.counterup.min.js'%}"></script>
-<script src="{% static 'lib/js/feather.min.js'%}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js'%}"></script>
+<script src="{% static 'js/iconify-icon.min.js'%}"></script>
+<script src="{% static 'js/simplebar.min.js'%}"></script>
+<script src="{% static 'js/waves.min.js'%}"></script>
+<script src="{% static 'js/jquery.waypoints.min.js'%}"></script>
+{% comment %} <script src="{% static 'js/jquery.counterup/jquery.counterup.min.js'%}"></script> {% endcomment %}
+<script src="{% static 'js/feather.min.js'%}"></script>
 <!-- Apexcharts JS -->
 <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
-<!-- Apexcharts JS -->
-<script src="{% static 'lib/js/apexcharts.min.js'%}"></script>
-<!-- Vector map-->
-<script src="{% static 'lib/js/jsvectormap.min.js'%}"></script>
-<script src="{% static 'lib/js/world-merc.js'%}"></script>
-<!-- Widgets Init Js -->
-<script src="{% static 'lib/js/crm-dashboard.init.js' %}"></script>
-<!-- App js-->
-<script src="{% static 'lib/js/app.js' %}"></script>
+
+<script src="{% static 'js/app.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <!--Datatable scripts-->
 <script>
@@ -48,17 +41,13 @@
     $("#enroll").DataTable();
   });
 </script>
+<script>
+  $(document).ready(function () {
+    $("#schools").DataTable();
+  });
+</script>
 <script src="https://cdn.datatables.net/2.0.1/js/dataTables.js"></script>
-<!-- Buttons extension -->
-<link
-  rel="stylesheet"
-  href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"
-/>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
-<!-- For Excel export -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script

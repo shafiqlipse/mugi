@@ -133,34 +133,6 @@ def SchoolEnrollments(request):
 
 
 @login_required(login_url="login")
-def athleticsEnrollments(request):
-    enrollment0s = AthleticsEnrollment.objects.filter(championship__status= 'Active')
-
-    if request.method == "POST":
-        form = AthleticsEnrollmentForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            enrollment = form.save(commit=False)
-     
-            try:
-                enrollment.save()
-                messages.success(request, "Enrollment created successfully!")
-                return redirect("athletics_enrollments")
-            except IntegrityError:
-                messages.error(
-                    request,
-                    "This school is already enrolled in the same championship, sport, and level."
-                )
-        else:
-            messages.error(request, "Please correct the errors below.")
-    else:
-        form = AthleticsEnrollmentForm()
-
-    context = {"form": form, "enrollment0s": enrollment0s}
-    return render(request, "athletics/athletics.html", context)
-
-
-@login_required(login_url="login")
 def AchivesEnrollments(request):
     # Get all school_enrolls
     school_enrolls = SchoolEnrollment.objects.select_related("school").filter(championship__status='Inactive').order_by("id")
@@ -189,11 +161,47 @@ def AchivesEnrollments(request):
 @login_required(login_url="login")
 def ActiveEnrollments(request):
     # Get all school_enrolls
-    school_enrolls = SchoolEnrollment.objects.select_related("school").filter(championship__status='Active').order_by("id")
+    active = SchoolEnrollment.objects.filter(championship__status="Active")
 
+    school_enrollments = active.select_related("school").order_by("id")
 
+    stats = (
+        active
+        .values("championship_id", "championship__name", "sport_id", "sport__name", "level")
+        .annotate(
+            total_school_enrollments=Count("id", distinct=True),
+            total_athletes=Count("athlete_enrollments__athletes", distinct=True),
+        )
+        .order_by("championship__name", "sport__name", "level")
+    )
+    # summary rows: championship only
+    summary = {
+        row["championship_id"]: row
+        for row in (
+            active
+            .values("championship_id", "championship__name")
+            .annotate(
+                total_school_enrollments=Count("id", distinct=True),
+                total_schools=Count("school_id", distinct=True),
+                total_sports=Count("sport_id", distinct=True),
+                total_athletes=Count("athlete_enrollments__athletes", distinct=True),
+            )
+        )
+    }
+
+    # nest the detail rows under each championship
+    championships = {}
+    for row in stats:
+        cid = row["championship_id"]
+        if cid not in championships:
+            championships[cid] = {"summary": summary[cid], "rows": []}
+        championships[cid]["rows"].append(row)
+
+    championships_list = list(championships.values())
+  
+     
      # Apply filtering
-    school_enroll_filter = SchoolEnrollmentFilter(request.GET, queryset=school_enrolls)
+    school_enroll_filter = SchoolEnrollmentFilter(request.GET, queryset=school_enrollments)
     filtered_enrolls = school_enroll_filter.qs  # Get the filtered queryset
 
     # Paginate filtered results
@@ -204,6 +212,8 @@ def ActiveEnrollments(request):
     # Pass the filter to the context for rendering the filter form
     context = {
         "enrolls": paginated_enrolls,
+        "stats": stats,
+        "championships": championships_list,
         "school_enroll_filter": school_enroll_filter,
     }
 
@@ -235,6 +245,7 @@ def school_enrollment_details(request, id):
     # default (unbound) forms
     form = AthleteEnrollmentForm()
     Screenform = ScreeningReportForm()
+    oform = OfficialEnrollmentForm()
 
     if request.method == "POST" and "enroll_submit" in request.POST:
         form = AthleteEnrollmentForm(request.POST)
@@ -268,6 +279,30 @@ def school_enrollment_details(request, id):
                     messages.success(request, "Athletes enrolled successfully.")
                     return redirect("school_enrollment", id=id)
 
+
+    elif request.method == "POST" and "official_submit" in request.POST:
+        form = OfficialEnrollmentForm(request.POST)
+
+        if form.is_valid():
+            selected_officials = form.cleaned_data["officials"]
+
+            already_enrolled = OfficialEnrollment.objects.filter(
+                school_enrollment=school_enrollment,
+                officials__in=selected_officials
+            ).values_list("officials__id", flat=True).distinct()
+
+            if already_enrolled:
+                messages.error(request, "Some of the selected officials are already enrolled.")
+
+            else:
+                official_enrollment = OfficialEnrollment.objects.create(
+                        school_enrollment=school_enrollment,
+                        enrolled_by=request.user
+                    )
+                official_enrollment.officials.set(selected_officials)
+                messages.success(request, "Officials enrolled successfully.")
+                return redirect("school_enrollment", id=id)
+
     elif request.method == "POST" and "screen_submit" in request.POST:
         Screenform = ScreeningReportForm(request.POST, request.FILES)
 
@@ -284,19 +319,56 @@ def school_enrollment_details(request, id):
     athlete_enrollments = AthleteEnrollment.objects.filter(
         school_enrollment=school_enrollment
     )
+    official_enrollments = OfficialEnrollment.objects.filter(
+        school_enrollment=school_enrollment
+    )
     all_athletes = Athlete.objects.filter(school=school, status="ACTIVE")
+    all_officials = school_official.objects.filter(school=school)
     screening_reports = screening_report.objects.filter(enrollment=school_enrollment)
+    
+    
     context = {
         "school_enrollment": school_enrollment,
         "form": form,
+        "oform": oform,
         "Screenform": Screenform,
         "athlete_enrollments": athlete_enrollments,
+        "official_enrollments": official_enrollments,
         "all_athletes": all_athletes,
+        "all_officials": all_officials,
             "screening_reports": screening_reports,
     }
     return render(request, "enrollments/school_enroll.html", context)
 
 # @login_required(login_url="login")
+@login_required(login_url="login")
+def athleticsEnrollments(request):
+    enrollment0s = AthleticsEnrollment.objects.filter(championship__status= 'Active')
+
+    if request.method == "POST":
+        form = AthleticsEnrollmentForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            enrollment = form.save(commit=False)
+     
+            try:
+                enrollment.save()
+                messages.success(request, "Enrollment created successfully!")
+                return redirect("athletics_enrollments")
+            except IntegrityError:
+                messages.error(
+                    request,
+                    "This school is already enrolled in the same championship, sport, and level."
+                )
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = AthleticsEnrollmentForm()
+
+    context = {"form": form, "enrollment0s": enrollment0s}
+    return render(request, "athletics/athletics.html", context)
+
+
 # @login_required(login_url="login")
 # @login_required(login_url="login")
 @login_required(login_url="login")
@@ -439,9 +511,17 @@ def Accreditation(request, id):
         school_enrollment=team
     )
 
+    official_enrollments = OfficialEnrollment.objects.select_related("school_enrollment").filter(
+        school_enrollment=team
+    )
+
     athletes = Athlete.objects.filter(
         athleteenrollment__in=athlete_enrollments
     ).select_related("qr_identity")
+    
+    officials = school_official.objects.filter(
+        officialenrollment__in=official_enrollments
+    )
 
     # Add QR to each athlete
     athlete_data = []
@@ -462,6 +542,7 @@ def Accreditation(request, id):
     context = {
         "athlete_rows": athlete_rows,
         "team": team,
+        "officials": officials,
         "MEDIA_URL": settings.MEDIA_URL,
     }
 
@@ -658,14 +739,15 @@ def accreditation_scan(request, token):
 def Occreditation(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     
-    officials = school_official.objects.filter(school=team.school).exclude(status="Inactive")
+    official_enrollments = OfficialEnrollment.objects.select_related("school_enrollment").filter(
+            school_enrollment=team
+        )
 
     # Get template
-    if request.method == "POST":
-        # Get list of official IDs to exclude
-        excluded_ids = request.POST.getlist("exclude_officials")
-        if excluded_ids:
-            officials = officials.exclude(id__in=excluded_ids)
+    
+    officials = school_official.objects.filter(
+        officialenrollment__in=official_enrollments
+    )
     # Get template
     template = get_template("reports/ocred.html")
 
@@ -751,7 +833,7 @@ def Albums(request, id):
     return response
 
 
-admin_required
+
 
 @login_required(login_url="login")
 def Certificate(request, id):
@@ -797,8 +879,15 @@ def form_A(request, id):
     template = get_template("reports/form_A.html")
 
     # Compress and fix rotation for athletes' photos
-    school = team.school
-    officials = school_official.objects.filter(school=school).exclude(status="Inactive")
+    official_enrollments = OfficialEnrollment.objects.select_related("school_enrollment").filter(
+            school_enrollment=team
+        )
+
+    # Get template
+    
+    officials = school_official.objects.filter(
+        officialenrollment__in=official_enrollments
+    )
     today = datetime.datetime.now()
     # age = (
     report = screening_report.objects.filter(enrollment=team).first()
@@ -836,13 +925,17 @@ def form_A(request, id):
 def Cortificate(request, id):
     team = get_object_or_404(SchoolEnrollment, id=id)
     
-    officials = school_official.objects.filter(school=team.school).exclude(status="Inactive")
+    official_enrollments = OfficialEnrollment.objects.select_related("school_enrollment").filter(
+            school_enrollment=team
+        )
+
+    # Get template
     
-    if request.method == "POST":
-        # Get list of official IDs to exclude
-        excluded_ids = request.POST.getlist("exclude_officials")
-        if excluded_ids:
-            officials = officials.exclude(id__in=excluded_ids)
+    officials = school_official.objects.filter(
+        officialenrollment__in=official_enrollments
+    )
+    
+
     # Get template
     template = get_template("reports/cort.html")
 
@@ -1445,4 +1538,4 @@ def restore_athlete(request, id):
         screening.delete()
 
     messages.success(request, f"{athlete} has been restored — status set to NEW.")
-    return redirect("screening_list")
+    return redirect("screened")

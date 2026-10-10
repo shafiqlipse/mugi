@@ -2,10 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from accounts.models import *
 from school.models import *
-from zone.models import *
+from support.models import *
 from training.models import *
-from transfers.models import *
-from enrollment.models import *
 
 
 class UserAdmin(BaseUserAdmin):
@@ -31,29 +29,12 @@ class SchoolAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
     list_display = ("name", "center_number", "emis_number", "district")
     search_fields =( "name", "center_number", "emis_number")  # Use school__name instead of school
 
-class PaymentAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
-    list_display = ("school", "phone_number",  "status", "amount")
-    search_fields =( "school__name", "phone_number",  "status",)  # Use school__name instead of school 
-    # Use school__name instead of school
 
-class TransferAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
-    list_display = ("requester", "owner",  "status", "athlete")
-    search_fields =( "requester", "owner", "athlete")  # Use school__name instead of school
+
 
 # Register your models here.
 admin.site.register(School, SchoolAdmin) 
-admin.site.register(Payment, PaymentAdmin) 
-admin.site.register(TransferRequest, TransferAdmin) 
-
 admin.site.register(User, UserAdmin)
-admin.site.register(Season)
-admin.site.register(Course)
-admin.site.register(Level)
-admin.site.register(Venue)
-admin.site.register(Trainee)
-admin.site.register(ITTFTrainee)
-admin.site.register(ITTFSchool)
-
 admin.site.register(Sport)
 admin.site.register(Championship)
 admin.site.register(Region)
@@ -63,9 +44,11 @@ admin.site.register(District)
 # admin.site.register(City)
 admin.site.register(Zone)
 admin.site.register(Classroom)
-admin.site.register(Zonalchair)
+admin.site.register(Respondent)
 
-
-#competitions
-admin.site.register(U14Athlete)
-
+#hg dgfhyh dfyduf  yyfy u yfifgysdu sdgyyd
+admin.site.register(Season)
+admin.site.register(Course)
+admin.site.register(Level)
+admin.site.register(Venue)
+admin.site.register(Trainee)

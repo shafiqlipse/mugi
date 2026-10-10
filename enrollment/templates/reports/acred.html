@@ -92,6 +92,66 @@
   <body>
     <table class="page-grid">
       <tbody>
+    
+        <tr>
+          {% for athlete in athletes %}
+          <td class="card-box">
+            <table class="card-inner" cellspacing="0" cellpadding="0">
+              <tr>
+                <td class="card-top">
+                  {{ team.sport|upper }} ({{ athlete.gender|upper }})
+                  <br />
+                  {% if athlete.photo %}
+                  <img
+                    class="card-photo"
+                    src="{{ athlete.photo.path }}"
+                    alt="{{ athlete.fname }}"
+                  />
+                  {% else %}
+                  <img
+                    class="card-photo"
+                    src="{% static 'images/profile.png' %}"
+                    alt="{{ athlete.lname }}"
+                  />
+                  {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td class="card-bottom">
+                  <table class="athlete-table" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td class="qr-column">
+                        <img
+                          class="qr-cell"
+                          src="data:image/png;base64,{{ athlete.qr }}"
+                          alt="QR Code"
+                        />
+                      </td>
+                      <td class="text-column">
+                        <span class="athlete-name">
+                          {{ athlete.athlete.fname|upper }}
+                          <!---->{% if athlete.athlete.mname %}
+                          <!---->
+                          {{ athlete.athlete.mname|upper }} {% endif %}<!---->
+                          {{ athlete.athlete.lname|upper }}
+                        </span>
+                        <br />
+                        {{ athlete.athlete.index_number|upper }}<br />
+                        {{ athlete.athlete.school|upper }}<br />
+                        {{ athlete.athlete.date_of_birth }}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          {% endfor %} 
+        </tr>
+      </tbody>
+    </table>
+    <table class="page-grid">
+      <tbody>
         {% for row in athlete_rows %}
         <tr>
           {% for athlete in row %}

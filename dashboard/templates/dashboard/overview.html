@@ -220,54 +220,5 @@
     </div>
     <!-- End Latest Order -->
   </div>
-  <!-- Start Row -->
-  <div class="row">
-    <!-- Start Latest Order -->
-    <div class="col-xl-12">
-      <div class="card overflow-hidden">
-        <div class="card-header">
-          <div class="d-flex align-items-center">
-            <h5 class="card-title text-dark mb-0">Latest Athletes</h5>
-          </div>
-        </div>
-
-        <div class="card-body p-0">
-          <div class="table-responsive table-centered mt-0">
-            <table
-              class="table table-centered table-nowrap display"
-              id="myTable"
-            >
-              <thead>
-                <tr>
-                  <th>Championship</th>
-                  <th>Sport</th>
-                  <th>Number of Enrollments Screened</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for row in sport_screening_data %}
-                <tr>
-                  <td>{{ row.enrollment__championship__name }}</td>
-                   <td>
-                <a href="{% url 'screening_report_detail' row.enrollment__championship__id row.enrollment__sport__id %}">
-                    {{ row.enrollment__sport__name }}
-                </a>
-            </td>
-                  <td>{{ row.num_enrollments }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="2">No screening data available.</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- End Latest Order -->
-  </div>
-  <!-- End Row -->
 </div>
 {% endblock %}

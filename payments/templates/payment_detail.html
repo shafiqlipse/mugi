@@ -1,0 +1,229 @@
+{% extends "dashboard/dashboard.html" %}
+<!---->
+{% load static %}
+<!---->
+{%block title%}Schools{% endblock %}
+<!---->
+{% block content %}
+<div class="container-fluid">
+  <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+    <div class="flex-grow-1">
+      <h4 class="fs-18 fw-semibold m-0">Transaction</h4>
+    </div>
+
+    <div class="text-end">
+      <ol class="breadcrumb m-0 py-0">
+        <li class="breadcrumb-item">
+          <a href="javascript: void(0);">Pages</a>
+        </li>
+        <li class="breadcrumb-item active">Transaction</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-body">
+          <div class="panel-body">
+            <div class="clearfix">
+              <div class="float-start">
+                <h4 class="fs-18 text-dark fw-semibold">
+                  Transaction #{{ payment.transaction_id }}<br />
+                  <strong class="fs-13 fw-normal text-muted"
+                    >Issue Date: {{ payment.paid_at }}</strong
+                  >
+                </h4>
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-md-12 rounded-2 mb-0">
+                <div class="float-start mt-3 text-dark">
+                  <address>
+                    <strong>Bill From:</strong><br />
+                    USSSA HeadOffice<br />
+                    GNS Plaza, K'la, UG 114052<br />
+                    <abbr title="Phone">P:</abbr> 0393-256-054
+                  </address>
+                </div>
+                <div class="float-end mt-3 text-dark">
+                  <address>
+                    <strong>Bill To:</strong><br />
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td class="pe-4">Total Due:</td>
+                          <td class="fw-medium">
+                            UGX {{ payment.amount|floatformat:2 }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="pe-4">Payment Method:</td>
+                          <td>Airtel Money</td>
+                        </tr>
+                        <tr>
+                          <td class="pe-4">Country:</td>
+                          <td>Uganda</td>
+                        </tr>
+                        <tr>
+                          <td class="pe-4">{{ title }}:</td>
+                          <td>{{ recipient_name }}</td>
+                        </tr>
+                        <tr>
+                          <td class="pe-4">Number</td>
+                          <td>{{ payment.phone_number }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </address>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="table-responsive rounded-2">
+                  <table
+                    class="table table-stock mt-4 mb-4 table-centered border"
+                  >
+                    <thead class="rounded-2">
+                      <tr>
+                        <th>#</th>
+                        <th>Item</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Unit Cost</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for item in line_items %}
+                      <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.service }}</td>
+                        <td>{{ item.description }}</td>
+                        <td>{{ item.qty }}</td>
+                        <td>UGX {{ item.cost|floatformat:2 }}</td>
+                        <td>UGX {{ item.total|floatformat:2 }}</td>
+                      </tr>
+                      {% for sub in item.sub_items %}
+                      <tr>
+                        <td></td>
+                        <td colspan="2" class="text-muted ps-4">- {{ sub }}</td>
+                        <td colspan="3"></td>
+                      </tr>
+                      {% endfor %} {% endfor %}
+                      <tr>
+                        <td colspan="4"></td>
+                        <td colspan="2">
+                          <table
+                            class="table table-sm text-nowrap mb-0 table-borderless"
+                          >
+                            <tbody>
+                              <tr>
+                                <td scope="row">
+                                  <p class="mb-0 text-dark">Grand Total</p>
+                                </td>
+                                <td>
+                                  <p class="mb-0 fw-medium fs-16 text-success">
+                                    UGX {{ subtotal|floatformat:2 }}
+                                  </p>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-print-none">
+              <div class="float-end">
+                <a
+                  href="javascript:window.print()"
+                  class="btn btn-light border-0 me-1"
+                >
+                  <i class="mdi mdi-printer me-1"></i>Print
+                </a>
+                <a
+                  href="{% url 'payment_receipt' payment.transaction_id %}"
+                  class="btn btn-success"
+                  style="color: white"
+                >
+                  <iconify-icon
+                    icon="solar:download-minimalistic-bold"
+                  ></iconify-icon>
+                  <span>Receipt</span>
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <div class="panel-body">
+            <div class="clearfix">
+              <h4 class="fs-18 text-dark fw-semibold">Payment Method</h4>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="">
+                  <ul
+                    class="list-group list-group-flush list-group-no-gutters gap-3"
+                  >
+                    <li class="list-group-item border rounded-2 py-2">
+                      <div class="d-flex align-items-center gap-3">
+                        <div class="flex-shrink-0">
+                          <div
+                            class="align-content-center text-center rounded-3"
+                          >
+                            <span
+                              class="d-flex justify-content-center align-items-center"
+                            >
+                              <img
+                                src="{% static 'images/airtel.png'%}"
+                                alt=""
+                                width="40px"
+                              />
+                            </span>
+                          </div>
+                        </div>
+
+                        <div class="align-content-center">
+                          <h6 class="mb-0 text-dark fs-14">Airtel Money</h6>
+                        </div>
+
+                        <div class="ms-auto align-content-center">
+                          <span
+                            class="d-flex justify-content-center align-items-center"
+                          >
+                            <iconify-icon
+                              icon="solar:check-circle-bold"
+                              class="text-warning fs-22"
+                            ></iconify-icon>
+                          </span>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
