@@ -17,5 +17,6 @@ urlpatterns = [
     path("transactions/", transactions, name="transactions"),
     # path("summery/", payment_summery, name="summery"),
     # path("athlete_summary/", athlete_summary, name="athlete_summary"),
+    path("airtel/payment/callback/", airtel_payment_callback, name="airtel_payment_callback"),
     path('receipt/<str:transaction_id>/', generate_receipt, name='payment_receipt'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
