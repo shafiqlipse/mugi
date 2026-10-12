@@ -178,8 +178,8 @@ def payment_success(request):
 def trainees(request):
     # Get all trainees
     trainees = Trainee.objects.all().order_by("-created_at")
-    completed_transactions = trainees.filter(payment_status="Completed")
-    total_collected = completed_transactions.aggregate(total_amount=models.Sum('amount'))['total_amount'] or 0
+    completed_transactions = trainees.filter(status="Completed")
+    # total_collected = completed_transactions.aggregate(total_amount=models.Sum('amount'))['total_amount'] or 0
 
     # Apply the filter
     trainee_filter = TraineeFilter(request.GET, queryset=trainees)
@@ -221,7 +221,9 @@ def trainees(request):
         return render(
             request,
             "trainees/trainees.html",
-            {"trainee_filter": trainee_filter,"total_collected":total_collected},
+            {"trainee_filter": trainee_filter,
+             #"total_collected":total_collected
+             },
         )
 
 

@@ -400,7 +400,7 @@ def athletes(request):
         Athlete.objects
         .filter(school=school_profile)
         .exclude(status="COMPLETED")
-        .values("id", "fname", "lname", "index_number", "date_of_birth", "gender", "classroom")
+        .values("id", "fname", "lname", "index_number", "date_of_birth", "gender", "classroom", "status")
     )
 
     return render(request, "athletes/athletes.html", {"athletes": athletes})
@@ -616,6 +616,8 @@ def deactivate_official(request, id):
     messages.error(request, f"Official {official.fname} has been deleted successfully.")
     return redirect("officials")
 #     context = {"payment": payment}
+
+
 # # Athletes details......................................................
 @login_required(login_url="login")
 def DeleteOfficial(request, id):

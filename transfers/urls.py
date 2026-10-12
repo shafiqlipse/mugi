@@ -19,4 +19,9 @@ urlpatterns = [
     # path("export_paid_transfers/", export_paid_transfers, name="export_paid_transfers"),
     # path("export_done_deals/", export_done_deals, name="export_done_deals"),
     # path("transfer_payments/", transfer_payments, name="transfer_payments"),
+    
+    path("alltransfers/", AllTransfers, name="alltransfers"),
+    path("pending_transfers/", Pending_Transfers, name="pending_transfers"),
+    path("approved_transfers/", Approved_Transfers, name="approved_transfers"),
+    path("archived_transfers/", Archieved_Transfers, name="archived_transfers"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -189,7 +189,7 @@ def validate_index_number(value):
     # Extract the year part from the index number
     parts = value.split("/")
     year = int(parts[2])
-    if year < 2005:
+    if year < 2006:
         raise ValidationError("Year cannot be below 2006.")
 
 

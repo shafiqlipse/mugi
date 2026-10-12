@@ -43,8 +43,9 @@
               <td>{{ athlete.gender }}</td>
               <td>S{{ athlete.classroom }}</td>
               <td>{{ athlete.date_of_birth }}</td>
-              <td>
-                <a href="" class="btn btn-warning btn-sm">Request Edit</a>
+              <td class="
+                {% if athlete.status == "ACTIVE" %}badge text-bg-success {%else%}badge text-bg-warning {% endif %}">
+               {{athlete.status}}
               </td>
             </tr>
             {% endfor %}

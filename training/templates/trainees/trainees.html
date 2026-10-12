@@ -89,9 +89,9 @@
                       width="100%"
                     />
                   </form>
-                  <a href="{% url 'export_tcsv' %}" class="btn btn-success mb-2"
+                  {% comment %} <a href="{% url 'export_tcsv' %}" class="btn btn-success mb-2"
                     >Export CSV</a
-                  >
+                  > {% endcomment %}
                 </div>
               </div>
             </div>
@@ -128,7 +128,7 @@
                   <td>{{trainee.course}}</td>
                   <td>{{trainee.phone_number}}</td>
                   <td>{{trainee.created_at}}</td>
-                  <td>{{trainee.payment_status}}</td>
+                  <td>{{trainee.status}}</td>
                   <td>
                     <a
                       href="{% url 'update_trainee' trainee.id %}"

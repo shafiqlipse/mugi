@@ -326,13 +326,13 @@
                   ></span>
                   <span>Schools</span>
                 </a>
-              </li>
+              </li> 
               
               <li>
                 <a href="#sidebarBaseui" data-bs-toggle="collapse">
                   <span class="nav-icon"
                     ><iconify-icon
-                      icon="solar:compass-square-bold-duotone"
+                      icon="solar:accessibility-bold-duotone"
                     ></iconify-icon
                   ></span>
                   <span> Athletes </span>
@@ -340,14 +340,14 @@
                 </a>
                 <div class="collapse" id="sidebarBaseui">
                   <ul class="nav-second-level">
-                      <a class="tp-link" href="#ui-breadcrumb">Overview</a>
+                      <a class="tp-link" href="">Overview</a>
                     </li>
                     <li>
-                      <a class="tp-link" href="#ui-accordions">All Athletes</a>
+                      <a class="tp-link" href="{% url 'allathletes' %}">All Athletes</a>
                     </li>
                     <li>
                     <li>
-                      <a class="tp-link" href="#ui-alerts">Archives</a>
+                      <a class="tp-link" href="{% url 'archives' %}">Archives</a>
                     </li>
                     <li>
                       <a class="tp-link" href="{% url 'screened' %}">Black Listed Athletes</a>
@@ -371,7 +371,7 @@
                       <a class="tp-link" href="#icons-feather">Officials</a>
                     </li>
                     <li>
-                      <a class="tp-link" href="#icons-mdi"
+                      <a class="tp-link" href="{%url 'users'%}"
                         >School Users</a
                       >
                     </li>
@@ -381,7 +381,7 @@
                       >
                     </li>
                     <li>
-                      <a class="tp-link" href="#icons-mdi"
+                      <a class="tp-link" href="{% url 'delegates' %}"
                         >Delegates</a
                       >
                     </li>
@@ -394,7 +394,7 @@
                 <a href="#sidebarExpages" data-bs-toggle="collapse">
                   <span class="nav-icon"
                     ><iconify-icon
-                      icon="solar:clipboard-text-bold-duotone"
+                      icon="solar:airbuds-charge-bold-duotone"
                     ></iconify-icon
                   ></span>
                   <span> Transfers </span>
@@ -403,22 +403,22 @@
                 <div class="collapse" id="sidebarExpages">
                   <ul class="nav-second-level">
                     <li>
-                      <a class="tp-link" href=""
+                      <a class="tp-link" href="{% url 'pending_transfers' %}"
                         >Pending Transfers</a
                       >
                     </li>
                     <li>
-                      <a class="tp-link" href=""
+                      <a class="tp-link" href="{% url 'alltransfers' %}"
                         >Accepted transfers</a
                       >
                     </li>
                     <li>
-                      <a class="tp-link" href=""
+                      <a class="tp-link" href="{% url 'approved_transfers' %}"
                         >Done deals</a
                       >
                     </li>
                     <li>
-                      <a class="tp-link" href=""
+                      <a class="tp-link" href="{% url 'alltransfers' %}"
                         >Archives</a
                       >
                     </li>
@@ -427,7 +427,7 @@
               </li>
 
               <li>
-                <a href="#sidebarBaseui" data-bs-toggle="collapse">
+                <a href="#sidebarBai" data-bs-toggle="collapse">
                   <span class="nav-icon"
                     ><iconify-icon
                       icon="solar:compass-square-bold-duotone"
@@ -436,7 +436,7 @@
                   <span> Enrollments </span>
                   <span class="menu-arrow"></span>
                 </a>
-                <div class="collapse" id="sidebarBaseui">
+                <div class="collapse" id="sidebarBai">
                   <ul class="nav-second-level">
                     <li>
                       <a class="tp-link" href="{% url 'active_enrollments'%}"
@@ -474,20 +474,21 @@
                       icon="solar:map-point-bold-duotone"
                     ></iconify-icon
                   ></span>
-                  <span> Maps </span>
+                  <span> Capacity building </span>
                   <span class="menu-arrow"></span>
                 </a>
                 <div class="collapse" id="sidebarMaps">
                   <ul class="nav-second-level">
                     <li>
-                      <a class="tp-link" href="#maps-google">Google Maps</a>
+                      <a class="tp-link" href="{% url 'trainees' %}">Trainees</a>
                     </li>
                     <li>
-                      <a class="tp-link" href="#maps-vector">Vector Maps</a>
+                      <a class="tp-link" href="#maps-vector">Archives</a>
                     </li>
                   </ul>
                 </div>
               </li>
+              {% if user.is_accounts %}
               <li class="menu-title mt-2">Accounts</li>
               
               <li>
@@ -532,18 +533,9 @@
                   </ul>
                 </div>
               </li>
-              <li class="menu-title mt-2">Training</li>
-
-              <li>
-                <a class="tp-link" href="#apps-contacts">
-                  <span class="nav-icon"
-                    ><iconify-icon
-                      icon="solar:shield-user-bold-duotone"
-                    ></iconify-icon
-                  ></span>
-                  <span> Contacts </span>
-                </a>
-              </li>
+{% endif %}
+              <li class="menu-title mt-2">Miscellaneous</li>
+    
 
               <li>
                 <a href="#sidebarWidgetsui" data-bs-toggle="collapse">
@@ -606,7 +598,7 @@
                 <div class="collapse" id="sidebarAuth">
                   <ul class="nav-second-level">
                     <li>
-                      <a class="tp-link" href="{% url 'dathletes' %}"
+                      <a class="tp-link" href="{% url 'athletes' %}"
                         >All Athletes</a
                       >
                     </li>

@@ -13,29 +13,6 @@ from django.contrib.auth import update_session_auth_hash
 from .forms import *
 
 
-@login_required
-def edit_user(request, id=None):
-    if id:
-        # Fetch the user to edit by their ID
-        user = get_object_or_404(User, id=id)
-    else:
-        # Default to the logged-in user if no ID is provided
-        user = request.user
-
-    if request.method == "POST":
-        form = UserEditForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "The profile was updated successfully.")
-            return redirect("users")
-    else:
-        form = UserEditForm(instance=user)
-
-    return render(request, "accounts/edit_user.html", {"form": form, "id": user.id})
-
-
-
-
 
 # Create your views here.
 @anonymous_required
@@ -48,7 +25,7 @@ def user_login(request):
 
             if user.is_school:
                 messages.success(request, "School login successful.")
-                return redirect("dashboard")
+                return redirect("school_dashboard")
             elif user.is_admin:
                 messages.success(request, "Officer login successful.")
                 return redirect("dashboard")
@@ -120,72 +97,6 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
 def success(request):
     return render(request, "accounts/success.html")
 
-def open_ticket(request):
-    if request.method == 'POST':
-        form = TicketForm(request.POST)
-        if form.is_valid():
-            ticket = form.save(commit=False)
-            ticket.sender = request.user
-            ticket.save()
-            return redirect('tickets')
-        # Form remains populated with submitted data if invalid
-    else:
-        form = TicketForm()
-    
-    context = {'form': form}  # Fixed dictionary syntax
-    return render(request, "support/open_ticket.html", context)
-
-@login_required
-def ticket(request, id):
-    # Get the selected ticket
-    ticket = get_object_or_404(Ticket, id=id)
-
-    # Sidebar tickets: all user's tickets ordered by latest update
-    tickets = Ticket.objects.select_related("sender").filter(sender=request.user, topic=ticket.topic).order_by('-created_at')
-
-    # Responses for this ticket
-    responses = ticket.responses.all().order_by('-created_at')
-
-    # Handle reply form
-    if request.method == 'POST':
-        form = TicketResponseForm(request.POST)
-        if form.is_valid():
-            response = form.save(commit=False)
-            response.ticket = ticket
-            response.responder = request.user
-            response.save()
-            return redirect('ticket', id=id)
-    else:
-        form = TicketResponseForm()
-
-    context = {
-        'ticket': ticket,       # The currently selected ticket (detail)
-        'tickets': tickets,     # List of all tickets (sidebar)
-        'responses': responses, # All replies to the current ticket
-        'form': form,           # Reply form
-    }
-    return render(request, "support/ticket.html", context)
-
-def tickets(request):
-    tickets = Ticket.objects.select_related("sender").filter(sender=request.user)
-    context={
-        'tickets': tickets,
-    }
-    return render(request, "support/tickets.html", context)
-
-def answered_tickets(request):
-    tickets = Ticket.objects.select_related("sender").filter(status="Answered")
-    context={
-        'tickets': tickets,
-    }
-    return render(request, "support/all_tickets.html", context)
-
-def support(request):
-    tickets = Ticket.objects.select_related("sender").all().exclude(status="Answered")
-    context={
-        'tickets': tickets,
-    }
-    return render(request, "support/support.html", context)
 
 
 # Error pages
@@ -207,31 +118,92 @@ def offline_view(request):
 #     # Disable features
 #     print("System is currently closed")
 
-@login_required
-def book_appointment(request):
-    appointments = Appointment.objects.filter(client=request.user.school).select_related('championship')
-    if request.method == 'POST':
-        form = AppointmentForm(request.POST)
-        if form.is_valid():
-            appointment = form.save(commit=False)
-            appointment.client = request.user.school
-            appointment.save()
-            return redirect('book_appointment')
-    else:
-        form = AppointmentForm()
-        
-    context={
-        'form': form,
-        'appointments': appointments,
+from django.core.paginator import Paginator
+from django.db.models import Count, Q
+# schools
+
+@staff_required
+def users_data(request):
+    """Handle AJAX DataTables request for large datasets"""
+    try:
+        draw = int(request.GET.get('draw', 1))
+        start = int(request.GET.get('start', 0))
+        length = int(request.GET.get('length', 10))
+        search_value = request.GET.get("search[value]", "").strip()
+
+        # Filter base queryset
+        users_query = User.objects.filter(is_school=True).select_related("school")
+
+        # Apply search filters
+        if search_value:
+            users_query = users_query.filter(
+                Q(username__icontains=search_value) |
+                Q(email__icontains=search_value) |
+                Q(school__name__icontains=search_value) |
+                Q(school__emis_number__icontains=search_value)
+            )
+
+        # Pagination
+        paginator = Paginator(users_query, length)
+        page_number = (start // length) + 1
+        users_page = paginator.get_page(page_number)
+
+        data = []
+        for user in users_page:
+            school = getattr(user, 'school', None)
+            name = school.name if school else "No School"
+            emis = school.emis_number if school else "N/A"
+
+            data.append({
+                "username": user.username,
+                "email": user.email,
+                "school_profile": f"{name} | {emis}",
+                "actions": f"""
+                    <a href="/auth/user/edit/{user.id}/" class="btn btn-warning btn-sm">Edit</a>
+                """,
+            })
+
+        response = {
+            "draw": draw,
+            "recordsTotal": User.objects.filter(is_school=True).count(),
+            "recordsFiltered": users_query.count(),
+            "data": data,
+        }
+
+        return JsonResponse(response)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+# schools list, tuple or array
+@staff_required
+def users(request):
+    
+    users = User.objects.select_related("school").filter(is_school=True)
+
+    context = {
+        "users": users,
+       
     }
-    return render(request, 'appointments/book_appointment.html', context)
-
-@login_required
-def appointment_success(request):
-    return render(request, 'appointments/appointment_success.html')
+    return render(request, "accounts/users.html", context)
 
 
-def appointments(request):
-    appointments = Appointment.objects.all().select_related('championship')
-    context = {"appointments": appointments}
-    return render(request, 'appointments/appointments.html', context)
+@staff_required
+def edit_user(request, id=None):
+    if id:
+        # Fetch the user to edit by their ID
+        user = get_object_or_404(User, id=id)
+    else:
+        # Default to the logged-in user if no ID is provided
+        user = request.user
+
+    if request.method == "POST":
+        form = UserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "The profile was updated successfully.")
+            return redirect("users")
+    else:
+        form = UserEditForm(instance=user)
+
+    return render(request, "accounts/edit_user.html", {"form": form, "id": user.id})

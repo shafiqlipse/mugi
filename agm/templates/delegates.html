@@ -22,20 +22,6 @@
     </div>
   </div>
 
-  <div class="head">
-    <div class="others flex">
-      <form method="post" class="form-contol">
-        {% csrf_token %}
-        <input type="submit" name="Accreditation" value="Accreditation" />
-      </form>
-
-      <form method="post" class="form-contol">
-        {% csrf_token %}
-        <input type="submit" name="Certificate" value="Certificate" />
-      </form>
-      <a href="{% url 'export_dcsv' %}">Export CSV</a>
-    </div>
-  </div>
   <div class="row">
     <div class="col-12">
       <div class="card">
@@ -75,6 +61,33 @@
           </form>
         </div>
         <!-- end card body -->
+        <div class="card-footer">
+          <div class="head">
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <form method="post">
+                {% csrf_token %}<input
+                  type="submit"
+                  name="Accreditation"
+                  value="Accreditation"
+                  class="btn btn-secondary fw-semibold"
+                />
+              </form>
+              <form method="post">
+                {% csrf_token %}<input
+                  type="submit"
+                  name="Certificate"
+                  value="Certificate"
+                  class="btn btn-warning fw-semibold"
+                />
+              </form>
+              <a
+                href="{% url 'export_dcsv' %}"
+                class="btn btn-success fw-semibold"
+                >{% csrf_token %}Export CSV</a
+              >
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Datatables  -->
@@ -84,10 +97,7 @@
             <!-- end card header -->
 
             <div class="card-body table-responsive">
-              <table
-                id="myTable"
-                class="table"
-              >
+              <table id="myTable" class="table">
                 <thead>
                   <tr>
                     <th>Names</th>

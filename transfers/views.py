@@ -334,199 +334,6 @@ def transfers(request):
     return render(request, "transfers/initiate_transfer.html", context)
 
 
-# def accept_transfer(request, id):
-#     try:
-#         transfer_request = get_object_or_404(TransferRequest, id=id)
-
-#         # Ensure only the owning school can accept the transfer
-#         if transfer_request.owner != request.user.school:
-#             return JsonResponse({
-#                 "status": "error",
-#                 "message": "You are not authorized to accept this transfer."
-#             })
-
-#         if transfer_request.status != "paid":
-#             return JsonResponse({
-#                 "status": "error",
-#                 "message": "This transfer request is no longer pending."
-#             })
-
-#         if request.method == "POST":
-#             form = AcceptTransferForm(request.POST, request.FILES, instance=transfer_request)
-#             if form.is_valid():
-#                 # Reject all other pending transfers for the same athlete
-#                 TransferRequest.objects.filter(
-#                     Q(athlete=transfer_request.athlete) & Q(status="paid")
-#                 ).exclude(id=transfer_request.id).update(status="rejected")
-
-#                 # Accept the current transfer
-#                 transfer_request = form.save(commit=False)
-#                 transfer_request.accept_transfer()  
-#                 transfer_request.save()
-
-#                 return JsonResponse({
-#                     "status": "success",
-#                     "message": "Transfer request accepted successfully. Other pending transfers for this athlete have been rejected."
-#                 })
-#             else:
-#                 return JsonResponse({
-#                     "status": "error",
-#                     "message": form.errors.get('documents', ["Invalid file."])[0]
-#                 })
-
-#         return JsonResponse({
-#             "status": "error",
-#             "message": "Invalid request method."
-#         })
-
-#     except Exception as e:
-#         print(f"Error in accept_transfer: {str(e)}")  # Debugging
-#         return JsonResponse({
-#             "status": "error",
-#             "message": "An error occurred while processing your request."
-#         })
-        
-        
-# @login_required
-# def approve_transfer(request, id):
-#     try:
-#         transfer_request = get_object_or_404(TransferRequest, id=id)
-
-#         # Validate if user is a technical user
-#         if not getattr(request.user, "is_tech", False):
-#             messages.error(request, "You must be a technical user to approve transfers.")
-#             return redirect("alltransfers")
-
-#         # Check if transfer is in accepted state
-#         if transfer_request.status != "accepted":
-#             messages.error(request, "Only accepted transfers can be approved.")
-#             return redirect("alltransfers")
-
-#         # Check if documents were uploaded
-#         if not transfer_request.documents:
-#             messages.error(request, "Transfer cannot be approved without documents.")
-#             return redirect("alltransfers")
-
-#         # Approve the transfer
-#         transfer_request.approve_transfer(approver=request.user)
-#         messages.success(
-#             request,
-#             f"Transfer approved successfully. {transfer_request.athlete} has been transferred to {transfer_request.requester}",
-#         )
-
-#         return redirect("alltransfers")
-
-#     except Exception as e:
-#         messages.error(
-#             request, f"An error occurred while approving the transfer: {str(e)}"
-#         )
-#         return redirect("alltransfers")
-
-
-# def cancel_transfer(request, id):
-#     try:
-#         # Get the transfer request object
-#         transfer_request = get_object_or_404(TransferRequest, id=id)
-
-#         # Check if the requesting user has permission to cancel the transfer
-#         if request.user.school != transfer_request.requester:
-#             messages.error(request, "You are not authorized to cancel this transfer request.")
-#             return redirect("mytransfers")
-
-#         # Only allow pending transfer requests to be cancelled
-#         if transfer_request.status != "pending":
-#             messages.error(request, "You can only cancel pending transfer requests.")
-#             return redirect("mytransfers")
-
-#         # Delete the transfer request
-#         transfer_request.delete()
-#         messages.success(request, "Transfer request cancelled successfully.")
-#         return redirect("mytransfers")
-
-#     except Exception as e:
-#         messages.error(request, f"An error occurred while cancelling the transfer: {str(e)}")
-#         return redirect("mytransfers")
-    
-    
-
-# from django.utils.timezone import now
-# # from .models import Notification, TransferRequest
-
-# @login_required
-# def reject_transfer(request, id):
-#     transfer_request = get_object_or_404(TransferRequest, id=id)
-
-#     # Validate if user is authorized to reject transfers
-#     if not getattr(request.user, "is_tech", False):
-#         messages.error(request, "You must be a technical user to reject transfers.")
-#         return redirect("alltransfers")
-
-#     # Ensure the transfer is in an appropriate state
-#     if transfer_request.status not in ["accepted", "pending"]:
-#         messages.error(request, "Only pending or accepted transfers can be rejected.")
-#         return redirect("alltransfers")
-
-#     if request.method == "POST":
-#         form = TransferRejectionForm(request.POST)
-#         if form.is_valid():
-#             # Update the transfer request status
-#             transfer_request.status = "paid"
-#             transfer_request.documents = None  # Optional: Clear documents
-#             transfer_request.save()
-
-#             # Create a rejection message
-#             rejection_message = form.cleaned_data["message"]
-#             transfer_message = TransferMessage.objects.create(
-#                 transfer=transfer_request,
-#                 sender=request.user,
-#                 message=rejection_message,
-#             )
-#             transfer_message.recipients.add(request.user.school)  # Ensure sender's school is notified
-
-#             # Create a notification for the rejection
-#             notification = Notification.objects.create(
-#                 sender=request.user,
-#                 verb=f"Transfer request for {transfer_request.athlete} was rejected.",
-#                 target=f"Athlete ID: {transfer_request.athlete.id}",
-#                 created_at=now(),
-#             )
-#             notification.recipients.add(transfer_request.owner, transfer_request.requester)
-
-#             messages.success(request, "Transfer request rejected, and message sent.")
-#             return redirect("alltransfers")
-
-#     else:
-#         form = TransferRejectionForm()
-
-#     return render(request, "transfers/transfer.html", {"form": form, "transfer": transfer_request})
-
-
-# def reject_request(request, id):
-#     try:
-#         transfer_request = get_object_or_404(TransferRequest, id=id)
-
-#         # Validate if user is authorized to reject transfer requests
-#         if request.user.school != transfer_request.owner:
-#             messages.error(request, "You are not authorized to reject this transfer request.")
-#             return redirect("myrequests")
-
-#         # Only allow pending transfer requests to be rejected
-#         if transfer_request.status != "paid":
-#             messages.error(request, "You can only reject pending transfer requests.")
-#             return redirect("myrequests")
-
-#         # Change the status to 'rejected' instead of deleting the request
-#         transfer_request.status = "rejected"
-#         transfer_request.save()
-
-#         messages.success(request, "Transfer request rejected successfully.")
-#         return redirect("myrequests")
-
-#     except Exception as e:
-#         messages.error(request, f"An error occurred while rejecting the transfer request: {str(e)}")
-#         return redirect("myrequests")
-
-
 
 # @transfer_required
 @login_required
@@ -536,3 +343,25 @@ def AllTransfers(request):
     context = {"transfers": transfers}
     return render(request, "all/transfers.html", context)
 
+# @transfer_required
+@login_required
+def Pending_Transfers(request):
+    transfers = TransferRequest.objects.filter(status ='paid')
+    
+    context = {"transfers": transfers}
+    return render(request, "all/transfer_s.html", context)
+
+@login_required
+def Approved_Transfers(request):
+    transfers = TransferRequest.objects.filter(status ='Approved')
+    
+    context = {"transfers": transfers}
+    return render(request, "all/transfer_s.html", context)
+
+
+@login_required
+def Archieved_Transfers(request):
+    transfers = TransferRequest.objects.filter(is_archived = True)
+    
+    context = {"transfers": transfers}
+    return render(request, "all/transfer_s.html", context)
