@@ -690,7 +690,7 @@ def payment_view(request):
                 return render(request, 'payments/payment_form.html', {'form': form})
 
             messages.success(request, f"Payment of UGX {total_amount} initiated — check your phone to approve.")
-            logger.info(f"Payment initiated: School={school}, Amount={total_amount}, Phone={phone_number}, TxID={payment.transaction_id}")
+            airtel_logger.info(f"Payment initiated: School={school}, Amount={total_amount}, Phone={phone_number}, TxID={payment.transaction_id}")
 
             return redirect('payments:status', transaction_id=payment.transaction_id)
 
