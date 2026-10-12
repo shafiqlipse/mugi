@@ -681,7 +681,7 @@ def payment_view(request):
                     related_obj_setter=link_registration,
                 )
             except Exception as e:
-                logger.error(f"Payment failed for {school}: {str(e)}", exc_info=True)
+                airtel_logger.error(f"Payment failed for {school}: {str(e)}", exc_info=True)
                 messages.error(request, "An error occurred while processing the payment. Please try again.")
                 return render(request, 'payments/payment_form.html', {'form': form})
 
