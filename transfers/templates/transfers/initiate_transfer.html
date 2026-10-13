@@ -66,13 +66,13 @@
               <td>{{ athlete.date_of_birth }}</td>
               <td>
                
-             <!-- <span class="badge text-bg-danger">Transfers Closed</span>-->   
-              {% if athlete.status == "ACTIVE" %}
+             <span class="badge text-bg-danger">Transfers Closed</span>
+            <!--   {% if athlete.status == "ACTIVE" %}
               <button
                   class="btn btn-outline-primary request-transfer"
                   data-athlete-id="{{ athlete.id }}"
-    data-athlete-name="{{ athlete.fname }} {{ athlete.lname }}"
-    data-athlete-status="{{ athlete.status }}"
+                  data-athlete-name="{{ athlete.fname }} {{ athlete.lname }}"
+                  data-athlete-status="{{ athlete.status }}"
                 >
                   <i class="fa fa-plus"></i> Request transfer
                 </button>
@@ -80,12 +80,12 @@
               <button
                   class="btn btn-primary request-transfer"
                   data-athlete-id="{{ athlete.id }}"
-    data-athlete-name="{{ athlete.fname }} {{ athlete.lname }}"
-    data-athlete-status="{{ athlete.status }}"
+                  data-athlete-name="{{ athlete.fname }} {{ athlete.lname }}"
+                  data-athlete-status="{{ athlete.status }}"
                 >
                   <i class="fa fa-plus"></i> Request Free Agent
                 </button>
-                {% endif %}
+                {% endif %}-->   
               </td>
             </tr>
             {% endfor %}
