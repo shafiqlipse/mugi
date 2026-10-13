@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Payment Status</title>
+  </head>
+  <body>
+    <h1>Payment Status</h1>
+
+    <p><strong>Transaction ID:</strong> {{ payment.transaction_id }}</p>
+    <p><strong>Amount:</strong> UGX {{ payment.amount }}</p>
+    <p><strong>Status:</strong> {{ payment.status }}</p>
+    <p><strong>Phone Number:</strong> {{ payment.phone_number }}</p>
+
+    {% if payment.status == 'PENDING' %}
+    <p>Your payment is still being processed. Please check back later.</p>
+    {% elif payment.status == 'COMPLETED' %}
+    <p>Your payment has been successfully completed.</p>
+    {% else %}
+    <p>Your payment has failed. Please try again.</p>
+    {% endif %}
+  </body>
+</html>

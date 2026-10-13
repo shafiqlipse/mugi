@@ -1,0 +1,63 @@
+{% extends "dashboard/dashboard.html" %}
+
+<!--static-->
+{% block title %}Payment Successful{% endblock %}
+<!--static-->
+{% load static %}
+<!--khfufufu-->
+{% block content %}
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+    background-color: #f8f9fa;
+  }
+  .success-box {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+  }
+  .success-box img {
+    width: 80px;
+    margin-bottom: 10px;
+  }
+  .amount {
+    font-size: 24px;
+    font-weight: bold;
+    color: #28a745;
+  }
+  .message {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  .details {
+    font-size: 14px;
+    color: #777;
+  }
+  .done-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 20px;
+  }
+</style>
+<div class="schools-dew content-wrapper">
+  <div class="success-box">
+ 
+    <div class="amount">UGX {{ amount }}</div>
+    <div class="message"><strong>Payment {{status}}, check your phone for Authorisation!</strong></div>
+    <div class="details">
+      Payment ID: {{ transaction_id }}<br />
+      Date: {{ timestamp|date:"d M, Y - h:i A" }}
+    </div>
+    <a href="{%url 'registration'%}" class="done-btn">DONE</a>
+  </div>
+</div>
+{% endblock %}

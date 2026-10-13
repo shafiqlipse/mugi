@@ -727,6 +727,20 @@ def initiate_registration_payment(request, school_id):
 
     if not success:
         messages.error(request, "Payment could not be initiated. Please try again.")
-        return redirect('schools:registration_detail', school_id=school.id)
+        return redirect(reverse('payment_success', args=[payment.transaction_id])) 
 
-    return redirect('payments:status', transaction_id=payment.transaction_id)
+    return redirect(reverse('payment_success', args=[payment.transaction_id])) 
+
+    
+def payment_success(request, transaction_id):
+    payment = Payment.objects.filter(transaction_id=transaction_id).first()
+    
+    if not payment:
+        return render(request, 'payment_failed.html', {'error': 'Transaction not found'})
+
+    return render(request, 'payment_success.html', {
+        'amount': payment.amount,
+        'transaction_id': payment.transaction_id,
+        'timestamp': payment.created_at,  # Make sure your Payment model has `created_at`
+    })
+    
