@@ -248,10 +248,15 @@ def airtel_payment_callback(request):
                 
             elif payment.payment_type == "TRANSFER":
                 if new_status == "COMPLETED":
-                    for transfer_payment in payment.transfer_payments.select_related("transfer"):
+                    for transfer_payment in payment.transfer_payments.select_related("transfer__athlete"):
                         transfer = transfer_payment.transfer
-                        transfer.status = "paid"
-                        transfer.save()                
+                        athlete = transfer.athlete
+
+                        if athlete.status == "ACTIVE":
+                            transfer.status = "paid"
+                        else:
+                            transfer.status = "Accepted"
+                        transfer.save()               
                 
             elif payment.payment_type == "TRAINING":
                 trainee = Trainee.objects.filter(payment=payment).first()
