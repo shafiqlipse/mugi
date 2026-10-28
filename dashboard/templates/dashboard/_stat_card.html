@@ -1,0 +1,19 @@
+<div class="card">
+  <div class="card-body">
+    <p class="mb-2 text-dark fs-16 fw-medium">{{ label }}</p>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h3 class="mb-0 fs-24 text-dark me-4">{{ card.total }}</h3>
+      <div id="{{ chart_id }}" class="apex-charts"></div>
+    </div>
+    <div class="d-flex align-items-center">
+      {% if card.pct is None %}
+        <span class="text-muted fs-14 me-2">–</span>
+      {% elif card.pct >= 0 %}
+        <span class="text-success fs-14 me-2">{{ card.pct }}%<i class="mdi mdi-menu-up fs-16 ms-1"></i></span>
+      {% else %}
+        <span class="text-danger fs-14 me-2">{{ card.pct }}%<i class="mdi mdi-menu-down fs-16 ms-1"></i></span>
+      {% endif %}
+      <p class="text-muted fs-13 mb-0">vs last month ({{ card.this }} this month)</p>
+    </div>
+  </div>
+</div>

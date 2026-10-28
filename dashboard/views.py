@@ -10,39 +10,23 @@ today = timezone.now().date()
 from django.db.models import Count
 from django.utils import timezone
 from django.db.models import Q
+from .services import *
 
 # Filter schools created today
 @login_required(login_url="login")
 def dashboard(request):
-    today = timezone.now().date()  # Assuming timezone is set
 
-    # Use a single query to get all counts
-    schools_count = School.objects.count()
-    officials_count = school_official.objects.count()
-    athletes_count = Athlete.objects.count()
-
-    # Get counts for today
-    schools_today = School.objects.filter(created=today).count()
-    athletes_today = Athlete.objects.filter(created=today).count()
-
-    # Use annotate to aggregate counts of schools and athletes for each region
-    regions = Region.objects.annotate(
-        school_count=Count('zone__district__school'),
-        athlete_count=Count('zone__district__school__athletes')
+    athletes = (
+        Athlete.objects.select_related("school")
+        .exclude(status="COMPLETED")
+        .order_by("-created")[:5]
     )
-
-    # Get the latest 5 schools and 6 athletes with related fields in one query
-    schools = School.objects.select_related("district").order_by("-created")[:5]
-    athletes = Athlete.objects.select_related("school").exclude(status='COMPLETED').order_by("-created")[:5]
     context = {
-        "officials_count": officials_count,
-        "schools": schools,
+        "cards": overview_cards(),
         "athletes": athletes,
-        "regions": regions,
-        "athletes_count": athletes_count,
-        "schools_today": schools_today,
     }
     return render(request, "dashboard/overview.html", context)
+
 
 
 

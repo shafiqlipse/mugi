@@ -1,9 +1,9 @@
 {% extends "dashboard/dashboard.html" %}
-<!--dfggg-->
+<!--static-->
 {% load static %}
-<!--ddefe-->
-{% block title %}Overview{% endblock %}
 <!--title-->
+{% block title %}Overview{% endblock %}
+<!--content-->
 {% block content %}
 <div class="container-fluid">
   <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
@@ -14,31 +14,26 @@
 
   <!-- Start Main Widgets -->
   <div class="row">
-    <div class="col-md-6 col-lg-4 col-xl">
-      <div class="card">
-        <div class="card-body">
-          <div class="widget-first">
-            <div class="d-flex align-items-center mb-2">
-              <p class="mb-0 text-dark fs-16 fw-medium">Schools</p>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h3 class="mb-0 fs-24 text-dark me-4">{{schools_count}}</h3>
-              <div id="total_sales" class="apex-charts"></div>
-            </div>
-
-            <div class="d-flex align-items-center">
-              <span class="text-success fs-14 me-2"
-                >{{schools_today}}<i class="mdi mdi-menu-up fs-16 ms-1"></i
-              ></span>
-              <p class="text-muted fs-13 mb-0">Since last month</p>
-            </div>
-          </div>
-        </div>
-      </div>
+ <div class="row">
+  <div class="col-md-6 col-lg-4 col-xl">
+    {% include "dashboard/_stat_card.html" with label="Schools" card=cards.schools chart_id="schools_chart" %}
+  </div>
+  <div class="col-md-6 col-lg-4 col-xl">
+    {% include "dashboard/_stat_card.html" with label="Athletes" card=cards.athletes chart_id="athletes_chart" %}
+  </div>
+  <div class="col-md-6 col-lg-4 col-xl">
+    {% include "dashboard/_stat_card.html" with label="Officials" card=cards.officials chart_id="officials_chart" %}
+  </div>
+  <div class="col-md-6 col-lg-6 col-xl">
+    {% include "dashboard/_stat_card.html" with label="Enrollments" card=cards.enrollments chart_id="enrollments_chart" %}
+  </div>
+  <div class="col-md-12 col-lg-6 col-xl">
+    {% include "dashboard/_stat_card.html" with label="Transfers" card=cards.transfers chart_id="transfers_chart" %}
+  </div>
+</div>
     </div>
 
-    <div class="col-md-6 col-lg-4 col-xl">
+   <!-- <div class="col-md-6 col-lg-4 col-xl">
       <div class="card">
         <div class="card-body">
           <div class="widget-first">
@@ -135,7 +130,7 @@
       </div>
     </div>
   </div>
-  <!-- End Main Widgets -->
+     End Main Widgets -->
 
   <!-- Start Row -->
   <div class="row">
@@ -220,5 +215,19 @@
     </div>
     <!-- End Latest Order -->
   </div>
+  {{ trends|json_script:"trends-data" }}
+<script>
+  const trends = JSON.parse(document.getElementById("trends-data").textContent);
+  const spark = (id, data) =>
+    new ApexCharts(document.querySelector("#" + id), {
+      chart: { type: "area", height: 40, width: 100, sparkline: { enabled: true } },
+      series: [{ data }],
+      stroke: { width: 2, curve: "smooth" },
+    }).render();
+
+  spark("schools_chart", trends.schools);
+  spark("athletes_chart", trends.athletes);
+  // ...
+</script>
 </div>
 {% endblock %}

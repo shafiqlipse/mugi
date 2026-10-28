@@ -4,6 +4,7 @@ from .filters import *
 from django.contrib import messages
 from accounts.decorators import *
 from .models import *
+from enrollment.models import *
 from .forms import *
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
@@ -75,14 +76,14 @@ def school_update(request, id):
 def school_detail(request, id):
     school = get_object_or_404(School, id=id)
     officials = school_official.objects.select_related("school").filter(school_id=id)
-    # enrollments = SchoolEnrollment.objects.filter(school=school)
+    enrollments = SchoolEnrollment.objects.filter(school=school)
     athletes = Athlete.objects.select_related("school").filter(school_id=id).exclude(status="COMPLETED")
 
     context = {
         "school": school,
         "athletes": athletes,
         "officials": officials,
-        # "enrollments": enrollments,
+        "enrollments": enrollments,
     }
     return render(request, "school/school.html", context)
 
