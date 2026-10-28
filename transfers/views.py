@@ -338,7 +338,7 @@ def transfers(request):
 # @transfer_required
 @login_required
 def AllTransfers(request):
-    transfers = TransferRequest.objects.filter(status ='Accepted')
+    transfers = TransferRequest.objects.filter(status ='Accepted').exclude(is_archived = True)
     
     context = {"transfers": transfers}
     return render(request, "all/transfers.html", context)
@@ -346,14 +346,14 @@ def AllTransfers(request):
 # @transfer_required
 @login_required
 def Pending_Transfers(request):
-    transfers = TransferRequest.objects.filter(status ='paid')
+    transfers = TransferRequest.objects.filter(status ='paid').exclude(is_archived = True)
     
     context = {"transfers": transfers}
     return render(request, "all/transfer_s.html", context)
 
 @login_required
 def Approved_Transfers(request):
-    transfers = TransferRequest.objects.filter(status ='Approved')
+    transfers = TransferRequest.objects.filter(status ='Approved').exclude(is_archived = True)
     
     context = {"transfers": transfers}
     return render(request, "all/transfer_s.html", context)
