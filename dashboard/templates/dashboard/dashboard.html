@@ -305,7 +305,7 @@
               <li class="menu-title">Menu</li>
 
               <li>
-                <a href="{% url 'dashboard' %}" data-bs-toggle="collapse">
+                <a href="{% url 'dashboard' %}" >
                   <span class="nav-icon">
                     <iconify-icon
                       icon="solar:home-2-bold-duotone"
@@ -376,8 +376,8 @@
                       >
                     </li>
                     <li>
-                      <a class="tp-link" href="#icons-mdi"
-                        >Staff</a
+                      <a class="tp-link" href="{% url 'zonal_users' %}"
+                        >Zones</a
                       >
                     </li>
                     <li>
@@ -566,6 +566,52 @@
                     </li>
                   </ul>
                 </div>
+              </li>
+              
+              {% elif user.is_zone %}
+
+              <li>
+                <a class="tp-link" href="{%url 'zonalchair_dashboard' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Dashboard </span>
+                </a>
+              </li>
+
+              <li>
+                <a class="tp-link" href="{%url 'zonalchair_schools' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Schoola </span>
+                </a>
+              </li>
+
+              <li>
+                <a class="tp-link" href="{%url 'zonalchair_athletes' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Athletes</span>
+                </a>
+              </li>
+
+              <li>
+                <a class="tp-link" href="{%url 'zonalchair_officials' %}">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:calendar-minimalistic-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span>Officials </span>
+                </a>
               </li>
               {% elif user.is_school %}
               <li class="menu-title">Menu</li>

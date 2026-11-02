@@ -67,3 +67,28 @@ class Championship(models.Model):
     def __str__(self):
         return self.name
 
+
+class ZonalAccount(models.Model):
+    
+    zone = models.ForeignKey(Zone,related_name="zonal_account", on_delete=models.CASCADE)
+    email = models.EmailField(max_length=100)
+    phone = models.CharField(max_length=100)
+    user = models.OneToOneField(
+    "accounts.User",
+    related_name="zonal_account",
+    on_delete=models.CASCADE,
+    blank=True,
+    null=True
+)
+    status = models.CharField(
+        max_length=10, choices=[
+             ("ACTIVE", "ACTIVE"), ("INACTIVE", "INACTIVE")
+        ],
+        null=True, blank=True, default="INACTIVE", db_index=True
+    )
+
+
+
+    def __str__(self):
+        return self.zone.name
+

@@ -187,6 +187,18 @@ def users(request):
     }
     return render(request, "accounts/users.html", context)
 
+@staff_required
+def zonal_users(request):
+    
+    users = User.objects.select_related("school").filter(is_zone=True)
+    
+
+    context = {
+        "users": users,
+       
+    }
+    return render(request, "accounts/zones.html", context)
+
 
 @staff_required
 def edit_user(request, id=None):
