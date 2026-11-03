@@ -44,8 +44,13 @@ def _transfer_context(payment):
         'subtotal': payment.amount,
     }
 
+from django.http import Http404
+
 def _edit_context(payment):
-    edit = payment.edit_request
+    edit = getattr(payment, 'athlete_edit_request', None)
+    if edit is None:
+        raise Http404("No edit request linked to this payment")
+
     return {
         'title': 'Athlete Edit Request Receipt',
         'recipient_name': edit.school.name,
