@@ -268,13 +268,13 @@ def airtel_payment_callback(request):
                 edit_request = AthleteEditRequest.objects.filter(payment=payment).first()
                 if not edit_request:
                     airtel_logger.warning(f"Payment {payment.id}: no AthleteEditRequest linked")
-                elif edit_request.status not in ("PENDING", "FAILED", "AWAITING PAYMENT"):
+                elif edit_request.status not in ("PENDING_PAYMENT", "FAILED", "AWAITING PAYMENT"):
                     airtel_logger.warning(
                         f"Payment {payment.id}: edit request {edit_request.id} "
                         f"has status {edit_request.status!r}, not updating"
                     )
                 else:
-                    new = {"COMPLETED": "PENDING REVIEW", "FAILED": "FAILED", "PENDING": "PENDING"}.get(new_status)
+                    new = {"COMPLETED": "COMPLETED", "FAILED": "FAILED", "PENDING": "PENDING"}.get(new_status)
                     if new:
                         edit_request.status = new
                         edit_request.save()
