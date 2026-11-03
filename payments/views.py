@@ -274,9 +274,7 @@ def airtel_payment_callback(request):
                     }[new_status]
                     edit_request.save()
 
-            elif payment.payment_type == "TRAINING":
-                # Nothing to update: Trainee reads trainee.payment.status
-                pass
+
 
             else:
                 airtel_logger.warning(

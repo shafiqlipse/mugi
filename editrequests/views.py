@@ -48,7 +48,7 @@ def request_athlete_edit(request, id):
             edit_request.save(update_fields=['payment'])
 
         payment, success, _ = create_and_initiate_payment(
-            payment_type='ATHLETE_EDIT',
+            payment_type='EDIT',
             amount=ATHLETE_EDIT_FEE,
             phone_number=form.cleaned_data['phone_number'],
             related_obj_setter=link,
