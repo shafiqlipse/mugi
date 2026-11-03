@@ -266,20 +266,26 @@ def airtel_payment_callback(request):
 
             elif payment.payment_type == "EDIT":
                 edit_request = AthleteEditRequest.objects.filter(payment=payment).first()
-                if edit_request and edit_request.status in ("PENDING", "FAILED", "AWAITING PAYMENT"):
-                    edit_request.status = {
-                        "COMPLETED": "PENDING REVIEW",  # paid -> secretariat queue
-                        "FAILED": "FAILED",
-                        "PENDING": "PENDING",
-                    }[new_status]
-                    edit_request.save()
+                if not edit_request:
+                    airtel_logger.warning(f"Payment {payment.id}: no AthleteEditRequest linked")
+                elif edit_request.status not in ("PENDING", "FAILED", "AWAITING PAYMENT"):
+                    airtel_logger.warning(
+                        f"Payment {payment.id}: edit request {edit_request.id} "
+                        f"has status {edit_request.status!r}, not updating"
+                    )
+                else:
+                    new = {"COMPLETED": "PENDING REVIEW", "FAILED": "FAILED", "PENDING": "PENDING"}.get(new_status)
+                    if new:
+                        edit_request.status = new
+                        edit_request.save()
+                        airtel_logger.info(f"Edit request {edit_request.id} -> {new}")
 
 
 
             else:
                 airtel_logger.warning(
                     "Payment %s has unhandled payment_type %s",
-                    payment.pk, payment.payment_type,
+                    payment.id, payment.payment_type,
                 )
 
         airtel_logger.info(
