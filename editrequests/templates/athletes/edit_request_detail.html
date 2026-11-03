@@ -38,12 +38,14 @@
                 </div>
 
                 <div class="align-content-center">
-                  <h6 class="mb-0 text-dark fs-14">School:</h6>
+                  <h6 class="mb-0 text-dark fs-14">Athlete:</h6>
                 </div>
 
                 <div class="ms-auto align-content-center">
                   <span class="text-dark fw-medium fs-14 me-3"
-                    >{{edit_request.athlete}}</span
+                    ><a href="{% url 'athlete' edit_request.athlete.id %}"
+                      >{{edit_request.athlete}}</a
+                    ></span
                   >
                 </div>
               </div>
@@ -227,66 +229,70 @@
                     <thead class="table-light">
                       <tr>
                         <th>Field</th>
-                        <th>Original Value</th>
-                        <th>Requested Change</th>
+                        <th>Current</th>
+                        <th>Requested</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>Field</th>
-                            <th>Current</th>
-                            <th>Requested</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% for row in diff %}
-                          <tr>
-                            <td><strong>{{ row.field|capfirst }}</strong></td>
-                            <td>{{ row.old|default:"—" }}</td>
-                            <td>{{ row.new }}</td>
-                          </tr>
-                          {% endfor %}
-                          {% if edit_request.new_photo %}
-                          <tr>
-                            <td><strong>Photo</strong></td>
-                            <td>
-                              {% if edit_request.status != "APPROVED" and edit_request.athlete.photo %}
-                             
-                              <img
-                                src="{{ edit_request.athlete.photo.url }}"
-                                width="100"
-                                alt="Current photo"
-                                style="border-radius: 14px"
-                              />
-                              {% else %}
-                            </td>
-                            <td>
-                              <img
-                                src="{{ edit_request.new_photo.url }}"
-                                width="100"
-                                alt="Requested photo"
-                                style="border-radius: 4px"
-                              />
-                            </td>
-                          </tr>
-                          {% endif %}
-                          {% endif %}
-                        </tbody>
-                      </table>
+                      {% for row in diff %}
+                      <tr>
+                        <td><strong>{{ row.field|capfirst }}</strong></td>
+                        <td>{{ row.old|default:"—" }}</td>
+                        <td>{{ row.new }}</td>
+                      </tr>
+                      {% endfor %} {% if edit_request.new_photo %}
+                      <tr>
+                        <td><strong>Photo</strong></td>
+                        <td>
+                          {% if edit_request.status != "APPROVED" and edit_request.athlete.photo %}
+                         
+
+                          <img
+                            src="{{ edit_request.athlete.photo.url }}"
+                            width="100"
+                            alt="Current photo"
+                            style="border-radius: 4px"
+                          />
+                          {% else %} — {% endif %}
+                        </td>
+                        <td>
+                          <img
+                            src="{{ edit_request.new_photo.url }}"
+                            width="100"
+                            alt="Requested photo"
+                            style="border-radius: 4px"
+                          />
+                        </td>
+                      </tr>
+                      {% endif %}
                     </tbody>
                   </table>
-
-                  <form method="post">
-                    {% csrf_token %}
+                  {% if can_review %}
+                  <form method="post" class="mt-4">
+                    {% csrf_token %} {% if messages %} {% for message in messages %}
+                   
+                    <div class="alert alert-{{ message.tags }}">
+                      {{ message }}
+                    </div>
+                    {% endfor %} {% endif %}
+                    <div class="mb-3">
+                      <label for="admin_comment" class="form-label"
+                        >Comment (required when rejecting)</label
+                      >
+                      <textarea
+                        name="admin_comment"
+                        id="admin_comment"
+                        class="form-control"
+                        rows="3"
+                      ></textarea>
+                    </div>
                     <button
                       type="submit"
                       name="action"
                       value="approve"
                       class="btn btn-success"
                     >
-                      Approve Changes
+                      Approve
                     </button>
                     <button
                       type="submit"
@@ -294,9 +300,10 @@
                       value="reject"
                       class="btn btn-danger"
                     >
-                      Reject Request
+                      Reject
                     </button>
                   </form>
+                  {% endif %}
                 </div>
                 <div class="card-footer border-top">
                   <small class="text-body-secondary"

@@ -4,7 +4,9 @@ from django.db import transaction
 import os
 
 # Create your models here.
-
+EDITABLE_ATHLETE_FIELDS = [
+    'fname', 'mname', 'lname', 'lin', 'index_number', 'date_of_birth', 'gender',
+]
 
 class AthleteEditRequest(models.Model):
     STATUS_CHOICES = [
@@ -60,7 +62,12 @@ class AthleteEditRequest(models.Model):
         
     def get_absolute_url(self):
         return reverse('request_detail', args=[str(self.id)])   
-    
+        
+    def get_diff(self):
+        return [
+                {'field': f, 'old': self.original_data.get(f), 'new': new}
+                for f, new in self.requested_changes.items()
+            ]
     def mark_paid(self):
         # idempotent: payment callbacks get retried
         if self.status == 'PENDING_PAYMENT':
@@ -110,3 +117,6 @@ def resubmit(self):
     self.reviewed_by = None
     self.reviewed_at = None
     self.save()
+    
+
+  

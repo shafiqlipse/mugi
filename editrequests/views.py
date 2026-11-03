@@ -136,108 +136,46 @@ def done_edit_requests_list(request):
     requests = AthleteEditRequest.objects.select_related('athlete', 'requested_by', 'school').filter(status='Approved')
     return render(request, 'athletes/edit_requests_list.html', {'requests': requests})
 
-
+@login_required
 def edit_request_detail(request, request_id):
-    edit_request = get_object_or_404(AthleteEditRequest, id=request_id)
-    athlete = edit_request.athlete
+    reviewer = request.user  # swap for your real permission check
+
+    qs = AthleteEditRequest.objects.select_related('athlete', 'school', 'payment')
+    if not reviewer:
+        qs = qs.filter(school=request.user.school)  # schools only see their own
+    edit_request = get_object_or_404(qs, id=request_id)
 
     if request.method == 'POST':
+        if not reviewer:
+            return HttpResponseForbidden()
+
+        if edit_request.status != 'COMPLETED':
+            messages.error(request, "This request is not awaiting review.")
+            return redirect('edit_request_detail', request_id=edit_request.id)
+
         action = request.POST.get('action')
+        comment = request.POST.get('admin_comment', '').strip()
 
         if action == 'approve':
-            # Apply approved changes
-            for field, new_value in edit_request.requested_changes.items():
-                if field == 'photo':
-                    # Skip photo updates (can be handled manually)
-                    continue
-                setattr(athlete, field, new_value)
-            athlete.save()
-
-            edit_request.status = 'APPROVED'
-            edit_request.reviewed_by = request.user
-            edit_request.reviewed_at = timezone.now()
-            edit_request.save()
-
+            try:
+                edit_request.approve(request.user)
+            except ValidationError as e:
+                messages.error(request, e.messages[0])
+                return redirect('edit_request_detail', request_id=edit_request.id)
             messages.success(request, "Edit request approved and changes applied.")
             return redirect('edit_requests_list')
 
         elif action == 'reject':
-            edit_request.status = 'REJECTED'
-            edit_request.reviewed_by = request.user
-            edit_request.reviewed_at = timezone.now()
-            edit_request.save()
-
+            if not comment:
+                messages.error(request, "Please give a reason for rejecting this request.")
+                return redirect('edit_request_detail', request_id=edit_request.id)
+            edit_request.reject(request.user, comment)
             messages.info(request, "Edit request rejected.")
             return redirect('edit_requests_list')
 
-        elif action == 'pay':
-            # Handle payment initiation for edit requests
-            phone_number = edit_request.phone_number
-            if not phone_number:
-                messages.error(request, "Phone number missing for this request.")
-                return redirect('edit_request_detail', request_id=edit_request.id)
-
-            try:
-                # 💰 Payment details
-                amount = 5000  # e.g., edit request fee
-                edit_request.amount = amount
-                edit_request.transaction_id = str(random.randint(10**11, 10**12 - 1))
-                edit_request.status = "PENDING"
-                edit_request.save()
-
-                # 🔐 Get Airtel token
-                token = get_airtel_token()
-                if not token:
-                    messages.error(request, "Failed to connect to Airtel. Try again later.")
-                    return redirect('edit_request_detail', request_id=edit_request.id)
-
-                # 🌍 Airtel API setup
-                payment_url = "https://openapi.airtel.africa/merchant/v2/payments/"
-                msisdn = re.sub(r"\D", "", str(phone_number)).lstrip('0')
-
-                headers = {
-                    "Accept": "*/*",
-                    "Content-Type": "application/json",
-                    "X-Country": "UG",
-                    "X-Currency": "UGX",
-                    "Authorization": f"Bearer {token}",
-                    "x-signature": settings.AIRTEL_API_SIGNATURE,
-                    "x-key": settings.AIRTEL_API_KEY,
-                }
-
-                payload = {
-                    "reference": str(edit_request.transaction_id),
-                    "subscriber": {
-                        "country": "UG",
-                        "currency": "UGX",
-                        "msisdn": msisdn,
-                    },
-                    "transaction": {
-                        "amount": float(amount),
-                        "country": "UG",
-                        "currency": "UGX",
-                        "id": edit_request.transaction_id,
-                    },
-                }
-
-                response = requests.post(payment_url, json=payload, headers=headers)
-                logger.info(f"Airtel Payment Response ({response.status_code}): {response.text}")
-
-                if response.status_code == 200:
-                    messages.success(
-                        request,
-                        f"Payment initiated successfully! Please confirm UGX {amount} on your Airtel line."
-                    )
-                else:
-                    messages.error(request, "Payment initiation failed. Please try again.")
-
-                return redirect('edit_request_detail', request_id=edit_request.id)
-
-            except Exception as e:
-                logger.error(f"❌ Error during edit request payment: {str(e)}", exc_info=True)
-                messages.error(request, "An error occurred while processing your payment.")
-                return redirect('edit_request_detail', request_id=edit_request.id)
-
-    # Default GET request
-    return render(request, 'athletes/edit_request_detail.html', {'edit_request': edit_request})
-
+    return render(request, 'athletes/edit_request_detail.html', {
+        'edit_request': edit_request,
+        'diff': edit_request.get_diff(),
+        'is_reviewer': reviewer,
+        'can_review': reviewer and edit_request.status == 'COMPLETED',
+    })

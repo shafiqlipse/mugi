@@ -467,7 +467,29 @@
                     </li>
                   </ul>
                 </div>
-              </li>              <li>
+              </li>              
+              <li>
+                <a href="#editrequests" data-bs-toggle="collapse">
+                  <span class="nav-icon"
+                    ><iconify-icon
+                      icon="solar:map-point-bold-duotone"
+                    ></iconify-icon
+                  ></span>
+                  <span> Edit Requests </span>
+                  <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="editrequests">
+                  <ul class="nav-second-level">
+                    <li>
+                      <a class="tp-link" href="{% url 'edit_requests_list' %}">Pending Requests</a>
+                    </li>
+                    <li>
+                      <a class="tp-link" href="{% url 'done_edit_requests_list' %}">Done Requests</a>
+                    </li>
+                  </ul>
+                </div>
+              </li>              
+              <li>
                 <a href="#sidebarMaps" data-bs-toggle="collapse">
                   <span class="nav-icon"
                     ><iconify-icon
@@ -588,7 +610,7 @@
                       icon="solar:calendar-minimalistic-bold-duotone"
                     ></iconify-icon
                   ></span>
-                  <span> Schoola </span>
+                  <span> Schools </span>
                 </a>
               </li>
 

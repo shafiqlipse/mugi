@@ -11,6 +11,8 @@ urlpatterns = [
     # path("review-edit-request/<uuid:request_id>/", review_edit_request, name="review_edit_request"),
     path("edit_request_detail/<uuid:request_id>/", edit_request_detail, name="edit_request_detail"),
     path("delete_athlete_edit/<uuid:id>", delete_athlete_edit, name="delete_athlete_edit"),
+    path("edit_requests_list/", edit_requests_list, name="edit_requests_list"),
+    path("done_edit_requests_list/", done_edit_requests_list, name="done_edit_requests_list"),
     
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
