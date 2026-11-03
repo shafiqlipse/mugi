@@ -10,7 +10,7 @@ from django.db import transaction
 import random
 import logging
 # Create your views here.
-ATHLETE_EDIT_FEE = 50000
+ATHLETE_EDIT_FEE = 1000
 
 logger = logging.getLogger("airtel")
 
