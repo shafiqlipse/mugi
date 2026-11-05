@@ -14,12 +14,21 @@ class PaymentFilter(django_filters.FilterSet):
         empty_label="All schools",
         widget=forms.Select(attrs={"class": "form-select js-example-basic-single"}),
     )
+
     payment_type = django_filters.ChoiceFilter(
         choices=[ ('REGISTRATION', 'Registration'),
                 ('TRANSFER', 'Transfer'),
                 ('EDIT', 'Edit'),
                 ('TRAINING', 'Training'),],  # see note below
         label="Payment Type",
+        empty_label="All types",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    status = django_filters.ChoiceFilter(
+        choices=[ ('PENDING', 'PENDING'),
+                ('COMPLETED', 'COMPLETED'),
+                ('FAILED', 'FAILED'),],  # see note below
+        label="Status",
         empty_label="All types",
         widget=forms.Select(attrs={"class": "form-select"}),
     )
@@ -31,4 +40,4 @@ class PaymentFilter(django_filters.FilterSet):
 
     class Meta:
         model = Payment
-        fields = ["school", "payment_type", "phone_number"]
+        fields = ["school", "payment_type", "phone_number","status"]

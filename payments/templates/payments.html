@@ -12,7 +12,12 @@
       <a href=""
         ><i class="fa fa-download" aria-hidden="true"></i> Export
       </a>
-
+{% if messages %} {% for message in messages %}
+                   
+                    <div class="alert alert-{{ message.tags }}">
+                      {{ message }}
+                    </div>
+                    {% endfor %} {% endif %}
       <div method="get" class="formlix flex">
         <form method="get" class="formix">
           <div class="row">
@@ -27,6 +32,18 @@
               <div class="form-group">
                 <label for="championship">Phone number</label>
                 {{ payment_filter.form.phone_number}}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="championship">Payment Type</label>
+                {{ payment_filter.form.payment_type}}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="championship">Status</label>
+                {{ payment_filter.form.status}}
               </div>
             </div>
           </div>
@@ -45,7 +62,7 @@
                 <th>School</th>
                 <th>Phone Number</th>
                 <th>Amount</th>
-                <th>Athletes</th>
+                <th>Type</th>
                 <th>Date</th>
                 <th>Status</th>
                 <th>Receipt</th>
@@ -61,13 +78,14 @@
                 </td>
                 <td>{{payment.phone_number}}</td>
                 <td>{{payment.amount}}</td>
-                <td>{{payment.athletes.count}}</td>
+                <td>{{payment.payment_type}}</td>
                 <td>{{payment.created_at}}</td>
                 <td>
                   <span class="badge text-bg-secondary">
                     {{payment.status}}</span>
                   
                 </td>
+                {% if payment.status == "COMPLETED" %}
                 <td>
                   <a href='{% url 'payment_receipt' payment.transaction_id %}' class="btn btn-success" styles="color:white;">
                   <iconify-icon
@@ -75,8 +93,11 @@
                     ></iconify-icon
                   >  <span></span>Receipt
                   </a>
+                </td>{% else %} 
+                <td>
+                  <a href="{% url 'activate_payment' payment.id %}" class="btn btn-primary">Activate</a>
                 </td>
-              </tr>
+              {% endif %}</tr>
 
               {%endfor%}
             </tbody>

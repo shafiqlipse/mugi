@@ -19,4 +19,5 @@ urlpatterns = [
     path("delete_trainee/<int:id>", trainee_delete, name="delete_trainee"),
     path("update_trainee/<int:id>", trainee_update, name="update_trainee"),
     path("activate_trainee/<int:id>", activate_trainee, name="activate_trainee"),
+    path("successpage/", payment_success, name="payment_success"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

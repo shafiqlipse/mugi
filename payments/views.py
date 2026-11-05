@@ -35,7 +35,7 @@ def accounts(request):
 
 @login_required
 def allpayments(request):
-    payments = Payment.objects.filter(status="COMPLETED").order_by('-created_at')    
+    payments = Payment.objects.all().order_by('-created_at')    
     
     # Apply filtering
     payments_filter = PaymentFilter(request.GET, queryset=payments)
@@ -81,7 +81,7 @@ def activate_payment(request, id):
     payment.status = "COMPLETED"
     payment.save() # Save the updated status
     messages.success(request, f"Payment {payment} is now {payment.status}.")
-    return redirect("pending_payments")
+    return redirect("allpayments")
 #     context = {"payment": payment}
 
 
@@ -299,3 +299,72 @@ def airtel_payment_callback(request):
     except Exception:
         airtel_logger.exception("Callback error")
         return JsonResponse({"error": "Internal Error"}, status=500)
+    
+    
+from django.db.models import Sum, Count, Avg, Q
+from django.db.models.functions import TruncMonth
+from django.utils.dateparse import parse_date
+from django.shortcuts import render
+from collections import defaultdict
+from datetime import datetime
+
+
+def payments_summary(request):
+    qs = Payment.objects.all()
+
+    date_from = parse_date(request.GET.get("from") or "")
+    date_to = parse_date(request.GET.get("to") or "")
+    if date_from:
+        qs = qs.filter(created_at__date__gte=date_from)
+    if date_to:
+        qs = qs.filter(created_at__date__lte=date_to)
+
+    done = Q(status="COMPLETED")
+
+    totals = qs.aggregate(
+        total=Count("id"),
+        completed=Count("id", filter=done),
+        revenue=Sum("amount", filter=done),
+        average=Avg("amount", filter=done),
+    )
+    totals["revenue"] = totals["revenue"] or 0
+    totals["success_rate"] = (
+        round(totals["completed"] * 100 / totals["total"], 1) if totals["total"] else 0
+    )
+
+    by_type = (
+        qs.values("payment_type")
+        .annotate(
+            attempts=Count("id"),
+            completed=Count("id", filter=done),
+            revenue=Sum("amount", filter=done),
+        )
+        .order_by("-revenue")
+    )
+
+    by_status = qs.values("status").annotate(count=Count("id")).order_by("-count")
+
+  
+
+    monthly_totals = defaultdict(lambda: {"revenue": 0, "count": 0})
+    for created_at, amount in qs.filter(done).values_list("created_at", "amount"):
+        key = timezone.localtime(created_at).strftime("%Y-%m")
+        monthly_totals[key]["revenue"] += amount or 0
+        monthly_totals[key]["count"] += 1
+
+    months = sorted(monthly_totals)
+    chart_data = {
+        "labels": [datetime.strptime(m, "%Y-%m").strftime("%b %Y") for m in months],
+        "revenue": [float(monthly_totals[m]["revenue"]) for m in months],
+        "type_labels": [t["payment_type"] for t in by_type],
+        "type_revenue": [float(t["revenue"] or 0) for t in by_type],
+    }
+
+    return render(request, "overview.html", {
+        "totals": totals,
+        "by_type": by_type,
+        "by_status": by_status,
+        "chart_data": chart_data,
+        "date_from": request.GET.get("from", ""),
+        "date_to": request.GET.get("to", ""),
+    })

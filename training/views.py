@@ -177,9 +177,8 @@ def payment_success(request):
 @login_required(login_url="login")
 def trainees(request):
     # Get all trainees
-    trainees = Trainee.objects.all().order_by("-created_at")
-    completed_transactions = trainees.filter(status="Completed")
-    # total_collected = completed_transactions.aggregate(total_amount=models.Sum('amount'))['total_amount'] or 0
+    trainees = Trainee.objects.filter(status="Active").order_by("-created_at")
+
 
     # Apply the filter
     trainee_filter = TraineeFilter(request.GET, queryset=trainees)
@@ -279,7 +278,7 @@ def trainee_delete(request, id):
 
 def activate_trainee(request, id):
     trainee = get_object_or_404(Trainee, id=id)
-    trainee.payment_status = "Completed"
+    trainee.status = "Active"
     trainee.save()
     messages.success(request, "Trainee activated successfully.")
     return redirect("trainees") 
@@ -297,3 +296,6 @@ def archived_trainees(request):
         {"trainee_filter": trainee_filter, "archived_trainees": archived_trainees},
     )
 
+def payment_success(request):
+    context={}
+    return render(request, 'trainees/successpage.html', context)

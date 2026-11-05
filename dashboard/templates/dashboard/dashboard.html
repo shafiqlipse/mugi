@@ -514,7 +514,7 @@
               <li class="menu-title mt-2">Accounts</li>
               
               <li>
-                <a class="tp-link" href="/">
+                <a class="tp-link" href="{% url 'payments_summary' %}">
                   <span class="nav-icon"
                     ><iconify-icon
                       icon="solar:calendar-minimalistic-bold-duotone"
@@ -537,8 +537,8 @@
                 <div class="collapse" id="sidebarForms">
                   <ul class="nav-second-level">
                     <li>
-                      <a class="tp-link" href="#forms-elements"
-                        >Registration</a
+                      <a class="tp-link" href="{% url 'allpayments'%}"
+                        >All transactions</a
                       >
                     </li>
                     <li>

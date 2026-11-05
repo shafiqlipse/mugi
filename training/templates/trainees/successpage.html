@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -9,6 +9,11 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <style>
+      strong {
+        text-transform: uppercase;
+      }
+    </style>
   </head>
 
   <body>
@@ -35,14 +40,15 @@
           </div>
 
           <div class="text-center">
-            <h2 class="fw-bold text-success mb-3">Payment Successful!</h2>
+            <h2 class="fw-bold text-success mb-3">
+              Payment Pending Confirmation!
+            </h2>
             <p class="mb-4">
               Thank you,
               <strong>{{ trainee.first_name }} {{ trainee.last_name }}</strong
               >.<br />
               Your registration for the
-              <strong> capacity building
-              </strong> has been confirmed.
+              <strong> capacity building </strong> has been confirmed.
             </p>
 
             <h5>Check your phone and authorise the payment</h5>
