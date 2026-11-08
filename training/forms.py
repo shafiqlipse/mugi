@@ -6,6 +6,12 @@ from .models import Trainee, Season, Venue
 
 
 class TraineesForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["season"].queryset = Season.objects.filter(status="Active")
+        
+        
     # Form-only field: saved on Payment, not on Trainee
     phone_number = Payment._meta.get_field("phone_number").formfield(
         label="Airtel Money Number",
