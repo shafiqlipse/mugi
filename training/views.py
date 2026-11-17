@@ -286,15 +286,46 @@ def activate_trainee(request, id):
 
 
 def archived_trainees(request):
-    archived_trainees = Trainee.objects.filter(venue__status="Inactive").order_by("-created_at")
-    trainee_filter = TraineeFilter(request.GET, queryset=archived_trainees)
-    archived_trainees = trainee_filter.qs
+    archives_trainees = Trainee.objects.filter(venue__status="Inactive").order_by("-created_at")
+    trainee_filter = TraineeFilter(request.GET, queryset=archives_trainees)
+    alltrainees = trainee_filter.qs
+    if request.method == "POST":
+        # Check which form was submitted
+        if "Accreditation" in request.POST:
+            template = get_template("reports/acrred.html")
+            filename = "Trainee_Accreditation.pdf"
+        elif "Certificate" in request.POST:
+            template = get_template(
+                "reports/certficate_temaplate.html"
+            )  # Your certificate template
+            filename = "Trainee_Certificate.pdf"
+        else:
+            return HttpResponse("Invalid form submission")
 
-    return render(
-        request,
-        "trainees/archived_trainees.html",
-        {"trainee_filter": trainee_filter, "archived_trainees": archived_trainees},
-    )
+        # Generate PDF
+        context = {"alltrainees": alltrainees}
+        html = template.render(context)
+
+        # Create a PDF
+        pdf_buffer = BytesIO()
+        pisa_status = pisa.CreatePDF(html, dest=pdf_buffer)
+
+        if pisa_status.err:
+            return HttpResponse("We had some errors <pre>" + html + "</pre>")
+
+        pdf_buffer.seek(0)
+
+        # Return the PDF as a response
+        response = HttpResponse(content_type="application/pdf")
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        response.write(pdf_buffer.getvalue())
+        return response
+    else:
+        return render(
+            request,
+            "trainees/archived_trainees.html",
+            {"trainee_filter": trainee_filter, "alltrainees": alltrainees},
+        )
 
 def payment_success(request):
     context={}

@@ -31,7 +31,7 @@
           <div class="card-header">
             <div class="card-tools">
               <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                   <form method="get" class="form-control p-2">
                     <h2 class="card-title mb-0">Filter trainees</h2>
                     <div method="get" class="formlix flex">
@@ -60,6 +60,35 @@
                       </button>
                     </div>
                   </form>
+                </div>
+                <div class="col-md-6">
+                 
+           
+                  <h2 class="card-title mb-3">Reports</h2>
+                  <form method="post" class="form-contol">
+                    {% csrf_token %}
+                    <input
+                      type="submit"
+                      name="Accreditation"
+                      value="Accreditation"
+                      class="btn btn-primary mb-2"
+                      width="100%"
+                    />
+                  </form>
+                  <form method="post" class="form-contol">
+                    {% csrf_token %}
+                    <input
+                      type="submit"
+                      name="Certificate"
+                      value="Certificate"
+                      class="btn btn-secondary mb-2"
+                      width="100%"
+                    />
+                  </form>
+                  {% comment %} <a href="{% url 'export_tcsv' %}" class="btn btn-success mb-2"
+                    >Export CSV</a
+                  > {% endcomment %}
+             
                 </div>
               </div>
             </div>
