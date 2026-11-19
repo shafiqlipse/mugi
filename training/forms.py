@@ -82,6 +82,7 @@ class TraineeUpdateForm(forms.ModelForm):
             "venue",
             "course",
             "level",
+            "status",
             "residence_type",
         ]
         widgets = {
@@ -98,6 +99,7 @@ class TraineeUpdateForm(forms.ModelForm):
             "venue": forms.Select(attrs={"class": "form-control"}),
             "course": forms.Select(attrs={"class": "form-control"}),
             "level": forms.Select(attrs={"class": "form-control"}),
+            "status": forms.Select(attrs={"class": "form-control"}),
             "residence_type": forms.Select(attrs={"class": "form-control"}),
         }
 

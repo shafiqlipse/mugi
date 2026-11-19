@@ -177,7 +177,7 @@ def payment_success(request):
 @login_required(login_url="login")
 def trainees(request):
     # Get all trainees
-    trainees = Trainee.objects.filter(status="Active").order_by("-created_at")
+    trainees = Trainee.objects.filter(venue__status="Active").order_by("-created_at").exclude(status="Inactive")
 
 
     # Apply the filter
