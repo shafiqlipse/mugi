@@ -29,6 +29,10 @@ class SchoolAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
     list_display = ("name", "center_number", "emis_number", "district")
     search_fields =( "name", "center_number", "emis_number")  # Use school__name instead of school
 
+class TraineeAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
+    list_display = ("first_name", "last_name", "course", "venue", "gender")
+    search_fields =("first_name", "last_name", "course", "venue" )  # Use school__name instead of school
+
 
 
 
@@ -51,4 +55,4 @@ admin.site.register(Season)
 admin.site.register(Course)
 admin.site.register(Level)
 admin.site.register(Venue)
-admin.site.register(Trainee)
+admin.site.register(Trainee,TraineeAdmin)

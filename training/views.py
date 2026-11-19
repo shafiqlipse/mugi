@@ -239,31 +239,23 @@ def trainee_update(request, id):
     trainee = get_object_or_404(Trainee, id=id)
 
     if request.method == "POST":
-        form = TraineesForm(request.POST, request.FILES, instance=trainee)
+        form = TraineeUpdateForm(request.POST, request.FILES, instance=trainee)
         if form.is_valid():
             try:
-                new_trainee = form.save(commit=False)
-
-
-                new_trainee.save()
-                messages.success(
-                    request,
-                    "Updated successfully! ",
-                )
+                form.save()
+                messages.success(request, "Updated successfully!")
                 return redirect("trainees")
-
             except IntegrityError:
                 messages.error(request, "There was an error saving the trainee.")
-                return render(request, "trainee_new.html", {"form": form})
-
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
-        form = TraineesForm(instance=trainee)
+        form = TraineeUpdateForm(instance=trainee)
 
-    context = {
+    return render(request, "trainees/update_trainee.html", {
         "form": form,
         "trainee": trainee,
-    }
-    return render(request, "trainees/update_trainee.html", context)
+    })
 
 
 def trainee_delete(request, id):
