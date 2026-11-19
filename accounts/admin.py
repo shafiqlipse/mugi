@@ -31,7 +31,7 @@ class SchoolAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
 
 class TraineeAdmin(admin.ModelAdmin):  # Inherit from admin.ModelAdmin
     list_display = ("first_name", "last_name", "course", "venue", "gender")
-    search_fields =("first_name", "last_name", "course", "venue" )  # Use school__name instead of school
+    search_fields =("first_name", "last_name" )  # Use school__name instead of school
 
 
 
